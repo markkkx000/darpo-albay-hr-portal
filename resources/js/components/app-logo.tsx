@@ -1,14 +1,25 @@
-import AppLogoIcon from '@/components/app-logo-icon';
+type Props = {
+    auth?: {
+        user?: any;
+        roles?: string[];
+    };
+};
 
-export default function AppLogo() {
+export default function AppLogo({ auth }: Props) {
+    const isSuperAdmin = auth?.roles?.includes('super_admin');
+    const isHR = auth?.roles?.includes('hr_admin') || auth?.roles?.includes('hr_staff');
+    const title = isSuperAdmin ? 'Admin Dashboard' : isHR ? 'HR Dashboard' : 'Employee Dashboard';
+
     return (
         <>
-            <div className="flex aspect-square size-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-                <AppLogoIcon className="size-5 fill-current text-white dark:text-black" />
-            </div>
+            <img
+                src="/dar_logo.png"
+                alt="DAR Logo"
+                className="h-7 w-7 object-contain"
+            />
             <div className="ml-1 grid flex-1 text-left text-sm">
                 <span className="mb-0.5 truncate leading-tight font-semibold">
-                    Laravel Starter Kit
+                    {title}
                 </span>
             </div>
         </>
