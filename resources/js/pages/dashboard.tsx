@@ -1,8 +1,8 @@
 import { Head, usePage } from '@inertiajs/react';
-import { dashboard } from '@/routes';
 import { AdminOverview } from '@/components/dashboard/admin-overview';
-import { HROverview } from '@/components/dashboard/hr-overview';
 import { EmployeeOverview } from '@/components/dashboard/employee-overview';
+import { HROverview } from '@/components/dashboard/hr-overview';
+import { dashboard } from '@/routes';
 
 export default function Dashboard() {
     const { auth } = usePage().props;

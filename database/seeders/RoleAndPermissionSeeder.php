@@ -51,6 +51,8 @@ class RoleAndPermissionSeeder extends Seeder
         // HR Admin
         $hrAdmin = Role::create(['name' => 'hr_admin']);
         $hrAdmin->givePermissionTo([
+            'attendance.clock',
+            'attendance.view_own',
             'attendance.manage',
             'leave.approve',
             'leave.manage',
@@ -66,6 +68,8 @@ class RoleAndPermissionSeeder extends Seeder
         // HR Staff
         $hrStaff = Role::create(['name' => 'hr_staff']);
         $hrStaff->givePermissionTo([
+            'attendance.clock',
+            'attendance.view_own',
             'attendance.manage',
             'leave.approve',
             'personnel.view',

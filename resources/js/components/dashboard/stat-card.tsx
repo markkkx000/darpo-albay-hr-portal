@@ -1,6 +1,6 @@
+import type { ReactNode } from 'react';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import { cn } from '@/lib/utils';
-import { ReactNode } from 'react';
 
 interface StatCardProps {
     title: string;
