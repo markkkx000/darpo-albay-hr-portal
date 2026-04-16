@@ -17,9 +17,11 @@ keep the codebase clean rather than stuffing everything into one file."
 ## Backend Rules
 - New module controllers go in `app/Modules/{ModuleName}/Controllers/` — 
   never in `app/Http/Controllers/`.
-- New module routes go in their own file (e.g. `routes/attendance.php`) and 
-  are registered in `web.php` via `require` — do not dump module routes 
-  directly into `web.php`.
+- New module routes MUST go in `app/Modules/{ModuleName}/routes.php`. 
+- **DO NOT** manually `require` module routes in `web.php`. The 
+  `ModuleServiceProvider` automatically detects and registers these routes 
+  with the appropriate prefix and name.
+- `routes/web.php` should only contain core authentication and dashboard routes.
 - Business logic goes in a Service class under 
   `app/Modules/{ModuleName}/Services/` — keep controllers thin.
 - Validation goes in Form Request classes under 
@@ -44,7 +46,7 @@ keep the codebase clean rather than stuffing everything into one file."
 
 ## Module Checklist
 Before considering a module complete, verify:
-- [ ] Routes are in their own file and registered in `web.php`
+- [ ] Routes are in `app/Modules/{ModuleName}/routes.php` (Auto-registered)
 - [ ] Controller is thin (delegates to a Service class)
 - [ ] Validation uses a Form Request
 - [ ] Migration is PostgreSQL-compatible (see Migration Guidelines)

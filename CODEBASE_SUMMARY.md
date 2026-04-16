@@ -9,7 +9,7 @@ This application is a Laravel 13 backend with an Inertia.js React frontend. Auth
   - `routes/web.php` defines custom auth routes and the dashboard route.
   - `app/Core/Auth/Controllers/AuthController.php` handles login/logout and redirects.
   - `app/Core/Services/ModuleRegistry.php` (Singleton) aggregates navigation items and module metadata.
-  - `app/Providers/ModuleServiceProvider.php` bootstraps modules, scanning for `routes.php` and `navigation.php` files in each module directory.
+  - `app/Providers/ModuleServiceProvider.php` bootstraps modules, automatically scanning for and registering `routes.php` and `navigation.php` files in each module directory.
   - `app/Http/Middleware/HandleInertiaRequests.php` shares common Inertia props including `auth` (with `user`, `roles`, `permissions`, and `navigation`), and `sidebarOpen`.
   - `config/permission.php` and `spatie/laravel-permission` are used for role/permission support.
 
@@ -28,7 +28,7 @@ This application is a Laravel 13 backend with an Inertia.js React frontend. Auth
 ## File Structure
 
 - `app/Core/` — custom authentication core and shared services like `ModuleRegistry`.
-- `app/Modules/` — feature-specific modules (e.g., Attendance, Leave, Personnel). Each module typically contains `routes.php` and `navigation.php`.
+- `app/Modules/` — feature-specific modules (e.g., Attendance, Leave, Personnel). Each module contains its own `routes.php` (for auto-registration) and `navigation.php`.
 - `app/Http/Middleware/` — Inertia middleware and shared props.
 - `resources/js/pages/` — Inertia page components for dashboard, auth, settings, welcome.
 - `resources/js/components/` — reusable UI components.
