@@ -12,8 +12,11 @@ export type User = {
     [key: string]: unknown;
 };
 
+import type { NavItem } from './navigation';
+
 export type Auth = {
     user: User;
     roles: string[];
     permissions: string[];
+    navigation?: NavItem[];
 };

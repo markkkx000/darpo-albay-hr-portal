@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Core\Services\ModuleRegistry;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -35,6 +36,8 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $registry = app(ModuleRegistry::class);
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -42,6 +45,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'roles' => $request->user()?->roles->pluck('name')->toArray() ?? [],
                 'permissions' => $request->user()?->getAllPermissions()->pluck('name')->toArray() ?? [],
+                'navigation' => $registry->getNavigation(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];

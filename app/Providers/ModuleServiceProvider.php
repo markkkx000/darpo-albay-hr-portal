@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Core\Services\ModuleRegistry;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -13,7 +14,7 @@ class ModuleServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(ModuleRegistry::class);
     }
 
     /**
@@ -38,8 +39,12 @@ class ModuleServiceProvider extends ServiceProvider
                 $this->registerRoutes($moduleName, $routePath);
             }
 
-            // Register Views (Inertia handles this differently, but we can register Blade if needed)
-            // For Inertia, we just need to make sure the components are in the right place.
+            // Register Navigation
+            $navPath = $modulePath.'/navigation.php';
+            if (File::exists($navPath)) {
+                $registry = $this->app->make(ModuleRegistry::class);
+                (require $navPath)($registry);
+            }
         }
     }
 

@@ -1,4 +1,5 @@
 import { Link } from '@inertiajs/react';
+import { DynamicIcon } from '@/components/dynamic-icon';
 import {
     SidebarGroup,
     SidebarGroupLabel,
@@ -24,7 +25,11 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                             tooltip={{ children: item.title }}
                         >
                             <Link href={item.href} prefetch>
-                                {item.icon && <item.icon />}
+                                {item.icon && (
+                                    typeof item.icon === 'string' 
+                                        ? <DynamicIcon name={item.icon} />
+                                        : <item.icon />
+                                )}
                                 <span>{item.title}</span>
                             </Link>
                         </SidebarMenuButton>

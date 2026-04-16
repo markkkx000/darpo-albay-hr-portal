@@ -28,6 +28,7 @@ const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
     const { auth } = usePage().props;
+    const dynamicNav = (auth.navigation || []) as NavItem[];
 
     return (
         <Sidebar collapsible="icon" variant="inset">
@@ -44,7 +45,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={[...mainNavItems, ...dynamicNav]} />
             </SidebarContent>
 
             <SidebarFooter>

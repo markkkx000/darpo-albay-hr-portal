@@ -15,6 +15,14 @@ class ModuleRegistry
     }
 
     /**
+     * Alias for registerNavigation.
+     */
+    public function register(array $item): void
+    {
+        $this->registerNavigation($item);
+    }
+
+    /**
      * Get all registered navigation items.
      */
     public function getNavigation(): array
