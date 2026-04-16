@@ -45,7 +45,13 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'roles' => $request->user()?->roles->pluck('name')->toArray() ?? [],
                 'permissions' => $request->user()?->getAllPermissions()->pluck('name')->toArray() ?? [],
-                'navigation' => $registry->getNavigation(),
+                'navigation' => array_values(array_filter($registry->getNavigation(), function ($item) use ($request) {
+                    if (empty($item['permission'])) {
+                        return true;
+                    }
+
+                    return $request->user()?->can($item['permission']) ?? false;
+                })),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];

@@ -64,4 +64,63 @@ class AttendanceService
             ->limit($limit)
             ->get();
     }
+
+    /**
+     * Get all attendance records with potential filtering.
+     */
+    public function getAllAttendance(array $filters = [])
+    {
+        $query = Attendance::with('user')->orderBy('date', 'desc');
+
+        if (! empty($filters['user_id'])) {
+            $query->where('user_id', $filters['user_id']);
+        }
+
+        if (! empty($filters['date'])) {
+            $query->whereDate('date', $filters['date']);
+        }
+
+        return $query->paginate(15);
+    }
+
+    /**
+     * Manually store an attendance record.
+     */
+    public function storeManualRecord(array $data): Attendance
+    {
+        // Unique constraint user_id + date check
+        if (Attendance::where('user_id', $data['user_id'])->whereDate('date', $data['date'])->exists()) {
+            throw ValidationException::withMessages([
+                'user_id' => 'This employee already has an attendance record for this date.',
+            ]);
+        }
+
+        return Attendance::create([
+            'user_id' => $data['user_id'],
+            'date' => $data['date'],
+            'clock_in' => $data['clock_in'],
+            'clock_out' => $data['clock_out'] ?? null,
+        ]);
+    }
+
+    /**
+     * Update an attendance record.
+     */
+    public function updateRecord(Attendance $attendance, array $data): Attendance
+    {
+        $attendance->update([
+            'clock_in' => $data['clock_in'],
+            'clock_out' => $data['clock_out'] ?? null,
+        ]);
+
+        return $attendance;
+    }
+
+    /**
+     * Delete an attendance record (soft delete).
+     */
+    public function deleteRecord(Attendance $attendance): bool
+    {
+        return $attendance->delete();
+    }
 }

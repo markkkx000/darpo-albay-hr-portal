@@ -22,6 +22,7 @@ class RoleAndPermissionSeeder extends Seeder
             'attendance.clock',
             'attendance.view_own',
             'attendance.manage',
+            'attendance.delete',
             'leave.file',
             'leave.view_own',
             'leave.approve',
@@ -37,23 +38,24 @@ class RoleAndPermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission]);
         }
 
         // Create Roles and assign permissions
 
         // Super Admin
-        $superAdmin = Role::create(['name' => 'super_admin']);
+        $superAdmin = Role::firstOrCreate(['name' => 'super_admin']);
         // Super Admin gets all permissions via a gate (usually done in AuthServiceProvider)
         // but we can also assign all for consistency
-        $superAdmin->givePermissionTo(Permission::all());
+        $superAdmin->syncPermissions(Permission::all());
 
         // HR Admin
-        $hrAdmin = Role::create(['name' => 'hr_admin']);
-        $hrAdmin->givePermissionTo([
+        $hrAdmin = Role::firstOrCreate(['name' => 'hr_admin']);
+        $hrAdmin->syncPermissions([
             'attendance.clock',
             'attendance.view_own',
             'attendance.manage',
+            'attendance.delete',
             'leave.approve',
             'leave.manage',
             'personnel.view',
@@ -66,8 +68,8 @@ class RoleAndPermissionSeeder extends Seeder
         ]);
 
         // HR Staff
-        $hrStaff = Role::create(['name' => 'hr_staff']);
-        $hrStaff->givePermissionTo([
+        $hrStaff = Role::firstOrCreate(['name' => 'hr_staff']);
+        $hrStaff->syncPermissions([
             'attendance.clock',
             'attendance.view_own',
             'attendance.manage',
@@ -78,8 +80,8 @@ class RoleAndPermissionSeeder extends Seeder
         ]);
 
         // Employee
-        $employee = Role::create(['name' => 'employee']);
-        $employee->givePermissionTo([
+        $employee = Role::firstOrCreate(['name' => 'employee']);
+        $employee->syncPermissions([
             'attendance.clock',
             'attendance.view_own',
             'leave.file',

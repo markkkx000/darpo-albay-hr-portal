@@ -46,7 +46,7 @@ This application is a Laravel 13 backend with an Inertia.js React frontend. It s
 - **Attendance Features**:
     - **Clock In/Out**: Real-time status tracking via `ClockInOut.tsx`.
     - **History**: Recent activity history shown in a table format.
-    - **Record Management**: HR roles with attendance.manage can manually add missing records and edit existing clock-in/out timestamps. HR admins and super admins with attendance.delete can soft delete records. Management UI is accessible via ManageRecords.tsx.
+    - **Record Management**: HR roles with attendance.manage can manually add missing records and edit existing clock-in/out timestamps via `ManageRecords.tsx` and `AttendanceRecordModal.tsx`. HR admins and super admins with attendance.delete can soft delete records. The "Attendance Management" sidebar link is dynamically registered via `navigation.php` and only visible to authorized roles.
 - `app.tsx` chooses layouts by page name.
 - `public/dar_logo.png` is used as the logo icon in the header/sidebar.
 

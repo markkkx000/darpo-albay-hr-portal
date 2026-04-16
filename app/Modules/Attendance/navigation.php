@@ -9,4 +9,11 @@ return function (ModuleRegistry $registry) {
         'icon' => 'Clock',
         'permission' => 'attendance.clock',
     ]);
+
+    $registry->register([
+        'title' => 'Attendance Management',
+        'href' => '/attendance/manage/records',
+        'icon' => 'CalendarClock',
+        'permission' => 'attendance.manage',
+    ]);
 };
