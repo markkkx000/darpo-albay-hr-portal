@@ -1,6 +1,6 @@
 ## Attendance Registry Implementation Plan: GOOD TO GO
 
-**Reminder:** Follow the rules and checklist in `adding_modules.md` strictly to avoid shortcuts. Each module must adhere to the modular architecture, with backend components in `app/Modules/{ModuleName}/`, routes in separate files, thin controllers delegating to services, validation via form requests, PostgreSQL-compatible migrations, soft deletes for entities, frontend pages under `resources/js/pages/Modules/{ModuleName}/`, no large conditionals in `dashboard.tsx`, and permissions seeded in `RoleAndPermissionSeeder`.
+**Reminder:** Follow the rules and checklist in `adding_modules.md` strictly to avoid shortcuts. Each module must adhere to the modular architecture, with backend components in `app/Modules/{ModuleName}/`, routes auto-registered by `ModuleServiceProvider` via `app/Modules/{ModuleName}/routes.php`, thin controllers delegating to services, validation via form requests, PostgreSQL-compatible migrations, soft deletes for entities, frontend pages under `resources/js/pages/Modules/{ModuleName}/`, no large conditionals in `dashboard.tsx`, and permissions seeded in `RoleAndPermissionSeeder`.
 
 **TL;DR:** Implement a real-time attendance tracking system allowing employees to clock in/out, with backend API for recording timestamps and frontend UI for clock actions.
 
@@ -13,15 +13,15 @@
 3. Create AttendanceService in `app/Modules/Attendance/Services/AttendanceService.php` with methods: clockIn(user), clockOut(user), getTodayAttendance(user). The service must enforce business rules: no double clock-in, no clock-out without a prior clock-in, and no more than one attendance record per user per date.
 4. Create form requests: ClockInRequest and ClockOutRequest in `app/Modules/Attendance/Requests/` with validation rules (e.g., reject if already clocked in, reject clock-out if not clocked in).
 5. Create AttendanceController in `app/Modules/Attendance/Controllers/AttendanceController.php` with clockIn and clockOut methods, injecting service and requests. Controller must remain thin — all logic stays in the service.
-6. Create `routes/attendance.php` with POST routes for clock-in and clock-out, and a GET route for the attendance page, all protected by auth middleware and the appropriate permission (`attendance.clock`).
-7. Register attendance routes in `routes/web.php` via require.
+6. Create `app/Modules/Attendance/routes.php` with POST routes for clock-in and clock-out, and a GET route for the attendance page, all protected by auth middleware and the appropriate permission (`attendance.clock`). Do not register this file in `web.php` — `ModuleServiceProvider` handles registration automatically.
+7. Create `app/Modules/Attendance/navigation.php` to register the Attendance module's sidebar link via `ModuleRegistry`. Read `ModuleServiceProvider.php` first to understand the exact format expected.
 8. Create frontend page `resources/js/pages/Modules/Attendance/ClockInOut.tsx`. The clock display is a local JavaScript clock using `setInterval` updating every second — this is purely cosmetic. All actual clock-in/out actions are standard Inertia form POST submissions — no WebSockets or polling required.
 9. Add reusable components in `resources/js/components/Attendance/`:
    - `ClockDisplay.tsx` — live local clock (hours, minutes, seconds)
    - `AttendanceStatus.tsx` — shows current status (not clocked in / clocked in since X)
 10. Seed permissions for attendance in `RoleAndPermissionSeeder`:
     - `attendance.clock` — assigned to `employee`, `hr_staff`, `hr_admin`
-    - `attendance.view_all` — assigned to `hr_staff`, `hr_admin`, `super_admin`
+    - `attendance.manage` — assigned to `hr_staff`, `hr_admin`, `super_admin`
 11. Write Pest tests for AttendanceController methods and service logic, covering: successful clock-in, rejected double clock-in, successful clock-out, rejected clock-out without prior clock-in, and unique constraint per user per date.
 12. Run `vendor/bin/pint --dirty --format agent` on all PHP files.
 13. Test frontend changes with `npm run dev` and verify no Vite errors.
@@ -36,8 +36,8 @@
 - `app/Modules/Attendance/Requests/ClockInRequest.php`
 - `app/Modules/Attendance/Requests/ClockOutRequest.php`
 - `app/Modules/Attendance/Controllers/AttendanceController.php`
-- `routes/attendance.php`
-- `routes/web.php` (update to require attendance.php)
+- `app/Modules/Attendance/routes.php`
+- `app/Modules/Attendance/navigation.php`
 - `resources/js/pages/Modules/Attendance/ClockInOut.tsx`
 - `resources/js/components/Attendance/ClockDisplay.tsx`
 - `resources/js/components/Attendance/AttendanceStatus.tsx`
@@ -58,6 +58,7 @@
 4. Check the database for attendance records with correct `date`, `clock_in`, and `clock_out` values.
 5. Verify the unique constraint by attempting a duplicate record — it must be rejected at both the validation and database level.
 6. Ensure soft deletes work by deleting a record and verifying `deleted_at` is set and the record is excluded from normal queries.
+7. Verify the Attendance sidebar link appears for roles with `attendance.clock` permission and is absent for roles without it.
 
 ---
 
@@ -66,6 +67,7 @@
 - The `date` column is stored separately from `clock_in` for efficient daily querying, which is required by the future DTR Export module (CS Form 48 / Appendix 24).
 - A unique constraint on `user_id` + `date` is enforced at the database level, not just in validation, to prevent race conditions or bypassed requests from creating duplicate records.
 - The real-time clock on the frontend is a local JavaScript `setInterval` updating every second — purely cosmetic. Recording timestamps is always server-side to prevent client-side tampering.
+- Routes are placed in `app/Modules/Attendance/routes.php` and auto-registered by `ModuleServiceProvider`. Do not manually register in `web.php`.
 - Permissions: `attendance.clock` is for clocking in/out (employees, HR). `attendance.view_all` is for viewing all employee records (HR and above only).
 - No global shared props are added; attendance data is passed via the individual Inertia page response.
 
