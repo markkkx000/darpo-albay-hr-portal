@@ -42,3 +42,4 @@ Before considering a module complete, verify:
 - [ ] Frontend page is under `pages/Modules/{ModuleName}/`
 - [ ] No large conditionals added to `dashboard.tsx`
 - [ ] Permissions for the module are seeded in `RoleAndPermissionSeeder`
+- [ ] `navigation.php` is present if the module needs a sidebar link

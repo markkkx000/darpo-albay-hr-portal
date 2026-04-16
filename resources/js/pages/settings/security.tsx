@@ -8,9 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { edit } from '@/routes/security';
 
-type Props = {};
-
-export default function Security({}: Props) {
+export default function Security() {
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
 

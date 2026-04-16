@@ -7,6 +7,7 @@ export default function Dashboard() {
     const isSuperAdmin = auth.roles?.includes('super_admin');
     const isHR = auth.roles?.includes('hr_admin') || auth.roles?.includes('hr_staff');
     const isEmployee = !isSuperAdmin && !isHR;
+
     return (
         <>
             <Head title={`${isSuperAdmin ? 'Admin' : isHR ? 'HR' : 'Employee'} Dashboard`} />
@@ -19,8 +20,8 @@ export default function Dashboard() {
                         {isSuperAdmin
                             ? 'System administration and management overview'
                             : isHR
-                            ? 'Human Resources management and employee overview'
-                            : 'Your personal workspace and attendance overview'
+                                ? 'Human Resources management and employee overview'
+                                : 'Your personal workspace and attendance overview'
                         }
                     </p>
                 </div>
