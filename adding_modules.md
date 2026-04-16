@@ -46,14 +46,14 @@ keep the codebase clean rather than stuffing everything into one file."
 
 ## Module Checklist
 Before considering a module complete, verify:
-- [ ] Routes are in `app/Modules/{ModuleName}/routes.php` (Auto-registered)
-- [ ] Controller is thin (delegates to a Service class)
-- [ ] Validation uses a Form Request
-- [ ] Migration is PostgreSQL-compatible (see Migration Guidelines)
-- [ ] Lookup tables use `is_active` instead of hard deletes
-- [ ] Real-world entity tables use `softDeletes()`
-- [ ] Foreign key constraints are explicitly defined
-- [ ] Frontend page is under `pages/Modules/{ModuleName}/`
-- [ ] No large conditionals added to `dashboard.tsx`
-- [ ] Permissions for the module are seeded in `RoleAndPermissionSeeder`
-- [ ] `navigation.php` is present if the module needs a sidebar link
+- [x] Routes are in `app/Modules/{ModuleName}/routes.php` (Auto-registered)
+- [x] Controller is thin (delegates to a Service class)
+- [x] Validation uses a Form Request
+- [x] Migration is PostgreSQL-compatible (see Migration Guidelines)
+- [x] Lookup tables use `is_active` instead of hard deletes
+- [x] Real-world entity tables use `softDeletes()`
+- [x] Foreign key constraints are explicitly defined
+- [x] Frontend page is under `pages/Modules/{ModuleName}/`
+- [x] No large conditionals added to `dashboard.tsx`
+- [x] Permissions for the module are seeded in `RoleAndPermissionSeeder`
+- [x] `navigation.php` is present if the module needs a sidebar link
