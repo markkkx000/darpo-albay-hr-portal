@@ -1,6 +1,6 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import { Plus, Edit, Trash2, Clock, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { AttendanceFilters } from '@/components/Attendance/AttendanceFilters';
 import { AttendanceRecordModal } from '@/components/Attendance/AttendanceRecordModal';
@@ -58,8 +58,18 @@ export default function ManageRecords({ records, employees, filters }: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState<AttendanceRecord | null>(null);
     const [recordToDelete, setRecordToDelete] = useState<AttendanceRecord | null>(null);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     const canDelete = auth.permissions?.includes('attendance.delete');
+
+    // Trigger a refresh on mount to ensure we always have the latest data
+    useEffect(() => {
+        setIsRefreshing(true);
+        router.reload({ 
+            only: ['records', 'employees'],
+            onFinish: () => setIsRefreshing(false)
+        });
+    }, []);
 
     const handleEdit = (record: AttendanceRecord) => {
         setSelectedRecord(record);
@@ -120,7 +130,10 @@ return { label: 'Incomplete', variant: 'destructive' as const };
             <div className="p-4 w-full mx-auto">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Attendance Management</h1>
+                        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
+                            Attendance Management
+                            {isRefreshing && <Clock className="h-5 w-5 animate-spin text-primary opacity-50" />}
+                        </h1>
                         <p className="text-muted-foreground text-sm mt-1">
                             Manually manage employee attendance records, correct timestamps, and resolve anomalies.
                         </p>
