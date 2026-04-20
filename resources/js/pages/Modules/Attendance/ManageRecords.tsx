@@ -117,7 +117,7 @@ return { label: 'Incomplete', variant: 'destructive' as const };
         <>
             <Head title="Manage Attendance Records" />
             
-            <div className="space-y-6 p-4 max-w-7xl mx-auto">
+            <div className="p-4 w-full mx-auto">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Attendance Management</h1>
