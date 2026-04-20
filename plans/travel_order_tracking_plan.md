@@ -13,8 +13,9 @@
 3. TravelOrderService for filing, approving, calculating duration.
 4. Requests: TravelOrderCreateRequest, TravelApprovalRequest.
 5. TravelOrderController with index, create, store, show, approve, reject.
-6. Routes/travel.php with routes protected by permissions.
-7. Frontend: pages/Modules/Travel/Index.tsx (my orders), FileTravel.tsx, ManageTravel.tsx (HR).
+6. Create `app/Modules/Travel/routes.php` with resource routes, protected by permissions. Use relative paths as the module name is automatically prefixed by the provider.
+7. Create `app/Modules/Travel/navigation.php` to register the Travel sidebar links via `ModuleRegistry`. This file must return a closure that accepts `App\Core\Services\ModuleRegistry $registry` and calls `$registry->register([...])`.
+8. Create frontend pages in `resources/js/pages/Modules/Travel/` using **Laravel Wayfinder** for all routing. For paginated views, use the existing reusable `Pagination.tsx` component from `@/components/Pagination` — do NOT create a module-specific pagination component.
 8. Components for travel forms and status.
 9. Permissions: 'travel.file' (employees), 'travel.view_all', 'travel.approve' (HR).
 10. Tests.
@@ -24,6 +25,8 @@
 
 ## Relevant Files
 
+- `app/Modules/Travel/routes.php`
+- `app/Modules/Travel/navigation.php`
 - In `app/Modules/Travel/`
 
 ---

@@ -13,8 +13,9 @@
 3. AnnouncementService for posting and retrieving announcements.
 4. Requests: AnnouncementCreateRequest, AnnouncementUpdateRequest.
 5. AnnouncementController with index, create, store, edit, update, destroy methods.
-6. Routes/announcements.php with resource routes, protected by permissions.
-7. Frontend: ListAnnouncements.tsx (all users), CreateAnnouncement.tsx, EditAnnouncement.tsx (HR).
+6. Create `app/Modules/Announcements/routes.php` with resource routes, protected by permissions. Use relative paths as the module name is automatically prefixed by the provider.
+7. Create `app/Modules/Announcements/navigation.php` to register the Announcements sidebar links via `ModuleRegistry`. This file must return a closure that accepts `App\Core\Services\ModuleRegistry $registry` and calls `$registry->register([...])`.
+8. Create frontend pages in `resources/js/pages/Modules/Announcements/` using **Laravel Wayfinder** for all routing. For paginated views, use the existing reusable `Pagination.tsx` component from `@/components/Pagination` — do NOT create a module-specific pagination component.
 8. Components for announcement cards and rich text editor.
 9. Permissions: 'announcements.view' (all), 'announcements.manage' (HR).
 10. Tests for CRUD and visibility.
@@ -24,7 +25,8 @@
 
 ## Relevant Files
 
-- Similar structure in `app/Modules/Announcements/`
+- `app/Modules/Announcements/routes.php`
+- `app/Modules/Announcements/navigation.php`
 - Frontend in `resources/js/pages/Modules/Announcements/`
 
 ---

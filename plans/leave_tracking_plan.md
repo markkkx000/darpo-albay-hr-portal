@@ -15,9 +15,9 @@
 5. Create LeaveService for filing, approving, rejecting, cancelling leaves, calculating working days (exclude weekends, future holidays), checking overlaps, and hooks for credit deduction on approval.
 6. Create form requests: LeaveRequestCreateRequest (validate dates, no overlaps, future dates), LeaveApprovalRequest, LeaveCancelRequest.
 7. Create LeaveController with index, create, store, show, approve, reject, cancel methods.
-8. Create routes/leave.php with routes for filing, managing, and cancelling leaves, protected by permissions. Add cancel route for employees.
-9. Register in web.php.
-10. Frontend: pages/Modules/Leave/Index.tsx (my leaves), FileLeave.tsx, ManageLeaves.tsx (HR).
+8. Create `app/Modules/Leave/routes.php` with resource routes, protected by permissions. Use relative paths as the module name is automatically prefixed by the provider.
+9. Create `app/Modules/Leave/navigation.php` to register the Leave Tracking sidebar links via `ModuleRegistry`. This file must return a closure that accepts `App\Core\Services\ModuleRegistry $registry` and calls `$registry->register([...])`.
+10. Create frontend pages in `resources/js/pages/Modules/Leave/` using **Laravel Wayfinder** for all routing. For paginated views, use the existing reusable `Pagination.tsx` component from `@/components/Pagination` — do NOT create a module-specific pagination component.
 11. Components for leave forms, status, and cancel confirmation.
 12. Seed permissions: leave.file (employee), leave.view_all (hr_staff, hr_admin), leave.approve (hr_staff, hr_admin), leave.cancel (employee — own pending only), leave.cancel_any (hr_staff, hr_admin, super_admin).
 13. Install asantibanez/laravel-eloquent-state-machines for status transitions with guards.
@@ -35,7 +35,8 @@
 - `app/Modules/Leave/Services/LeaveService.php`
 - Requests in `app/Modules/Leave/Requests/`
 - `app/Modules/Leave/Controllers/LeaveController.php`
-- `routes/leave.php`
+- `app/Modules/Leave/routes.php`
+- `app/Modules/Leave/navigation.php`
 - Frontend pages in `resources/js/pages/Modules/Leave/`
 - Components in `resources/js/components/Leave/`
 - Seeder update.

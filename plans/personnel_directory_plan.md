@@ -1,4 +1,4 @@
-## Personnel Directory Implementation Plan: DO NOT EXECUTE YET (STILL NEEDS REVIEW)
+## Personnel Directory Implementation Plan: GOOD TO GO
 
 **Reminder:** Follow the rules and checklist in `adding_modules.md` strictly to avoid shortcuts. Each module must adhere to the modular architecture, with backend components in `app/Modules/{ModuleName}/`, routes in separate files, thin controllers delegating to services, validation via form requests, PostgreSQL-compatible migrations, soft deletes for entities, frontend pages under `resources/js/pages/Modules/{ModuleName}/`, no large conditionals in `dashboard.tsx`, and permissions seeded in `RoleAndPermissionSeeder`.
 
@@ -27,12 +27,12 @@
    - `EmployeeUpdateRequest` — same as create but ignores unique constraint for own record
    - `EmployeeRestoreRequest` — validates the target record is soft deleted before restoring
 9. Create PersonnelController in `app/Modules/Personnel/Controllers/PersonnelController.php` with index, create, store, show, edit, update, destroy, archived, and restore methods. Keep controller thin — all logic in EmployeeService.
-10. Create `routes/personnel.php` with the following routes, protected by auth and permission middleware:
+10. Create `app/Modules/Personnel/routes.php` with the following routes, protected by auth and permission middleware. Use relative paths as the module name is automatically prefixed by the provider:
     - Resource routes (index, create, store, show, edit, update, destroy) — guarded by respective permissions
-    - GET `/personnel/archived` — guarded by `personnel.view` so `hr_staff` can access archived results read-only
-    - POST `/personnel/{id}/restore` — guarded by `personnel.restore` so only `hr_admin` and `super_admin` can restore
-11. Register personnel routes in `routes/web.php` via require.
-12. Create frontend pages in `resources/js/pages/Modules/Personnel/`:
+    - GET `/archived` — guarded by `personnel.view` so `hr_staff` can access archived results read-only
+    - POST `/{id}/restore` — guarded by `personnel.restore` so only `hr_admin` and `super_admin` can restore
+11. Create `app/Modules/Personnel/navigation.php` to register the Personnel Directory sidebar links. This file must return a closure that accepts `App\Core\Services\ModuleRegistry $registry` and calls `$registry->register([...])`. Sidebar links should only appear for roles with `personnel.view` permission.
+12. Create frontend pages in `resources/js/pages/Modules/Personnel/` using **Laravel Wayfinder** for all routing:
     - `Index.tsx` — paginated employee list with search and filter by department/status
     - `Create.tsx` — create employee form
     - `Edit.tsx` — pre-filled edit form
@@ -41,7 +41,7 @@
 13. Add reusable components in `resources/js/components/Personnel/`:
     - `EmployeeForm.tsx` — shared form used by Create and Edit pages
     - `EmployeeCard.tsx` — compact employee summary card
-    - `EmployeeTable.tsx` — paginated table with search and filters
+    - `EmployeeTable.tsx` — paginated table with search and filters. Use the existing reusable `Pagination.tsx` component from `@/components/Pagination` — do NOT create a module-specific pagination component.
 14. Seed permissions in `RoleAndPermissionSeeder`:
     - `personnel.view` — hr_staff, hr_admin, super_admin
     - `personnel.create` — hr_admin, super_admin
@@ -74,8 +74,8 @@
 - `app/Modules/Personnel/Requests/EmployeeUpdateRequest.php`
 - `app/Modules/Personnel/Requests/EmployeeRestoreRequest.php`
 - `app/Modules/Personnel/Controllers/PersonnelController.php`
-- `routes/personnel.php`
-- `routes/web.php`
+- `app/Modules/Personnel/routes.php`
+- `app/Modules/Personnel/navigation.php`
 - `resources/js/pages/Modules/Personnel/Index.tsx`
 - `resources/js/pages/Modules/Personnel/Create.tsx`
 - `resources/js/pages/Modules/Personnel/Edit.tsx`

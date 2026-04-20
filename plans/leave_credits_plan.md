@@ -13,8 +13,9 @@
 3. LeaveCreditService for calculating balances, earning credits (e.g., monthly accrual), deducting on approval, and manual adjustments.
 4. Requests: LeaveCreditAdjustmentRequest for HR overrides.
 5. LeaveCreditController with index (own credits), show, update (HR adjustments).
-6. Routes/leave_credits.php with routes protected by permissions.
-7. Frontend: ViewCredits.tsx (employee), ManageCredits.tsx (HR with search and adjust).
+6. Create `app/Modules/LeaveCredits/routes.php` with resource routes, protected by permissions. Use relative paths as the module name is automatically prefixed by the provider.
+7. Create `app/Modules/LeaveCredits/navigation.php` to register the Leave Credits sidebar links via `ModuleRegistry`. This file must return a closure that accepts `App\Core\Services\ModuleRegistry $registry` and calls `$registry->register([...])`.
+8. Create frontend pages in `resources/js/pages/Modules/LeaveCredits/` using **Laravel Wayfinder** for all routing. For paginated views, use the existing reusable `Pagination.tsx` component from `@/components/Pagination` — do NOT create a module-specific pagination component.
 8. Components for credit displays and adjustment forms.
 9. Permissions: 'leave_credits.view_own' (employees), 'leave_credits.view_all', 'leave_credits.manage' (HR).
 10. Tests for calculations and adjustments.
@@ -25,8 +26,9 @@
 ## Relevant Files
 
 - Migration.
+- `app/Modules/LeaveCredits/routes.php`
+- `app/Modules/LeaveCredits/navigation.php`
 - Model, service, requests, controller in `app/Modules/LeaveCredits/`
-- Routes.
 - Frontend pages.
 - Seeder.
 - Tests.

@@ -11,8 +11,9 @@
 1. Use existing Attendance module data; no new tables needed.
 2. Create DTRService for querying attendance by date range, formatting for CS Form 48 / Appendix 24 (daily time records).
 3. DTRController with index (form) and export methods (PDF/CSV).
-4. Routes/dtr.php with GET /dtr (form), POST /dtr/export (download).
-5. Frontend: ExportDTR.tsx with date range picker, employee selector (HR), format dropdown (PDF/CSV).
+4. Create `app/Modules/DTR/routes.php` with resource routes, protected by permissions. Use relative paths as the module name is automatically prefixed by the provider.
+5. Create `app/Modules/DTR/navigation.php` to register the DTR Export sidebar links via `ModuleRegistry`. This file must return a closure that accepts `App\Core\Services\ModuleRegistry $registry` and calls `$registry->register([...])`.
+6. Create frontend pages in `resources/js/pages/Modules/DTR/` using **Laravel Wayfinder** for all routing. For paginated views, use the existing reusable `Pagination.tsx` component from `@/components/Pagination` — do NOT create a module-specific pagination component.
 6. Install and use barryvdh/laravel-dompdf for PDF, maatwebsite/excel for CSV.
 7. Permissions: 'dtr.export' (HR roles).
 8. Tests for export generation.
@@ -22,6 +23,8 @@
 
 ## Relevant Files
 
+- `app/Modules/DTR/routes.php`
+- `app/Modules/DTR/navigation.php`
 - In `app/Modules/DTR/`
 - Add to composer.json: "barryvdh/laravel-dompdf", "maatwebsite/excel".
 
