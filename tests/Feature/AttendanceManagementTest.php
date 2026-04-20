@@ -130,7 +130,7 @@ test('navigation menu is filtered based on permissions', function () {
     $this->actingAs($this->employee)->get(route('dashboard'))
         ->assertInertia(fn (Assert $page) => $page
             ->where('auth.navigation', function ($nav) {
-                return !collect($nav)->pluck('title')->contains('Attendance Management');
+                return ! collect($nav)->pluck('title')->contains('Attendance Management');
             })
         );
 });

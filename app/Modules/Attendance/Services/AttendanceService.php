@@ -5,6 +5,7 @@ namespace App\Modules\Attendance\Services;
 use App\Models\User;
 use App\Modules\Attendance\Models\Attendance;
 use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Validation\ValidationException;
 
 class AttendanceService
@@ -67,20 +68,17 @@ class AttendanceService
 
     /**
      * Get all attendance records with potential filtering.
+     *
+     * @param  array{search?: string, status?: string, user_id?: string, from_date?: string, to_date?: string}  $filters
      */
-    public function getAllAttendance(array $filters = [])
+    public function getAllAttendance(array $filters = []): LengthAwarePaginator
     {
-        $query = Attendance::with('user')->orderBy('date', 'desc');
-
-        if (! empty($filters['user_id'])) {
-            $query->where('user_id', $filters['user_id']);
-        }
-
-        if (! empty($filters['date'])) {
-            $query->whereDate('date', $filters['date']);
-        }
-
-        return $query->paginate(15);
+        return Attendance::with('user')
+            ->filter($filters)
+            ->orderBy('date', 'desc')
+            ->orderBy('clock_in', 'desc')
+            ->paginate(15)
+            ->withQueryString();
     }
 
     /**

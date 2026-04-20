@@ -47,6 +47,7 @@ This application is a Laravel 13 backend with an Inertia.js React frontend. It s
     - **Clock In/Out**: Real-time status tracking via `ClockInOut.tsx`.
     - **History**: Recent activity history shown in a table format.
     - **Record Management**: HR roles with attendance.manage can manually add missing records and edit existing clock-in/out timestamps via `ManageRecords.tsx` and `AttendanceRecordModal.tsx`. HR admins and super admins with attendance.delete can soft delete records. The "Attendance Management" sidebar link is dynamically registered via `navigation.php` and only visible to authorized roles.
+    - **Filtering & Search**: The management view supports server-side filtering by status (Working/Incomplete/Completed), date range, and full-text search by employee name. Search is optimized with a 500ms debounce and an instant **Enter** key trigger for responsiveness. Results are paginated via `paginate(15)`. A reusable `Pagination.tsx` component was created and is available for other modules.
 - `app.tsx` chooses layouts by page name.
 - `public/dar_logo.png` is used as the logo icon in the header/sidebar.
 
@@ -61,6 +62,6 @@ This application is a Laravel 13 backend with an Inertia.js React frontend. It s
 
 1. Keep role-specific UI modular.
 2. Avoid adding large conditionals inside one page file; favor the dispatcher pattern used in `Dashboard.tsx`.
-3. Prefer reusable components under `resources/js/components/`.
+3. Prefer reusable components under `resources/js/components/`. A reusable `Pagination.tsx` component exists in `resources/js/components/` — use this for all paginated views across modules. Do not create module-specific pagination components.
 4. Register module navigation items via `navigation.php` rather than hardcoding in `AppSidebar.tsx`.
 5. Keep shared Inertia props stable to avoid frontend mismatch issues.

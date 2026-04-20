@@ -24,7 +24,7 @@ class AttendanceManagementController extends Controller
 
         return Inertia::render('Modules/Attendance/ManageRecords', [
             'records' => $this->attendanceService->getAllAttendance($request->all()),
-            'filters' => $request->only(['user_id', 'date']),
+            'filters' => $request->only(['search', 'status', 'from_date', 'to_date', 'user_id']),
             'employees' => User::orderBy('first_name')->get(['id', 'first_name', 'last_name']),
         ]);
     }
