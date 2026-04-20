@@ -1,0 +1,141 @@
+<?php
+
+namespace App\Modules\Personnel\Controllers;
+
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Modules\Personnel\Models\Department;
+use App\Modules\Personnel\Models\EmploymentStatus;
+use App\Modules\Personnel\Models\Position;
+use App\Modules\Personnel\Requests\EmployeeCreateRequest;
+use App\Modules\Personnel\Requests\EmployeeRestoreRequest;
+use App\Modules\Personnel\Requests\EmployeeUpdateRequest;
+use App\Modules\Personnel\Services\EmployeeService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class PersonnelController extends Controller
+{
+    public function __construct(
+        protected EmployeeService $employeeService
+    ) {}
+
+    /**
+     * Display the personnel directory.
+     */
+    public function index(Request $request): Response
+    {
+        $this->authorize('personnel.view');
+
+        return Inertia::render('Modules/Personnel/Index', [
+            'employees' => $this->employeeService->getEmployees($request->all()),
+            'filters' => $request->only(['search', 'department_id', 'employment_status_id']),
+            'departments' => Department::where('is_active', true)->get(),
+            'employmentStatuses' => EmploymentStatus::where('is_active', true)->get(),
+        ]);
+    }
+
+    /**
+     * Show the create employee form.
+     */
+    public function create(): Response
+    {
+        $this->authorize('personnel.create');
+
+        return Inertia::render('Modules/Personnel/Create', [
+            'departments' => Department::where('is_active', true)->get(),
+            'positions' => Position::where('is_active', true)->get(),
+            'employmentStatuses' => EmploymentStatus::where('is_active', true)->get(),
+        ]);
+    }
+
+    /**
+     * Store a new employee.
+     */
+    public function store(EmployeeCreateRequest $request): RedirectResponse
+    {
+        $employee = $this->employeeService->createEmployee($request->validated());
+
+        return redirect()->route('personnel.index')
+            ->with('success', "Employee record for {$employee->first_name} {$employee->last_name} created successfully.");
+    }
+
+    /**
+     * Display an employee profile.
+     */
+    public function show(User $user): Response
+    {
+        $this->authorize('personnel.view');
+
+        return Inertia::render('Modules/Personnel/Show', [
+            'employee' => $user->load(['department', 'position', 'employmentStatus']),
+        ]);
+    }
+
+    /**
+     * Show the edit employee form.
+     */
+    public function edit(User $user): Response
+    {
+        $this->authorize('personnel.update');
+
+        return Inertia::render('Modules/Personnel/Edit', [
+            'employee' => $user,
+            'departments' => Department::where('is_active', true)->get(),
+            'positions' => Position::where('is_active', true)->get(),
+            'employmentStatuses' => EmploymentStatus::where('is_active', true)->get(),
+        ]);
+    }
+
+    /**
+     * Update an employee.
+     */
+    public function update(EmployeeUpdateRequest $request, User $user): RedirectResponse
+    {
+        $this->authorize('personnel.update');
+
+        $this->employeeService->updateEmployee($user, $request->validated());
+
+        return redirect()->route('personnel.show', $user->id)
+            ->with('success', 'Employee record updated successfully.');
+    }
+
+    /**
+     * Soft delete an employee.
+     */
+    public function destroy(User $user): RedirectResponse
+    {
+        $this->authorize('personnel.delete');
+
+        $this->employeeService->deleteEmployee($user);
+
+        return redirect()->route('personnel.index')
+            ->with('success', 'Employee record archived successfully.');
+    }
+
+    /**
+     * Display archived (soft-deleted) employees.
+     */
+    public function archived(Request $request): Response
+    {
+        $this->authorize('personnel.view');
+
+        return Inertia::render('Modules/Personnel/Archived', [
+            'employees' => $this->employeeService->getArchivedEmployees($request->all()),
+            'filters' => $request->only(['search']),
+        ]);
+    }
+
+    /**
+     * Restore an archived employee.
+     */
+    public function restore(EmployeeRestoreRequest $request, int $id): RedirectResponse
+    {
+        $this->employeeService->restoreEmployee($id);
+
+        return redirect()->route('personnel.index')
+            ->with('success', 'Employee record restored successfully.');
+    }
+}
