@@ -1,5 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { CalendarCheck, Clock, ShieldCheck, Users2 } from 'lucide-react';
+import AppLogoIcon from '@/components/app-logo-icon';
 import { dashboard, login } from '@/routes';
 
 export default function Welcome() {
@@ -204,12 +205,7 @@ export default function Welcome() {
                     <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
                         {/* Logo */}
                         <div className="flex items-center gap-2.5">
-                            <img
-                                src="/dar_logo.svg"
-                                alt="DAR Logo"
-                                className="h-10 w-10 rounded-lg object-contain"
-                                style={{ background: 'white', padding: '2px' }}
-                            />
+                            <AppLogoIcon className="h-10 w-10 shrink-0" />
                             <span className="text-sm font-semibold tracking-tight text-white shadow-black/40 drop-shadow-sm">
                                 DARPO Albay
                                 <span className="ml-1 text-white/70 font-normal">HR Portal</span>
