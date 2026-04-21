@@ -58,14 +58,12 @@ export default function ManageRecords({ records, employees, filters }: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState<AttendanceRecord | null>(null);
     const [recordToDelete, setRecordToDelete] = useState<AttendanceRecord | null>(null);
-    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(true);
 
     const canDelete = auth.permissions?.includes('attendance.delete');
 
-    // Trigger a refresh on mount to ensure we always have the latest data
     useEffect(() => {
-        setIsRefreshing(true);
-        router.reload({ 
+        router.reload({
             only: ['records', 'employees'],
             onFinish: () => setIsRefreshing(false)
         });
@@ -110,15 +108,15 @@ export default function ManageRecords({ records, employees, filters }: Props) {
 
     const getStatusInfo = (record: AttendanceRecord) => {
         if (record.clock_out) {
-return { label: 'Completed', variant: 'secondary' as const };
-}
-        
+            return { label: 'Completed', variant: 'secondary' as const };
+        }
+
         const recordDate = new Date(record.date).setHours(0, 0, 0, 0);
         const today = new Date().setHours(0, 0, 0, 0);
-        
+
         if (recordDate < today) {
-return { label: 'Incomplete', variant: 'destructive' as const };
-}
+            return { label: 'Incomplete', variant: 'destructive' as const };
+        }
 
         return { label: 'Working', variant: 'default' as const };
     };
@@ -126,7 +124,7 @@ return { label: 'Incomplete', variant: 'destructive' as const };
     return (
         <>
             <Head title="Manage Attendance Records" />
-            
+
             <div className="p-4 w-full mx-auto">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
@@ -144,9 +142,9 @@ return { label: 'Incomplete', variant: 'destructive' as const };
                     </Button>
                 </div>
 
-                <AttendanceFilters 
-                    filters={filters} 
-                    routeName={manageRecordsIndexRoute().url} 
+                <AttendanceFilters
+                    filters={filters}
+                    routeName={manageRecordsIndexRoute().url}
                 />
 
                 <Card className="border-none shadow-md overflow-hidden bg-background">
@@ -233,9 +231,9 @@ return { label: 'Incomplete', variant: 'destructive' as const };
                                                     </td>
                                                     <td className="px-6 py-4 text-right">
                                                         <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                            <Button 
-                                                                variant="outline" 
-                                                                size="sm" 
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
                                                                 onClick={() => handleEdit(record)}
                                                                 className="h-8 w-8 p-0"
                                                                 title="Edit Record"
@@ -243,9 +241,9 @@ return { label: 'Incomplete', variant: 'destructive' as const };
                                                                 <Edit className="h-3.5 w-3.5" />
                                                             </Button>
                                                             {canDelete && (
-                                                                <Button 
-                                                                    variant="outline" 
-                                                                    size="sm" 
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
                                                                     onClick={() => confirmDelete(record)}
                                                                     className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
                                                                     title="Delete Record"
@@ -269,7 +267,7 @@ return { label: 'Incomplete', variant: 'destructive' as const };
                 </Card>
             </div>
 
-            <AttendanceRecordModal 
+            <AttendanceRecordModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 record={selectedRecord}
@@ -281,7 +279,7 @@ return { label: 'Incomplete', variant: 'destructive' as const };
                     <DialogHeader>
                         <DialogTitle>Are you absolutely sure?</DialogTitle>
                         <DialogDescription>
-                            This will soft delete the attendance record for {recordToDelete?.user?.first_name} {recordToDelete?.user?.last_name} on {recordToDelete ? formatDate(recordToDelete.date) : ''}. 
+                            This will soft delete the attendance record for {recordToDelete?.user?.first_name} {recordToDelete?.user?.last_name} on {recordToDelete ? formatDate(recordToDelete.date) : ''}.
                             It can be restored by a system administrator if needed.
                         </DialogDescription>
                     </DialogHeader>
