@@ -41,7 +41,7 @@ export default function Archived({ employees, filters }: Props) {
         <>
             <Head title="Archived Personnel" />
 
-            <div className="p-4 w-full mx-auto">
+            <div className="p-4 w-full">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <div className="flex items-center gap-2 text-destructive font-semibold text-sm mb-1">

@@ -125,7 +125,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
         <>
             <Head title="Manage Attendance Records" />
 
-            <div className="p-4 w-full mx-auto">
+            <div className="p-4 w-full">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">

@@ -85,7 +85,7 @@ export default function Index({ employees, filters, departments = [], employment
         <>
             <Head title="Personnel Directory" />
 
-            <div className="p-4 w-full mx-auto">
+            <div className="p-4 w-full">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Personnel Directory</h1>
