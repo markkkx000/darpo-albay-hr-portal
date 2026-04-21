@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { Bell, ChevronDown, ChevronUp, X } from 'lucide-react';
 import { useState } from 'react';
 import * as NotificationActions from '@/actions/App/Modules/Notifications/Controllers/NotificationController';
@@ -53,6 +53,7 @@ return;
                 } 
             });
             setNotifications(prev => prev.map(n => n.id === id ? { ...n, read_at: new Date().toISOString() } : n));
+            router.reload({ only: ['notifications'] });
         } catch (error) {
             console.error('Failed to mark notification as read:', error);
         }
@@ -70,6 +71,7 @@ return;
                 } 
             });
             setNotifications(prev => prev.map(n => n.data.dismissible ? { ...n, read_at: new Date().toISOString() } : n));
+            router.reload({ only: ['notifications'] });
         } catch (error) {
             console.error('Failed to mark all as read:', error);
         }

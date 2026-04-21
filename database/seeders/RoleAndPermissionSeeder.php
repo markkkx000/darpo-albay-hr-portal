@@ -32,7 +32,7 @@ class RoleAndPermissionSeeder extends Seeder
             'personnel.update',
             'personnel.delete',
             'personnel.restore',
-            'announcements.publish',
+            'announcements.manage',
             'announcements.view',
             'dtr.export',
             'leave_credits.override',
@@ -65,7 +65,7 @@ class RoleAndPermissionSeeder extends Seeder
             'personnel.create',
             'personnel.update',
             'personnel.restore',
-            'announcements.publish',
+            'announcements.manage',
             'announcements.view',
             'dtr.export',
             'leave_credits.override',
@@ -81,7 +81,20 @@ class RoleAndPermissionSeeder extends Seeder
             'leave.approve',
             'personnel.view',
             'announcements.view',
+            'announcements.manage',
             'travel_order.approve',
+        ]);
+
+        // Department Head
+        $deptHead = Role::firstOrCreate(['name' => 'department_head']);
+        $deptHead->syncPermissions([
+            'attendance.clock',
+            'attendance.view_own',
+            'leave.file',
+            'leave.view_own',
+            'announcements.view',
+            'announcements.manage',
+            'travel_order.file',
         ]);
 
         // Employee
