@@ -103,4 +103,5 @@ routes/
 - **Fluid layouts** (`w-full`) for module indexes and data-heavy tables — avoid restrictive `max-w-*` containers for these views.
 - **Debounced search**: 500ms debounce + instant Enter key trigger across all search inputs.
 - **Pagination**: Always use the shared `Pagination.tsx` component.
+- **Error display**: Use `AlertError.tsx` for alert-style error banners and `InputError.tsx` for inline form field errors.
 - **Icons**: Always use `lucide-react`. For dynamic icon rendering from strings, use `DynamicIcon.tsx`.
