@@ -132,7 +132,7 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(0.269 0 0);
     --sidebar-ring: oklch(0.439 0 0);
-    --stat-card-bg: linear-gradient(180deg, #040909 0%, #20101F 100%);
+    --stat-card-bg: linear-gradient(180deg, color-mix(in srgb, #040909 60%, transparent) 0%, color-mix(in srgb, #20101F 40%, transparent) 100%);
     --stat-card-shadow-base: rgba(0, 0, 0, 0.5);
 }
 
@@ -220,7 +220,7 @@
         animation: blob-rotate var(--speed) var(--easing) alternate infinite;
         border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
         will-change: transform;
-        opacity: 0.18;
+        opacity: 0.35;
     }
 
     .dark .blob-background {
@@ -312,13 +312,12 @@
         border-radius: var(--radius-lg);
         backdrop-filter: blur(20px) saturate(1.8);
         -webkit-backdrop-filter: blur(20px) saturate(1.8);
-        /* Uses --background token: white in light, dark in dark — auto-adapts */
-        background: color-mix(in srgb, var(--background) 60%, transparent);
+        /* Lowered light-mode opacity for evident glassmorphism */
+        background: color-mix(in srgb, var(--background) 30%, transparent);
         box-shadow:
             0 8px 32px color-mix(in srgb, black 8%, transparent),
             0 1px 0 color-mix(in srgb, white 88%, transparent) inset,
             0 -1px 0 color-mix(in srgb, white 18%, transparent) inset;
-        /* Uses --foreground token: dark in light mode, light in dark mode — auto-adapts */
         border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
     }
 
@@ -361,8 +360,9 @@
         animation: liquid-border-flow 6s ease infinite;
     }
 
-    /* Dark mode: reduce the inset shine (white reflection should be subtle on dark bg) */
+    /* Dark mode: reduce the inset shine and lower opacity */
     .dark .liquid-glass {
+        background: color-mix(in srgb, var(--background) 15%, transparent);
         box-shadow:
             0 8px 32px color-mix(in srgb, black 40%, transparent),
             0 1px 0 color-mix(in srgb, white 6%, transparent) inset,
@@ -454,5 +454,93 @@
         );
         background-size: 200% 100%;
         animation: liquid-shimmer 4s ease infinite;
+    }
+
+    /* Liquid Glass — card variant */
+    .liquid-glass-card {
+        position: relative;
+        border-radius: var(--radius-2xl);
+        backdrop-filter: blur(24px) saturate(1.8);
+        -webkit-backdrop-filter: blur(24px) saturate(1.8);
+        background: color-mix(in srgb, var(--card) 30%, transparent);
+        border: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
+        box-shadow: 
+            0 8px 30px color-mix(in srgb, black 10%, transparent),
+            inset 0 1px 0 color-mix(in srgb, white 20%, transparent);
+        transition: all 300ms ease;
+    }
+
+    .liquid-glass-card:hover {
+        box-shadow: 
+            0 8px 30px color-mix(in srgb, black 15%, transparent),
+            inset 0 1px 0 color-mix(in srgb, white 25%, transparent);
+    }
+    
+    .dark .liquid-glass-card {
+        background: color-mix(in srgb, var(--card) 15%, transparent);
+        border: 1px solid color-mix(in srgb, white 10%, transparent);
+        box-shadow: 
+            0 8px 30px color-mix(in srgb, black 50%, transparent),
+            inset 0 1px 0 color-mix(in srgb, white 5%, transparent);
+    }
+    
+    .dark .liquid-glass-card:hover {
+        box-shadow: 
+            0 8px 30px color-mix(in srgb, black 60%, transparent),
+            inset 0 1px 0 color-mix(in srgb, white 10%, transparent);
+    }
+
+    /* Liquid Glass — navigation variant */
+    .liquid-glass-nav {
+        backdrop-filter: blur(32px) saturate(2);
+        -webkit-backdrop-filter: blur(32px) saturate(2);
+        background: color-mix(in srgb, var(--background) 70%, transparent);
+        border-bottom: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
+        transition: all 300ms ease;
+    }
+
+    .dark .liquid-glass-nav {
+        background: color-mix(in srgb, var(--background) 40%, transparent);
+        border-bottom: 1px solid color-mix(in srgb, white 5%, transparent);
+    }
+
+    /* Liquid Glass — sidebar variant */
+    .liquid-glass-sidebar {
+        backdrop-filter: blur(40px) saturate(1.8);
+        -webkit-backdrop-filter: blur(40px) saturate(1.8);
+        background: color-mix(in srgb, var(--sidebar-background) 80%, transparent);
+        border-right: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
+        transition: all 300ms ease;
+    }
+
+    .dark .liquid-glass-sidebar {
+        background: color-mix(in srgb, var(--sidebar-background) 40%, transparent);
+        border-right: 1px solid color-mix(in srgb, white 5%, transparent);
+    }
+
+    @keyframes sidebar-gradient-flow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .sidebar-active-gradient {
+        background: linear-gradient(135deg, #38E54D 0%, #FDFF00 100%) !important;
+        background-size: 200% 200%;
+        animation: sidebar-gradient-flow 3s ease infinite;
+        box-shadow: 
+            0 4px 15px rgba(56, 229, 77, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        border: none !important;
+    }
+
+    .sidebar-active-text {
+        color: #030f04 !important;
+        font-weight: 800 !important;
+    }
+
+    .sidebar-active-text svg {
+        color: #030f04 !important;
+        stroke-width: 2.5px !important;
     }
 }
