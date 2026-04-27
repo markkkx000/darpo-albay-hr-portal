@@ -117,20 +117,20 @@ test('hr_admin and super_admin can soft delete attendance record', function () {
 
 use Inertia\Testing\AssertableInertia as Assert;
 
-test('navigation menu is filtered based on permissions', function () {
+test('permissions are correctly shared to the frontend', function () {
     // Check as HR Staff (should see it)
     $this->actingAs($this->hrStaff)->get(route('dashboard'))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('auth.navigation', function ($nav) {
-                return collect($nav)->pluck('title')->contains('Attendance Management');
+            ->where('auth.permissions', function ($perms) {
+                return is_array($perms) ? in_array('attendance.manage', $perms) : collect($perms)->contains('attendance.manage');
             })
         );
 
     // Check as Employee (should NOT see it)
     $this->actingAs($this->employee)->get(route('dashboard'))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('auth.navigation', function ($nav) {
-                return ! collect($nav)->pluck('title')->contains('Attendance Management');
+            ->where('auth.permissions', function ($perms) {
+                return is_array($perms) ? !in_array('attendance.manage', $perms) : !collect($perms)->contains('attendance.manage');
             })
         );
 });

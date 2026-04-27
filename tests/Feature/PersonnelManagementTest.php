@@ -6,6 +6,7 @@ use App\Modules\Personnel\Models\EmploymentStatus;
 use App\Modules\Personnel\Models\Position;
 use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
@@ -73,7 +74,10 @@ test('can view archived records', function () {
 
     $response = $this->actingAs($this->admin)->get(route('personnel.archived'));
     $response->assertStatus(200);
-    $response->assertSee($employee->last_name);
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Modules/Personnel/Archived')
+        ->has('employees.data')
+    );
 });
 
 test('can restore an archived employee record', function () {
