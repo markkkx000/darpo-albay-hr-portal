@@ -21,8 +21,8 @@ export default function Create({ departments, positions, users }: Props) {
                     description="Draft a new announcement. You can publish it once you are done."
                 />
 
-                <Card className="max-w-4xl border-none shadow-md">
-                    <CardHeader>
+                <Card className="liquid-glass-card max-w-4xl border-none overflow-hidden">
+                    <CardHeader className="border-b border-muted/20 pb-4">
                         <CardTitle>Announcement Details</CardTitle>
                     </CardHeader>
                     <CardContent>
