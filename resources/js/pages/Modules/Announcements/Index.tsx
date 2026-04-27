@@ -1,4 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
+import { manage } from '@/routes/announcements/index';
 import { Megaphone, Settings } from 'lucide-react';
 import { AnnouncementCard } from '@/components/Announcements/AnnouncementCard';
 import Heading from '@/components/heading';
@@ -29,7 +30,7 @@ export default function Index({ announcements }: Props) {
                         description="Stay updated with the latest news and information from the HR and management."
                     />
                     {canManage && (
-                        <Link href="/announcements/manage">
+                        <Link href={manage().url}>
                             <Button>
                                 <Settings className="mr-2 h-4 w-4" />
                                 Manage Announcements

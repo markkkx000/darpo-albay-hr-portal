@@ -8,7 +8,8 @@ import { ClockDisplay } from '@/components/Attendance/ClockDisplay';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { clockIn, clockOut } from '@/routes/attendance';
+import { clockIn, clockOut } from '@/routes/attendance/index';
+import { index as records_index } from '@/routes/attendance/manage/records/index';
 
 interface Attendance {
     id: number;
@@ -83,7 +84,7 @@ return;
             <div className="relative z-10 flex min-h-[calc(100vh-12rem)] flex-col items-center justify-start p-4 pt-4 gap-4 animate-fade-up">
                 <div className="w-full flex justify-end max-w-5xl">
                     {canManage && (
-                        <Link href="/attendance/manage/records">
+                        <Link href={records_index().url}>
                             <Button variant="outline" className="bg-background/50 backdrop-blur-sm border-white/20 shadow-sm">
                                 <Settings className="mr-2 h-4 w-4" />
                                 Attendance Management
