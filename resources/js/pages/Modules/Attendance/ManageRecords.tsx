@@ -16,6 +16,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 import { index as attendanceIndexRoute } from '@/routes/attendance';
 import { index as manageRecordsIndexRoute, destroy as destroyRecord } from '@/routes/attendance/manage/records';
 
@@ -147,12 +148,13 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                     </Button>
                 </div>
 
-                <AttendanceFilters
-                    filters={filters}
-                    routeName={manageRecordsIndexRoute().url}
-                />
+                <div className="space-y-6">
+                    <AttendanceFilters
+                        filters={filters}
+                        routeName={manageRecordsIndexRoute().url}
+                    />
 
-                <Card className="border-none shadow-xl overflow-hidden glass-panel">
+                    <Card className="border-none shadow-xl overflow-hidden glass-panel">
                     <CardHeader className="bg-muted/10 pb-4 border-b border-white/10">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
@@ -230,17 +232,25 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                         )}
                                                     </td>
                                                     <td className="px-6 py-4">
-                                                        <Badge variant={status.variant} className="uppercase text-[9px] px-2 py-0.5 font-bold tracking-tight">
+                                                        <Badge 
+                                                            variant={status.variant} 
+                                                            className={cn(
+                                                                "uppercase text-[9px] px-2 py-0.5 font-bold tracking-tight shadow-sm",
+                                                                status.label === 'Completed' && "bg-green-500/10 text-green-500 border-green-500/20",
+                                                                status.label === 'Incomplete' && "bg-amber-500/10 text-amber-500 border-amber-500/20",
+                                                                status.label === 'Working' && "bg-primary/10 text-primary border-primary/20 animate-pulse"
+                                                            )}
+                                                        >
                                                             {status.label}
                                                         </Badge>
                                                     </td>
                                                     <td className="px-6 py-4 text-right">
-                                                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <div className="flex justify-end gap-2 opacity-40 group-hover:opacity-100 transition-all duration-300">
                                                             <Button
                                                                 variant="outline"
                                                                 size="sm"
                                                                 onClick={() => handleEdit(record)}
-                                                                className="h-8 w-8 p-0"
+                                                                className="h-8 w-8 p-0 border-white/10 hover:bg-primary/10 hover:text-primary hover:border-primary/20"
                                                                 title="Edit Record"
                                                             >
                                                                 <Edit className="h-3.5 w-3.5" />
@@ -250,7 +260,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                                     variant="outline"
                                                                     size="sm"
                                                                     onClick={() => confirmDelete(record)}
-                                                                    className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                                                    className="h-8 w-8 p-0 border-white/10 text-destructive/70 hover:text-destructive hover:bg-destructive/10 hover:border-destructive/20"
                                                                     title="Delete Record"
                                                                 >
                                                                     <Trash2 className="h-3.5 w-3.5" />
@@ -270,6 +280,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                         </div>
                     </CardContent>
                 </Card>
+                </div>
             </div>
 
             <AttendanceRecordModal
