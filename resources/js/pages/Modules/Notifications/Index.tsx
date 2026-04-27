@@ -1,0 +1,174 @@
+import { Head, Link, router } from '@inertiajs/react';
+import { Bell, ChevronDown, ChevronUp, CheckCheck } from 'lucide-react';
+
+import { useState } from 'react';
+import * as NotificationActions from '@/actions/App/Modules/Notifications/Controllers/NotificationController';
+import { Pagination } from '@/components/Pagination';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import type { Notification, PaginatedResponse } from '@/types';
+
+interface Props {
+    notifications: PaginatedResponse<Notification>;
+}
+
+export default function Index({ notifications }: Props) {
+    const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+    const toggleExpand = (id: string) => {
+        setExpandedIds(prev => {
+            const next = new Set(prev);
+
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
+
+            return next;
+        });
+    };
+
+    const markAsRead = (id: string) => {
+        router.post(NotificationActions.read.url({ id }), {}, {
+            preserveScroll: true,
+        });
+    };
+
+    const markAllAsRead = () => {
+        router.post(NotificationActions.readAll.url(), {}, {
+            preserveScroll: true,
+        });
+    };
+
+    return (
+        <>
+            <Head title="Notifications" />
+
+            <div className="flex h-full flex-col gap-4 p-4 md:gap-8 md:p-8">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-2xl font-bold tracking-tight">Notifications</h1>
+                        <p className="text-muted-foreground">
+                            Manage your system and module notifications.
+                        </p>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={markAllAsRead} className="gap-2">
+                        <CheckCheck className="h-4 w-4" />
+                        Mark all as read
+                    </Button>
+                </div>
+
+                <Card className="flex-1 border-sidebar-border/50">
+                    <CardHeader className="pb-3">
+                        <CardTitle className="text-lg">Recent Notifications</CardTitle>
+                        <CardDescription>
+                            All notifications delivered to your account in the last year.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                        <div className="divide-y divide-sidebar-border/30">
+                            {notifications.data.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center py-24 text-muted-foreground">
+                                    <Bell className="h-12 w-12 mb-4 opacity-20" />
+                                    <p>No notifications found</p>
+                                </div>
+                            ) : (
+                                notifications.data.map((notification) => (
+                                    <div 
+                                        key={notification.id} 
+                                        className={cn(
+                                            "flex flex-col p-4 transition-colors hover:bg-muted/10", 
+                                            !notification.read_at && "bg-primary/[0.02]"
+                                        )}
+                                    >
+                                        <div className="flex items-start justify-between gap-4">
+                                            <div className="flex-1 space-y-1">
+                                                <div className="flex items-center gap-3">
+                                                    <span className={cn(
+                                                        "text-base font-semibold leading-tight", 
+                                                        notification.data.priority === 'high' ? "text-destructive" : "text-foreground",
+                                                        !notification.read_at && "font-bold"
+                                                    )}>
+                                                        {notification.data.title}
+                                                    </span>
+                                                    <div className="flex items-center gap-2">
+                                                        <Badge variant="outline" className="capitalize">
+                                                            {notification.data.type}
+                                                        </Badge>
+                                                        {notification.data.priority === 'high' && (
+                                                            <Badge variant="destructive" className="h-4 px-1.5 text-[10px] uppercase font-bold">High</Badge>
+                                                        )}
+                                                        {!notification.read_at && (
+                                                            <Badge variant="default" className="h-4 px-1.5 text-[10px] uppercase font-bold">New</Badge>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                                    <span className="font-medium text-foreground/70">{notification.data.from}</span>
+                                                    <span>•</span>
+                                                    <span>{new Date(notification.created_at).toLocaleString()}</span>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                {notification.data.dismissible && !notification.read_at && (
+                                                    <Button 
+                                                        variant="ghost" 
+                                                        size="sm" 
+                                                        className="h-8 gap-2 text-xs" 
+                                                        onClick={() => markAsRead(notification.id)}
+                                                    >
+                                                        <CheckCheck className="h-3.5 w-3.5" />
+                                                        Mark as read
+                                                    </Button>
+                                                )}
+                                                <Button 
+                                                    variant="ghost" 
+                                                    size="icon" 
+                                                    className="h-8 w-8" 
+                                                    onClick={() => toggleExpand(notification.id)}
+                                                >
+                                                    {expandedIds.has(notification.id) ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                                                </Button>
+                                            </div>
+                                        </div>
+                                        {expandedIds.has(notification.id) && (
+                                            <div className="mt-4 animate-in slide-in-from-top-1 duration-200">
+                                                <div className="rounded-lg bg-muted/30 p-4 text-sm leading-relaxed text-foreground/90 border border-sidebar-border/20">
+                                                    <p className="whitespace-pre-wrap">{notification.data.body}</p>
+                                                    {notification.data.url && (
+                                                        <div className="mt-4 pt-4 border-t border-sidebar-border/20">
+                                                            <Link 
+                                                                href={notification.data.url} 
+                                                                className="inline-flex items-center text-sm font-bold text-primary hover:underline gap-2 group"
+                                                            >
+                                                                Navigate to resource
+                                                                <span className="transition-transform group-hover:translate-x-1">→</span>
+                                                            </Link>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <div className="mt-4">
+                    <Pagination links={notifications.links} meta={notifications} />
+                </div>
+            </div>
+        </>
+    );
+}
+
+Index.layout = {
+    breadcrumbs: [
+        { title: 'Notifications', href: '/notifications' },
+    ],
+};

@@ -1,11 +1,13 @@
 import { Head, useForm, router } from '@inertiajs/react';
 import { LogIn, LogOut, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { AttendanceHistory } from '@/components/Attendance/AttendanceHistory';
 import { AttendanceStatus } from '@/components/Attendance/AttendanceStatus';
 import { ClockDisplay } from '@/components/Attendance/ClockDisplay';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 import { clockIn, clockOut } from '@/routes/attendance';
 
 interface Attendance {
@@ -23,11 +25,27 @@ interface Props {
 
 export default function ClockInOut({ attendance, history = [] }: Props) {
     const { post, processing, errors } = useForm<{ attendance?: string }>();
+    const [cooldown, setCooldown] = useState(0);
+
+    useEffect(() => {
+        if (cooldown <= 0) {
+return;
+}
+
+        const timer = setInterval(() => {
+            setCooldown((prev) => prev - 1);
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [cooldown]);
+
+    const startCooldown = () => setCooldown(30);
 
     const handleClockIn = () => {
         post(clockIn().url, {
             onSuccess: () => {
                 toast.success('Successfully clocked in for today!');
+                startCooldown();
                 router.reload({ only: ['attendance', 'history'] });
             },
             onError: () => toast.error('Failed to clock in. Please try again.'),
@@ -38,6 +56,7 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
         post(clockOut().url, {
             onSuccess: () => {
                 toast.success('Successfully clocked out. Have a great day!');
+                startCooldown();
                 router.reload({ only: ['attendance', 'history'] });
             },
             onError: () => toast.error('Failed to clock out. Please try again.'),
@@ -46,6 +65,7 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
 
     const isClockedIn = !!attendance;
     const isClockedOut = !!attendance?.clock_out;
+    const isButtonDisabled = processing || cooldown > 0;
 
     return (
         <>
@@ -79,9 +99,14 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                             {!isClockedIn && (
                                 <Button 
                                     size="lg" 
-                                    className="btn-gradient w-full h-14"
+                                    className={cn(
+                                        "w-full h-14 text-lg font-bold shadow-lg transition-all hover:scale-[1.02]",
+                                        cooldown > 0 
+                                            ? "bg-muted text-muted-foreground hover:scale-100 cursor-not-allowed" 
+                                            : "bg-green-600 hover:bg-green-700 text-white shadow-green-600/20"
+                                    )}
                                     onClick={handleClockIn}
-                                    disabled={processing}
+                                    disabled={isButtonDisabled}
                                 >
                                     <LogIn className="mr-2 h-5 w-5" />
                                     {processing ? 'Processing...' : 'Clock In Now'}
@@ -91,9 +116,15 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                             {isClockedIn && !isClockedOut && (
                                 <Button 
                                     size="lg" 
-                                    className="w-full h-14 text-lg font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-600/20 transition-all hover:scale-[1.02] rounded-xl"
+                                    variant={cooldown > 0 ? "outline" : "warning"}
+                                    className={cn(
+                                        "w-full h-14 text-lg font-bold shadow-lg transition-all hover:scale-[1.02]",
+                                        cooldown > 0 
+                                            ? "bg-muted text-muted-foreground hover:scale-100 cursor-not-allowed border-none" 
+                                            : "text-white shadow-amber-600/20"
+                                    )}
                                     onClick={handleClockOut}
-                                    disabled={processing}
+                                    disabled={isButtonDisabled}
                                 >
                                     <LogOut className="mr-2 h-5 w-5" />
                                     {processing ? 'Processing...' : 'Clock Out Now'}
@@ -113,7 +144,13 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                         </div>
                         
                         <p className="text-xs text-gray-400 dark:text-gray-500 max-w-[280px] text-center">
-                            Timestamps are recorded by the server to ensure accuracy and prevent tampering.
+                            {cooldown > 0 
+                                ? (
+                                    <span>
+                                        Action locked for <strong className="text-foreground font-bold">{cooldown}s</strong> to prevent accidental double-clicks.
+                                    </span>
+                                )
+                                : "Timestamps are recorded by the server to ensure accuracy and prevent tampering."}
                         </p>
                     </CardContent>
                 </Card>
@@ -125,4 +162,5 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
         </>
     );
 }
+
 

@@ -14,6 +14,8 @@
 - Use the shared `Pagination.tsx` for all paginated views. Never create module-specific pagination components.
 - All frontend route calls must use **Laravel Wayfinder** typed functions. No hardcoded URL strings.
 - Run `php artisan wayfinder:generate` after registering any new backend routes.
+- **Never manually wrap page components in `<AppLayout>`**. The layout is auto-applied by `app.tsx` via the `layout` resolver. Wrapping manually causes double-wrapping (double header/sidebar). Pages must render with a fragment (`<>...</>`) and use a static `.layout` property for breadcrumbs: `Index.layout = { breadcrumbs: [...] }`. Check existing module pages (e.g., `Personnel/Index.tsx`) for the correct pattern.
+
 
 ---
 

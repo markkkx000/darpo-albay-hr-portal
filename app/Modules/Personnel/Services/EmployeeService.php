@@ -2,6 +2,7 @@
 
 namespace App\Modules\Personnel\Services;
 
+use App\Core\Services\NotificationService;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -9,6 +10,10 @@ use Illuminate\Support\Facades\Hash;
 
 class EmployeeService
 {
+    public function __construct(
+        protected NotificationService $notificationService
+    ) {}
+
     /**
      * Get active employees with filters and pagination.
      */
@@ -76,6 +81,17 @@ class EmployeeService
             ]);
 
             $user->assignRole('employee');
+
+            $this->notificationService->notifyUser($user, [
+                'type' => 'system',
+                'subtype' => 'default_password',
+                'title' => 'Please change your default password',
+                'body' => 'Your account was created with a default password. Please change it immediately in your profile settings.',
+                'from' => 'System',
+                'priority' => 'high',
+                'dismissible' => false,
+                'url' => '/settings/security',
+            ]);
 
             return $user;
         });

@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Modules\Announcements\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class AnnouncementUpdateRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        $announcement = $this->route('announcement');
+
+        return $this->user()->can('announcements.manage') && $announcement->status === 'draft';
+    }
+
+    public function rules(): array
+    {
+        return [
+            'title' => ['required', 'string', 'max:255'],
+            'content' => ['required', 'string'],
+            'priority' => ['required', Rule::in(['low', 'normal', 'high'])],
+            'target_type' => ['required', Rule::in(['all', 'department', 'position', 'user'])],
+            'target_id' => [
+                'required_unless:target_type,all',
+                'nullable',
+                Rule::when($this->target_type === 'department', 'exists:departments,id'),
+                Rule::when($this->target_type === 'position', 'exists:positions,id'),
+                Rule::when($this->target_type === 'user', 'exists:users,id'),
+            ],
+        ];
+    }
+}
