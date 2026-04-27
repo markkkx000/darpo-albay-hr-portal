@@ -1,7 +1,6 @@
 import { Head } from '@inertiajs/react';
 import { Megaphone } from 'lucide-react';
 import { AnnouncementCard } from '@/components/Announcements/AnnouncementCard';
-import Heading from '@/components/heading';
 import { Pagination } from '@/components/Pagination';
 
 interface Props {
@@ -18,11 +17,13 @@ export default function Index({ announcements }: Props) {
             <Head title="Announcements" />
 
             <div className="p-4 w-full space-y-6">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <Heading 
-                        title="Announcements" 
-                        description="Stay updated with the latest news and information from the HR and management."
-                    />
+                <div className="liquid-glass flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5">
+                    <div>
+                        <h1 className="liquid-glass-title text-3xl font-bold tracking-tight">Announcements</h1>
+                        <p className="text-muted-foreground text-sm mt-2">
+                            Stay updated with the latest news and information from the HR and management.
+                        </p>
+                    </div>
                 </div>
 
                 {announcements.data.length === 0 ? (
