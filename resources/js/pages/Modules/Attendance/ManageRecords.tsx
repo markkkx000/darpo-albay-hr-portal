@@ -135,22 +135,20 @@ export default function ManageRecords({ records, employees, filters }: Props) {
             </div>
 
             <div className="relative z-10 p-4 w-full animate-fade-up space-y-6">
-                <div className="mb-2">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2 text-highlight">
-                                <Clock className={cn("h-6 w-6 text-primary/70", isRefreshing && "animate-spin")} />
-                                Attendance Management
-                            </h1>
-                            <p className="mt-1 text-sm font-medium text-muted-foreground tracking-wide max-w-2xl">
-                                Systematically manage records and resolve logging anomalies.
-                            </p>
-                        </div>
-                        <Button onClick={handleAddNew} className="btn-gradient px-8 py-6 rounded-2xl shadow-xl transition-all hover:bg-primary/5">
-                            <Plus className="h-5 w-5 mr-2" />
-                            Add Missing Record
-                        </Button>
+                <div className="liquid-glass mb-2 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5">
+                    <div>
+                        <h1 className="liquid-glass-title text-2xl font-bold tracking-tight flex items-center gap-2 text-highlight">
+                            <Clock className={cn("h-6 w-6 text-primary/70", isRefreshing && "animate-spin")} />
+                            Attendance Management
+                        </h1>
+                        <p className="mt-2 text-sm font-medium text-muted-foreground tracking-wide max-w-2xl">
+                            Systematically manage records and resolve logging anomalies.
+                        </p>
                     </div>
+                    <Button onClick={handleAddNew} className="btn-gradient px-8 py-6 rounded-2xl shadow-xl transition-all hover:bg-primary/5">
+                        <Plus className="h-5 w-5 mr-2" />
+                        Add Missing Record
+                    </Button>
                 </div>
 
                 <div className="space-y-6">
