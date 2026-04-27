@@ -13,7 +13,7 @@ export function AttendanceStatus({ attendance }: AttendanceStatusProps) {
     if (!attendance) {
         return (
             <div className="flex flex-col items-center gap-2">
-                <Badge variant="outline" className="px-5 py-1.5 text-sm font-semibold border-white/20 bg-white/5 backdrop-blur-sm text-foreground">
+                <Badge variant="outline" className="px-5 py-1.5 text-sm font-semibold border-border bg-muted/30 backdrop-blur-sm text-foreground">
                     Available to Clock In
                 </Badge>
                 <p className="text-sm text-muted-foreground font-medium italic">Your workday hasn't started yet.</p>
