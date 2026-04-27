@@ -1,86 +1,87 @@
-## Leave Tracking/Management Implementation Plan: : GOOD TO GO
+# Leave Tracking & Credits Implementation Plan - GOOD TO GO
 
-**Reminder:** Follow the rules and checklist in `adding_modules.md` strictly to avoid shortcuts. Each module must adhere to the modular architecture, with backend components in `app/Modules/{ModuleName}/`, routes in separate files, thin controllers delegating to services, validation via form requests, PostgreSQL-compatible migrations, soft deletes for entities, frontend pages under `resources/js/pages/Modules/{ModuleName}/`, no large conditionals in `dashboard.tsx`, and permissions seeded in `RoleAndPermissionSeeder`.
+Provide a comprehensive system for encoding leave applications submitted via paper forms (specifically aligned with Philippine CS Form No. 6), including leave history calendars, tardiness/undertime tracking, leave credit balances, and dynamic lookups (Holidays, Leave Types, Leave Statuses). 
 
-**TL;DR:** Implement leave request system with filing, approval workflow, and status tracking for employees and HR.
+**Module Access Restriction:** The entire module is restricted to `super_admin`, `hr_admin`, and `hr_staff`. No regular employees can access this module.
 
----
 
-## Steps
+## Proposed Changes
 
-1. Create migration for `leave_types` table: id, name (unique), description, is_active (default true), created_at, updated_at. Seed initial types: Vacation, Sick, Maternity, Paternity, etc.
-2. Create migration for `leave_requests` table: id, user_id, leave_type_id (foreign key to leave_types), start_date, end_date, days_requested (calculated, excluding weekends/holidays), reason, status (pending/approved/rejected/cancelled), approved_by (nullable), approved_at (nullable), cancelled_at (nullable), created_at, updated_at, deleted_at.
-3. Create LeaveType model with fillable attributes, no soft deletes.
-4. Create LeaveRequest model with relationships to User and LeaveType, soft deletes, and fillable attributes. Add scopes for status.
-5. Create LeaveService for filing, approving, rejecting, cancelling leaves, calculating working days (exclude weekends, future holidays), checking overlaps, and hooks for credit deduction on approval.
-6. Create form requests: LeaveRequestCreateRequest (validate dates, no overlaps, future dates), LeaveApprovalRequest, LeaveCancelRequest.
-7. Create LeaveController with index, create, store, show, approve, reject, cancel methods.
-8. Create `app/Modules/Leave/routes.php` with resource routes, protected by permissions. Use relative paths as the module name is automatically prefixed by the provider.
-9. Create `app/Modules/Leave/navigation.php` to register the Leave Tracking sidebar links via `ModuleRegistry`. This file must return a closure that accepts `App\Core\Services\ModuleRegistry $registry` and calls `$registry->register([...])`.
-10. Create frontend pages in `resources/js/pages/Modules/Leave/` using **Laravel Wayfinder** for all routing. For paginated views, use the existing reusable `Pagination.tsx` component from `@/components/Pagination` — do NOT create a module-specific pagination component.
-11. Components for leave forms, status, and cancel confirmation.
-12. Seed permissions: leave.file (employee), leave.view_all (hr_staff, hr_admin), leave.approve (hr_staff, hr_admin), leave.cancel (employee — own pending only), leave.cancel_any (hr_staff, hr_admin, super_admin).
-13. Install asantibanez/laravel-eloquent-state-machines for status transitions with guards.
-14. Write tests for state transitions, calculations, and permissions.
-15. Pint and test.
+### Database Migrations & Models
 
----
+#### `leave_types` Table
+- **Columns**: `id`, `name` (unique), `description`, `color_code` (for calendar UI), `is_active` (boolean, default true), timestamps. (No soft deletes, use `is_active` per guidelines).
+- **Seeder**: Seed the 14 specified leave types (Vacation, Sick, etc.) with professional color codes assigned by me.
 
-## Relevant Files
+#### `leave_statuses` Table
+- **Columns**: `id`, `name` (unique), `is_active` (boolean, default true), timestamps. (No soft deletes).
+- **Seeder**: Seed with: "Approved", "For Signature", "No Filed Leave", "Cancelled".
 
-- Migration for leave_types.
-- Migration for leave_requests.
-- `app/Modules/Leave/Models/LeaveType.php`
-- `app/Modules/Leave/Models/LeaveRequest.php`
-- `app/Modules/Leave/Services/LeaveService.php`
-- Requests in `app/Modules/Leave/Requests/`
-- `app/Modules/Leave/Controllers/LeaveController.php`
-- `app/Modules/Leave/routes.php`
-- `app/Modules/Leave/navigation.php`
-- Frontend pages in `resources/js/pages/Modules/Leave/`
-- Components in `resources/js/components/Leave/`
-- Seeder update.
-- Tests.
+#### `holidays` Table
+- **Columns**: `id`, `name`, `date` (date), timestamps.
+- **Behavior**: Grouped by Year.
+
+#### `leave_credits` Table (Merged from Leave Credits Plan)
+- **Columns**: `id`, `user_id`, `leave_type_id`, `earned` (decimal), `used` (decimal), `balance` (decimal), `year` (integer), timestamps.
+- **Behavior**: Tracks available credits per year per type for the employee. Updated automatically on leave approval or manually via HR overrides.
+
+#### `leave_requests` Table (The Log / CS Form No. 6)
+- **Columns**: `id`, `user_id`, `leave_type_id`, `leave_status_id`, `start_date`, `end_date`, `days_requested` (decimal), `date_received` (nullable date, maps to 'Date of Filing'), `date_approved` (nullable date), `leave_details` (string/json, maps to 'Details of Leave' e.g. Within Philippines, Out Patient, etc.), `commutation_requested` (boolean, maps to 'Commutation' requested/not requested), `is_filed` (boolean, default false), `notes` (text, nullable), `attachment_path` (nullable string for scanned PDF/images), `created_by` (foreign key to `users.id` for audit trail), timestamps, soft deletes.
+
+#### `tardiness_records` Table
+- **Columns**: `id`, `user_id`, `year` (integer), `month` (integer 1-12), `tardiness_count` (integer default 0), `tardiness_minutes` (integer default 0), `undertime_count` (integer default 0), `undertime_minutes` (integer default 0), `created_by` (foreign key to `users.id` for audit trail), timestamps.
+- **Constraint**: Unique on `(user_id, year, month)`.
 
 ---
 
-## Verification
+### Backend Logic & Security
 
-1. Run `php artisan route:list` to confirm leave routes are registered.
-2. Execute `php artisan test --compact --filter=Leave` to pass all tests.
-3. As employee, file a leave request and verify status is pending, days calculated excluding weekends.
-4. As employee, cancel a pending request and verify status changes to cancelled.
-5. As HR, approve a pending request and verify status changes, approved_by set.
-6. As HR, reject a request and verify status changes.
-7. Test state machine guards: cannot approve/reject/cancel non-pending requests.
-8. Check database for leave_types seeded and foreign key constraints.
-9. Verify overlaps prevent filing conflicting dates.
-10. Ensure soft deletes work and cancelled requests are excluded from active queries.
+#### Roles & Permissions
+- `leave.access_module`, `leave.encode`, `leave.manage_tardiness`, `leave.manage_credits`: `super_admin`, `hr_admin`, `hr_staff`.
+- `leave.manage_settings`: `super_admin` and `hr_admin` (controls Types, Statuses, Holidays).
 
----
-
-## Decisions
-
-- Separate leave_types table for extensibility without migrations.
-- leave_types records must never be hard deleted; use is_active = false to deactivate them instead.
-- Use asantibanez/laravel-eloquent-state-machines for status transitions with guards to prevent invalid state changes.
-- Workflow: pending → approved/rejected/cancelled (by employee or HR).
-- HR can cancel any pending leave request on behalf of an employee (e.g. if filed in error). Two separate permissions control this: leave.cancel for employees cancelling their own pending requests, and leave.cancel_any for HR cancelling any pending request. The state machine guard for cancellation must check which permission the acting user has before allowing the transition.
-- LeaveService structured with approval hooks for future Leave Credits integration (deduct credits on approval).
-- Working days calculation: exclude Saturdays/Sundays, future holiday integration.
-- Soft deletes for leave records.
+#### Form Requests & Services
+- **Validation**:
+  - `days_requested` auto-calculates (excluding weekends and holidays) but can be manually overridden. 
+  - **Half-Day Logic**: Backend prevents encoding >1.0 days for a single specific date.
+  - **Overlap Prevention**: Backend throws validation error if the user already has a leave request in the `start_date` to `end_date` range.
+  - **Credit Check Warning**: Service checks `leave_credits` balance. If `days_requested` > `balance`, throw a warning (which HR can override if necessary).
+- **Controllers**: `LeaveController`, `LeaveCreditController`, `HolidayController`, `TardinessController`, `LeaveTypeController`, `LeaveStatusController`.
 
 ---
 
-## Expected Behavior When Complete
+### Frontend Components (React + Inertia + Tailwind)
+*Note: All frontend pages will use a fragment `<>...</>` instead of manually wrapping in `<AppLayout>`, and will use a static `.layout` property for breadcrumbs.*
 
-### Employee View (`/leave`)
-- **Index Page**: List of own leave requests with status, dates, type. Pending yellow, approved green, rejected red, cancelled gray. Cancel button for pending requests.
-- **File Leave Page**: Form to select type (from leave_types), dates, reason. Calendar picker excludes weekends, validation for no overlaps.
-- **Cancel Action**: Confirmation modal, changes status to cancelled.
+#### Navigation
+- **Sidebar**: The `navigation.php` file must register **only one single sidebar link** for the entire Leave Tracking module (`/leave`).
+- **Internal Tabs/Sub-navigation**: Inside the module, provide internal navigation to switch between the Dashboard, Leave Credits, Calendar, Tardiness, and Settings pages.
 
-### HR View (`/leave/manage`)
-- **Manage Page**: Table of all pending leave requests. Columns: employee, type, dates, reason, days. Actions: Approve/Reject with confirmation.
-- Approved/rejected requests in history tab.
-- Can cancel pending requests if needed.
-- Notifications or flash messages on actions.
+#### Leave Dashboard / Data Log (`/leave`)
+- Datatable of all encoded leave forms. Uses the shared `Pagination.tsx`.
+- Displays `created_by` for accountability.
+
+#### Encode Form (`/leave/create`)
+- Inputs for Employee, Leave Type, Leave Status, Dates, `days_requested`.
+- File upload for `attachment_path` (signed CS Form No. 6).
+- Credit check indicator (shows current balance for selected type).
+- Warnings for overlapping dates or insufficient balance.
+
+#### Leave Credits (`/leave/credits`)
+- View and manually adjust `earned` and `used` balances for employees per year.
+
+#### Leave Calendar (`/leave/calendar`)
+- Visual matrix UI showing attendance/leave for employees across months.
+- **Global Year Selector**: Filters data specifically for a fiscal year.
+- **Half-Day Rendering**: Split-cell UI or partial color filling if a day contains 0.5 leaves.
+
+#### Tardiness & Undertime (`/leave/tardiness`)
+- Table listing employees and their Tardiness/Undertime (counts and minutes) for Jan-Dec of a selected year.
+- **Global Year Selector** included.
+- "Edit" button opens a modal to update counts/minutes for all 12 months. Tracks `created_by`.
+
+#### Settings / Lookups (`/leave/settings`) - *Admins Only*
+- **Holidays**: View, add, and generate holiday lists per year. 
+  - **UI Requirement**: The holiday management page must include a notice and hyperlink instructing the admin to refer to the official list: `[Official List of Regular Holidays and Special Non-Working Days](https://www.officialgazette.gov.ph/nationwide-holidays/)`.
+- **Leave Types**: Create/Edit/Deactivate leave types and update colors.
+- **Leave Statuses**: Create/Edit/Deactivate custom statuses.
