@@ -42,14 +42,14 @@ export default function Archived({ employees, filters }: Props) {
             <Head title="Archived Personnel" />
 
             <div className="p-4 w-full">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="liquid-glass mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5">
                     <div>
                         <div className="flex items-center gap-2 text-destructive font-semibold text-sm mb-1">
                             <Trash2 className="h-4 w-4" />
                             <span>System Archive</span>
                         </div>
-                        <h1 className="text-3xl font-bold tracking-tight">Archived Personnel</h1>
-                        <p className="text-muted-foreground text-sm mt-1">
+                        <h1 className="liquid-glass-title text-3xl font-bold tracking-tight">Archived Personnel</h1>
+                        <p className="text-muted-foreground text-sm mt-2">
                             Review and restore soft-deleted employee records.
                         </p>
                     </div>
