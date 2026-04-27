@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import { cn } from '@/lib/utils';
 
 interface StatCardProps {
@@ -10,7 +9,6 @@ interface StatCardProps {
     titleClasses: string;
     valueClasses: string;
     subtitleClasses?: string;
-    patternClasses: string;
     children?: ReactNode;
 }
 
@@ -22,27 +20,33 @@ export function StatCard({
     titleClasses,
     valueClasses,
     subtitleClasses,
-    patternClasses,
     children,
 }: StatCardProps) {
+    const isLoading = value === '--';
+
     return (
         <div className={cn(
-            "relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border bg-gradient-to-br",
+            "group relative aspect-video overflow-hidden rounded-2xl border border-white/60 dark:border-white/10 bg-gradient-to-br shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.3)] backdrop-blur-md",
             gradientClasses
         )}>
-            <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                    <div className={cn("text-2xl font-bold", titleClasses)}>{title}</div>
-                    <div className={cn("text-4xl font-bold", valueClasses)}>{value}</div>
+            <div className="absolute inset-0 flex items-center justify-center z-10">
+                <div className="text-center w-full px-4">
+                    <div className={cn("text-lg font-semibold tracking-tight transition-transform duration-300 group-hover:scale-105", titleClasses)}>{title}</div>
+                    <div className={cn("mt-2 flex justify-center", valueClasses)}>
+                        {isLoading ? (
+                            <div className="h-10 w-24 animate-pulse rounded-md bg-black/10 dark:bg-white/10" aria-hidden="true" />
+                        ) : (
+                            <div className="text-4xl font-extrabold tracking-tight drop-shadow-sm">{value}</div>
+                        )}
+                    </div>
                     {subtitle && (
-                        <div className={cn("text-sm mt-2", subtitleClasses)}>
+                        <div className={cn("text-sm font-medium mt-3 opacity-90", subtitleClasses)}>
                             {subtitle}
                         </div>
                     )}
                     {children}
                 </div>
             </div>
-            <PlaceholderPattern className={cn("absolute inset-0 size-full", patternClasses)} />
         </div>
     );
 }

@@ -125,7 +125,12 @@ export default function ManageRecords({ records, employees, filters }: Props) {
         <>
             <Head title="Manage Attendance Records" />
 
-            <div className="p-4 w-full">
+            <div className="premium-bg-container" aria-hidden="true">
+                <div className="blob-background opacity-10 dark:opacity-20" />
+                <div className="grain-overlay" />
+            </div>
+
+            <div className="relative z-10 p-4 w-full animate-fade-up">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
@@ -136,7 +141,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                             Manually manage employee attendance records, correct timestamps, and resolve anomalies.
                         </p>
                     </div>
-                    <Button onClick={handleAddNew} className="gap-2 shadow-sm">
+                    <Button onClick={handleAddNew} className="btn-gradient">
                         <Plus className="h-4 w-4" />
                         Add Missing Record
                     </Button>
@@ -147,8 +152,8 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                     routeName={manageRecordsIndexRoute().url}
                 />
 
-                <Card className="border-none shadow-md overflow-hidden bg-background">
-                    <CardHeader className="bg-muted/30 pb-4">
+                <Card className="border-none shadow-xl overflow-hidden glass-panel">
+                    <CardHeader className="bg-muted/10 pb-4 border-b border-white/10">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
                                 <CardTitle className="flex items-center gap-2 text-xl">

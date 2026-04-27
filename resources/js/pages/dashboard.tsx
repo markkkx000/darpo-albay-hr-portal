@@ -13,12 +13,12 @@ export default function Dashboard() {
     return (
         <>
             <Head title={`${isSuperAdmin ? 'Admin' : isHR ? 'HR' : 'Employee'} Dashboard`} />
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="mb-6">
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <div className="flex animate-fade-up h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4 md:p-6 transition-all duration-500">
+                <div className="mb-8 px-2">
+                    <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white drop-shadow-sm mb-2 transition-all">
                         {isSuperAdmin ? 'Admin Dashboard' : isHR ? 'HR Dashboard' : 'Employee Dashboard'}
                     </h1>
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <p className="text-lg font-medium text-gray-500 dark:text-gray-400 tracking-wide opacity-90">
                         {isSuperAdmin
                             ? 'System administration and management overview'
                             : isHR
@@ -28,9 +28,11 @@ export default function Dashboard() {
                     </p>
                 </div>
 
-                {isSuperAdmin && <AdminOverview />}
-                {isHR && <HROverview />}
-                {isEmployee && <EmployeeOverview />}
+                <div className="space-y-8">
+                    {isSuperAdmin && <AdminOverview />}
+                    {isHR && <HROverview />}
+                    {isEmployee && <EmployeeOverview />}
+                </div>
             </div>
         </>
     );

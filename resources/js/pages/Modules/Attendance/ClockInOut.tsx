@@ -51,11 +51,16 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
         <>
             <Head title="Attendance Registry" />
             
-            <div className="flex min-h-[calc(100vh-12rem)] flex-col items-center justify-start p-4 pt-8 gap-8">
-                <Card className="w-full max-w-xl overflow-hidden border-none shadow-2xl dark:bg-gray-900/50 dark:backdrop-blur-xl">
+            <div className="premium-bg-container" aria-hidden="true">
+                <div className="blob-background" />
+                <div className="grain-overlay" />
+            </div>
+
+            <div className="relative z-10 flex min-h-[calc(100vh-12rem)] flex-col items-center justify-start p-4 pt-8 gap-8 animate-fade-up">
+                <Card className="w-full max-w-xl overflow-hidden border-none shadow-2xl glass-panel">
                     <CardHeader className="text-center">
-                        <CardTitle className="text-2xl font-bold tracking-tight">Attendance Registry</CardTitle>
-                        <CardDescription>Keep track of your daily work hours.</CardDescription>
+                        <CardTitle className="text-3xl font-extrabold tracking-tight text-highlight">Attendance Registry</CardTitle>
+                        <CardDescription className="text-muted-foreground font-medium">Keep track of your daily work hours with precision.</CardDescription>
                     </CardHeader>
                     
                     <CardContent className="flex flex-col items-center gap-8 pb-12">
@@ -70,11 +75,11 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                             </div>
                         )}
 
-                        <div className="w-full max-w-xs space-y-3">
+                        <div className="w-full max-w-xs space-y-4">
                             {!isClockedIn && (
                                 <Button 
                                     size="lg" 
-                                    className="w-full h-14 text-lg font-bold bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02]"
+                                    className="btn-gradient w-full h-14"
                                     onClick={handleClockIn}
                                     disabled={processing}
                                 >
@@ -86,8 +91,7 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                             {isClockedIn && !isClockedOut && (
                                 <Button 
                                     size="lg" 
-                                    variant="warning"
-                                    className="w-full h-14 text-lg font-bold text-white shadow-lg shadow-amber-600/20 transition-all hover:scale-[1.02]"
+                                    className="w-full h-14 text-lg font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-600/20 transition-all hover:scale-[1.02] rounded-xl"
                                     onClick={handleClockOut}
                                     disabled={processing}
                                 >
@@ -100,7 +104,7 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                                 <Button 
                                     size="lg" 
                                     disabled 
-                                    className="w-full h-14 text-lg font-bold bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-600"
+                                    className="w-full h-14 text-lg font-bold bg-muted text-muted-foreground rounded-xl"
                                 >
                                     <CheckCircle2 className="mr-2 h-5 w-5" />
                                     Done for Today
