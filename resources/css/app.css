@@ -181,4 +181,105 @@
     .focus-glow:focus-within {
         @apply ring-4 ring-[hsl(142,70%,45%)]/20 border-[hsl(142,70%,45%)]/40 transition-all duration-300;
     }
+
+    /* ═══════════════════════════════════════════
+       Animated gradient blob background
+    ═══════════════════════════════════════════ */
+    @keyframes blob-rotate {
+        0%   { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .premium-bg-container {
+        @apply fixed inset-0 overflow-hidden pointer-events-none;
+        z-index: 0;
+        background-color: oklch(0.145 0 0); /* Fallback for dark mode */
+    }
+
+    :root:not(.dark) .premium-bg-container {
+        background-color: oklch(0.985 0 0);
+    }
+
+    .blob-background {
+        --size: 350px;
+        --speed: 40s;
+        --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
+        @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+        width: var(--size);
+        height: var(--size);
+        filter: blur(calc(var(--size) / 5));
+        background-image: linear-gradient(
+            hsl(142, 85%, 45%),
+            hsl(52, 100%, 55%)
+        );
+        animation: blob-rotate var(--speed) var(--easing) alternate infinite;
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        will-change: transform;
+        opacity: 0.2;
+    }
+
+    .dark .blob-background {
+        opacity: 0.4;
+    }
+
+    @media (min-width: 1024px) {
+        .blob-background { 
+            --size: 650px; 
+        }
+    }
+
+    .grain-overlay {
+        @apply fixed inset-0 pointer-events-none;
+        z-index: 1;
+        opacity: 0.04;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+        background-size: 200px 200px;
+    }
+
+    /* ═══════════════════════════════════════════
+       Premium Components
+    ═══════════════════════════════════════════ */
+
+    .btn-gradient {
+        @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all duration-300;
+        background: linear-gradient(135deg, hsl(142, 70%, 48%), hsl(52, 95%, 55%));
+        color: #030f04;
+        box-shadow: 
+            0 10px 15px -3px rgba(0, 0, 0, 0.2), 
+            0 0 20px rgba(110, 210, 100, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-gradient:hover:not(:disabled) {
+        @apply brightness-110 -translate-y-0.5 scale-[1.02];
+        box-shadow: 
+            0 20px 25px -5px rgba(0, 0, 0, 0.3), 
+            0 0 40px rgba(110, 210, 100, 0.5);
+    }
+
+    .btn-gradient:active:not(:disabled) {
+        @apply translate-y-0 scale-100;
+    }
+
+    .btn-gradient:disabled {
+        @apply opacity-50 cursor-not-allowed grayscale;
+    }
+
+    .glass-panel {
+        @apply backdrop-blur-xl border border-white/10 dark:border-white/5;
+        background: rgba(255, 255, 255, 0.7);
+    }
+
+    .dark .glass-panel {
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    .text-highlight {
+        @apply text-foreground font-extrabold tracking-tight;
+        text-shadow: 0 0 30px hsla(142, 70%, 55%, 0.3);
+    }
+
+    .dark .text-highlight {
+        color: hsl(142, 80%, 75%);
+    }
 }
