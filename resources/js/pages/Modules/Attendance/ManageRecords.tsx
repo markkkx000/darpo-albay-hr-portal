@@ -16,6 +16,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { index as attendanceIndexRoute } from '@/routes/attendance';
 import { index as manageRecordsIndexRoute, destroy as destroyRecord } from '@/routes/attendance/manage/records';
@@ -127,25 +128,29 @@ export default function ManageRecords({ records, employees, filters }: Props) {
             <Head title="Manage Attendance Records" />
 
             <div className="premium-bg-container" aria-hidden="true">
-                <div className="blob-background opacity-10 dark:opacity-20" />
+                <div className="blob-background bg-[#2192FF]" style={{ "--size": "600px", "--speed": "25s", "--color-1": "#2192FF", "--color-2": "#38E54D" } as any} />
+                <div className="blob-background bg-[#9CFF2E]" style={{ "--size": "500px", "--speed": "30s", "--color-1": "#9CFF2E", "--color-2": "#FDFF00", "top": "30%", "left": "70%" } as any} />
+                <div className="blob-background bg-[#38E54D]" style={{ "--size": "400px", "--speed": "20s", "--color-1": "#38E54D", "--color-2": "#2192FF", "top": "70%", "left": "20%" } as any} />
                 <div className="grain-overlay" />
             </div>
 
-            <div className="relative z-10 p-4 w-full animate-fade-up">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-                            Attendance Management
-                            {isRefreshing && <Clock className="h-5 w-5 animate-spin text-primary opacity-50" />}
-                        </h1>
-                        <p className="text-muted-foreground text-sm mt-1">
-                            Manually manage employee attendance records, correct timestamps, and resolve anomalies.
-                        </p>
+            <div className="relative z-10 p-4 w-full animate-fade-up space-y-6">
+                <div className="mb-2">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2 text-highlight">
+                                <Clock className={cn("h-6 w-6 text-primary/70", isRefreshing && "animate-spin")} />
+                                Attendance Management
+                            </h1>
+                            <p className="mt-1 text-sm font-medium text-muted-foreground tracking-wide max-w-2xl">
+                                Systematically manage records and resolve logging anomalies.
+                            </p>
+                        </div>
+                        <Button onClick={handleAddNew} className="btn-gradient px-8 py-6 rounded-2xl shadow-xl transition-all hover:bg-primary/5">
+                            <Plus className="h-5 w-5 mr-2" />
+                            Add Missing Record
+                        </Button>
                     </div>
-                    <Button onClick={handleAddNew} className="btn-gradient">
-                        <Plus className="h-4 w-4" />
-                        Add Missing Record
-                    </Button>
                 </div>
 
                 <div className="space-y-6">
@@ -311,15 +316,19 @@ export default function ManageRecords({ records, employees, filters }: Props) {
     );
 }
 
-ManageRecords.layout = {
-    breadcrumbs: [
-        {
-            title: 'Attendance',
-            href: attendanceIndexRoute().url,
-        },
-        {
-            title: 'Manage Records',
-            href: '#',
-        },
-    ],
-};
+ManageRecords.layout = (page: any) => (
+    <AppLayout 
+        breadcrumbs={[
+            {
+                title: 'Attendance',
+                href: attendanceIndexRoute().url,
+            },
+            {
+                title: 'Manage Records',
+                href: '#',
+            },
+        ]}
+    >
+        {page}
+    </AppLayout>
+);
