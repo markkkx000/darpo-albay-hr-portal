@@ -27,8 +27,8 @@ export default function Show({ announcement }: Props) {
                     </Link>
                 </div>
 
-                <Card className="border-none shadow-lg overflow-hidden bg-background">
-                    <CardHeader className="bg-muted/30 pb-6 border-b border-muted/30">
+                <Card className="liquid-glass-card border-none overflow-hidden">
+                    <CardHeader className="border-b border-muted/20 pb-6">
                         <div className="space-y-4">
                             <div className="flex items-center gap-2 text-primary font-medium">
                                 <Megaphone className="h-5 w-5" />
