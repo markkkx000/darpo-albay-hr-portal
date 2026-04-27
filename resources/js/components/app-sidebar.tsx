@@ -31,7 +31,7 @@ export function AppSidebar() {
     const dynamicNav = (auth.navigation || []) as NavItem[];
 
     return (
-        <Sidebar collapsible="icon" variant="inset">
+        <Sidebar collapsible="icon" variant="inset" className="liquid-glass-sidebar border-none">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
