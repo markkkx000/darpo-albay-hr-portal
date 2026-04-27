@@ -48,10 +48,10 @@ export default function Index({ notifications }: Props) {
             <Head title="Notifications" />
 
             <div className="flex h-full flex-col gap-4 p-4 md:gap-8 md:p-8">
-                <div className="flex items-center justify-between">
+                <div className="liquid-glass flex items-center justify-between px-6 py-5">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Notifications</h1>
-                        <p className="text-muted-foreground">
+                        <h1 className="liquid-glass-title text-2xl font-bold tracking-tight">Notifications</h1>
+                        <p className="text-muted-foreground mt-2">
                             Manage your system and module notifications.
                         </p>
                     </div>
