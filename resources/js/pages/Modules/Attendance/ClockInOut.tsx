@@ -88,41 +88,41 @@ return;
             <div className="relative z-10 p-6 w-full min-h-[calc(100vh-8rem)] flex flex-col items-center justify-center gap-5 animate-fade-up">
                 
                 {/* Main Widget */}
-                <div className="w-full max-w-xl backdrop-blur-2xl bg-white/5 dark:bg-black/30 border border-white/10 shadow-[0_32px_80px_rgba(0,0,0,0.5)] rounded-[2.5rem] p-3 flex flex-col md:flex-row gap-3">
+                <div className="w-full max-w-xl backdrop-blur-2xl bg-white/70 dark:bg-black/30 border border-black/8 dark:border-white/10 shadow-[0_32px_80px_rgba(0,0,0,0.18)] dark:shadow-[0_32px_80px_rgba(0,0,0,0.5)] rounded-[2.5rem] p-3 flex flex-col md:flex-row gap-3">
                     
                     {/* Left Pane: Date Card — Figma spec gradient + inner glows */}
                     <div
-                        className="w-full md:w-52 rounded-[2rem] p-6 flex flex-col justify-between shrink-0 overflow-hidden"
+                        className="w-full md:w-52 rounded-[2rem] p-6 flex flex-col justify-between shrink-0 overflow-hidden border border-black/5 dark:border-white/5 shadow-sm"
                         style={{
-                            background: 'linear-gradient(180deg, #040909 0%, #20101F 100%)',
+                            background: 'var(--stat-card-bg)',
                             boxShadow: `
-                                inset 0 -80px 60px -30px rgba(20, 64, 205, 1),
-                                inset 0 -40px 30px -8px rgba(86, 148, 255, 0.5),
-                                inset 0 -20px 20px 0px rgba(255, 255, 255, 0.4),
-                                inset 0 0 6px -2px rgba(35, 101, 255, 0.15)
+                                inset 0 -80px 60px -30px rgba(20, 64, 205, 0.6),
+                                inset 0 -40px 30px -8px rgba(86, 148, 255, 0.3),
+                                inset 0 -20px 20px 0px rgba(255, 255, 255, 0.2),
+                                inset 0 0 6px -2px rgba(35, 101, 255, 0.1)
                             `,
                             minHeight: '180px',
                         }}
                     >
                         <div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/40 mb-1">Today</p>
-                            <h2 className="text-4xl font-extrabold text-white tracking-tight leading-none">{todayDate}</h2>
+                            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-foreground/40 dark:text-white/40 mb-1">Today</p>
+                            <h2 className="text-4xl font-extrabold text-foreground dark:text-white tracking-tight leading-none">{todayDate}</h2>
                         </div>
                         <div className="mt-auto pt-6">
-                            <p className="text-lg font-semibold text-white/80">{todayDay}</p>
-                            <p className="text-xs font-medium text-white/40 mt-0.5 tracking-wide">{historyCount} {historyCount === 1 ? 'log' : 'logs'} this week</p>
+                            <p className="text-lg font-semibold text-foreground/80 dark:text-white/80">{todayDay}</p>
+                            <p className="text-xs font-medium text-foreground/40 dark:text-white/40 mt-0.5 tracking-wide">{historyCount} {historyCount === 1 ? 'log' : 'logs'} this week</p>
                         </div>
                     </div>
 
                     {/* Right Pane: History Timeline */}
                     <div className="flex-1 py-4 px-3 flex flex-col overflow-hidden">
-                        <p className="text-[10px] font-black tracking-[0.25em] text-white/30 uppercase mb-4">Recent History</p>
+                        <p className="text-[10px] font-black tracking-[0.25em] text-foreground/30 dark:text-white/30 uppercase mb-4">Recent History</p>
 
                         <div className="space-y-1 overflow-y-auto">
                             {timelineItems.length === 0 ? (
                                 <div className="flex flex-col items-start gap-1 py-4">
-                                    <p className="text-sm text-white/30 italic">No records yet.</p>
-                                    <p className="text-[10px] text-white/20">Your logs will appear here after clocking in.</p>
+                                    <p className="text-sm text-foreground/30 dark:text-white/30 italic">No records yet.</p>
+                                    <p className="text-[10px] text-foreground/20 dark:text-white/20">Your logs will appear here after clocking in.</p>
                                 </div>
                             ) : (
                                 timelineItems.map((item, idx) => {
@@ -139,8 +139,8 @@ return;
                                                 }}
                                             />
                                             <div className="flex flex-col min-w-0">
-                                                <p className="text-[13px] font-semibold text-white/90 truncate">{item.date}</p>
-                                                <p className="text-[11px] text-white/40 mt-0.5 font-mono tracking-wide">{item.timeStr}</p>
+                                                <p className="text-[13px] font-semibold text-foreground/90 dark:text-white/90 truncate">{item.date}</p>
+                                                <p className="text-[11px] text-foreground/40 dark:text-white/40 mt-0.5 font-mono tracking-wide">{item.timeStr}</p>
                                             </div>
                                         </div>
                                     );
@@ -182,7 +182,7 @@ return;
                             <span className="relative z-10">{processing ? 'Processing...' : cooldown > 0 ? `Locked (${cooldown}s)` : 'Clock Out'}</span>
                         </Button>
                     ) : (
-                        <div className="w-full h-14 rounded-2xl flex items-center justify-center gap-2 border border-white/10 bg-white/5 text-white/40 text-sm font-semibold tracking-wide">
+                        <div className="w-full h-14 rounded-2xl flex items-center justify-center gap-2 border border-border bg-muted/20 text-muted-foreground text-sm font-semibold tracking-wide dark:border-white/10 dark:bg-white/5 dark:text-white/40">
                             <CheckCircle2 className="h-5 w-5" />
                             Done for Today
                         </div>
@@ -195,7 +195,7 @@ return;
                         </div>
                     )}
 
-                    <p className="text-center text-[10px] text-white/20 tracking-wider">
+                    <p className="text-center text-[10px] text-foreground/25 dark:text-white/20 tracking-wider">
                         Timestamps are server-recorded and tamper-proof.
                     </p>
                 </div>
