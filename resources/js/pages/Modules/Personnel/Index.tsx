@@ -86,10 +86,10 @@ export default function Index({ employees, filters, departments = [], employment
             <Head title="Personnel Directory" />
 
             <div className="p-4 w-full">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="liquid-glass mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Personnel Directory</h1>
-                        <p className="text-muted-foreground text-sm mt-1">
+                        <h1 className="liquid-glass-title text-3xl font-bold tracking-tight">Personnel Directory</h1>
+                        <p className="text-muted-foreground text-sm mt-2">
                             Manage and view all employee records across the agency.
                         </p>
                     </div>
