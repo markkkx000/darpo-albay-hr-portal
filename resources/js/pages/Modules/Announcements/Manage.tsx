@@ -76,8 +76,8 @@ export default function Manage({ announcements }: Props) {
                     </Link>
                 </div>
 
-                <Card className="border-none shadow-md overflow-hidden bg-background">
-                    <CardHeader className="bg-muted/30 pb-4">
+                <Card className="liquid-glass-card border-none overflow-hidden">
+                    <CardHeader className="border-b border-muted/20 pb-4">
                         <CardTitle className="text-lg font-semibold flex items-center gap-2">
                             <Megaphone className="h-5 w-5 text-primary" />
                             All Announcements
@@ -86,7 +86,7 @@ export default function Manage({ announcements }: Props) {
                     <CardContent className="p-0">
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm text-left">
-                                <thead className="bg-muted/50 text-muted-foreground font-medium border-b border-muted/30">
+                                <thead className="text-muted-foreground font-medium border-b border-muted/20">
                                     <tr>
                                         <th className="px-6 py-4">Title</th>
                                         <th className="px-6 py-4">Target</th>

@@ -44,6 +44,10 @@
         </x-inertia::head>
     </head>
     <body class="font-sans antialiased">
+        <div class="premium-bg-container">
+            <div class="blob-background"></div>
+        </div>
+        <div class="grain-overlay"></div>
         <x-inertia::app />
     </body>
 </html>

@@ -327,13 +327,12 @@
         inset: 0;
         border-radius: inherit;
         padding: 1px;
-        /* Light mode: subtle pastel iridescence */
+        /* Light mode: soft green/yellow iridescence */
         background: linear-gradient(
             135deg,
             color-mix(in srgb, white 90%, transparent) 0%,
-            color-mix(in srgb, #c8dcff 40%, transparent) 25%,
-            color-mix(in srgb, #b4ffc8 30%, transparent) 50%,
-            color-mix(in srgb, #ffc8ff 40%, transparent) 75%,
+            color-mix(in srgb, #4ade80 30%, transparent) 33%,
+            color-mix(in srgb, #facc15 20%, transparent) 66%,
             color-mix(in srgb, white 90%, transparent) 100%
         );
         background-size: 300% 300%;
@@ -346,15 +345,14 @@
         pointer-events: none;
     }
 
-    /* Dark mode: deeper/more vivid iridescence (no semantic token for accent hues) */
+    /* Dark mode: Green and Yellow iridescence */
     .dark .liquid-glass::before {
         background: linear-gradient(
             135deg,
-            color-mix(in srgb, #64a0ff 50%, transparent) 0%,
-            color-mix(in srgb, #78ffb4 30%, transparent) 25%,
-            color-mix(in srgb, #c864ff 30%, transparent) 50%,
-            color-mix(in srgb, #ffb450 30%, transparent) 75%,
-            color-mix(in srgb, #64a0ff 50%, transparent) 100%
+            color-mix(in srgb, #4ade80 40%, transparent) 0%,
+            color-mix(in srgb, #facc15 30%, transparent) 33%,
+            color-mix(in srgb, #16a34a 40%, transparent) 66%,
+            color-mix(in srgb, #4ade80 40%, transparent) 100%
         );
         background-size: 300% 300%;
         animation: liquid-border-flow 6s ease infinite;
@@ -397,14 +395,12 @@
         left: 0;
         right: 0;
         height: 1px;
-        /* Light mode: soft pastel shimmer */
+        /* Light mode: soft green/yellow shimmer */
         background: linear-gradient(
             90deg,
             transparent 0%,
-            color-mix(in srgb, #c8dcff 80%, transparent) 20%,
-            color-mix(in srgb, #b4ffd2 70%, transparent) 40%,
-            color-mix(in srgb, #ffc8f0 70%, transparent) 60%,
-            color-mix(in srgb, #dcc8ff 80%, transparent) 80%,
+            color-mix(in srgb, #4ade80 50%, transparent) 33%,
+            color-mix(in srgb, #facc15 40%, transparent) 66%,
             transparent 100%
         );
         background-size: 200% 100%;
@@ -412,15 +408,13 @@
         pointer-events: none;
     }
 
-    /* Dark mode: vivid neon shimmer (no semantic token for brand neon hues) */
+    /* Dark mode: vivid green/yellow neon shimmer */
     .dark .liquid-glass-header::after {
         background: linear-gradient(
             90deg,
             transparent 0%,
-            color-mix(in srgb, #508cff 60%, transparent) 20%,
-            color-mix(in srgb, #3ce678 50%, transparent) 40%,
-            color-mix(in srgb, #b450ff 50%, transparent) 60%,
-            color-mix(in srgb, #ffa03c 50%, transparent) 80%,
+            color-mix(in srgb, #4ade80 60%, transparent) 33%,
+            color-mix(in srgb, #facc15 50%, transparent) 66%,
             transparent 100%
         );
         background-size: 200% 100%;
@@ -443,14 +437,14 @@
         right: 0;
         height: 2px;
         border-radius: 999px;
-        /* Brand neon palette — matches blob colors used across the app */
+        /* Brand green/yellow palette */
         background: linear-gradient(
             90deg,
-            color-mix(in srgb, #2192FF 80%, transparent),
-            color-mix(in srgb, #38E54D 60%, transparent),
-            color-mix(in srgb, #9CFF2E 50%, transparent),
-            color-mix(in srgb, #FDFF00 60%, transparent),
-            color-mix(in srgb, #2192FF 80%, transparent)
+            color-mix(in srgb, #4ade80 80%, transparent),
+            color-mix(in srgb, #facc15 60%, transparent),
+            color-mix(in srgb, #16a34a 50%, transparent),
+            color-mix(in srgb, #ca8a04 60%, transparent),
+            color-mix(in srgb, #4ade80 80%, transparent)
         );
         background-size: 200% 100%;
         animation: liquid-shimmer 4s ease infinite;
@@ -516,6 +510,12 @@
     .dark .liquid-glass-sidebar {
         background: color-mix(in srgb, var(--sidebar-background) 40%, transparent);
         border-right: 1px solid color-mix(in srgb, white 5%, transparent);
+    }
+
+    /* Fix for Shadcn Sidebar & Inset opaque backgrounds to allow body blobs to show through */
+    .liquid-glass-sidebar [data-sidebar="sidebar"],
+    [data-slot="sidebar-inset"] {
+        background-color: transparent !important;
     }
 
     @keyframes sidebar-gradient-flow {
