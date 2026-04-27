@@ -191,7 +191,7 @@
     }
 
     .premium-bg-container {
-        @apply fixed inset-0 overflow-hidden pointer-events-none;
+        @apply fixed inset-0 overflow-hidden pointer-events-none transition-colors duration-700;
         z-index: 0;
         background-color: oklch(0.145 0 0); /* Fallback for dark mode */
     }
@@ -209,17 +209,18 @@
         height: var(--size);
         filter: blur(calc(var(--size) / 5));
         background-image: linear-gradient(
-            hsl(142, 85%, 45%),
-            hsl(52, 100%, 55%)
+            to bottom right,
+            var(--color-1, hsl(142, 85%, 45%)),
+            var(--color-2, hsl(52, 100%, 55%))
         );
         animation: blob-rotate var(--speed) var(--easing) alternate infinite;
         border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
         will-change: transform;
-        opacity: 0.2;
+        opacity: 0.12;
     }
 
     .dark .blob-background {
-        opacity: 0.4;
+        opacity: 0.25;
     }
 
     @media (min-width: 1024px) {
@@ -275,8 +276,8 @@
     }
 
     .text-highlight {
-        @apply text-foreground font-extrabold tracking-tight;
-        text-shadow: 0 0 30px hsla(142, 70%, 55%, 0.3);
+        @apply text-foreground font-bold tracking-tight;
+        text-shadow: 0 0 10px hsla(142, 70%, 55%, 0.12);
     }
 
     .dark .text-highlight {
