@@ -95,6 +95,8 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.87 0 0);
+    --stat-card-bg: linear-gradient(180deg, oklch(1 0 0) 0%, oklch(0.97 0 0) 100%);
+    --stat-card-shadow-base: rgba(0, 0, 0, 0.05);
 }
 
 .dark {
@@ -130,6 +132,8 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(0.269 0 0);
     --sidebar-ring: oklch(0.439 0 0);
+    --stat-card-bg: linear-gradient(180deg, #040909 0%, #20101F 100%);
+    --stat-card-shadow-base: rgba(0, 0, 0, 0.5);
 }
 
 @layer base {
@@ -216,7 +220,7 @@
         animation: blob-rotate var(--speed) var(--easing) alternate infinite;
         border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
         will-change: transform;
-        opacity: 0.12;
+        opacity: 0.18;
     }
 
     .dark .blob-background {
@@ -282,5 +286,173 @@
 
     .dark .text-highlight {
         color: hsl(142, 80%, 75%);
+    }
+
+    /* ═══════════════════════════════════════════
+       Liquid Glass Effect
+    ═══════════════════════════════════════════ */
+
+    @keyframes liquid-shimmer {
+        0%   { background-position: 0% 50%; }
+        50%  { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes liquid-border-flow {
+        0%   { background-position: 0% 50%; }
+        50%  { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Liquid Glass — panel/card variant
+       Backgrounds use color-mix() with semantic tokens so light/dark adapts automatically.
+       Only the decorative iridescent gradients need explicit .dark variants. */
+    .liquid-glass {
+        position: relative;
+        border-radius: var(--radius-lg);
+        backdrop-filter: blur(20px) saturate(1.8);
+        -webkit-backdrop-filter: blur(20px) saturate(1.8);
+        /* Uses --background token: white in light, dark in dark — auto-adapts */
+        background: color-mix(in srgb, var(--background) 60%, transparent);
+        box-shadow:
+            0 8px 32px color-mix(in srgb, black 8%, transparent),
+            0 1px 0 color-mix(in srgb, white 88%, transparent) inset,
+            0 -1px 0 color-mix(in srgb, white 18%, transparent) inset;
+        /* Uses --foreground token: dark in light mode, light in dark mode — auto-adapts */
+        border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+    }
+
+    .liquid-glass::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1px;
+        /* Light mode: subtle pastel iridescence */
+        background: linear-gradient(
+            135deg,
+            color-mix(in srgb, white 90%, transparent) 0%,
+            color-mix(in srgb, #c8dcff 40%, transparent) 25%,
+            color-mix(in srgb, #b4ffc8 30%, transparent) 50%,
+            color-mix(in srgb, #ffc8ff 40%, transparent) 75%,
+            color-mix(in srgb, white 90%, transparent) 100%
+        );
+        background-size: 300% 300%;
+        animation: liquid-border-flow 6s ease infinite;
+        -webkit-mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+    }
+
+    /* Dark mode: deeper/more vivid iridescence (no semantic token for accent hues) */
+    .dark .liquid-glass::before {
+        background: linear-gradient(
+            135deg,
+            color-mix(in srgb, #64a0ff 50%, transparent) 0%,
+            color-mix(in srgb, #78ffb4 30%, transparent) 25%,
+            color-mix(in srgb, #c864ff 30%, transparent) 50%,
+            color-mix(in srgb, #ffb450 30%, transparent) 75%,
+            color-mix(in srgb, #64a0ff 50%, transparent) 100%
+        );
+        background-size: 300% 300%;
+        animation: liquid-border-flow 6s ease infinite;
+    }
+
+    /* Dark mode: reduce the inset shine (white reflection should be subtle on dark bg) */
+    .dark .liquid-glass {
+        box-shadow:
+            0 8px 32px color-mix(in srgb, black 40%, transparent),
+            0 1px 0 color-mix(in srgb, white 6%, transparent) inset,
+            0 -1px 0 color-mix(in srgb, white 2%, transparent) inset;
+    }
+
+    /* Liquid Glass — sticky header bar variant */
+    .liquid-glass-header {
+        backdrop-filter: blur(24px) saturate(2);
+        -webkit-backdrop-filter: blur(24px) saturate(2);
+        /* Uses --background token — auto-adapts to light/dark */
+        background: color-mix(in srgb, var(--background) 72%, transparent);
+        border-bottom: 1px solid transparent;
+        background-clip: padding-box;
+        box-shadow:
+            0 1px 0 color-mix(in srgb, white 88%, transparent) inset,
+            0 4px 24px color-mix(in srgb, black 6%, transparent);
+        position: relative;
+    }
+
+    /* Dark mode: reduce the inset shine only */
+    .dark .liquid-glass-header {
+        box-shadow:
+            0 1px 0 color-mix(in srgb, white 5%, transparent) inset,
+            0 4px 24px color-mix(in srgb, black 30%, transparent);
+    }
+
+    .liquid-glass-header::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        /* Light mode: soft pastel shimmer */
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            color-mix(in srgb, #c8dcff 80%, transparent) 20%,
+            color-mix(in srgb, #b4ffd2 70%, transparent) 40%,
+            color-mix(in srgb, #ffc8f0 70%, transparent) 60%,
+            color-mix(in srgb, #dcc8ff 80%, transparent) 80%,
+            transparent 100%
+        );
+        background-size: 200% 100%;
+        animation: liquid-shimmer 5s ease infinite;
+        pointer-events: none;
+    }
+
+    /* Dark mode: vivid neon shimmer (no semantic token for brand neon hues) */
+    .dark .liquid-glass-header::after {
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            color-mix(in srgb, #508cff 60%, transparent) 20%,
+            color-mix(in srgb, #3ce678 50%, transparent) 40%,
+            color-mix(in srgb, #b450ff 50%, transparent) 60%,
+            color-mix(in srgb, #ffa03c 50%, transparent) 80%,
+            transparent 100%
+        );
+        background-size: 200% 100%;
+        animation: liquid-shimmer 5s ease infinite;
+    }
+
+    /* Liquid Glass — page section heading wrapper */
+    .liquid-glass-title {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .liquid-glass-title::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        border-radius: 999px;
+        /* Brand neon palette — matches blob colors used across the app */
+        background: linear-gradient(
+            90deg,
+            color-mix(in srgb, #2192FF 80%, transparent),
+            color-mix(in srgb, #38E54D 60%, transparent),
+            color-mix(in srgb, #9CFF2E 50%, transparent),
+            color-mix(in srgb, #FDFF00 60%, transparent),
+            color-mix(in srgb, #2192FF 80%, transparent)
+        );
+        background-size: 200% 100%;
+        animation: liquid-shimmer 4s ease infinite;
     }
 }
