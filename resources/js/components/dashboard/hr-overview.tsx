@@ -7,26 +7,17 @@ export function HROverview() {
                 <StatCard
                     title="Total Employees"
                     value="--"
-                    gradientClasses="from-[#2192FF]/10 to-[#2192FF]/20 dark:from-[#2192FF]/20 dark:to-[#2192FF]/10"
-                    titleClasses="text-[#2192FF] dark:text-[#2192FF]"
-                    valueClasses="text-zinc-900 dark:text-white"
-                    subtitleClasses="text-[#2192FF] dark:text-[#2192FF]"
+                    accentColor="#2192FF"
                 />
                 <StatCard
                     title="Pending Leaves"
                     value="--"
-                    gradientClasses="from-[#38E54D]/10 to-[#38E54D]/20 dark:from-[#38E54D]/20 dark:to-[#38E54D]/10"
-                    titleClasses="text-zinc-800 dark:text-[#38E54D]"
-                    valueClasses="text-zinc-900 dark:text-white"
-                    subtitleClasses="text-zinc-700 dark:text-[#38E54D]"
+                    accentColor="#38E54D"
                 />
                 <StatCard
                     title="Active Today"
                     value="--"
-                    gradientClasses="from-[#9CFF2E]/10 to-[#9CFF2E]/20 dark:from-[#9CFF2E]/20 dark:to-[#9CFF2E]/10"
-                    titleClasses="text-zinc-800 dark:text-[#9CFF2E]"
-                    valueClasses="text-zinc-900 dark:text-white"
-                    subtitleClasses="text-zinc-700 dark:text-[#9CFF2E]"
+                    accentColor="#9CFF2E"
                 />
             </div>
 
