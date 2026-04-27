@@ -25,37 +25,41 @@ export default function Login({ status }: Props) {
                 {({ processing, errors }) => (
                     <>
                         <div className="grid gap-6">
-                            <div className="grid gap-2">
+                            <div className="grid animate-fade-up gap-2">
                                 <Label htmlFor="login">
                                     Email or Employee Number
                                 </Label>
-                                <Input
-                                    id="login"
-                                    type="text"
-                                    name="login"
-                                    required
-                                    autoFocus
-                                    tabIndex={1}
-                                    autoComplete="username"
-                                    placeholder="email@example.com or EMP-0001"
-                                />
+                                <div className="focus-glow rounded-md transition-all">
+                                    <Input
+                                        id="login"
+                                        type="text"
+                                        name="login"
+                                        required
+                                        autoFocus
+                                        tabIndex={1}
+                                        autoComplete="username"
+                                        placeholder="email@example.com or EMP-0001"
+                                    />
+                                </div>
                                 <InputError message={errors.login} />
                             </div>
 
-                            <div className="grid gap-2">
+                            <div className="grid animate-fade-up-delay-1 gap-2">
                                 <Label htmlFor="password">Password</Label>
-                                <PasswordInput
-                                    id="password"
-                                    name="password"
-                                    required
-                                    tabIndex={2}
-                                    autoComplete="current-password"
-                                    placeholder="Password"
-                                />
+                                <div className="focus-glow rounded-md transition-all">
+                                    <PasswordInput
+                                        id="password"
+                                        name="password"
+                                        required
+                                        tabIndex={2}
+                                        autoComplete="current-password"
+                                        placeholder="Password"
+                                    />
+                                </div>
                                 <InputError message={errors.password} />
                             </div>
 
-                            <div className="flex items-center space-x-3">
+                            <div className="flex animate-fade-up-delay-2 items-center space-x-3">
                                 <Checkbox
                                     id="remember"
                                     name="remember"
@@ -64,16 +68,18 @@ export default function Login({ status }: Props) {
                                 <Label htmlFor="remember">Remember me</Label>
                             </div>
 
-                            <Button
-                                type="submit"
-                                className="mt-4 w-full"
-                                tabIndex={4}
-                                disabled={processing}
-                                data-test="login-button"
-                            >
-                                {processing && <Spinner />}
-                                Log in
-                            </Button>
+                            <div className="animate-fade-up-delay-3">
+                                <Button
+                                    type="submit"
+                                    className="mt-4 w-full bg-linear-to-br from-[hsl(142,70%,48%)] to-[hsl(52,95%,55%)] font-bold text-[#030f04] shadow-[0_10px_20px_-5px_rgba(0,0,0,0.3),0_0_20px_rgba(110,210,100,0.3)] transition-all duration-300 hover:brightness-110 hover:-translate-y-0.5"
+                                    tabIndex={4}
+                                    disabled={processing}
+                                    data-test="login-button"
+                                >
+                                    {processing && <Spinner />}
+                                    Log in
+                                </Button>
+                            </div>
                         </div>
                     </>
                 )}
