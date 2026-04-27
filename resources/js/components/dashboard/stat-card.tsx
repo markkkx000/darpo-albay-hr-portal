@@ -22,6 +22,7 @@ function hexToRgba(hex: string, alpha: number): string {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
     const b = parseInt(hex.slice(5, 7), 16);
+
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
@@ -38,19 +39,19 @@ export function StatCard({
     const isLoading = value === '--';
 
     const cardStyle: React.CSSProperties = {
-        background: 'linear-gradient(180deg, #040909 0%, #20101F 100%)',
+        background: 'var(--stat-card-bg)',
         boxShadow: `
-            inset 0 -80px 60px -30px ${hexToRgba(accentColor, 0.9)},
-            inset 0 -40px 30px -8px ${hexToRgba(accentColor, 0.45)},
-            inset 0 -20px 20px 0px rgba(255, 255, 255, 0.08),
-            inset 0 0 6px -2px ${hexToRgba(accentColor, 0.2)},
-            0 24px 60px rgba(0, 0, 0, 0.5)
+            inset 0 -80px 60px -30px ${hexToRgba(accentColor, 0.6)},
+            inset 0 -40px 30px -8px ${hexToRgba(accentColor, 0.3)},
+            inset 0 -20px 20px 0px rgba(255, 255, 255, 0.2),
+            inset 0 0 6px -2px ${hexToRgba(accentColor, 0.1)},
+            0 24px 60px var(--stat-card-shadow-base)
         `,
     };
 
     return (
         <div
-            className="group relative aspect-video overflow-hidden rounded-2xl border border-white/5 transition-all duration-300 hover:-translate-y-1"
+            className="group relative aspect-video overflow-hidden rounded-2xl border border-black/5 dark:border-white/5 transition-all duration-300 hover:-translate-y-1 shadow-sm"
             style={cardStyle}
         >
             <div className="absolute inset-0 flex items-center justify-center z-10">
@@ -72,7 +73,7 @@ export function StatCard({
                                 aria-hidden="true"
                             />
                         ) : (
-                            <div className="text-4xl font-extrabold tracking-tight text-white drop-shadow-sm">
+                            <div className="text-4xl font-extrabold tracking-tight text-foreground dark:text-white drop-shadow-sm">
                                 {value}
                             </div>
                         )}
