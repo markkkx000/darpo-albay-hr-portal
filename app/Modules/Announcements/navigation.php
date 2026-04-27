@@ -9,11 +9,4 @@ return function (ModuleRegistry $registry) {
         'icon' => 'Megaphone',
         'permission' => 'announcements.view',
     ]);
-
-    $registry->register([
-        'title' => 'Manage Announcements',
-        'href' => '/announcements/manage',
-        'icon' => 'Settings',
-        'permission' => 'announcements.manage',
-    ]);
 };

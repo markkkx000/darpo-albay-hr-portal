@@ -1,8 +1,9 @@
-import { Head } from '@inertiajs/react';
-import { Megaphone } from 'lucide-react';
+import { Head, Link, usePage } from '@inertiajs/react';
+import { Megaphone, Settings } from 'lucide-react';
 import { AnnouncementCard } from '@/components/Announcements/AnnouncementCard';
 import Heading from '@/components/heading';
 import { Pagination } from '@/components/Pagination';
+import { Button } from '@/components/ui/button';
 
 interface Props {
     announcements: {
@@ -13,6 +14,10 @@ interface Props {
 }
 
 export default function Index({ announcements }: Props) {
+    const { auth } = usePage().props as any;
+    const permissions = (auth.permissions || auth.user?.permissions || []) as string[];
+    const canManage = permissions.includes('announcements.manage');
+
     return (
         <>
             <Head title="Announcements" />
@@ -23,6 +28,14 @@ export default function Index({ announcements }: Props) {
                         title="Announcements" 
                         description="Stay updated with the latest news and information from the HR and management."
                     />
+                    {canManage && (
+                        <Link href="/announcements/manage">
+                            <Button>
+                                <Settings className="mr-2 h-4 w-4" />
+                                Manage Announcements
+                            </Button>
+                        </Link>
+                    )}
                 </div>
 
                 {announcements.data.length === 0 ? (
