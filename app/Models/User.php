@@ -3,6 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Modules\Leave\Models\LeaveCredit;
+use App\Modules\Leave\Models\LeaveRequest;
+use App\Modules\Leave\Models\TardinessRecord;
 use App\Modules\Personnel\Models\Department;
 use App\Modules\Personnel\Models\EmploymentStatus;
 use App\Modules\Personnel\Models\Position;
@@ -11,6 +14,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -59,5 +63,20 @@ class User extends Authenticatable
     public function employmentStatus(): BelongsTo
     {
         return $this->belongsTo(EmploymentStatus::class);
+    }
+
+    public function leaveCredits(): HasMany
+    {
+        return $this->hasMany(LeaveCredit::class);
+    }
+
+    public function tardinessRecords(): HasMany
+    {
+        return $this->hasMany(TardinessRecord::class);
+    }
+
+    public function leaveRequests(): HasMany
+    {
+        return $this->hasMany(LeaveRequest::class);
     }
 }
