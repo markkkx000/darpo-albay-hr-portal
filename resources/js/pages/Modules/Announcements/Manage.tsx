@@ -11,7 +11,6 @@ import {
     Users
 } from 'lucide-react';
 import { toast } from 'sonner';
-import Heading from '@/components/heading';
 import { Pagination } from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -62,11 +61,13 @@ export default function Manage({ announcements }: Props) {
             <Head title="Manage Announcements" />
 
             <div className="p-4 w-full space-y-6">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <Heading 
-                        title="Manage Announcements" 
-                        description="Create, edit, and publish announcements for the organization."
-                    />
+                <div className="liquid-glass mb-2 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5">
+                    <div>
+                        <h1 className="liquid-glass-title text-3xl font-bold tracking-tight">Manage Announcements</h1>
+                        <p className="text-muted-foreground text-sm mt-2">
+                            Create, edit, and publish announcements for the organization.
+                        </p>
+                    </div>
                     <Link href={create().url}>
                         <Button className="gap-2">
                             <Plus className="h-4 w-4" />
