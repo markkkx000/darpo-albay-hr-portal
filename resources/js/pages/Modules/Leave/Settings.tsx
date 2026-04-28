@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Trash2, Plus, Power, PowerOff } from 'lucide-react';
+import { Plus, Power, PowerOff } from 'lucide-react';
 import LeaveNavigation from './Components/LeaveNavigation';
 import { settings } from '@/routes/leave/index';
 import { store as holidays_store, destroy as holidays_destroy } from '@/routes/leave/holidays/index';
