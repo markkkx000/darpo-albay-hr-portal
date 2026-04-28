@@ -1,6 +1,6 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import { Plus, Edit, Trash2, Clock, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { AttendanceFilters } from '@/components/Attendance/AttendanceFilters';
 import { AttendanceRecordModal } from '@/components/Attendance/AttendanceRecordModal';
@@ -60,16 +60,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState<AttendanceRecord | null>(null);
     const [recordToDelete, setRecordToDelete] = useState<AttendanceRecord | null>(null);
-    const [isRefreshing, setIsRefreshing] = useState(true);
-
     const canDelete = auth.permissions?.includes('attendance.delete');
-
-    useEffect(() => {
-        router.reload({
-            only: ['records', 'employees'],
-            onFinish: () => setIsRefreshing(false)
-        });
-    }, []);
 
     const handleEdit = (record: AttendanceRecord) => {
         setSelectedRecord(record);
@@ -138,7 +129,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                 <div className="liquid-glass mb-2 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5">
                     <div>
                         <h1 className="liquid-glass-title text-2xl font-bold tracking-tight flex items-center gap-2 text-highlight">
-                            <Clock className={cn("h-6 w-6 text-primary/70", isRefreshing && "animate-spin")} />
+                            <Clock className="h-6 w-6 text-primary/70" />
                             Attendance Management
                         </h1>
                         <p className="mt-2 text-sm font-medium text-muted-foreground tracking-wide max-w-2xl">
@@ -248,13 +239,14 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                         </Badge>
                                                     </td>
                                                     <td className="px-6 py-4 text-right">
-                                                        <div className="flex justify-end gap-2 opacity-40 group-hover:opacity-100 transition-all duration-300">
+                                                        <div className="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-all duration-300">
                                                             <Button
                                                                 variant="outline"
                                                                 size="sm"
                                                                 onClick={() => handleEdit(record)}
                                                                 className="h-8 w-8 p-0 border-white/10 hover:bg-primary/10 hover:text-primary hover:border-primary/20"
                                                                 title="Edit Record"
+                                                                aria-label={`Edit attendance record for ${record.user ? `${record.user.first_name} ${record.user.last_name}` : 'Unknown'}`}
                                                             >
                                                                 <Edit className="h-3.5 w-3.5" />
                                                             </Button>
@@ -265,6 +257,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                                     onClick={() => confirmDelete(record)}
                                                                     className="h-8 w-8 p-0 border-white/10 text-destructive/70 hover:text-destructive hover:bg-destructive/10 hover:border-destructive/20"
                                                                     title="Delete Record"
+                                                                    aria-label={`Delete attendance record for ${record.user ? `${record.user.first_name} ${record.user.last_name}` : 'Unknown'}`}
                                                                 >
                                                                     <Trash2 className="h-3.5 w-3.5" />
                                                                 </Button>
