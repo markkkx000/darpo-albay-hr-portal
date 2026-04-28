@@ -151,28 +151,39 @@
    ═══════════════════════════════════════════ */
 
 @layer utilities {
-    @keyframes fade-up {
-        from { opacity: 0; transform: translateY(24px); }
-        to   { opacity: 1; transform: translateY(0); }
+    /* Motion-safe: fade-up + related animate classes */
+    @media (prefers-reduced-motion: no-preference) {
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-up {
+            animation: fade-up 0.7s ease forwards;
+        }
+
+        .animate-fade-up-delay-1 {
+            opacity: 0;
+            animation: fade-up 0.7s ease 0.15s forwards;
+        }
+
+        .animate-fade-up-delay-2 {
+            opacity: 0;
+            animation: fade-up 0.7s ease 0.3s forwards;
+        }
+
+        .animate-fade-up-delay-3 {
+            opacity: 0;
+            animation: fade-up 0.7s ease 0.45s forwards;
+        }
     }
 
-    .animate-fade-up {
-        animation: fade-up 0.7s ease forwards;
-    }
-
-    .animate-fade-up-delay-1 {
-        opacity: 0;
-        animation: fade-up 0.7s ease 0.15s forwards;
-    }
-
-    .animate-fade-up-delay-2 {
-        opacity: 0;
-        animation: fade-up 0.7s ease 0.3s forwards;
-    }
-
+    /* Non-animated fallback — content stays visible if motion is reduced */
+    .animate-fade-up,
+    .animate-fade-up-delay-1,
+    .animate-fade-up-delay-2,
     .animate-fade-up-delay-3 {
-        opacity: 0;
-        animation: fade-up 0.7s ease 0.45s forwards;
+        opacity: 1;
     }
 
     .text-shadow-glow {
@@ -189,15 +200,22 @@
     /* ═══════════════════════════════════════════
        Animated gradient blob background
     ═══════════════════════════════════════════ */
-    @keyframes blob-rotate {
-        0%   { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+    /* Motion-safe: blob-rotate + blob-background animations */
+    @media (prefers-reduced-motion: no-preference) {
+        @keyframes blob-rotate {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .blob-background {
+            animation: blob-rotate var(--speed) var(--easing) alternate infinite;
+        }
     }
 
     .premium-bg-container {
         @apply fixed inset-0 overflow-hidden pointer-events-none transition-colors duration-700;
         z-index: 0;
-        background-color: oklch(0.145 0 0); /* Fallback for dark mode */
+        background-color: oklch(0.145 0 0);
     }
 
     :root:not(.dark) .premium-bg-container {
@@ -217,7 +235,6 @@
             var(--color-1, hsl(142, 85%, 45%)),
             var(--color-2, hsl(52, 100%, 55%))
         );
-        animation: blob-rotate var(--speed) var(--easing) alternate infinite;
         border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
         will-change: transform;
         opacity: 0.35;
@@ -228,8 +245,8 @@
     }
 
     @media (min-width: 1024px) {
-        .blob-background { 
-            --size: 650px; 
+        .blob-background {
+            --size: 650px;
         }
     }
 
