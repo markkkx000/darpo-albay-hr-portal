@@ -23,7 +23,7 @@ export default function Edit({ employee, departments, positions, employmentStatu
             <Head title={`Edit ${employee.first_name} ${employee.last_name}`} />
             
             <div className="p-4 max-w-4xl mx-auto">
-                <Card className="border-none shadow-xl">
+                <Card className="liquid-glass-card border-none shadow-xl">
                     <CardHeader className="pb-4">
                         <CardTitle className="text-2xl">Edit Employee Record</CardTitle>
                         <CardDescription>Update the information for {employee.first_name} {employee.last_name}.</CardDescription>
