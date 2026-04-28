@@ -4,7 +4,8 @@ import { ArrowLeft, Calendar, User, Megaphone } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatDate } from '@/lib/utils';
+import { cn, formatDate } from '@/lib/utils';
+import { index } from '@/routes/announcements';
 
 interface Props {
     announcement: any;
@@ -78,10 +79,6 @@ export default function Show({ announcement }: Props) {
         </>
     );
 }
-
-// Need to import cn since it's used in the badge
-import { cn } from '@/lib/utils';
-import { index } from '@/routes/announcements';
 
 Show.layout = {
     breadcrumbs: [
