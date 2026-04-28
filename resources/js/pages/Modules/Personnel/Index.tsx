@@ -25,11 +25,6 @@ interface Props {
 export default function Index({ employees, filters, departments = [], employmentStatuses = [] }: Props) {
     const { auth } = usePage().props as any;
 
-    // Safety check for auth
-    if (!auth) {
-        console.error('Auth prop is missing');
-    }
-
     const [search, setSearch] = useState(filters?.search || '');
     const [deptId, setDeptId] = useState(filters?.department_id || 'all');
     const [statusId, setStatusId] = useState(filters?.employment_status_id || 'all');
@@ -112,7 +107,7 @@ export default function Index({ employees, filters, departments = [], employment
                 </div>
 
                 {/* Filters */}
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 bg-muted/30 p-4 rounded-xl border border-border/50">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 liquid-glass px-4 py-4 rounded-xl">
                     <div className="relative md:col-span-6">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -171,6 +166,6 @@ export default function Index({ employees, filters, departments = [], employment
 
 Index.layout = {
     breadcrumbs: [
-        { title: 'Personnel Directory', href: '#' },
+        { title: 'Personnel Directory', href: indexRoute().url },
     ],
 };
