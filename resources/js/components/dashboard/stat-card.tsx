@@ -54,7 +54,7 @@ export function StatCard({
             className="group relative aspect-video overflow-hidden rounded-2xl border border-black/5 dark:border-white/5 transition-all duration-300 hover:-translate-y-1 shadow-sm backdrop-blur-2xl"
             style={cardStyle}
         >
-            <div className="absolute inset-0 flex items-center justify-center z-10">
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                 <div className="text-center w-full px-4">
                     <div
                         className={cn(
