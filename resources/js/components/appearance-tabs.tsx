@@ -1,6 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
 import { Monitor, Moon, Sun } from 'lucide-react';
-import { motion } from 'framer-motion';
 import type { HTMLAttributes } from 'react';
 import type { Appearance } from '@/hooks/use-appearance';
 import { useAppearance } from '@/hooks/use-appearance';
@@ -38,11 +37,7 @@ export default function AppearanceToggleTab({
                     )}
                 >
                     {appearance === value && (
-                        <motion.div
-                            layoutId="appearance-active"
-                            className="sidebar-active-gradient absolute inset-0 rounded-lg"
-                            transition={{ type: 'spring', bounce: 0.25, duration: 0.5 }}
-                        />
+                        <div className="sidebar-active-gradient absolute inset-0 rounded-lg" />
                     )}
                     <span className="relative z-10 flex items-center">
                         <Icon className={cn("-ml-1 h-4 w-4 transition-transform", appearance === value && "scale-110")} />
