@@ -159,7 +159,7 @@ return;
                             className={cn(
                                 "w-full h-14 rounded-2xl text-base font-bold tracking-wide shadow-xl transition-all duration-200",
                                 isButtonDisabled
-                                    ? "bg-white/10 text-white/30 cursor-not-allowed border border-white/10"
+                                    ? "bg-muted/50 text-muted-foreground/60 cursor-not-allowed border border-border/50"
                                     : "btn-gradient hover:scale-[1.01] shadow-[0_8px_32px_rgba(33,146,255,0.3)]"
                             )}
                         >
@@ -173,11 +173,11 @@ return;
                             className={cn(
                                 "w-full h-14 rounded-2xl text-base font-bold tracking-wide shadow-xl transition-all duration-200 relative overflow-hidden",
                                 isButtonDisabled
-                                    ? "bg-white/10 text-white/30 cursor-not-allowed border border-white/10"
-                                    : "bg-amber-500 hover:bg-amber-400 text-white shadow-[0_8px_32px_rgba(245,158,11,0.35)] hover:scale-[1.01]"
+                                    ? "bg-muted/50 text-muted-foreground/60 cursor-not-allowed border border-border/50"
+                                    : "btn-gradient-amber hover:scale-[1.01] shadow-[0_8px_32px_rgba(245,158,11,0.35)]"
                             )}
                         >
-                            {!isButtonDisabled && <span className="absolute inset-0 bg-amber-400/20 animate-pulse rounded-2xl" />}
+                            {!isButtonDisabled && <span className="absolute inset-0 bg-white/10 animate-pulse rounded-2xl" />}
                             <LogOut className="mr-2 h-5 w-5 relative z-10" />
                             <span className="relative z-10">{processing ? 'Processing...' : cooldown > 0 ? `Locked (${cooldown}s)` : 'Clock Out'}</span>
                         </Button>
