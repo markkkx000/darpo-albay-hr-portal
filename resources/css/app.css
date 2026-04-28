@@ -97,6 +97,7 @@
     --sidebar-ring: oklch(0.87 0 0);
     --stat-card-bg: linear-gradient(180deg, oklch(1 0 0) 0%, oklch(0.97 0 0) 100%);
     --stat-card-shadow-base: rgba(0, 0, 0, 0.05);
+    --radius-2xl: 1rem;
 }
 
 .dark {
@@ -134,6 +135,7 @@
     --sidebar-ring: oklch(0.439 0 0);
     --stat-card-bg: linear-gradient(180deg, color-mix(in srgb, #040909 60%, transparent) 0%, color-mix(in srgb, #20101F 40%, transparent) 100%);
     --stat-card-shadow-base: rgba(0, 0, 0, 0.5);
+    --radius-2xl: 1rem;
 }
 
 @layer base {
@@ -213,8 +215,9 @@
     }
 
     .premium-bg-container {
-        @apply fixed inset-0 overflow-hidden pointer-events-none transition-colors duration-700;
-        z-index: 0;
+        @apply fixed inset-0 overflow-hidden transition-colors duration-700;
+        pointer-events: none !important;
+        z-index: -100;
         background-color: oklch(0.145 0 0);
     }
 
@@ -251,8 +254,9 @@
     }
 
     .grain-overlay {
-        @apply fixed inset-0 pointer-events-none;
-        z-index: 1;
+        @apply fixed inset-0;
+        pointer-events: none !important;
+        z-index: -90;
         opacity: 0.04;
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
         background-size: 200px 200px;
@@ -519,13 +523,13 @@
     .liquid-glass-sidebar {
         backdrop-filter: blur(40px) saturate(1.8);
         -webkit-backdrop-filter: blur(40px) saturate(1.8);
-        background: color-mix(in srgb, var(--sidebar-background) 80%, transparent);
+        background: color-mix(in srgb, var(--sidebar) 80%, transparent);
         border-right: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
         transition: all 300ms ease;
     }
 
     .dark .liquid-glass-sidebar {
-        background: color-mix(in srgb, var(--sidebar-background) 40%, transparent);
+        background: color-mix(in srgb, var(--sidebar) 40%, transparent);
         border-right: 1px solid color-mix(in srgb, white 5%, transparent);
     }
 
@@ -539,6 +543,20 @@
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
+    }
+
+    /* Liquid Glass — header variant */
+    .liquid-glass-header {
+        backdrop-filter: blur(24px) saturate(2);
+        -webkit-backdrop-filter: blur(24px) saturate(2);
+        background: color-mix(in srgb, var(--background) 70%, transparent);
+        border-bottom: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
+        transition: all 300ms ease;
+    }
+
+    .dark .liquid-glass-header {
+        background: color-mix(in srgb, var(--background) 40%, transparent);
+        border-bottom: 1px solid color-mix(in srgb, white 5%, transparent);
     }
 
     .sidebar-active-gradient {
