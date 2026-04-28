@@ -1,15 +1,19 @@
 import { Head, Link } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
+import { EmployeeSearch } from '@/components/EmployeeSearch';
+import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import LeaveNavigation from './Components/LeaveNavigation';
-import { Pagination } from '@/components/Pagination';
-import { EmployeeSearch } from '@/components/EmployeeSearch';
 
 
 export default function LeaveDashboard({ leaves, allEmployees, filters }: { leaves: any, allEmployees: any[], filters: any }) {
     const formatDate = (dateString: string) => {
-        if (!dateString) return '';
+        if (!dateString) {
+return '';
+}
+
         const date = new Date(dateString);
+
         return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Manila' });
     };
 

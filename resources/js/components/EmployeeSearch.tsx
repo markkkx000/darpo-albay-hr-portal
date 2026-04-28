@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, ComboboxButton, Transition } from '@headlessui/react';
 import { router } from '@inertiajs/react';
 import { Check, ChevronsUpDown, Search } from 'lucide-react';
-import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, ComboboxButton, Transition } from '@headlessui/react';
+import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 
 interface User {
@@ -37,6 +37,7 @@ export function EmployeeSearch({
                 const fullName = `${user.first_name} ${user.last_name}`.toLowerCase();
                 const reverseName = `${user.last_name}, ${user.first_name}`.toLowerCase();
                 const searchStr = query.toLowerCase();
+
                 return fullName.includes(searchStr) || 
                        reverseName.includes(searchStr) || 
                        (user.employee_number && user.employee_number.toLowerCase().includes(searchStr));
@@ -44,7 +45,9 @@ export function EmployeeSearch({
     }, [query, users]);
 
     const handleChange = (val: string | null) => {
-        if (!val) return;
+        if (!val) {
+return;
+}
         
         if (onSelect) {
             onSelect(val as string | 'all');
@@ -80,12 +83,17 @@ export function EmployeeSearch({
                         <ComboboxInput
                             className="w-full border-none py-2 pl-9 pr-10 text-sm leading-5 text-foreground bg-transparent focus:ring-0 outline-none"
                             displayValue={(val: string) => {
-                                if (val === 'all' || !val) return '';
+                                if (val === 'all' || !val) {
+return '';
+}
+
                                 // If it's a numeric ID, find the user
                                 if (!isNaN(Number(val))) {
                                     const found = users.find((u) => u.id.toString() === val);
+
                                     return found ? `${found.last_name}, ${found.first_name}` : val;
                                 }
+
                                 return val;
                             }}
                             placeholder={placeholder}

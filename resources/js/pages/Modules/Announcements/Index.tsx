@@ -1,10 +1,10 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { manage } from '@/routes/announcements/index';
 import { Megaphone, Settings } from 'lucide-react';
 import { AnnouncementCard } from '@/components/Announcements/AnnouncementCard';
 import Heading from '@/components/heading';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
+import { manage } from '@/routes/announcements/index';
 
 interface Props {
     announcements: {

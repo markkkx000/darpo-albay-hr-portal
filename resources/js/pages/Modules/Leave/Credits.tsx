@@ -1,10 +1,10 @@
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
+import { EmployeeSearch } from '@/components/EmployeeSearch';
+import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import LeaveNavigation from './Components/LeaveNavigation';
-import { Pagination } from '@/components/Pagination';
-import { EmployeeSearch } from '@/components/EmployeeSearch';
 
 
 export default function LeaveCredits({ users, leaveTypes, currentYear, allEmployees, filters }: any) {

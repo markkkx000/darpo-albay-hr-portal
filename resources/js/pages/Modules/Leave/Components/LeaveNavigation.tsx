@@ -1,8 +1,8 @@
 import { Link, usePage } from '@inertiajs/react';
 import { Calendar, CalendarClock, Clock, Settings, UserMinus } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { index, calendar, settings } from '@/routes/leave/index';
 import { index as credits_index } from '@/routes/leave/credits/index';
+import { index, calendar, settings } from '@/routes/leave/index';
 import { index as tardiness_index } from '@/routes/leave/tardiness/index';
 
 export default function LeaveNavigation() {

@@ -1,11 +1,11 @@
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
+import { EmployeeSearch } from '@/components/EmployeeSearch';
+import { Pagination } from '@/components/Pagination';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import LeaveNavigation from './Components/LeaveNavigation';
-import { Pagination } from '@/components/Pagination';
-import { EmployeeSearch } from '@/components/EmployeeSearch';
 
 
 export default function LeaveTardiness({ users, currentYear, allEmployees, filters }: any) {

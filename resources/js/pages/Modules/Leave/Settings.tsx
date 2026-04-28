@@ -1,15 +1,15 @@
 import { Head, router } from '@inertiajs/react';
+import { Plus, Power, PowerOff } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus, Power, PowerOff } from 'lucide-react';
-import LeaveNavigation from './Components/LeaveNavigation';
-import { settings } from '@/routes/leave/index';
-import { store as holidays_store, destroy as holidays_destroy } from '@/routes/leave/holidays/index';
-import { store as types_store, update as types_update, destroy as types_destroy } from '@/routes/leave/types/index';
-import { store as statuses_store, update as statuses_update, destroy as statuses_destroy } from '@/routes/leave/statuses/index';
 import { cn } from '@/lib/utils';
+import { store as holidays_store, destroy as holidays_destroy } from '@/routes/leave/holidays/index';
+import { settings } from '@/routes/leave/index';
+import { store as statuses_store, update as statuses_update, destroy as statuses_destroy } from '@/routes/leave/statuses/index';
+import { store as types_store, update as types_update, destroy as types_destroy } from '@/routes/leave/types/index';
+import LeaveNavigation from './Components/LeaveNavigation';
 
 
 export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, currentYear }: any) {
@@ -60,6 +60,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
 
     const handleToggleType = (type: any) => {
         const action = type.is_active ? 'deactivate' : 'reactivate';
+
         if (confirm(`Are you sure you want to ${action} this leave type?`)) {
             if (type.is_active) {
                 router.delete(types_destroy(type.id).url, { preserveScroll: true });
@@ -82,6 +83,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
 
     const handleToggleStatus = (status: any) => {
         const action = status.is_active ? 'deactivate' : 'reactivate';
+
         if (confirm(`Are you sure you want to ${action} this leave status?`)) {
             if (status.is_active) {
                 router.delete(statuses_destroy(status.id).url, { preserveScroll: true });

@@ -1,14 +1,14 @@
-import { useState, useMemo } from 'react';
+import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, ComboboxButton, Transition } from '@headlessui/react';
 import { Head, router } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight, Check, ChevronsUpDown } from 'lucide-react';
-import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, ComboboxButton, Transition } from '@headlessui/react';
-import { cn } from '@/lib/utils';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import LeaveNavigation from './Components/LeaveNavigation';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
+
 import { calendar } from '@/routes/leave/index';
+import LeaveNavigation from './Components/LeaveNavigation';
 
 
 export default function LeaveCalendar({ leaves, leaveTypes, users, currentYear, currentMonth, currentUserId }: any) {
@@ -20,8 +20,12 @@ export default function LeaveCalendar({ leaves, leaveTypes, users, currentYear, 
 
     // Normalize dates to Manila time once to avoid loop overhead and timezone bugs
     const getManilaDateStr = (isoString: string) => {
-        if (!isoString) return '';
+        if (!isoString) {
+return '';
+}
+
         const date = new Date(isoString);
+
         return date.toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
     };
 
@@ -37,6 +41,7 @@ export default function LeaveCalendar({ leaves, leaveTypes, users, currentYear, 
             ? users
             : users.filter((u: any) => {
                   const fullName = `${u.first_name} ${u.last_name}`.toLowerCase();
+
                   return fullName.includes(query.toLowerCase());
               });
     }, [query, users]);
@@ -137,8 +142,12 @@ export default function LeaveCalendar({ leaves, leaveTypes, users, currentYear, 
                                         <ComboboxInput
                                             className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-foreground bg-transparent focus:ring-0 outline-none"
                                             displayValue={(val: string) => {
-                                                if (val === 'all' || !val) return 'All Employees';
+                                                if (val === 'all' || !val) {
+return 'All Employees';
+}
+
                                                 const found = users.find((u: any) => u.id.toString() === val);
+
                                                 return found ? `${found.last_name}, ${found.first_name}` : '';
                                             }}
                                             placeholder="Search employee..."
@@ -246,6 +255,7 @@ export default function LeaveCalendar({ leaves, leaveTypes, users, currentYear, 
                                 if (l.manila_specific_dates && l.manila_specific_dates.length > 0) {
                                     return l.manila_specific_dates.includes(dateStr);
                                 }
+
                                 return dateStr >= l.manila_start_date && dateStr <= l.manila_end_date;
                             });
 

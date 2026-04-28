@@ -1,6 +1,7 @@
 import { Head, router, useForm } from '@inertiajs/react';
-import { useState, type FormEvent } from 'react';
 import { X } from 'lucide-react';
+import { useState  } from 'react';
+import type {FormEvent} from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -49,6 +50,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
 
     const toggleDateMode = (mode: 'range' | 'specific') => {
         setDateMode(mode);
+
         if (mode === 'range') {
             setData('specific_dates', []);
         } else {
@@ -61,30 +63,42 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
     const typeName = selectedLeaveType?.name?.toLowerCase() || '';
 
     const getDetailsOptions = (name: string) => {
-        if (!name) return [];
+        if (!name) {
+return [];
+}
+
         if (name.includes('vacation') || name.includes('special privilege')) {
             return ['Within the Philippines', 'Abroad'];
         }
+
         if (name.includes('sick')) {
             return ['In Hospital', 'Out Patient'];
         }
+
         if (name.includes('women')) {
             return ['Illness'];
         }
+
         if (name.includes('study')) {
             return ['Completion of Master\'s Degree', 'BAR/Board Examination Review', 'Others'];
         }
+
         return ['Monetization of Leave Credits', 'Terminal Leave', 'Others'];
     };
 
     const detailsOptions = getDetailsOptions(typeName);
 
     const getDetailsParts = (detailsString: string) => {
-        if (!detailsString) return { category: '', specify: '' };
+        if (!detailsString) {
+return { category: '', specify: '' };
+}
+
         const parts = detailsString.split(': ');
+
         if (parts.length > 1) {
             return { category: parts[0], specify: parts.slice(1).join(': ') };
         }
+
         return { category: detailsString, specify: '' };
     };
 
