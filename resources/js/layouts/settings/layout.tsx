@@ -1,5 +1,4 @@
 import { Link } from '@inertiajs/react';
-import { motion } from 'framer-motion';
 import type { PropsWithChildren } from 'react';
 import Heading from '@/components/heading';
 import { Separator } from '@/components/ui/separator';
@@ -58,10 +57,8 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                     )}
                                 >
                                     {active && (
-                                        <motion.div
-                                            layoutId="settings-active"
+                                        <div
                                             className="sidebar-active-gradient absolute inset-0 rounded-xl"
-                                            transition={{ type: 'spring', bounce: 0.25, duration: 0.5 }}
                                         />
                                     )}
                                     <span className="relative z-10 flex items-center">
