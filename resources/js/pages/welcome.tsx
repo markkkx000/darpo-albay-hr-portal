@@ -20,10 +20,6 @@ export default function Welcome() {
                        Adapted from: codepen.io/wilvander/pen/KKQrGgP
                        Colours: Green → Yellow
                     ═══════════════════════════════════════════ */
-                    @keyframes blob-rotate {
-                        0%   { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
 
                     .welcome-bg {
                         position: fixed;
@@ -48,10 +44,33 @@ export default function Welcome() {
                             hsl(142, 85%, 45%),
                             hsl(52, 100%, 55%)
                         );
-                        animation: blob-rotate var(--speed) var(--easing) alternate infinite;
                         border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
                         will-change: transform;
                         opacity: 0.4;
+                    }
+
+                    .blob-offset-1 {
+                        position: absolute;
+                        top: 15%;
+                        left: 75%;
+                        width: 300px;
+                        height: 300px;
+                        filter: blur(80px);
+                        background-image: linear-gradient(hsl(52, 100%, 55%), hsl(142, 70%, 40%));
+                        border-radius: 50% 30% 70% 40% / 40% 60% 30% 60%;
+                        opacity: 0.2;
+                    }
+
+                    .blob-offset-2 {
+                        position: absolute;
+                        top: 70%;
+                        left: 10%;
+                        width: 260px;
+                        height: 260px;
+                        filter: blur(70px);
+                        background-image: linear-gradient(hsl(142, 85%, 45%), hsl(180, 60%, 40%));
+                        border-radius: 40% 60% 30% 70% / 60% 40% 60% 30%;
+                        opacity: 0.18;
                     }
 
                     @media (min-width: 1024px) {
@@ -59,6 +78,8 @@ export default function Welcome() {
                             --size: 650px; 
                             opacity: 0.6;
                         }
+                        .blob-offset-1 { width: 420px; height: 420px; opacity: 0.25; }
+                        .blob-offset-2 { width: 360px; height: 360px; opacity: 0.22; }
                     }
 
                     /* Grain noise overlay for premium texture */
@@ -72,38 +93,15 @@ export default function Welcome() {
                         background-size: 200px 200px;
                     }
 
-                    /* Smooth fade-in on load */
-                    @keyframes fade-up {
-                        from { opacity: 0; transform: translateY(24px); }
-                        to   { opacity: 1; transform: translateY(0); }
-                    }
-
-                    .animate-fade-up {
-                        animation: fade-up 0.7s ease forwards;
-                    }
-                    .animate-fade-up-delay-1 {
-                        opacity: 0;
-                        animation: fade-up 0.7s ease 0.15s forwards;
-                    }
-                    .animate-fade-up-delay-2 {
-                        opacity: 0;
-                        animation: fade-up 0.7s ease 0.3s forwards;
-                    }
-                    .animate-fade-up-delay-3 {
-                        opacity: 0;
-                        animation: fade-up 0.7s ease 0.45s forwards;
-                    }
-                    .animate-fade-up-delay-4 {
-                        opacity: 0;
-                        animation: fade-up 0.7s ease 0.6s forwards;
-                    }
-
                     /* Glassmorphism card — dark-tinted */
                     .glass-card {
                         background: rgba(0, 0, 0, 0.42);
                         border: 1px solid rgba(255, 255, 255, 0.09);
                         backdrop-filter: blur(16px);
                         -webkit-backdrop-filter: blur(16px);
+                        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                                    border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                                    box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
                     }
 
                     /* Primary CTA button — Enhanced Shadow */
@@ -126,15 +124,6 @@ export default function Welcome() {
                             inset 0 1px 0 rgba(255, 255, 255, 0.2);
                         white-space: nowrap;
                     }
-                    .btn-primary:hover {
-                        filter: brightness(1.1);
-                        transform: translateY(-3px) scale(1.02);
-                        box-shadow: 
-                            0 25px 30px -5px rgba(0, 0, 0, 0.6), 
-                            0 15px 15px -5px rgba(0, 0, 0, 0.4),
-                            0 0 50px rgba(110, 210, 100, 0.6);
-                    }
-                    .btn-primary:active { transform: translateY(0); }
 
                     /* Nav button — solid dark, high contrast */
                     .btn-ghost {
@@ -163,7 +152,7 @@ export default function Welcome() {
 
                     /* Highlight text — Clean, high-contrast light green with sharp shadow */
                     .text-highlight {
-                        color: #f0fdf4; /* emerald-50 */
+                        color: #f0fdf4;
                         text-shadow: 
                             0 4px 12px rgba(0, 0, 0, 1),
                             0 0 40px rgba(0, 0, 0, 0.6);
@@ -188,12 +177,85 @@ export default function Welcome() {
                             0 2px 10px rgba(0, 0, 0, 0.8), 
                             0 0 25px rgba(0, 0, 0, 0.4);
                     }
+
+                    /* ── Motion-safe animations ── */
+                    @media (prefers-reduced-motion: no-preference) {
+                        @keyframes blob-rotate {
+                            0%   { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                        @keyframes blob-float {
+                            0%, 100% { transform: translateY(0px) scale(1); }
+                            50%       { transform: translateY(-20px) scale(1.03); }
+                        }
+                        @keyframes fade-up {
+                            from { opacity: 0; transform: translateY(24px); }
+                            to   { opacity: 1; transform: translateY(0); }
+                        }
+
+                        .blob {
+                            animation: blob-rotate var(--speed) var(--easing) alternate infinite;
+                        }
+                        .blob-offset-1 {
+                            animation: blob-float 18s ease-in-out infinite;
+                        }
+                        .blob-offset-2 {
+                            animation: blob-float 22s ease-in-out infinite reverse;
+                        }
+                        .animate-fade-up {
+                            animation: fade-up 0.7s ease forwards;
+                        }
+                        .animate-fade-up-delay-1 {
+                            opacity: 0;
+                            animation: fade-up 0.7s ease 0.15s forwards;
+                        }
+                        .animate-fade-up-delay-2 {
+                            opacity: 0;
+                            animation: fade-up 0.7s ease 0.3s forwards;
+                        }
+                        .animate-fade-up-delay-3 {
+                            opacity: 0;
+                            animation: fade-up 0.7s ease 0.45s forwards;
+                        }
+                        .animate-fade-up-delay-4 {
+                            opacity: 0;
+                            animation: fade-up 0.7s ease 0.6s forwards;
+                        }
+                        .glass-card:hover {
+                            transform: translateY(-6px);
+                            border-color: rgba(74, 222, 128, 0.32);
+                            box-shadow:
+                                0 20px 60px rgba(0, 0, 0, 0.4),
+                                0 0 30px rgba(74, 222, 128, 0.12),
+                                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+                        }
+                        .btn-primary:hover {
+                            filter: brightness(1.1);
+                            transform: translateY(-3px) scale(1.02);
+                            box-shadow: 
+                                0 25px 30px -5px rgba(0, 0, 0, 0.6), 
+                                0 15px 15px -5px rgba(0, 0, 0, 0.4),
+                                0 0 50px rgba(110, 210, 100, 0.6);
+                        }
+                        .btn-primary:active { transform: translateY(0); }
+                    }
+
+                    /* Non-animated fallback states */
+                    .animate-fade-up,
+                    .animate-fade-up-delay-1,
+                    .animate-fade-up-delay-2,
+                    .animate-fade-up-delay-3,
+                    .animate-fade-up-delay-4 {
+                        opacity: 1;
+                    }
                 `}</style>
             </Head>
 
             {/* ── Animated background ── */}
             <div className="welcome-bg" aria-hidden="true">
                 <div className="blob" />
+                <div className="blob-offset-1" />
+                <div className="blob-offset-2" />
             </div>
             <div className="grain-overlay" aria-hidden="true" />
 
