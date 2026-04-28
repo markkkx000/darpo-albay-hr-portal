@@ -10,11 +10,20 @@ import {
     Calendar,
     Users
 } from 'lucide-react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { Pagination } from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { 
     DropdownMenu, 
     DropdownMenuContent, 
@@ -40,18 +49,35 @@ interface Props {
 }
 
 export default function Manage({ announcements }: Props) {
-    const handleDelete = (id: number) => {
-        if (confirm('Are you sure you want to delete this announcement?')) {
-            router.delete(destroy(id).url, {
-                onSuccess: () => toast.success('Announcement deleted'),
+    const [announcementToDelete, setAnnouncementToDelete] = useState<any | null>(null);
+    const [announcementToPublish, setAnnouncementToPublish] = useState<any | null>(null);
+
+    const handleDelete = () => {
+        if (announcementToDelete) {
+            router.delete(destroy(announcementToDelete.id).url, {
+                onSuccess: () => {
+                    toast.success('Announcement deleted');
+                    setAnnouncementToDelete(null);
+                },
+                onError: () => {
+                    toast.error('Failed to delete announcement');
+                    setAnnouncementToDelete(null);
+                },
             });
         }
     };
 
-    const handlePublish = (id: number) => {
-        if (confirm('Are you sure you want to publish this announcement? This will notify all targeted users.')) {
-            router.post(publish(id).url, {}, {
-                onSuccess: () => toast.success('Announcement published'),
+    const handlePublish = () => {
+        if (announcementToPublish) {
+            router.post(publish(announcementToPublish.id).url, {}, {
+                onSuccess: () => {
+                    toast.success('Announcement published');
+                    setAnnouncementToPublish(null);
+                },
+                onError: () => {
+                    toast.error('Failed to publish announcement');
+                    setAnnouncementToPublish(null);
+                },
             });
         }
     };
@@ -99,8 +125,18 @@ export default function Manage({ announcements }: Props) {
                                 <tbody className="divide-y divide-muted/30">
                                     {announcements.data.length === 0 ? (
                                         <tr>
-                                            <td colSpan={6} className="px-6 py-10 text-center text-muted-foreground">
-                                                No announcements found.
+                                            <td colSpan={6} className="px-6 py-16 text-center text-muted-foreground">
+                                                <div className="flex flex-col items-center gap-3">
+                                                    <Megaphone className="h-10 w-10 opacity-15" />
+                                                    <p className="font-medium text-sm">No announcements yet</p>
+                                                    <p className="text-xs opacity-60 max-w-[220px]">Create your first announcement to notify the organization.</p>
+                                                    <Link href={create().url}>
+                                                        <Button size="sm" className="mt-2 gap-2">
+                                                            <Plus className="h-3.5 w-3.5" />
+                                                            Create Announcement
+                                                        </Button>
+                                                    </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ) : (
@@ -140,7 +176,7 @@ export default function Manage({ announcements }: Props) {
                                                 <td className="px-6 py-4 text-right">
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
-                                                            <Button variant="ghost" size="icon">
+                                                            <Button variant="ghost" size="icon" aria-label={`Actions for ${announcement.title}`}>
                                                                 <MoreHorizontal className="h-4 w-4" />
                                                             </Button>
                                                         </DropdownMenuTrigger>
@@ -158,13 +194,13 @@ export default function Manage({ announcements }: Props) {
                                                                             <Edit2 className="h-4 w-4" /> Edit
                                                                         </Link>
                                                                     </DropdownMenuItem>
-                                                                    <DropdownMenuItem onClick={() => handlePublish(announcement.id)} className="gap-2 text-green-600">
+                                                                    <DropdownMenuItem onClick={() => setAnnouncementToPublish(announcement)} className="gap-2 text-green-600">
                                                                         <Send className="h-4 w-4" /> Publish
                                                                     </DropdownMenuItem>
                                                                 </>
                                                             )}
                                                             
-                                                            <DropdownMenuItem onClick={() => handleDelete(announcement.id)} className="gap-2 text-destructive">
+                                                            <DropdownMenuItem onClick={() => setAnnouncementToDelete(announcement)} className="gap-2 text-destructive">
                                                                 <Trash2 className="h-4 w-4" /> Delete
                                                             </DropdownMenuItem>
                                                         </DropdownMenuContent>
@@ -182,6 +218,41 @@ export default function Manage({ announcements }: Props) {
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Delete Confirmation Dialog */}
+            <Dialog open={!!announcementToDelete} onOpenChange={(open) => !open && setAnnouncementToDelete(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Delete Announcement?</DialogTitle>
+                        <DialogDescription>
+                            This will permanently delete <strong>"{announcementToDelete?.title}"</strong>. This action cannot be undone.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setAnnouncementToDelete(null)}>Cancel</Button>
+                        <Button variant="destructive" onClick={handleDelete}>Delete</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Publish Confirmation Dialog */}
+            <Dialog open={!!announcementToPublish} onOpenChange={(open) => !open && setAnnouncementToPublish(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Publish Announcement?</DialogTitle>
+                        <DialogDescription>
+                            This will immediately notify all targeted users about <strong>"{announcementToPublish?.title}"</strong>. Once published, this announcement cannot be unpublished.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setAnnouncementToPublish(null)}>Cancel</Button>
+                        <Button onClick={handlePublish} className="gap-2">
+                            <Send className="h-4 w-4" />
+                            Publish Now
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }
