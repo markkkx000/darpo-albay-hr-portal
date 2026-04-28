@@ -1,5 +1,4 @@
 import { Link } from '@inertiajs/react';
-import { motion } from 'framer-motion';
 import { DynamicIcon } from '@/components/dynamic-icon';
 import {
     SidebarGroup,
@@ -31,11 +30,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                             >
                                 <Link href={item.href} prefetch className="relative">
                                     {active && (
-                                        <motion.div
-                                            layoutId="sidebar-active"
-                                            className="sidebar-active-gradient absolute inset-0 rounded-md"
-                                            transition={{ type: 'spring', bounce: 0.25, duration: 0.5 }}
-                                        />
+                                        <div className="sidebar-active-gradient absolute inset-0 rounded-md" />
                                     )}
                                     <span className="relative z-10 flex items-center gap-2">
                                         {item.icon && (
