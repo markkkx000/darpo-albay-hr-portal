@@ -291,6 +291,23 @@
         @apply opacity-50 cursor-not-allowed grayscale;
     }
 
+    .btn-gradient-amber {
+        @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all duration-300;
+        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        color: #fff;
+        box-shadow: 
+            0 10px 15px -3px rgba(0, 0, 0, 0.2), 
+            0 0 20px rgba(245, 158, 11, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-gradient-amber:hover:not(:disabled) {
+        @apply brightness-110 -translate-y-0.5 scale-[1.02];
+        box-shadow: 
+            0 20px 25px -5px rgba(0, 0, 0, 0.3), 
+            0 0 40px rgba(245, 158, 11, 0.5);
+    }
+
     .glass-panel {
         @apply backdrop-blur-xl border border-white/10 dark:border-white/5;
         background: rgba(255, 255, 255, 0.7);
