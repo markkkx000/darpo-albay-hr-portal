@@ -43,9 +43,10 @@ return null;
                             <span
                                 key={index}
                                 className={cn(
-                                    "flex h-9 min-w-9 items-center justify-center rounded-md border border-transparent px-3 text-sm text-muted-foreground opacity-50 cursor-not-allowed",
+                                    "flex h-11 min-w-11 items-center justify-center rounded-md border border-transparent px-3 text-sm text-muted-foreground opacity-50 cursor-not-allowed",
                                     (isPrev || isNext) && "px-2"
                                 )}
+                                aria-disabled="true"
                                 dangerouslySetInnerHTML={typeof label === 'string' ? { __html: label } : undefined}
                             >
                                 {typeof label !== 'string' ? label : null}
@@ -59,8 +60,10 @@ return null;
                             href={link.url}
                             preserveScroll
                             preserveState
+                            aria-label={isPrev ? 'Go to previous page' : isNext ? 'Go to next page' : `Go to page ${link.label}`}
+                            aria-current={link.active ? 'page' : undefined}
                             className={cn(
-                                "flex h-9 min-w-9 items-center justify-center rounded-md border text-sm transition-all duration-200 hover:bg-muted font-medium",
+                                "flex h-11 min-w-11 items-center justify-center rounded-md border text-sm transition-all duration-200 hover:bg-muted font-medium",
                                 link.active 
                                     ? "bg-primary border-primary text-primary-foreground hover:bg-primary/90 shadow-sm" 
                                     : "bg-background border-input text-foreground",
