@@ -22,7 +22,7 @@ export default function Create({ departments, positions, employmentStatuses }: P
             <Head title="Add Employee" />
             
             <div className="p-4 max-w-4xl mx-auto">
-                <Card className="border-none shadow-xl">
+                <Card className="liquid-glass-card border-none shadow-xl">
                     <CardHeader className="pb-4">
                         <CardTitle className="text-2xl">Add New Employee</CardTitle>
                         <CardDescription>Enter the personal and professional details for the new staff member.</CardDescription>
