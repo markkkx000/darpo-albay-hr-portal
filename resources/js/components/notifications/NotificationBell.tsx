@@ -95,7 +95,7 @@ return;
     return (
         <DropdownMenu onOpenChange={(open) => open && fetchRecent()}>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-full">
+                <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-full" aria-label="Notifications">
                     <Bell className="h-5 w-5" />
                     {unreadCount > 0 && (
                         <Badge variant="destructive" className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] animate-in zoom-in">
@@ -164,6 +164,7 @@ return;
                                                 variant="ghost" 
                                                 size="icon" 
                                                 className="h-7 w-7 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted" 
+                                                aria-label="Dismiss notification"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     markAsRead(notification.id);
