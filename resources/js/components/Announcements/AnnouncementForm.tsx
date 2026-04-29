@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react';
+import { useForm, router } from '@inertiajs/react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,7 +35,10 @@ export function AnnouncementForm({
         e.preventDefault();
         
         const options = {
-            onSuccess: () => toast.success(announcement ? 'Announcement updated' : 'Announcement draft saved'),
+            onSuccess: () => {
+                toast.success(announcement ? 'Announcement updated' : 'Announcement draft saved');
+                router.clearHistory();
+            },
         };
 
         if (method === 'post') {

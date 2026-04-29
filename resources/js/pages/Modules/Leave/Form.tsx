@@ -133,9 +133,14 @@ return { category: '', specify: '' };
             router.post(`/leave/${leaveRequest.id}`, {
                 _method: 'put',
                 ...data,
-            }, { preserveScroll: true });
+            }, { 
+                preserveScroll: true,
+                onSuccess: () => router.clearHistory()
+            });
         } else {
-            post('/leave');
+            post('/leave', {
+                onSuccess: () => router.clearHistory()
+            });
         }
     };
 
