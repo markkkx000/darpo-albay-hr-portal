@@ -50,8 +50,8 @@ export function HROverview() {
                                 <div className="font-medium text-zinc-800 dark:text-[#84cc16] drop-shadow-sm group-hover/btn:text-[#84cc16] transition-colors">Attendance Reports</div>
                                 <div className="text-sm text-zinc-600 dark:text-zinc-400 opacity-90">Generate attendance and payroll reports</div>
                             </button>
-                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#FDFF00]/10 dark:bg-[#FDFF00]/20 hover:bg-[#FDFF00]/20 dark:hover:bg-[#FDFF00]/30 rounded-xl border border-[#FDFF00]/30 shadow-sm transition-all duration-300 hover:-translate-y-0.5">
-                                <div className="font-medium text-zinc-800 dark:text-[#FDFF00] drop-shadow-sm group-hover/btn:text-[#FDFF00] transition-colors">Recruitment</div>
+                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#eab308]/10 dark:bg-[#eab308]/20 hover:bg-[#eab308]/20 dark:hover:bg-[#eab308]/30 rounded-xl border border-[#eab308]/30 shadow-sm transition-all duration-300 hover:-translate-y-0.5">
+                                <div className="font-medium text-zinc-800 dark:text-[#eab308] drop-shadow-sm group-hover/btn:text-[#eab308] transition-colors">Recruitment</div>
                                 <div className="text-sm text-zinc-600 dark:text-zinc-400 opacity-90">Manage job postings and applications</div>
                             </button>
                         </div>
