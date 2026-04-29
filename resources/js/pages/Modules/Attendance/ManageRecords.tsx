@@ -156,7 +156,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                     <CardContent className="p-0">
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm text-left">
-                                <thead className="text-xs text-muted-foreground uppercase bg-muted/20 font-bold">
+                                <thead className="text-xs text-muted-foreground uppercase liquid-glass font-bold">
                                     <tr>
                                         <th className="px-6 py-4 border-b">Employee</th>
                                         <th className="px-6 py-4 border-b">Date</th>

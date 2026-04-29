@@ -82,7 +82,7 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
     };
 
     return (
-        <div className="glass-panel rounded-xl p-6 shadow-sm space-y-6">
+        <div className="liquid-glass rounded-xl p-6 space-y-6">
             <div className="flex items-center gap-2 text-foreground font-bold bg-muted/20 w-fit px-3 py-1 rounded-lg border border-white/5">
                 <Filter className="h-4 w-4 text-primary" />
                 <span className="text-xs uppercase tracking-widest">Filters</span>
@@ -133,7 +133,7 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                             <SelectTrigger className="h-10 bg-muted/20 border-white/10 focus:ring-0">
                                 <SelectValue placeholder="All Status" />
                             </SelectTrigger>
-                            <SelectContent className="glass-panel border-white/10">
+                            <SelectContent className="liquid-glass border-white/10">
                                 <SelectItem value="all">All Status</SelectItem>
                                 <SelectItem value="working">Currently Working</SelectItem>
                                 <SelectItem value="completed">Completed</SelectItem>
