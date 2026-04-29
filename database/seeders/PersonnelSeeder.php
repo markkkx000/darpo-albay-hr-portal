@@ -15,39 +15,47 @@ class PersonnelSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Create standard departments
-        $departments = [
-            ['name' => 'Provincial Agrarian Reform Adjudication Division (PARAD)'],
-            ['name' => 'Support To Operations Division (STOD)'],
-            ['name' => 'Land Tenure Improvement Division (LTID)'],
-            ['name' => 'Program Beneficiaries Development Division (PBDD)'],
-            ['name' => 'Legal Division'],
+        // 1 & 2. Create departments and their specific positions
+        $departmentsAndPositions = [
+            'Office of the PARPO' => [
+                'Provincial Agrarian Reform Program Officer II (PARPO II)',
+                'PARPO I',
+                'Provincial Agrarian Reform Adjudicator (PARAD)',
+                'Provincial Chief Administrative Officer (PCAO)',
+            ],
+            'Land Tenure Improvement Division (LTID)' => [
+                'Chief Agrarian Reform Program Officer (CARPO)',
+                'ARPO II',
+                'ARPO I',
+                'Agrarian Reform Program Technologist (ARPT)',
+                'Survey personnel',
+            ],
+            'Program Beneficiaries Development Division (PBDD)' => [
+                'Chief ARPO (CARPO)',
+                'ARPO II',
+                'ARPO I',
+                'ARPT',
+            ],
+            'Legal Division (LD)' => [
+                'Chief (Attorney)',
+                'Legal Officers',
+                'ARPO',
+            ],
+            'Support To Operations Division (STOD)' => [
+                'PCAO / Administrative Officer',
+                'Admin staff',
+                'Records Officer',
+                'Cashier',
+                'Driver',
+            ],
         ];
 
-        foreach ($departments as $dept) {
-            Department::updateOrCreate(['name' => $dept['name']], ['is_active' => true]);
-        }
+        foreach ($departmentsAndPositions as $deptName => $positions) {
+            $department = Department::updateOrCreate(['name' => $deptName], ['is_active' => true]);
 
-        $allDepartments = Department::all();
-
-        // 2. Create common positions for each department
-        $positions = [
-            'Regional Director',
-            'Assistant Regional Director',
-            'Division Chief',
-            'Senior Agrarian Reform Program Officer',
-            'Agrarian Reform Program Officer II',
-            'Agrarian Reform Program Officer I',
-            'Administrative Officer V',
-            'Administrative Assistant III',
-            'Legal Officer IV',
-            'Planning Officer II',
-        ];
-
-        foreach ($allDepartments as $dept) {
-            foreach (array_rand(array_flip($positions), 3) as $posName) {
+            foreach ($positions as $posName) {
                 Position::updateOrCreate(
-                    ['name' => $posName, 'department_id' => $dept->id],
+                    ['name' => $posName, 'department_id' => $department->id],
                     ['is_active' => true]
                 );
             }
