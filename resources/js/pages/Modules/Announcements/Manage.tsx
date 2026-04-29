@@ -95,7 +95,7 @@ export default function Manage({ announcements }: Props) {
                         </p>
                     </div>
                     <Link href={create().url}>
-                        <Button className="gap-2">
+                        <Button className="btn-gradient gap-2 px-6 py-5 rounded-xl shadow-lg border-none">
                             <Plus className="h-4 w-4" />
                             Create Announcement
                         </Button>
@@ -131,7 +131,7 @@ export default function Manage({ announcements }: Props) {
                                                     <p className="font-medium text-sm">No announcements yet</p>
                                                     <p className="text-xs opacity-60 max-w-[220px]">Create your first announcement to notify the organization.</p>
                                                     <Link href={create().url}>
-                                                        <Button size="sm" className="mt-2 gap-2">
+                                                        <Button size="sm" className="btn-gradient mt-2 gap-2 px-4 py-4 rounded-lg shadow-md border-none">
                                                             <Plus className="h-3.5 w-3.5" />
                                                             Create Announcement
                                                         </Button>
@@ -156,7 +156,15 @@ export default function Manage({ announcements }: Props) {
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <Badge variant={announcement.status === 'published' ? 'default' : 'secondary'} className="capitalize font-normal">
+                                                    <Badge 
+                                                        variant={announcement.status === 'published' ? 'default' : 'secondary'} 
+                                                        className={cn(
+                                                            "capitalize font-bold px-3 py-1 rounded-full",
+                                                            announcement.status === 'published' 
+                                                                ? "bg-[#38E54D] text-[#030f04] shadow-[0_0_15px_rgba(56,229,77,0.6)] animate-pulse-subtle border-none" 
+                                                                : "opacity-70"
+                                                        )}
+                                                    >
                                                         {announcement.status}
                                                     </Badge>
                                                 </td>
@@ -245,8 +253,8 @@ export default function Manage({ announcements }: Props) {
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setAnnouncementToPublish(null)}>Cancel</Button>
-                        <Button onClick={handlePublish} className="gap-2">
+                        <Button variant="outline" onClick={() => setAnnouncementToPublish(null)} className="rounded-xl">Cancel</Button>
+                        <Button onClick={handlePublish} className="btn-gradient gap-2 px-6 py-5 rounded-xl shadow-lg border-none">
                             <Send className="h-4 w-4" />
                             Publish Now
                         </Button>
