@@ -93,15 +93,15 @@ export default function Welcome() {
                         background-size: 200px 200px;
                     }
 
-                    /* Glassmorphism card — dark-tinted */
+                    /* Glassmorphism card — Follows GLASSMORPHISM-RULES.md */
                     .glass-card {
-                        background: rgba(0, 0, 0, 0.42);
-                        border: 1px solid rgba(255, 255, 255, 0.09);
-                        backdrop-filter: blur(16px);
-                        -webkit-backdrop-filter: blur(16px);
-                        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-                                    border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-                                    box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+                        background: rgba(255, 255, 255, 0.08);
+                        border: 1px solid rgba(255, 255, 255, 0.18);
+                        backdrop-filter: blur(20px);
+                        -webkit-backdrop-filter: blur(20px);
+                        border-radius: 24px;
+                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
                     }
 
                     /* Primary CTA button — Enhanced Shadow */
@@ -110,52 +110,53 @@ export default function Welcome() {
                         align-items: center;
                         gap: 0.5rem;
                         padding: 0.875rem 2rem;
-                        border-radius: 0.625rem;
-                        font-weight: 600;
+                        border-radius: 12px;
+                        font-weight: 700;
                         font-size: 1rem;
                         line-height: 1;
                         color: #030f04;
-                        background: linear-gradient(135deg, hsl(142, 70%, 48%), hsl(52, 95%, 55%));
+                        background: linear-gradient(135deg, #4ade80, #facc15);
                         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                         box-shadow: 
                             0 10px 15px -3px rgba(0, 0, 0, 0.5), 
-                            0 4px 6px -2px rgba(0, 0, 0, 0.3),
-                            0 0 30px rgba(110, 210, 100, 0.4),
-                            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                            0 0 30px rgba(74, 222, 128, 0.4),
+                            inset 0 1px 0 rgba(255, 255, 255, 0.3);
                         white-space: nowrap;
                     }
 
-                    /* Nav button — solid dark, high contrast */
+                    /* Nav button — Glass Ghost variant */
                     .btn-ghost {
                         display: inline-flex;
                         align-items: center;
                         gap: 0.5rem;
                         padding: 0.625rem 1.25rem;
-                        border-radius: 0.5rem;
+                        border-radius: 12px;
                         font-weight: 600;
                         font-size: 0.875rem;
                         line-height: 1;
-                        color: #ffffff;
-                        border: 1px solid rgba(255,255,255,0.15);
-                        background: rgba(0, 0, 0, 0.55);
-                        backdrop-filter: blur(8px);
-                        -webkit-backdrop-filter: blur(8px);
-                        transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+                        color: #f0fdf4;
+                        border: 1px solid rgba(255, 255, 255, 0.15);
+                        background: rgba(255, 255, 255, 0.05);
+                        backdrop-filter: blur(16px);
+                        -webkit-backdrop-filter: blur(16px);
+                        transition: all 0.2s ease;
                         white-space: nowrap;
-                        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
                     }
                     .btn-ghost:hover {
-                        background: rgba(0, 0, 0, 0.72);
-                        border-color: rgba(255,255,255,0.28);
-                        box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+                        background: rgba(255, 255, 255, 0.12);
+                        border-color: rgba(255, 255, 255, 0.25);
+                        box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+                        transform: translateY(-1px);
                     }
 
-                    /* Highlight text — Clean, high-contrast light green with sharp shadow */
+                    /* Highlight text — Green-Yellow Gradient as per rules */
                     .text-highlight {
-                        color: #f0fdf4;
-                        text-shadow: 
-                            0 4px 12px rgba(0, 0, 0, 1),
-                            0 0 40px rgba(0, 0, 0, 0.6);
+                        background: linear-gradient(90deg, #4ade80, #facc15);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        background-clip: text;
+                        font-weight: 900;
+                        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.8));
                     }
 
                     /* Feature icon ring */
@@ -165,9 +166,9 @@ export default function Welcome() {
                         justify-content: center;
                         width: 3rem;
                         height: 3rem;
-                        border-radius: 0.875rem;
-                        background: linear-gradient(135deg, rgba(110, 210, 100, 0.2), rgba(250, 220, 60, 0.2));
-                        border: 1px solid rgba(110, 210, 100, 0.25);
+                        border-radius: 1rem;
+                        background: rgba(74, 222, 128, 0.1);
+                        border: 1px solid rgba(74, 222, 128, 0.2);
                         flex-shrink: 0;
                     }
 
@@ -263,7 +264,7 @@ export default function Welcome() {
             <div className="relative z-10 flex min-h-screen flex-col font-sans">
 
                 {/* ── Navbar ── */}
-                <header className="sticky top-0 z-50 border-b border-white/10 bg-black/20 backdrop-blur-md">
+                <header className="sticky top-0 z-50 liquid-glass-header">
                     <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
                         {/* Logo */}
                         <div className="flex items-center gap-2.5">
@@ -293,22 +294,22 @@ export default function Welcome() {
                 <main className="flex flex-1 flex-col items-center justify-center px-6 py-16 sm:py-24 text-center lg:py-32" id="hero">
                     {/* Badge / pill */}
                     <div
-                        className="animate-fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-white/70 backdrop-blur-sm"
+                        className="animate-fade-up mb-6 inline-flex items-center gap-2 rounded-full liquid-glass border-white/30 px-4 py-1.5 text-xs font-black text-white uppercase tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]"
                         aria-label="Province of Albay official HR system"
                     >
-                        <span className="h-1.5 w-1.5 rounded-full bg-[hsl(142,70%,55%)]" aria-hidden="true" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#4ade80] animate-pulse" aria-hidden="true" />
                         Province of Albay — Official HR System
                     </div>
 
                     {/* Headline */}
-                    <h1 className="animate-fade-up-delay-1 text-shadow-glow mx-auto max-w-4xl text-3xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-7xl">
+                    <h1 className="animate-fade-up-delay-1 text-shadow-glow mx-auto max-w-4xl text-3xl font-extrabold tracking-tight text-[#f0fdf4] sm:text-5xl lg:text-7xl">
                         Smarter{' '}
                         <span className="text-highlight">Workforce</span>
                         {' '}Management
                     </h1>
 
                     {/* Subheadline */}
-                    <p className="animate-fade-up-delay-2 text-shadow-glow mx-auto mt-6 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">
+                    <p className="animate-fade-up-delay-2 text-shadow-glow mx-auto mt-6 max-w-xl text-base leading-relaxed text-[#f0fdf4]/60 sm:text-lg">
                         A unified platform for attendance tracking, leave management, and personnel administration — designed for DARPO Albay's team.
                     </p>
 
@@ -340,8 +341,8 @@ export default function Welcome() {
                                 <Clock className="h-5 w-5 text-[hsl(142,70%,65%)]" strokeWidth={1.75} />
                             </div>
                             <div>
-                                <h2 className="text-sm font-semibold text-white">Attendance</h2>
-                                <p className="mt-1 text-sm leading-relaxed text-white/60">
+                                <h2 className="text-sm font-semibold text-[#f0fdf4]">Attendance</h2>
+                                <p className="mt-1 text-sm leading-relaxed text-[#f0fdf4]/60">
                                     Clock in and out with a single tap. Accurate, real-time records.
                                 </p>
                             </div>
@@ -390,7 +391,7 @@ export default function Welcome() {
                 </main>
 
                 {/* ── Footer ── */}
-                <footer className="border-t border-white/8 py-6 text-center text-xs text-white/30">
+                <footer className="border-t border-white/10 py-6 text-center text-xs text-[#f0fdf4]/30">
                     © {new Date().getFullYear()} DARPO Albay. All rights reserved.
                 </footer>
             </div>
