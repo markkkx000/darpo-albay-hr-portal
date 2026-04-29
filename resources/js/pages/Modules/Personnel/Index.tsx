@@ -88,15 +88,15 @@ export default function Index({ employees, filters, departments = [], employment
                             Manage and view all employee records across the agency.
                         </p>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Button variant="outline" asChild className="gap-2">
+                    <div className="flex items-center gap-3">
+                        <Button variant="ghost" asChild className="gap-2 rounded-xl hover:bg-primary/5 border border-primary/10">
                             <Link href={archivedRoute().url}>
                                 <Archive className="h-4 w-4" />
                                 View Archived
                             </Link>
                         </Button>
                         {canCreate && (
-                            <Button asChild className="gap-2 shadow-sm">
+                            <Button asChild className="btn-gradient px-6 py-5 rounded-xl shadow-lg border-none">
                                 <Link href={createRoute().url}>
                                     <Plus className="h-4 w-4" />
                                     Add Employee

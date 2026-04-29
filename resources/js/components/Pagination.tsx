@@ -20,9 +20,11 @@ interface PaginationProps {
 }
 
 export function Pagination({ links, meta }: PaginationProps) {
-    if (links.length <= 3) {
-return null;
-} // Previous, 1, Next - don't show if only one page
+    const showNavigation = links.length > 3;
+
+    if (!showNavigation && !meta) {
+        return null;
+    }
 
     return (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-2">
@@ -32,53 +34,55 @@ return null;
                 </div>
             )}
             
-            <nav className="flex items-center gap-1 select-none flex-wrap justify-center" aria-label="Pagination Navigation">
-                {links.map((link, index) => {
-                    const isPrev = link.label.includes('Previous');
-                    const isNext = link.label.includes('Next');
-                    const label = isPrev ? <ChevronLeft className="h-4 w-4" /> : isNext ? <ChevronRight className="h-4 w-4" /> : link.label;
+            {showNavigation && (
+                <nav className="flex items-center gap-1 select-none flex-wrap justify-center" aria-label="Pagination Navigation">
+                    {links.map((link, index) => {
+                        const isPrev = link.label.includes('Previous');
+                        const isNext = link.label.includes('Next');
+                        const label = isPrev ? <ChevronLeft className="h-4 w-4" /> : isNext ? <ChevronRight className="h-4 w-4" /> : link.label;
 
-                    if (link.url === null) {
+                        if (link.url === null) {
+                            return (
+                                <span
+                                    key={index}
+                                    className={cn(
+                                        "flex h-11 min-w-11 items-center justify-center rounded-md border border-transparent px-3 text-sm text-muted-foreground opacity-50 cursor-not-allowed",
+                                        (isPrev || isNext) && "px-2"
+                                    )}
+                                    aria-disabled="true"
+                                    dangerouslySetInnerHTML={typeof label === 'string' ? { __html: label } : undefined}
+                                >
+                                    {typeof label !== 'string' ? label : null}
+                                </span>
+                            );
+                        }
+
                         return (
-                            <span
+                            <Link
                                 key={index}
+                                href={link.url}
+                                preserveScroll
+                                preserveState
+                                aria-label={isPrev ? 'Go to previous page' : isNext ? 'Go to next page' : `Go to page ${link.label}`}
+                                aria-current={link.active ? 'page' : undefined}
                                 className={cn(
-                                    "flex h-11 min-w-11 items-center justify-center rounded-md border border-transparent px-3 text-sm text-muted-foreground opacity-50 cursor-not-allowed",
+                                    "flex h-11 min-w-11 items-center justify-center rounded-xl border text-sm transition-all duration-300 hover:bg-muted font-bold",
+                                    link.active 
+                                        ? "sidebar-active-gradient sidebar-active-text shadow-lg border-none" 
+                                        : "bg-background/40 backdrop-blur-sm border-white/10 text-muted-foreground hover:text-foreground",
                                     (isPrev || isNext) && "px-2"
                                 )}
-                                aria-disabled="true"
-                                dangerouslySetInnerHTML={typeof label === 'string' ? { __html: label } : undefined}
                             >
-                                {typeof label !== 'string' ? label : null}
-                            </span>
+                                {typeof label === 'string' ? (
+                                    <span dangerouslySetInnerHTML={{ __html: label }} />
+                                ) : (
+                                    label
+                                )}
+                            </Link>
                         );
-                    }
-
-                    return (
-                        <Link
-                            key={index}
-                            href={link.url}
-                            preserveScroll
-                            preserveState
-                            aria-label={isPrev ? 'Go to previous page' : isNext ? 'Go to next page' : `Go to page ${link.label}`}
-                            aria-current={link.active ? 'page' : undefined}
-                            className={cn(
-                                "flex h-11 min-w-11 items-center justify-center rounded-md border text-sm transition-all duration-200 hover:bg-muted font-medium",
-                                link.active 
-                                    ? "bg-primary border-primary text-primary-foreground hover:bg-primary/90 shadow-sm" 
-                                    : "bg-background border-input text-foreground",
-                                (isPrev || isNext) && "px-2"
-                            )}
-                        >
-                            {typeof label === 'string' ? (
-                                <span dangerouslySetInnerHTML={{ __html: label }} />
-                            ) : (
-                                label
-                            )}
-                        </Link>
-                    );
-                })}
-            </nav>
+                    })}
+                </nav>
+            )}
         </div>
     );
 }

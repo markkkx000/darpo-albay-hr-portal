@@ -257,8 +257,8 @@ return 'N/A';
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setEmployeeToRestore(null)}>Cancel</Button>
-                        <Button onClick={handleRestore}>Restore Employee</Button>
+                        <Button variant="ghost" onClick={() => setEmployeeToRestore(null)} className="rounded-xl">Cancel</Button>
+                        <Button onClick={handleRestore} className="btn-gradient px-6 py-2 rounded-xl border-none">Restore Employee</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

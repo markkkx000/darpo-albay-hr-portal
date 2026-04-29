@@ -1,4 +1,5 @@
 import { Link } from '@inertiajs/react';
+import { motion } from 'framer-motion';
 import { DynamicIcon } from '@/components/dynamic-icon';
 import {
     SidebarGroup,
@@ -30,15 +31,24 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                             >
                                 <Link href={item.href} prefetch className="relative">
                                     {active && (
-                                        <div className="sidebar-active-gradient absolute inset-0 rounded-md" />
+                                        <motion.div 
+                                            layoutId="sidebar-active"
+                                            className="sidebar-active-gradient absolute inset-0 rounded-md"
+                                            transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
+                                        />
                                     )}
-                                    <span className="relative z-10 flex items-center gap-2">
+                                    <span className="relative z-10 flex items-center group-data-[collapsible=icon]:justify-center w-full">
                                         {item.icon && (
-                                            typeof item.icon === 'string' 
-                                                ? <DynamicIcon name={item.icon} className={cn("h-4 w-4 transition-transform", active && "scale-110")} />
-                                                : <item.icon className={cn("h-4 w-4 transition-transform", active && "scale-110")} />
+                                            <div className="flex h-4 w-4 shrink-0 items-center justify-center">
+                                                {typeof item.icon === 'string' 
+                                                    ? <DynamicIcon name={item.icon} className={cn("h-4 w-4 transition-transform", active && "scale-110")} />
+                                                    : <item.icon className={cn("h-4 w-4 transition-transform", active && "scale-110")} />
+                                                }
+                                            </div>
                                         )}
-                                        <span>{item.title}</span>
+                                        <span className="ml-2 truncate transition-opacity duration-200 group-data-[collapsible=icon]:hidden">
+                                            {item.title}
+                                        </span>
                                     </span>
                                 </Link>
                             </SidebarMenuButton>
