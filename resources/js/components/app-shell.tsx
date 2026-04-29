@@ -18,23 +18,18 @@ export function AppShell({ children, variant = 'sidebar' }: Props) {
     }
 
     return (
-        <SidebarProvider defaultOpen={isOpen}>
-            <div className="premium-bg-container pointer-events-none z-[-1]" aria-hidden="true">
-                <div 
-                    className="blob-background bg-[#2192FF]" 
-                    style={{ "--size": "700px", "--speed": "25s", "--color-1": "#2192FF", "--color-2": "#38E54D" } as any} 
-                />
-                <div 
-                    className="blob-background bg-[#9CFF2E]" 
-                    style={{ "--size": "500px", "--speed": "30s", "--color-1": "#9CFF2E", "--color-2": "#FDFF00", "top": "30%", "left": "70%" } as any} 
-                />
-                <div 
-                    className="blob-background bg-[#1440CD]" 
-                    style={{ "--size": "400px", "--speed": "20s", "--color-1": "#1440CD", "--color-2": "#2192FF", "top": "70%", "left": "20%" } as any} 
-                />
+        <div className="relative min-h-svh w-full overflow-x-hidden">
+            <div className="premium-bg-container pointer-events-none fixed inset-0 z-0" aria-hidden="true">
+                <div className="liquid-orb" />
+                <div className="orb-reflection" />
+                <div className="liquid-orb-mini" />
                 <div className="grain-overlay" />
             </div>
-            {children}
-        </SidebarProvider>
+            <div className="relative z-10 flex min-h-svh w-full flex-col">
+                <SidebarProvider defaultOpen={isOpen}>
+                    {children}
+                </SidebarProvider>
+            </div>
+        </div>
     );
 }

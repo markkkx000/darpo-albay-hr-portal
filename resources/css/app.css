@@ -195,6 +195,170 @@
             0 0 25px rgba(0, 0, 0, 0.4);
     }
 
+    /* ═══════════════════════════════════════════
+       Liquid Orb & Background System
+    ═══════════════════════════════════════════ */
+    @keyframes orb-float {
+        0%, 100% { transform: translate(-50%, -50%) translateY(0) scale(1); }
+        50% { transform: translate(-50%, -50%) translateY(-30px) scale(1.05); }
+    }
+
+    @keyframes orb-rotate {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    html, body {
+        background-color: var(--background) !important;
+    }
+
+    :root:not(.dark) .premium-bg-container {
+        background-color: oklch(0.99 0 0);
+    }
+
+    .liquid-orb {
+        --size: 600px;
+        --color-main: #38E54D;
+        --color-secondary: #FDFF00;
+        @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+        width: var(--size);
+        height: var(--size);
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, var(--color-main) 0%, #16a34a 40%, #030f04 100%);
+        box-shadow: 
+            0 0 100px color-mix(in srgb, var(--color-main) 50%, transparent),
+            inset 0 20px 40px rgba(255, 255, 255, 0.5),
+            inset 0 -20px 40px rgba(0, 0, 0, 0.6),
+            inset 10px 0 30px color-mix(in srgb, var(--color-secondary) 30%, transparent);
+        filter: blur(2px);
+        animation: orb-float 15s ease-in-out infinite;
+        opacity: 0.8; /* High opacity for visibility */
+        will-change: transform;
+    }
+
+    .dark .liquid-orb {
+        opacity: 0.7; /* High opacity for visibility */
+        background: radial-gradient(circle at 30% 30%, var(--color-main) 20%, #22c55e 50%, #064e3b 100%);
+        box-shadow: 
+            0 0 160px color-mix(in srgb, var(--color-main) 60%, transparent),
+            inset 0 15px 40px rgba(255, 255, 255, 0.3),
+            inset 0 -40px 80px rgba(0, 0, 0, 0.8),
+            inset 30px 0 70px color-mix(in srgb, var(--color-secondary) 25%, transparent);
+    }
+
+    .orb-reflection {
+        @apply absolute top-[calc(50%+320px)] left-1/2 -translate-x-1/2;
+        width: 600px;
+        height: 300px;
+        background: linear-gradient(to bottom, color-mix(in srgb, #38E54D 40%, transparent), transparent);
+        filter: blur(40px);
+        border-radius: 50%;
+        opacity: 0.4;
+        transform: translate(-50%, 0) scaleY(0.4);
+    }
+
+    .liquid-orb-mini {
+        --size: 300px;
+        --color-main: #9CFF2E;
+        @apply absolute top-[20%] left-[80%] -translate-x-1/2 -translate-y-1/2;
+        width: var(--size);
+        height: var(--size);
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, var(--color-main) 0%, #3f6212 60%, #1a2e05 100%);
+        box-shadow: 0 0 80px color-mix(in srgb, var(--color-main) 40%, transparent);
+        opacity: 0.5;
+        animation: orb-float 20s ease-in-out infinite reverse;
+        filter: blur(10px);
+    }
+
+    .dark .liquid-orb-mini {
+        opacity: 0.4;
+    }
+
+    /* ═══════════════════════════════════════════
+       Luminous Horizon (Planetary Arc Concept)
+    ═══════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════
+       Luminous Green & Yellow Background System
+    ═══════════════════════════════════════════ */
+    .premium-bg-container {
+        @apply fixed inset-0 overflow-hidden transition-colors duration-700;
+        pointer-events: none !important;
+        z-index: 0;
+        background: radial-gradient(
+            circle at 50% 50%,
+            color-mix(in srgb, #38E54D 15%, transparent) 0%,
+            color-mix(in srgb, #fef08a 10%, transparent) 50%,
+            transparent 100%
+        );
+    }
+
+    html, body {
+        background-color: var(--background) !important;
+    }
+
+    [data-slot="sidebar-wrapper"] {
+        background-color: transparent !important;
+    }
+
+    .dark .premium-bg-container {
+        background: radial-gradient(
+            circle at 50% 50%,
+            color-mix(in srgb, #38E54D 20%, transparent) 0%,
+            color-mix(in srgb, #fef08a 15%, transparent) 50%,
+            transparent 100%
+        );
+    }
+
+    /* The main organic blobs - Increased opacity and size */
+    .liquid-orb {
+        @apply absolute blur-[150px] rounded-full;
+        animation: float 10s ease-in-out infinite;
+        width: 90vw;
+        height: 70vh;
+        top: -15%;
+        left: -15%;
+        background: radial-gradient(circle at center, #38E54D 0%, transparent 70%);
+        opacity: 0.3; 
+    }
+
+    .liquid-orb-mini {
+        @apply absolute blur-[120px] rounded-full;
+        animation: float-slow 15s ease-in-out infinite;
+        width: 70vw;
+        height: 50vh;
+        bottom: -10%;
+        right: -15%;
+        background: radial-gradient(circle at center, #fef08a 0%, transparent 70%);
+        opacity: 0.25; 
+    }
+
+    .orb-reflection {
+        @apply absolute blur-[100px] rounded-full;
+        width: 50vw;
+        height: 40vh;
+        top: 25%;
+        right: 10%;
+        background: radial-gradient(circle at center, #9CFF2E 0%, transparent 70%);
+        opacity: 0.2; /* Increased from 0.1 */
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(30px, 20px) scale(1.05); }
+    }
+
+    @keyframes float-slow {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(-20px, -30px) scale(0.95); }
+    }
+
+    /* Remove obsolete Beam variables */
+    :root {
+        --beam-haze-1: transparent;
+        --beam-haze-2: transparent;
+    }
+
     /* Premium Input Focus Glow */
     .focus-glow:focus-within {
         @apply ring-4 ring-[hsl(142,70%,45%)]/20 border-[hsl(142,70%,45%)]/40 transition-all duration-300;
@@ -213,17 +377,6 @@
         .blob-background {
             animation: blob-rotate var(--speed) var(--easing) alternate infinite;
         }
-    }
-
-    .premium-bg-container {
-        @apply fixed inset-0 overflow-hidden transition-colors duration-700;
-        pointer-events: none !important;
-        z-index: -100;
-        background-color: oklch(0.145 0 0);
-    }
-
-    :root:not(.dark) .premium-bg-container {
-        background-color: oklch(0.985 0 0);
     }
 
     .blob-background {
@@ -560,9 +713,12 @@
         border-right: 1px solid color-mix(in srgb, white 5%, transparent);
     }
 
-    /* Fix for Shadcn Sidebar & Inset opaque backgrounds to allow body blobs to show through */
-    .liquid-glass-sidebar [data-sidebar="sidebar"],
-    [data-slot="sidebar-inset"] {
+    /* Fix for Shadcn Sidebar & Inset opaque backgrounds to allow body orbs to show through */
+    [data-slot="sidebar-wrapper"],
+    [data-sidebar="sidebar"],
+    [data-slot="sidebar-inset"],
+    .liquid-glass-sidebar,
+    main {
         background-color: transparent !important;
     }
 
@@ -572,17 +728,17 @@
         100% { background-position: 0% 50%; }
     }
 
-    /* Liquid Glass — header variant */
+    /* Liquid Glass — header variant (Vivid Translucency) */
     .liquid-glass-header {
-        backdrop-filter: blur(12px) saturate(2);
-        -webkit-backdrop-filter: blur(12px) saturate(2);
-        background: color-mix(in srgb, var(--background) 70%, transparent);
+        backdrop-filter: blur(20px) saturate(2.5);
+        -webkit-backdrop-filter: blur(20px) saturate(2.5);
+        background: color-mix(in srgb, var(--background) 50%, transparent);
         border-bottom: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
         transition: all 300ms ease;
     }
 
     .dark .liquid-glass-header {
-        background: color-mix(in srgb, var(--background) 40%, transparent);
+        background: color-mix(in srgb, var(--background) 30%, transparent);
         border-bottom: 1px solid color-mix(in srgb, white 5%, transparent);
     }
 

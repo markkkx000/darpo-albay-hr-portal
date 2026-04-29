@@ -44,12 +44,6 @@
         </x-inertia::head>
     </head>
     <body class="font-sans antialiased">
-        <div class="fixed inset-0 pointer-events-none z-[-1] overflow-hidden select-none" aria-hidden="true">
-            <div class="premium-bg-container !static">
-                <div class="blob-background"></div>
-            </div>
-            <div class="grain-overlay !static"></div>
-        </div>
         <x-inertia::app />
     </body>
 </html>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
+import { LiquidBackground } from '@/components/liquid-background';
 import { cn } from '@/lib/utils';
 import { index as attendanceIndexRoute } from '@/routes/attendance';
 import { clockIn, clockOut } from '@/routes/attendance';
@@ -78,7 +79,11 @@ return;
         <>
             <Head title="Attendance Registry" />
             
+
+            
             <div className="relative z-10 p-6 w-full min-h-[calc(100vh-8rem)] flex flex-col items-center justify-center gap-5 animate-fade-up">
+                
+
                 
                 {/* Main Widget */}
                 <div className="w-full max-w-xl backdrop-blur-2xl bg-white/70 dark:bg-black/30 border border-black/8 dark:border-white/10 shadow-[0_32px_80px_rgba(0,0,0,0.18)] dark:shadow-[0_32px_80px_rgba(0,0,0,0.5)] rounded-[2.5rem] p-3 flex flex-col md:flex-row gap-3">
