@@ -71,7 +71,7 @@ class PersonnelSeeder extends Seeder
         $allPositions = Position::all();
 
         // 4. Create 20 random employees
-        User::factory()->count(20)->create()->each(function ($user) use ($allPositions, $allStatuses) {
+        User::factory()->count(20)->create()->each(function (User $user) use ($allPositions, $allStatuses) {
             $position = $allPositions->random();
             $user->update([
                 'department_id' => $position->department_id,
