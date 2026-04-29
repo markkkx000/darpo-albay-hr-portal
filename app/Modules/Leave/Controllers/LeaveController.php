@@ -42,10 +42,16 @@ class LeaveController extends Controller
         }
 
         $query->when($search, function ($q) use ($search) {
-            $q->whereHas('user', function ($uq) use ($search) {
-                $uq->where('first_name', 'like', "%{$search}%")
-                    ->orWhere('last_name', 'like', "%{$search}%")
-                    ->orWhere('employee_number', 'like', "%{$search}%");
+            $keywords = explode(' ', $search);
+            $q->whereHas('user', function ($uq) use ($keywords) {
+                foreach ($keywords as $keyword) {
+                    if (empty($keyword)) continue;
+                    $uq->where(function ($inner) use ($keyword) {
+                        $inner->where('first_name', 'like', "%{$keyword}%")
+                            ->orWhere('last_name', 'like', "%{$keyword}%")
+                            ->orWhere('employee_number', 'like', "%{$keyword}%");
+                    });
+                }
             });
         });
 

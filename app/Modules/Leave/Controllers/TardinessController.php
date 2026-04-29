@@ -19,9 +19,15 @@ class TardinessController extends Controller
             $query->where('year', $year);
         }])
         ->when($search, function ($query) use ($search) {
-            $query->where('first_name', 'like', "%{$search}%")
-                ->orWhere('last_name', 'like', "%{$search}%")
-                ->orWhere('employee_number', 'like', "%{$search}%");
+            $keywords = explode(' ', $search);
+            foreach ($keywords as $keyword) {
+                if (empty($keyword)) continue;
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('first_name', 'like', "%{$keyword}%")
+                        ->orWhere('last_name', 'like', "%{$keyword}%")
+                        ->orWhere('employee_number', 'like', "%{$keyword}%");
+                });
+            }
         })
         ->orderBy('last_name')
         ->paginate(15)
