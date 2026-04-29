@@ -21,24 +21,67 @@ class LeaveController extends Controller
 
     public function index(Request $request)
     {
-        $search = $request->input('search');
+        $canEncode = $request->user()->can('leave.encode');
+        $viewMode = $request->input('view', 'mine');
 
-        $leaves = LeaveRequest::with(['user', 'leaveType', 'leaveStatus', 'createdBy'])
-            ->when($search, function ($query) use ($search) {
-                $query->whereHas('user', function ($q) use ($search) {
-                    $q->where('first_name', 'like', "%{$search}%")
-                        ->orWhere('last_name', 'like', "%{$search}%")
-                        ->orWhere('employee_number', 'like', "%{$search}%");
-                });
-            })
-            ->latest('start_date')
-            ->paginate(15)
-            ->withQueryString();
+        // Force 'mine' view if user cannot encode
+        if (! $canEncode) {
+            $viewMode = 'mine';
+        }
+
+        $search = $request->input('search');
+        $sort = $request->input('sort', 'desc');
+        $leaveTypeId = $request->input('leave_type_id');
+        $statusId = $request->input('status_id');
+        $approvedById = $request->input('approved_by_id');
+
+        $query = LeaveRequest::with(['user', 'leaveType', 'leaveStatus', 'createdBy', 'approvedBy']);
+
+        if ($viewMode === 'mine') {
+            $query->where('user_id', $request->user()->id);
+        }
+
+        $query->when($search, function ($q) use ($search) {
+            $q->whereHas('user', function ($uq) use ($search) {
+                $uq->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('employee_number', 'like', "%{$search}%");
+            });
+        });
+
+        $query->when($leaveTypeId, function ($q) use ($leaveTypeId) {
+            $q->where('leave_type_id', $leaveTypeId);
+        });
+
+        $query->when($statusId, function ($q) use ($statusId) {
+            $q->where('leave_status_id', $statusId);
+        });
+
+        $query->when($approvedById, function ($q) use ($approvedById) {
+            $q->where('approved_by_id', $approvedById);
+        });
+
+        if ($sort === 'asc') {
+            $query->oldest('start_date');
+        } else {
+            $query->latest('start_date');
+        }
+
+        $leaves = $query->paginate(15)->withQueryString();
 
         return Inertia::render('Modules/Leave/Index', [
             'leaves' => $leaves,
-            'filters' => ['search' => $search],
+            'filters' => [
+                'search' => $search,
+                'view' => $viewMode,
+                'sort' => $sort,
+                'leave_type_id' => $leaveTypeId,
+                'status_id' => $statusId,
+                'approved_by_id' => $approvedById,
+            ],
             'allEmployees' => User::select('id', 'first_name', 'last_name', 'employee_number')->orderBy('last_name')->get(),
+            'leaveTypes' => LeaveType::all(),
+            'leaveStatuses' => LeaveStatus::all(),
         ]);
     }
 

@@ -8,23 +8,34 @@ use App\Modules\Leave\Controllers\LeaveTypeController;
 use App\Modules\Leave\Controllers\TardinessController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['web', 'auth', 'permission:leave.access_module'])->group(function () {
+Route::middleware(['web', 'auth', 'permission:leave.access_module|leave.view_own'])->group(function () {
 
-    // Dashboard & Encode
+    // Dashboard (Index) - Accessible to both employees and HR
     Route::get('/', [LeaveController::class, 'index'])->name('index');
-    Route::get('/create', [LeaveController::class, 'create'])->name('create');
-    Route::post('/', [LeaveController::class, 'store'])->name('store');
 
-    // Calendar
-    Route::get('/calendar', [LeaveController::class, 'calendar'])->name('calendar');
+    // Routes restricted to users who can encode leaves (HR/Admin)
+    Route::middleware('permission:leave.encode')->group(function () {
+        Route::get('/create', [LeaveController::class, 'create'])->name('create');
+        Route::post('/', [LeaveController::class, 'store'])->name('store');
+        Route::get('/calendar', [LeaveController::class, 'calendar'])->name('calendar');
 
-    // Credits
-    Route::get('/credits', [LeaveCreditController::class, 'index'])->name('credits.index');
-    Route::put('/credits', [LeaveCreditController::class, 'update'])->name('credits.update');
+        // Dynamic Leave Request Routes (edit/update/delete)
+        Route::get('/{leaveRequest}/edit', [LeaveController::class, 'edit'])->name('edit');
+        Route::put('/{leaveRequest}', [LeaveController::class, 'update'])->name('update');
+        Route::delete('/{leaveRequest}', [LeaveController::class, 'destroy'])->name('destroy');
+    });
 
-    // Tardiness
-    Route::get('/tardiness', [TardinessController::class, 'index'])->name('tardiness.index');
-    Route::put('/tardiness/{user_id}', [TardinessController::class, 'update'])->name('tardiness.update');
+    // Credits (restricted to manage_credits)
+    Route::middleware('permission:leave.manage_credits')->group(function () {
+        Route::get('/credits', [LeaveCreditController::class, 'index'])->name('credits.index');
+        Route::put('/credits', [LeaveCreditController::class, 'update'])->name('credits.update');
+    });
+
+    // Tardiness (restricted to manage_tardiness)
+    Route::middleware('permission:leave.manage_tardiness')->group(function () {
+        Route::get('/tardiness', [TardinessController::class, 'index'])->name('tardiness.index');
+        Route::put('/tardiness/{user_id}', [TardinessController::class, 'update'])->name('tardiness.update');
+    });
 
     // Settings (restricted to manage_settings)
     Route::middleware('permission:leave.manage_settings')->group(function () {
@@ -45,10 +56,5 @@ Route::middleware(['web', 'auth', 'permission:leave.access_module'])->group(func
         Route::put('/statuses/{leaveStatus}', [LeaveStatusController::class, 'update'])->name('statuses.update');
         Route::delete('/statuses/{leaveStatus}', [LeaveStatusController::class, 'destroy'])->name('statuses.destroy');
     });
-
-    // Dynamic Leave Request Routes (must be at the bottom)
-    Route::get('/{leaveRequest}/edit', [LeaveController::class, 'edit'])->name('edit');
-    Route::put('/{leaveRequest}', [LeaveController::class, 'update'])->name('update');
-    Route::delete('/{leaveRequest}', [LeaveController::class, 'destroy'])->name('destroy');
 
 });

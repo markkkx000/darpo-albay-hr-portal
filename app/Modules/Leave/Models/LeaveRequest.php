@@ -27,6 +27,7 @@ class LeaveRequest extends Model
         'notes',
         'attachment_path',
         'created_by',
+        'approved_by_id',
         'specific_dates',
     ];
 
@@ -59,5 +60,10 @@ class LeaveRequest extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function approvedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by_id');
     }
 }

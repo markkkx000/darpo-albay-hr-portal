@@ -53,6 +53,7 @@ export default function LeaveCredits({ users, leaveTypes, currentYear, allEmploy
                             selectedId={filters?.search} 
                             route="/leave/credits"
                             params={{ year }}
+                            withAllEmployees
                         />
                     </div>
 

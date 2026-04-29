@@ -33,6 +33,7 @@ class UpdateLeaveRequest extends FormRequest
             'days_requested' => ['required', 'numeric', 'min:0'],
             'date_received' => ['nullable', 'date'],
             'date_approved' => ['nullable', 'date'],
+            'approved_by_id' => ['nullable', 'exists:users,id'],
             'leave_details' => ['nullable', 'string', 'max:255'],
             'commutation_requested' => ['boolean'],
             'is_filed' => ['boolean'],

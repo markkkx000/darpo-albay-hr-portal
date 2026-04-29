@@ -50,6 +50,16 @@ class HandleInertiaRequests extends Middleware
                         return true;
                     }
 
+                    if (is_array($item['permission'])) {
+                        foreach ($item['permission'] as $p) {
+                            if ($request->user()?->can($p)) {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+
                     return $request->user()?->can($item['permission']) ?? false;
                 })),
             ],

@@ -144,6 +144,7 @@ return;
                                         {(() => {
                                             const snippet = notification.data.body ?? notification.data.message ?? '';
                                             const isLong = snippet.length > 150;
+
                                             return (
                                                 <div
                                                     className="overflow-hidden max-h-[6rem]"

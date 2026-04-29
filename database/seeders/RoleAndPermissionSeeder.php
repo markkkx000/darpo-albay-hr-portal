@@ -21,6 +21,7 @@ class RoleAndPermissionSeeder extends Seeder
             'attendance.manage',
             'attendance.delete',
             'leave.access_module',
+            'leave.view_own',
             'leave.encode',
             'leave.manage_tardiness',
             'leave.manage_credits',
@@ -55,6 +56,7 @@ class RoleAndPermissionSeeder extends Seeder
             'attendance.manage',
             'attendance.delete',
             'leave.access_module',
+            'leave.view_own',
             'leave.encode',
             'leave.manage_tardiness',
             'leave.manage_credits',
@@ -76,6 +78,7 @@ class RoleAndPermissionSeeder extends Seeder
             'attendance.view_own',
             'attendance.manage',
             'leave.access_module',
+            'leave.view_own',
             'leave.encode',
             'leave.manage_tardiness',
             'leave.manage_credits',
@@ -90,6 +93,7 @@ class RoleAndPermissionSeeder extends Seeder
         $deptHead->syncPermissions([
             'attendance.clock',
             'attendance.view_own',
+            'leave.view_own',
             'announcements.view',
             'announcements.manage',
             'travel_order.file',
@@ -100,6 +104,7 @@ class RoleAndPermissionSeeder extends Seeder
         $employee->syncPermissions([
             'attendance.clock',
             'attendance.view_own',
+            'leave.view_own',
             'announcements.view',
             'travel_order.file',
         ]);

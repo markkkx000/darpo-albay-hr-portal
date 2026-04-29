@@ -71,6 +71,7 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
                             selectedId={filters?.search} 
                             route="/leave/tardiness"
                             params={{ year, month }}
+                            withAllEmployees
                         />
                     </div>
 

@@ -11,13 +11,25 @@ export default function LeaveNavigation() {
 
     const permissions = (auth.permissions || auth.user?.permissions || []) as string[];
     const canManageSettings = permissions.includes('leave.manage_settings');
+    const canEncode = permissions.includes('leave.encode');
+    const canManageCredits = permissions.includes('leave.manage_credits');
+    const canManageTardiness = permissions.includes('leave.manage_tardiness');
 
     const tabs = [
         { name: 'Dashboard', href: index().url, icon: CalendarClock },
-        { name: 'Calendar', href: calendar().url, icon: Calendar },
-        { name: 'Leave Credits', href: credits_index().url, icon: UserMinus },
-        { name: 'Tardiness', href: tardiness_index().url, icon: Clock },
     ];
+
+    if (canEncode) {
+        tabs.push({ name: 'Calendar', href: calendar().url, icon: Calendar });
+    }
+
+    if (canManageCredits) {
+        tabs.push({ name: 'Leave Credits', href: credits_index().url, icon: UserMinus });
+    }
+
+    if (canManageTardiness) {
+        tabs.push({ name: 'Tardiness', href: tardiness_index().url, icon: Clock });
+    }
 
     if (canManageSettings) {
         tabs.push({ name: 'Settings', href: settings().url, icon: Settings });

@@ -1,7 +1,8 @@
 import { Head, router, useForm } from '@inertiajs/react';
 import { X } from 'lucide-react';
-import { useState  } from 'react';
-import type {FormEvent} from 'react';
+import { useState, useEffect, useRef } from 'react';
+import type { FormEvent } from 'react';
+import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -9,6 +10,11 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import LeaveNavigation from './Components/LeaveNavigation';
+
+const formatDateForInput = (dateString: string | null | undefined) => {
+    if (!dateString) return '';
+    return dateString.substring(0, 10);
+};
 
 
 export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatuses }: any) {
@@ -18,24 +24,70 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
         user_id: leaveRequest?.user_id?.toString() || '',
         leave_type_id: leaveRequest?.leave_type_id?.toString() || '',
         leave_status_id: leaveRequest?.leave_status_id?.toString() || '',
-        start_date: leaveRequest?.start_date || '',
-        end_date: leaveRequest?.end_date || '',
+        start_date: formatDateForInput(leaveRequest?.start_date),
+        end_date: formatDateForInput(leaveRequest?.end_date),
         days_requested: leaveRequest?.days_requested || '',
         dates: '', // Dummy field for backend overlap validation errors
-        date_received: leaveRequest?.date_received || '',
-        date_approved: leaveRequest?.date_approved || '',
+        date_received: formatDateForInput(leaveRequest?.date_received),
+        date_approved: formatDateForInput(leaveRequest?.date_approved),
+        approved_by_id: leaveRequest?.approved_by_id?.toString() || '',
         leave_details: leaveRequest?.leave_details || '',
         commutation_requested: leaveRequest?.commutation_requested || false,
         is_filed: leaveRequest?.is_filed || false,
         notes: leaveRequest?.notes || '',
         attachment: null as File | null,
-        specific_dates: leaveRequest?.specific_dates || ([] as string[]),
+        specific_dates: (leaveRequest?.specific_dates || []).map(formatDateForInput),
     });
 
     const [dateMode, setDateMode] = useState<'range' | 'specific'>(
         leaveRequest?.specific_dates && leaveRequest.specific_dates.length > 0 ? 'specific' : 'range'
     );
     const [specificDateInput, setSpecificDateInput] = useState('');
+
+    const isFirstRender = useRef(true);
+
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+
+        if (dateMode === 'range') {
+            if (data.start_date && data.end_date) {
+                const start = new Date(data.start_date);
+                const end = new Date(data.end_date);
+                start.setHours(0, 0, 0, 0);
+                end.setHours(0, 0, 0, 0);
+                
+                if (end >= start) {
+                    let weekdays = 0;
+                    const current = new Date(start);
+
+                    while (current <= end) {
+                        const day = current.getDay();
+
+                        if (day !== 0 && day !== 6) {
+                            weekdays++;
+                        }
+
+                        current.setDate(current.getDate() + 1);
+                    }
+
+                    setData('days_requested', weekdays.toString());
+                }
+            } else if (!data.start_date || !data.end_date) {
+                setData('days_requested', '');
+            }
+        } else {
+            const weekdayCount = data.specific_dates.filter((d: string) => {
+                const day = new Date(d).getDay();
+
+                return day !== 0 && day !== 6;
+            }).length;
+
+            setData('days_requested', weekdayCount.toString());
+        }
+    }, [data.start_date, data.end_date, data.specific_dates.length, dateMode]);
 
     const addSpecificDate = () => {
         if (specificDateInput && !data.specific_dates.includes(specificDateInput)) {
@@ -161,18 +213,13 @@ return { category: '', specify: '' };
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label>Employee</Label>
-                                <Select value={data.user_id} onValueChange={(v) => setData('user_id', v)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select Employee" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {users.map((user: any) => (
-                                            <SelectItem key={user.id} value={user.id.toString()}>
-                                                {user.last_name}, {user.first_name} ({user.employee_number})
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <EmployeeSearch 
+                                    users={users} 
+                                    selectedId={data.user_id} 
+                                    onSelect={(val) => setData('user_id', val === 'all' ? '' : val)}
+                                    placeholder="Search Employee..."
+                                    returnValue="id"
+                                />
                                 {errors.user_id && <p className="text-sm text-destructive">{errors.user_id}</p>}
                             </div>
 
@@ -288,7 +335,7 @@ return { category: '', specify: '' };
                             )}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-3 gap-4">
                             <div className="space-y-2">
                                 <Label>Date Received</Label>
                                 <Input type="date" value={data.date_received} onChange={e => setData('date_received', e.target.value)} />
@@ -296,6 +343,16 @@ return { category: '', specify: '' };
                             <div className="space-y-2">
                                 <Label>Date Approved</Label>
                                 <Input type="date" value={data.date_approved} onChange={e => setData('date_approved', e.target.value)} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Approved By</Label>
+                                <EmployeeSearch 
+                                    users={users} 
+                                    selectedId={data.approved_by_id} 
+                                    onSelect={(val) => setData('approved_by_id', val === 'all' ? '' : val)}
+                                    placeholder="Search Approver..."
+                                    returnValue="id"
+                                />
                             </div>
                         </div>
 

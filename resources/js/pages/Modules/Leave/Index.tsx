@@ -1,12 +1,68 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useDebounce } from '@/hooks/use-debounce';
 import LeaveNavigation from './Components/LeaveNavigation';
 
+export default function LeaveDashboard({ leaves, allEmployees, leaveTypes, leaveStatuses, filters }: any) {
+    const { auth } = usePage<any>().props;
+    const canEncode = auth.permissions.includes('leave.encode');
 
-export default function LeaveDashboard({ leaves, allEmployees, filters }: { leaves: any, allEmployees: any[], filters: any }) {
+    const [search, setSearch] = useState(filters?.search || '');
+    const [viewMode, setViewMode] = useState(filters?.view || 'mine');
+    const [sort, setSort] = useState(filters?.sort || 'desc');
+    const [leaveType, setLeaveType] = useState(filters?.leave_type_id || 'all');
+    const [status, setStatus] = useState(filters?.status_id || 'all');
+    const [approvedBy, setApprovedBy] = useState(filters?.approved_by_id || '');
+
+    const debouncedSearch = useDebounce(search, 500);
+
+    useEffect(() => {
+        // Prevent initial mount request if params match
+        const params: any = {};
+        
+        if (debouncedSearch) {
+params.search = debouncedSearch;
+}
+
+        if (viewMode !== 'mine') {
+params.view = viewMode;
+}
+
+        if (sort !== 'desc') {
+params.sort = sort;
+}
+
+        if (leaveType !== 'all') {
+params.leave_type_id = leaveType;
+}
+
+        if (status !== 'all') {
+params.status_id = status;
+}
+
+        if (approvedBy) {
+params.approved_by_id = approvedBy;
+}
+
+        // Check if anything actually changed from current filters
+        const hasChanged = 
+            params.search !== filters?.search ||
+            (params.view || 'mine') !== (filters?.view || 'mine') ||
+            (params.sort || 'desc') !== (filters?.sort || 'desc') ||
+            (params.leave_type_id || 'all') !== (filters?.leave_type_id || 'all') ||
+            (params.status_id || 'all') !== (filters?.status_id || 'all') ||
+            params.approved_by_id !== filters?.approved_by_id;
+
+        if (hasChanged) {
+            router.get('/leave', params, { preserveState: true, replace: true });
+        }
+    }, [debouncedSearch, viewMode, sort, leaveType, status, approvedBy, filters]);
+
     const formatDate = (dateString: string) => {
         if (!dateString) {
 return '';
@@ -27,24 +83,109 @@ return '';
                         <p className="text-muted-foreground">Manage and track employee leave requests.</p>
                     </div>
                     <div className="flex items-center gap-2 w-full sm:w-auto">
-                        <EmployeeSearch 
-                            users={allEmployees} 
-                            selectedId={filters?.search} 
-                            route="/leave"
-                        />
-                        <Button asChild>
-                            <Link href="/leave/create">
-                                <Plus className="mr-2 h-4 w-4" />
-                                Encode
-                            </Link>
-                        </Button>
+                        {canEncode && (
+                            <Button asChild>
+                                <Link href="/leave/create">
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Encode
+                                </Link>
+                            </Button>
+                        )}
                     </div>
                 </div>
 
                 <LeaveNavigation />
 
-                <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
-                    <div className="p-6">
+                <div className="rounded-lg border bg-card text-card-foreground shadow-sm mb-6">
+                    <div className="p-4 border-b bg-muted/20">
+                        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+                            
+                            {/* View Toggle (Only for Encoders) */}
+                            {canEncode ? (
+                                <div className="flex items-center space-x-1 rounded-md border bg-muted p-1">
+                                    <button
+                                        onClick={() => setViewMode('all')}
+                                        className={`px-3 py-1 text-sm font-medium rounded-sm transition-colors ${viewMode === 'all' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                                    >
+                                        All Leaves
+                                    </button>
+                                    <button
+                                        onClick={() => setViewMode('mine')}
+                                        className={`px-3 py-1 text-sm font-medium rounded-sm transition-colors ${viewMode === 'mine' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                                    >
+                                        My Leave History
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="text-lg font-semibold">My Leave History</div>
+                            )}
+
+                            {/* Filters Container */}
+                            <div className="flex flex-wrap items-center gap-2 flex-1 md:justify-end w-full">
+                                
+                                {viewMode === 'all' && (
+                                    <>
+                                        <div className="w-full md:w-64">
+                                            <EmployeeSearch 
+                                                users={allEmployees} 
+                                                selectedId={search} 
+                                                onSelect={(val) => setSearch(val === 'all' ? '' : val)}
+                                                placeholder="Search Employee..."
+                                                returnValue="name"
+                                                withAllEmployees
+                                            />
+                                        </div>
+
+                                        <div className="w-full md:w-56">
+                                            <EmployeeSearch 
+                                                users={allEmployees} 
+                                                selectedId={approvedBy} 
+                                                onSelect={(val) => setApprovedBy(val === 'all' ? '' : val)}
+                                                placeholder="Filter by Approver..."
+                                                returnValue="id"
+                                            />
+                                        </div>
+                                    </>
+                                )}
+
+                                <Select value={leaveType} onValueChange={setLeaveType}>
+                                    <SelectTrigger className="w-[140px]">
+                                        <SelectValue placeholder="Leave Type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Types</SelectItem>
+                                        {leaveTypes?.map((t: any) => (
+                                            <SelectItem key={t.id} value={t.id.toString()}>{t.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+
+                                <Select value={status} onValueChange={setStatus}>
+                                    <SelectTrigger className="w-[140px]">
+                                        <SelectValue placeholder="Status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Statuses</SelectItem>
+                                        {leaveStatuses?.map((s: any) => (
+                                            <SelectItem key={s.id} value={s.id.toString()}>{s.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+
+                                <Select value={sort} onValueChange={setSort}>
+                                    <SelectTrigger className="w-[140px]">
+                                        <SelectValue placeholder="Sort" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="desc">Most Recent</SelectItem>
+                                        <SelectItem value="asc">Oldest</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div className="p-0">
                         <div className="relative w-full overflow-auto">
                             <table className="w-full caption-bottom text-sm">
                                 <thead className="[&_tr]:border-b">
@@ -54,8 +195,9 @@ return '';
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Dates</th>
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Days</th>
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
-                                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Encoded By</th>
-                                        <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</th>
+                                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Date Approved</th>
+                                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Approver / Encoder</th>
+                                        {canEncode && <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</th>}
                                     </tr>
                                 </thead>
                                 <tbody className="[&_tr:last-child]:border-0">
@@ -88,19 +230,29 @@ return '';
                                                     {leave.leave_status?.name}
                                                 </span>
                                             </td>
+                                            <td className="p-4 align-middle text-sm">
+                                                {leave.date_approved ? formatDate(leave.date_approved) : <span className="text-muted-foreground italic">Pending</span>}
+                                            </td>
                                             <td className="p-4 align-middle text-sm text-muted-foreground">
-                                                {leave.created_by?.first_name} {leave.created_by?.last_name}
+                                                <div>
+                                                    <span className="font-semibold text-xs uppercase tracking-wider text-muted-foreground/70">App:</span> {leave.approved_by ? `${leave.approved_by.first_name} ${leave.approved_by.last_name}` : 'Pending'}
+                                                </div>
+                                                <div className="mt-1">
+                                                    <span className="font-semibold text-xs uppercase tracking-wider text-muted-foreground/70">Enc:</span> {leave.created_by?.first_name} {leave.created_by?.last_name}
+                                                </div>
                                             </td>
-                                            <td className="p-4 align-middle text-right">
-                                                <Button variant="ghost" size="sm" asChild>
-                                                    <Link href={`/leave/${leave.id}/edit`}>Edit</Link>
-                                                </Button>
-                                            </td>
+                                            {canEncode && (
+                                                <td className="p-4 align-middle text-right">
+                                                    <Button variant="ghost" size="sm" asChild>
+                                                        <Link href={`/leave/${leave.id}/edit`}>Edit</Link>
+                                                    </Button>
+                                                </td>
+                                            )}
                                         </tr>
                                     ))}
                                     {leaves.data.length === 0 && (
                                         <tr>
-                                            <td colSpan={7} className="p-4 text-center text-muted-foreground">
+                                            <td colSpan={canEncode ? 8 : 7} className="p-4 text-center text-muted-foreground">
                                                 No leave requests found.
                                             </td>
                                         </tr>
@@ -109,7 +261,7 @@ return '';
                             </table>
                         </div>
                         {leaves.data.length > 0 && (
-                            <div className="mt-4">
+                            <div className="p-4 border-t">
                                 <Pagination links={leaves.links} meta={leaves} />
                             </div>
                         )}

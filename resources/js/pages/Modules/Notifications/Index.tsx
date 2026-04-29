@@ -146,6 +146,7 @@ export default function Index({ notifications }: Props) {
                                                     {(() => {
                                                         const snippet = notification.data.body ?? notification.data.message ?? '';
                                                         const isLong = snippet.length > 200;
+
                                                         return (
                                                             <div
                                                                 className="overflow-hidden max-h-[7.5rem]"
