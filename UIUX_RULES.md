@@ -28,6 +28,10 @@
 - **Rule:** Always choose the simplest solution that works. Remove any element that does not serve a clear purpose.
 - **Apply:** If two designs achieve the same goal, always ship the simpler one. Every added element must justify its existence.
 
+### Light & Dark Mode Variants
+- **Rule:** Every component or UI update must have light and dark mode variants or be visually acceptable for both modes.
+- **Apply:** Test all UI changes in both themes. Use semantic color tokens (e.g., `text-foreground`, `bg-background`) that adapt automatically, or use `.dark` specific variants when custom colors are required. Avoid hardcoding colors that only work in one mode.
+
 ### Aesthetic-Usability Effect
 - **Rule:** Users perceive visually pleasing designs as more usable, even when they are functionally identical to less attractive designs.
 - **Apply:** Invest in aesthetics — clean layouts, consistent spacing, and refined visuals build user trust and perceived quality.
