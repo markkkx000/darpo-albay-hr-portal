@@ -15,26 +15,28 @@ export default function Create({ departments, positions, users }: Props) {
         <>
             <Head title="Create Announcement" />
 
-            <div className="p-4 w-full space-y-6">
-                <Heading 
-                    title="Create Announcement" 
-                    description="Draft a new announcement. You can publish it once you are done."
-                />
+            <div className="p-6 lg:p-10 w-full flex flex-col items-center animate-fade-up">
+                <div className="w-full max-w-4xl space-y-8">
+                    <Heading 
+                        title="Create Announcement" 
+                        description="Draft a new announcement. You can publish it once you are done."
+                    />
 
-                <Card className="liquid-glass-card max-w-4xl border-none overflow-hidden">
-                    <CardHeader className="border-b border-muted/20 pb-4">
-                        <CardTitle>Announcement Details</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <AnnouncementForm 
-                            submitUrl={store().url}
-                            method="post"
-                            departments={departments}
-                            positions={positions}
-                            users={users}
-                        />
-                    </CardContent>
-                </Card>
+                    <Card className="liquid-glass-card border-none overflow-hidden shadow-2xl">
+                        <CardHeader className="border-b border-white/5 pb-6 px-8 pt-8">
+                            <CardTitle className="text-xl font-bold tracking-tight">Announcement Details</CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-8">
+                            <AnnouncementForm 
+                                submitUrl={store().url}
+                                method="post"
+                                departments={departments}
+                                positions={positions}
+                                users={users}
+                            />
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </>
     );
