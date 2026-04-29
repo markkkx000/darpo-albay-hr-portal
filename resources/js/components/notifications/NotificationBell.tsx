@@ -47,7 +47,7 @@ return;
         httpPost(NotificationActions.readAll.url(), {
             onSuccess: () => {
                 setNotifications(prev => prev.map(n => (n.data.dismissible ?? true) ? { ...n, read_at: new Date().toISOString() } : n));
-                router.reload({ only: ['appNotifications'] });
+                router.reload({ only: ['appNotifications', 'notifications'] });
             }
         });
     };
@@ -141,7 +141,21 @@ return;
                                 </div>
                                 {expandedIds.has(notification.id) && (
                                     <div className="mt-3 text-xs text-foreground/80 leading-relaxed animate-in slide-in-from-top-1 duration-200">
-                                        <p className="whitespace-pre-wrap">{notification.data.body}</p>
+                                        {(() => {
+                                            const snippet = notification.data.body ?? notification.data.message ?? '';
+                                            const isLong = snippet.length > 150;
+                                            return (
+                                                <div
+                                                    className="overflow-hidden max-h-[6rem]"
+                                                    style={isLong ? {
+                                                        maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+                                                        WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+                                                    } : undefined}
+                                                >
+                                                    <p className="whitespace-pre-wrap">{snippet}{isLong ? '...' : ''}</p>
+                                                </div>
+                                            );
+                                        })()}
                                         {notification.data.url && (
                                             <div className="mt-3">
                                                 <Link 

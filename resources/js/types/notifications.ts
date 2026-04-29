@@ -2,8 +2,9 @@ export interface NotificationData {
     type: 'announcement' | 'directed' | 'system';
     subtype?: string;
     title: string;
-    body: string;
-    from: string;
+    body?: string;
+    message?: string;
+    from?: string;
     priority: 'low' | 'normal' | 'high';
     dismissible?: boolean;
     url?: string;

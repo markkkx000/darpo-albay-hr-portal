@@ -42,8 +42,10 @@ export default function Index({ notifications }: Props) {
     };
 
     const markAllAsRead = () => {
-        router.post(NotificationActions.readAll.url(), {}, {
-            preserveScroll: true,
+        httpPost(NotificationActions.readAll.url(), {
+            onSuccess: () => {
+                router.reload({ only: ['notifications', 'appNotifications'] });
+            }
         });
     };
 
@@ -141,17 +143,21 @@ export default function Index({ notifications }: Props) {
                                         {expandedIds.has(notification.id) && (
                                             <div className="mt-4 animate-in slide-in-from-top-1 duration-200">
                                                 <div className="rounded-lg bg-muted/30 p-4 text-sm leading-relaxed text-foreground/90 border border-sidebar-border/20">
-                                                    <div className="relative">
-                                                        <div className={cn(
-                                                            "overflow-hidden transition-all duration-300",
-                                                            (notification.data.body?.length ?? 0) > 300 && "max-h-24"
-                                                        )}>
-                                                            <p className="whitespace-pre-wrap">{notification.data.body}</p>
-                                                            {(notification.data.body?.length ?? 0) > 300 && (
-                                                                <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-muted/30 to-transparent pointer-events-none" />
-                                                            )}
-                                                        </div>
-                                                    </div>
+                                                    {(() => {
+                                                        const snippet = notification.data.body ?? notification.data.message ?? '';
+                                                        const isLong = snippet.length > 200;
+                                                        return (
+                                                            <div
+                                                                className="overflow-hidden max-h-[7.5rem]"
+                                                                style={isLong ? {
+                                                                    maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+                                                                    WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+                                                                } : undefined}
+                                                            >
+                                                                <p className="whitespace-pre-wrap">{snippet}{isLong ? '...' : ''}</p>
+                                                            </div>
+                                                        );
+                                                    })()}
                                                     {notification.data.url && (
                                                         <div className="mt-4 pt-4 border-t border-sidebar-border/20">
                                                             <Link 
