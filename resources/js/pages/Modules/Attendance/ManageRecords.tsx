@@ -16,7 +16,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { AttendanceFilters } from '@/components/Attendance/AttendanceFilters';
+
 import { cn } from '@/lib/utils';
 import Heading from '@/components/heading';
 import { index as attendanceIndexRoute } from '@/routes/attendance';
@@ -122,12 +122,14 @@ export default function ManageRecords({ records, employees, filters }: Props) {
 
 
             <div className="relative z-10 p-6 lg:p-10 w-full animate-fade-up space-y-8">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <Heading 
-                        title="Attendance Management"
-                        description="Systematically manage records and resolve logging anomalies."
-                    />
-                    <Button onClick={handleAddNew} className="btn-gradient px-8 py-6 rounded-2xl shadow-xl transition-all h-auto shrink-0">
+                <div className="liquid-glass flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 mb-6">
+                    <div>
+                        <h1 className="liquid-glass-title text-3xl font-bold tracking-tight">Attendance Management</h1>
+                        <p className="text-muted-foreground text-sm mt-2">
+                            Systematically manage records and resolve logging anomalies.
+                        </p>
+                    </div>
+                    <Button onClick={handleAddNew} className="btn-gradient px-6 py-5 rounded-xl shadow-lg border-none h-auto shrink-0">
                         <Plus className="h-5 w-5 mr-2" />
                         Add Missing Record
                     </Button>
@@ -139,7 +141,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                         routeName={manageRecordsIndexRoute().url}
                     />
 
-                    <Card className="border-none shadow-xl overflow-hidden glass-panel">
+                    <Card className="liquid-glass-card border-none shadow-xl overflow-hidden">
                     <CardHeader className="bg-muted/10 pb-4 border-b border-white/10">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
