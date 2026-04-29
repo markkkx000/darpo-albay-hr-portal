@@ -118,13 +118,6 @@ export default function ManageRecords({ records, employees, filters }: Props) {
         <>
             <Head title="Manage Attendance Records" />
 
-            <div className="premium-bg-container pointer-events-none z-[-1]" aria-hidden="true">
-                <div className="blob-background bg-[#2192FF]" style={{ "--size": "600px", "--speed": "25s", "--color-1": "#2192FF", "--color-2": "#38E54D" } as any} />
-                <div className="blob-background bg-[#9CFF2E]" style={{ "--size": "500px", "--speed": "30s", "--color-1": "#9CFF2E", "--color-2": "#FDFF00", "top": "30%", "left": "70%" } as any} />
-                <div className="blob-background bg-[#38E54D]" style={{ "--size": "400px", "--speed": "20s", "--color-1": "#38E54D", "--color-2": "#2192FF", "top": "70%", "left": "20%" } as any} />
-                <div className="grain-overlay" />
-            </div>
-
             <div className="relative z-10 p-4 w-full animate-fade-up space-y-6">
                 <div className="liquid-glass mb-2 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5">
                     <div>
@@ -307,19 +300,15 @@ export default function ManageRecords({ records, employees, filters }: Props) {
     );
 }
 
-ManageRecords.layout = (page: any) => (
-    <AppLayout 
-        breadcrumbs={[
-            {
-                title: 'Attendance',
-                href: attendanceIndexRoute().url,
-            },
-            {
-                title: 'Manage Records',
-                href: '#',
-            },
-        ]}
-    >
-        {page}
-    </AppLayout>
-);
+ManageRecords.layout = {
+    breadcrumbs: [
+        {
+            title: 'Attendance',
+            href: attendanceIndexRoute().url,
+        },
+        {
+            title: 'Manage Records',
+            href: '#',
+        },
+    ],
+};

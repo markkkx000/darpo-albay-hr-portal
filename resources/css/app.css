@@ -232,7 +232,7 @@
         @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
         width: var(--size);
         height: var(--size);
-        filter: blur(calc(var(--size) / 5));
+        filter: blur(calc(var(--size) / 10));
         background-image: linear-gradient(
             to bottom right,
             var(--color-1, hsl(142, 85%, 45%)),
@@ -240,7 +240,7 @@
         );
         border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
         will-change: transform;
-        opacity: 0.35;
+        opacity: 0.3;
     }
 
     .dark .blob-background {
@@ -293,12 +293,12 @@
 
     .btn-gradient-amber {
         @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all duration-300;
-        background: linear-gradient(135deg, #f59e0b, #fbbf24);
-        color: #fff;
+        background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #fcd34d 100%);
+        color: #030f04;
         box-shadow: 
             0 10px 15px -3px rgba(0, 0, 0, 0.2), 
-            0 0 20px rgba(245, 158, 11, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            0 0 20px rgba(245, 158, 11, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 
     .btn-gradient-amber:hover:not(:disabled) {
@@ -306,6 +306,15 @@
         box-shadow: 
             0 20px 25px -5px rgba(0, 0, 0, 0.3), 
             0 0 40px rgba(245, 158, 11, 0.5);
+    }
+
+    .btn-locked {
+        @apply w-full h-14 rounded-2xl text-base font-bold tracking-wide shadow-inner transition-all duration-200 
+               bg-muted/40 text-foreground/80 border border-border/50 cursor-not-allowed backdrop-blur-sm;
+    }
+
+    .dark .btn-locked {
+        @apply bg-white/5 text-white/60 border-white/10;
     }
 
     .glass-panel {
@@ -348,8 +357,8 @@
     .liquid-glass {
         position: relative;
         border-radius: var(--radius-lg);
-        backdrop-filter: blur(20px) saturate(1.8);
-        -webkit-backdrop-filter: blur(20px) saturate(1.8);
+        backdrop-filter: blur(12px) saturate(1.8);
+        -webkit-backdrop-filter: blur(12px) saturate(1.8);
         /* Lowered light-mode opacity for evident glassmorphism */
         background: color-mix(in srgb, var(--background) 30%, transparent);
         box-shadow:
@@ -407,8 +416,8 @@
 
     /* Liquid Glass — sticky header bar variant */
     .liquid-glass-header {
-        backdrop-filter: blur(24px) saturate(2);
-        -webkit-backdrop-filter: blur(24px) saturate(2);
+        backdrop-filter: blur(12px) saturate(2);
+        -webkit-backdrop-filter: blur(12px) saturate(2);
         /* Uses --background token — auto-adapts to light/dark */
         background: color-mix(in srgb, var(--background) 72%, transparent);
         border-bottom: 1px solid transparent;
@@ -492,8 +501,8 @@
     .liquid-glass-card {
         position: relative;
         border-radius: var(--radius-2xl);
-        backdrop-filter: blur(24px) saturate(1.8);
-        -webkit-backdrop-filter: blur(24px) saturate(1.8);
+        backdrop-filter: blur(16px) saturate(1.8);
+        -webkit-backdrop-filter: blur(16px) saturate(1.8);
         background: color-mix(in srgb, var(--card) 30%, transparent);
         border: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
         box-shadow: 
@@ -538,8 +547,8 @@
 
     /* Liquid Glass — sidebar variant */
     .liquid-glass-sidebar {
-        backdrop-filter: blur(40px) saturate(1.8);
-        -webkit-backdrop-filter: blur(40px) saturate(1.8);
+        backdrop-filter: blur(16px) saturate(1.8);
+        -webkit-backdrop-filter: blur(16px) saturate(1.8);
         background: color-mix(in srgb, var(--sidebar) 80%, transparent);
         border-right: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
         transition: all 300ms ease;
@@ -564,8 +573,8 @@
 
     /* Liquid Glass — header variant */
     .liquid-glass-header {
-        backdrop-filter: blur(24px) saturate(2);
-        -webkit-backdrop-filter: blur(24px) saturate(2);
+        backdrop-filter: blur(12px) saturate(2);
+        -webkit-backdrop-filter: blur(12px) saturate(2);
         background: color-mix(in srgb, var(--background) 70%, transparent);
         border-bottom: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
         transition: all 300ms ease;

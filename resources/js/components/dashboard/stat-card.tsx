@@ -58,10 +58,13 @@ export function StatCard({
                 <div className="text-center w-full px-4">
                     <div
                         className={cn(
-                            "text-lg font-semibold tracking-tight transition-transform duration-300 group-hover:scale-105",
+                            "text-lg font-semibold tracking-tight transition-transform duration-300 group-hover:scale-105 dark:!text-[var(--title-color)]",
                             titleClasses
                         )}
-                        style={{ color: accentColor }}
+                        style={{ 
+                            color: accentColor,
+                            '--title-color': accentColor 
+                        } as any}
                     >
                         {title}
                     </div>

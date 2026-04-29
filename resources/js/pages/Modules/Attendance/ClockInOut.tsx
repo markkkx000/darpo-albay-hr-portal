@@ -78,13 +78,6 @@ return;
         <>
             <Head title="Attendance Registry" />
             
-            <div className="premium-bg-container pointer-events-none z-[-1]" aria-hidden="true">
-                <div className="blob-background bg-[#2192FF]" style={{ "--size": "700px", "--speed": "25s", "--color-1": "#2192FF", "--color-2": "#38E54D" } as any} />
-                <div className="blob-background bg-[#9CFF2E]" style={{ "--size": "500px", "--speed": "30s", "--color-1": "#9CFF2E", "--color-2": "#FDFF00", "top": "30%", "left": "70%" } as any} />
-                <div className="blob-background bg-[#1440CD]" style={{ "--size": "400px", "--speed": "20s", "--color-1": "#1440CD", "--color-2": "#2192FF", "top": "70%", "left": "20%" } as any} />
-                <div className="grain-overlay" />
-            </div>
-
             <div className="relative z-10 p-6 w-full min-h-[calc(100vh-8rem)] flex flex-col items-center justify-center gap-5 animate-fade-up">
                 
                 {/* Main Widget */}
@@ -159,7 +152,7 @@ return;
                             className={cn(
                                 "w-full h-14 rounded-2xl text-base font-bold tracking-wide shadow-xl transition-all duration-200",
                                 isButtonDisabled
-                                    ? "bg-muted/50 text-muted-foreground/60 cursor-not-allowed border border-border/50"
+                                    ? "btn-locked"
                                     : "btn-gradient hover:scale-[1.01] shadow-[0_8px_32px_rgba(33,146,255,0.3)]"
                             )}
                         >
@@ -173,7 +166,7 @@ return;
                             className={cn(
                                 "w-full h-14 rounded-2xl text-base font-bold tracking-wide shadow-xl transition-all duration-200 relative overflow-hidden",
                                 isButtonDisabled
-                                    ? "bg-muted/50 text-muted-foreground/60 cursor-not-allowed border border-border/50"
+                                    ? "btn-locked"
                                     : "btn-gradient-amber hover:scale-[1.01] shadow-[0_8px_32px_rgba(245,158,11,0.35)]"
                             )}
                         >
@@ -204,21 +197,17 @@ return;
     );
 }
 
-ClockInOut.layout = (page: any) => (
-    <AppLayout 
-        breadcrumbs={[
-            {
-                title: 'Attendance',
-                href: attendanceIndexRoute().url,
-            },
-            {
-                title: 'Registry',
-                href: '#',
-            },
-        ]}
-    >
-        {page}
-    </AppLayout>
-);
+ClockInOut.layout = {
+    breadcrumbs: [
+        {
+            title: 'Attendance',
+            href: attendanceIndexRoute().url,
+        },
+        {
+            title: 'Registry',
+            href: '#',
+        },
+    ],
+};
 
 
