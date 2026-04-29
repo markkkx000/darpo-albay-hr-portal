@@ -1,5 +1,5 @@
-import { Link, router, usePage } from '@inertiajs/react';
-import { Bell, ChevronDown, ChevronUp, X } from 'lucide-react';
+import { Link, router, usePage, useHttp } from '@inertiajs/react';
+import { Bell, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 import * as NotificationActions from '@/actions/App/Modules/Notifications/Controllers/NotificationController';
 import { Badge } from '@/components/ui/badge';
@@ -13,15 +13,16 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-import type { Notification } from '@/types';
+import type { Notification, PageProps } from '@/types';
 
 export default function NotificationBell() {
-    const { notifications: sharedNotifications } = usePage().props;
+    const { appNotifications } = usePage<PageProps>().props;
+    const { post: httpPost } = useHttp();
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [loading, setLoading] = useState(false);
     const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
-    const unreadCount = sharedNotifications?.unread_count ?? 0;
+    const unreadCount = appNotifications?.unread_count ?? 0;
 
     const fetchRecent = async () => {
         if (loading) {
@@ -41,40 +42,14 @@ return;
         }
     };
 
-    const markAsRead = async (id: string) => {
-        try {
-            const csrfToken = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content;
-            await fetch(NotificationActions.read.url({ id }), { 
-                method: 'POST', 
-                headers: { 
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                } 
-            });
-            setNotifications(prev => prev.map(n => n.id === id ? { ...n, read_at: new Date().toISOString() } : n));
-            router.reload({ only: ['notifications'] });
-        } catch (error) {
-            console.error('Failed to mark notification as read:', error);
-        }
-    };
 
-    const markAllAsRead = async () => {
-        try {
-            const csrfToken = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content;
-            await fetch(NotificationActions.readAll.url(), { 
-                method: 'POST', 
-                headers: { 
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                } 
-            });
-            setNotifications(prev => prev.map(n => n.data.dismissible ? { ...n, read_at: new Date().toISOString() } : n));
-            router.reload({ only: ['notifications'] });
-        } catch (error) {
-            console.error('Failed to mark all as read:', error);
-        }
+    const markAllAsRead = () => {
+        httpPost(NotificationActions.readAll.url(), {
+            onSuccess: () => {
+                setNotifications(prev => prev.map(n => (n.data.dismissible ?? true) ? { ...n, read_at: new Date().toISOString() } : n));
+                router.reload({ only: ['appNotifications'] });
+            }
+        });
     };
 
     const toggleExpand = (id: string, e: React.MouseEvent) => {
@@ -159,19 +134,6 @@ return;
                                         </div>
                                     </div>
                                     <div className="flex items-center">
-                                        {notification.data.dismissible && !notification.read_at && (
-                                            <Button 
-                                                variant="ghost" 
-                                                size="icon" 
-                                                className="h-7 w-7 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted" 
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    markAsRead(notification.id);
-                                                }}
-                                            >
-                                                <X className="h-3.5 w-3.5" />
-                                            </Button>
-                                        )}
                                         <div className="flex h-7 w-7 items-center justify-center text-muted-foreground/50">
                                             {expandedIds.has(notification.id) ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                                         </div>
@@ -185,7 +147,20 @@ return;
                                                 <Link 
                                                     href={notification.data.url} 
                                                     className="inline-flex items-center text-[11px] font-semibold text-primary hover:underline gap-1 group"
-                                                    onClick={(e) => e.stopPropagation()}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+
+                                                        const isDismissible = notification.data.dismissible ?? true;
+
+                                                        if (!notification.read_at && isDismissible) {
+                                                            e.preventDefault();
+                                                            httpPost(NotificationActions.read.url({ id: notification.id }), {
+                                                                onSuccess: () => {
+                                                                    router.visit(notification.data.url!);
+                                                                }
+                                                            });
+                                                        }
+                                                    }}
                                                 >
                                                     View Details
                                                     <span className="transition-transform group-hover:translate-x-0.5">→</span>

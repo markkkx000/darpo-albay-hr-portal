@@ -1,5 +1,5 @@
-import { Head, Link, router } from '@inertiajs/react';
-import { Bell, ChevronDown, ChevronUp, CheckCheck } from 'lucide-react';
+import { Head, Link, router, useHttp } from '@inertiajs/react';
+import { Bell, ChevronDown, ChevronUp, CheckCheck, RotateCcw } from 'lucide-react';
 
 import { useState } from 'react';
 import * as NotificationActions from '@/actions/App/Modules/Notifications/Controllers/NotificationController';
@@ -15,6 +15,7 @@ interface Props {
 }
 
 export default function Index({ notifications }: Props) {
+    const { post: httpPost } = useHttp();
     const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
     const toggleExpand = (id: string) => {
@@ -31,9 +32,12 @@ export default function Index({ notifications }: Props) {
         });
     };
 
-    const markAsRead = (id: string) => {
-        router.post(NotificationActions.read.url({ id }), {}, {
-            preserveScroll: true,
+
+    const markAsUnread = (id: string) => {
+        httpPost(NotificationActions.unread.url({ id }), {
+            onSuccess: () => {
+                router.reload({ only: ['notifications', 'appNotifications'] });
+            },
         });
     };
 
@@ -113,15 +117,15 @@ export default function Index({ notifications }: Props) {
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                {notification.data.dismissible && !notification.read_at && (
+                                                {notification.read_at && (
                                                     <Button 
                                                         variant="ghost" 
                                                         size="sm" 
-                                                        className="h-8 gap-2 text-xs" 
-                                                        onClick={() => markAsRead(notification.id)}
+                                                        className="h-8 gap-2 text-xs text-muted-foreground hover:text-primary" 
+                                                        onClick={() => markAsUnread(notification.id)}
                                                     >
-                                                        <CheckCheck className="h-3.5 w-3.5" />
-                                                        Mark as read
+                                                        <RotateCcw className="h-3.5 w-3.5" />
+                                                        Mark as unread
                                                     </Button>
                                                 )}
                                                 <Button 
@@ -137,14 +141,36 @@ export default function Index({ notifications }: Props) {
                                         {expandedIds.has(notification.id) && (
                                             <div className="mt-4 animate-in slide-in-from-top-1 duration-200">
                                                 <div className="rounded-lg bg-muted/30 p-4 text-sm leading-relaxed text-foreground/90 border border-sidebar-border/20">
-                                                    <p className="whitespace-pre-wrap">{notification.data.body}</p>
+                                                    <div className="relative">
+                                                        <div className={cn(
+                                                            "overflow-hidden transition-all duration-300",
+                                                            (notification.data.body?.length ?? 0) > 300 && "max-h-24"
+                                                        )}>
+                                                            <p className="whitespace-pre-wrap">{notification.data.body}</p>
+                                                            {(notification.data.body?.length ?? 0) > 300 && (
+                                                                <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-muted/30 to-transparent pointer-events-none" />
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                     {notification.data.url && (
                                                         <div className="mt-4 pt-4 border-t border-sidebar-border/20">
                                                             <Link 
                                                                 href={notification.data.url} 
-                                                                className="inline-flex items-center text-sm font-bold text-primary hover:underline gap-2 group"
+                                                                className="inline-flex items-center text-sm font-semibold text-primary hover:underline gap-1 group"
+                                                                onClick={(e) => {
+                                                                    const isDismissible = notification.data.dismissible ?? true;
+
+                                                                    if (!notification.read_at && isDismissible) {
+                                                                        e.preventDefault();
+                                                                        httpPost(NotificationActions.read.url({ id: notification.id }), {
+                                                                            onSuccess: () => {
+                                                                                router.visit(notification.data.url!);
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                }}
                                                             >
-                                                                Navigate to resource
+                                                                View full
                                                                 <span className="transition-transform group-hover:translate-x-1">→</span>
                                                             </Link>
                                                         </div>

@@ -5,7 +5,7 @@ export interface NotificationData {
     body: string;
     from: string;
     priority: 'low' | 'normal' | 'high';
-    dismissible: boolean;
+    dismissible?: boolean;
     url?: string;
 }
 

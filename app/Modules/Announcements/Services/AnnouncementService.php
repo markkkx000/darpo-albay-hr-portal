@@ -102,7 +102,7 @@ class AnnouncementService
         $notificationData = [
             'title' => 'New Announcement: '.$announcement->title,
             'message' => 'A new announcement has been posted.',
-            'url' => route('announcements.show', $announcement->id),
+            'url' => route('announcements.show', $announcement->id, false),
             'type' => 'announcement',
             'subtype' => 'new_announcement',
             'priority' => $announcement->priority,
