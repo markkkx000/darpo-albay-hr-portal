@@ -39,7 +39,7 @@ export default function Index({ announcements }: Props) {
                         </div>
                     </div>
                 ) : (
-                    <div className="space-y-4 max-w-4xl mx-auto">
+                    <div className="space-y-4">
                         {announcements.data.map((announcement) => (
                             <AnnouncementCard key={announcement.id} announcement={announcement} />
                         ))}

@@ -38,16 +38,16 @@ export function AdminOverview() {
                     <div className="relative z-10 p-6">
                         <h3 className="text-lg font-semibold tracking-tight drop-shadow-sm mb-4">Admin Quick Actions</h3>
                         <div className="grid gap-3">
-                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#2192FF]/10 dark:bg-[#2192FF]/20 hover:bg-[#2192FF]/20 dark:hover:bg-[#2192FF]/30 rounded-xl border border-[#2192FF]/30 shadow-sm transition-all duration-300 hover:-translate-y-0.5">
-                                <div className="font-medium text-zinc-800 dark:text-[#2192FF] drop-shadow-sm group-hover/btn:text-[#2192FF] transition-colors">User Management</div>
+                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#2192FF]/10 dark:bg-[#2192FF]/20 rounded-xl border border-[#2192FF]/30 shadow-sm pointer-events-none opacity-60">
+                                <div className="font-medium text-zinc-800 dark:text-[#2192FF] drop-shadow-sm transition-colors">User Management <span className="text-xs font-normal opacity-70 ml-1">(Coming Soon)</span></div>
                                 <div className="text-sm text-zinc-600 dark:text-zinc-400 opacity-90">Manage user accounts and permissions</div>
                             </button>
-                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#38E54D]/10 dark:bg-[#38E54D]/20 hover:bg-[#38E54D]/20 dark:hover:bg-[#38E54D]/30 rounded-xl border border-[#38E54D]/30 shadow-sm transition-all duration-300 hover:-translate-y-0.5">
-                                <div className="font-medium text-zinc-800 dark:text-[#38E54D] drop-shadow-sm group-hover/btn:text-[#38E54D] transition-colors">System Settings</div>
+                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#38E54D]/10 dark:bg-[#38E54D]/20 rounded-xl border border-[#38E54D]/30 shadow-sm pointer-events-none opacity-60">
+                                <div className="font-medium text-zinc-800 dark:text-[#38E54D] drop-shadow-sm transition-colors">System Settings <span className="text-xs font-normal opacity-70 ml-1">(Coming Soon)</span></div>
                                 <div className="text-sm text-zinc-600 dark:text-zinc-400 opacity-90">Configure system preferences</div>
                             </button>
-                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#84cc16]/10 dark:bg-[#84cc16]/20 hover:bg-[#84cc16]/20 dark:hover:bg-[#84cc16]/30 rounded-xl border border-[#84cc16]/30 shadow-sm transition-all duration-300 hover:-translate-y-0.5">
-                                <div className="font-medium text-zinc-800 dark:text-[#84cc16] drop-shadow-sm group-hover/btn:text-[#84cc16] transition-colors">Reports</div>
+                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#84cc16]/10 dark:bg-[#84cc16]/20 rounded-xl border border-[#84cc16]/30 shadow-sm pointer-events-none opacity-60">
+                                <div className="font-medium text-zinc-800 dark:text-[#84cc16] drop-shadow-sm transition-colors">Reports <span className="text-xs font-normal opacity-70 ml-1">(Coming Soon)</span></div>
                                 <div className="text-sm text-zinc-600 dark:text-zinc-400 opacity-90">Generate system reports</div>
                             </button>
                         </div>

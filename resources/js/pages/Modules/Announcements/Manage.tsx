@@ -161,7 +161,7 @@ export default function Manage({ announcements }: Props) {
                                                         className={cn(
                                                             "capitalize font-bold px-3 py-1 rounded-full",
                                                             announcement.status === 'published' 
-                                                                ? "bg-[#38E54D] text-[#030f04] shadow-[0_0_15px_rgba(56,229,77,0.6)] animate-pulse-subtle border-none" 
+                                                                ? "bg-primary/20 text-primary shadow-[0_0_15px_rgba(56,229,77,0.4)] animate-pulse border-none" 
                                                                 : "opacity-70"
                                                         )}
                                                     >
@@ -171,9 +171,9 @@ export default function Manage({ announcements }: Props) {
                                                 <td className="px-6 py-4">
                                                     <Badge variant="outline" className={cn(
                                                         "capitalize font-normal",
-                                                        announcement.priority === 'high' ? 'border-red-500 text-red-500 bg-red-500/5' :
-                                                        announcement.priority === 'low' ? 'border-blue-500 text-blue-500 bg-blue-500/5' : 
-                                                        'border-gray-500 text-gray-500 bg-gray-500/5'
+                                                        announcement.priority === 'high' ? 'border-destructive/30 text-destructive bg-destructive/10' :
+                                                        announcement.priority === 'low' ? 'border-primary/30 text-primary bg-primary/10' : 
+                                                        'border-muted-foreground/30 text-muted-foreground bg-muted-foreground/10'
                                                     )}>
                                                         {announcement.priority}
                                                     </Badge>

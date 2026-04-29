@@ -16,8 +16,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import AppLayout from '@/layouts/app-layout';
-import { LiquidBackground } from '@/components/liquid-background';
+import { AttendanceFilters } from '@/components/Attendance/AttendanceFilters';
 import { cn } from '@/lib/utils';
 import Heading from '@/components/heading';
 import { index as attendanceIndexRoute } from '@/routes/attendance';

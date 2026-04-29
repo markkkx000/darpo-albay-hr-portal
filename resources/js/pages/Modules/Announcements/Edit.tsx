@@ -17,12 +17,16 @@ export default function Edit({ announcement, departments, positions, users }: Pr
             <Head title={`Edit: ${announcement.title}`} />
 
             <div className="p-4 w-full space-y-6">
-                <Heading 
-                    title="Edit Announcement" 
-                    description="Update your announcement draft."
-                />
+                <div className="liquid-glass flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5">
+                    <div>
+                        <h1 className="liquid-glass-title text-3xl font-bold tracking-tight">Edit Announcement</h1>
+                        <p className="text-muted-foreground text-sm mt-2">
+                            Update your announcement draft.
+                        </p>
+                    </div>
+                </div>
 
-                <Card className="max-w-4xl border-none shadow-md">
+                <Card className="liquid-glass-card max-w-4xl border-none shadow-md">
                     <CardHeader>
                         <CardTitle>Announcement Details</CardTitle>
                     </CardHeader>

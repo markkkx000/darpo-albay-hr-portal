@@ -3,8 +3,7 @@ import { LogIn, LogOut, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import AppLayout from '@/layouts/app-layout';
-import { LiquidBackground } from '@/components/liquid-background';
+import { AttendanceStatus } from '@/components/Attendance/AttendanceStatus';
 import { cn } from '@/lib/utils';
 import { index as attendanceIndexRoute } from '@/routes/attendance';
 import { clockIn, clockOut } from '@/routes/attendance';
@@ -86,7 +85,7 @@ return;
 
                 
                 {/* Main Widget */}
-                <div className="w-full max-w-xl backdrop-blur-2xl bg-white/70 dark:bg-black/30 border border-black/8 dark:border-white/10 shadow-[0_32px_80px_rgba(0,0,0,0.18)] dark:shadow-[0_32px_80px_rgba(0,0,0,0.5)] rounded-[2.5rem] p-3 flex flex-col md:flex-row gap-3">
+                <div className="w-full max-w-xl liquid-glass-card p-6 flex flex-col md:flex-row gap-6 items-center md:items-start justify-between">
                     
                     {/* Left Pane: Date Card — Figma spec gradient + inner glows */}
                     <div
@@ -94,10 +93,10 @@ return;
                         style={{
                             background: 'var(--stat-card-bg)',
                             boxShadow: `
-                                inset 0 -80px 60px -30px rgba(20, 64, 205, 0.6),
-                                inset 0 -40px 30px -8px rgba(86, 148, 255, 0.3),
+                                inset 0 -80px 60px -30px rgba(34, 197, 94, 0.4),
+                                inset 0 -40px 30px -8px rgba(132, 204, 22, 0.2),
                                 inset 0 -20px 20px 0px rgba(255, 255, 255, 0.2),
-                                inset 0 0 6px -2px rgba(35, 101, 255, 0.1)
+                                inset 0 0 6px -2px rgba(56, 229, 77, 0.1)
                             `,
                             minHeight: '180px',
                         }}

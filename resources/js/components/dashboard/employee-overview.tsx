@@ -41,20 +41,20 @@ export function EmployeeOverview() {
                     <div className="relative z-10 p-6">
                         <h3 className="text-lg font-semibold tracking-tight drop-shadow-sm mb-4">Quick Actions</h3>
                         <div className="grid gap-3">
-                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#2192FF]/10 dark:bg-[#2192FF]/20 hover:bg-[#2192FF]/20 dark:hover:bg-[#2192FF]/30 rounded-xl border border-[#2192FF]/30 shadow-sm transition-all duration-300 hover:-translate-y-0.5">
-                                <div className="font-medium text-zinc-800 dark:text-[#2192FF] drop-shadow-sm group-hover/btn:text-[#2192FF] transition-colors">Clock In/Out</div>
+                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#2192FF]/10 dark:bg-[#2192FF]/20 rounded-xl border border-[#2192FF]/30 shadow-sm pointer-events-none opacity-60">
+                                <div className="font-medium text-zinc-800 dark:text-[#2192FF] drop-shadow-sm transition-colors">Clock In/Out <span className="text-xs font-normal opacity-70 ml-1">(Coming Soon)</span></div>
                                 <div className="text-sm text-muted-foreground opacity-90">Record your attendance</div>
                             </button>
-                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#38E54D]/10 dark:bg-[#38E54D]/20 hover:bg-[#38E54D]/20 dark:hover:bg-[#38E54D]/30 rounded-xl border border-[#38E54D]/30 shadow-sm transition-all duration-300 hover:-translate-y-0.5">
-                                <div className="font-medium text-zinc-800 dark:text-[#38E54D] drop-shadow-sm group-hover/btn:text-[#38E54D] transition-colors">Request Leave</div>
+                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#38E54D]/10 dark:bg-[#38E54D]/20 rounded-xl border border-[#38E54D]/30 shadow-sm pointer-events-none opacity-60">
+                                <div className="font-medium text-zinc-800 dark:text-[#38E54D] drop-shadow-sm transition-colors">Request Leave <span className="text-xs font-normal opacity-70 ml-1">(Coming Soon)</span></div>
                                 <div className="text-sm text-muted-foreground opacity-90">Submit vacation or sick leave requests</div>
                             </button>
-                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#84cc16]/10 dark:bg-[#84cc16]/20 hover:bg-[#84cc16]/20 dark:hover:bg-[#84cc16]/30 rounded-xl border border-[#84cc16]/30 shadow-sm transition-all duration-300 hover:-translate-y-0.5">
-                                <div className="font-medium text-zinc-800 dark:text-[#84cc16] drop-shadow-sm group-hover/btn:text-[#84cc16] transition-colors">View Timesheet</div>
+                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#84cc16]/10 dark:bg-[#84cc16]/20 rounded-xl border border-[#84cc16]/30 shadow-sm pointer-events-none opacity-60">
+                                <div className="font-medium text-zinc-800 dark:text-[#84cc16] drop-shadow-sm transition-colors">View Timesheet <span className="text-xs font-normal opacity-70 ml-1">(Coming Soon)</span></div>
                                 <div className="text-sm text-muted-foreground opacity-90">Check your work hours and overtime</div>
                             </button>
-                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#eab308]/10 dark:bg-[#eab308]/20 hover:bg-[#eab308]/20 dark:hover:bg-[#eab308]/30 rounded-xl border border-[#eab308]/30 shadow-sm transition-all duration-300 hover:-translate-y-0.5">
-                                <div className="font-medium text-zinc-800 dark:text-[#eab308] drop-shadow-sm group-hover/btn:text-[#eab308] transition-colors">My Profile</div>
+                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#eab308]/10 dark:bg-[#eab308]/20 rounded-xl border border-[#eab308]/30 shadow-sm pointer-events-none opacity-60">
+                                <div className="font-medium text-zinc-800 dark:text-[#eab308] drop-shadow-sm transition-colors">My Profile <span className="text-xs font-normal opacity-70 ml-1">(Coming Soon)</span></div>
                                 <div className="text-sm text-muted-foreground opacity-90">Update personal information</div>
                             </button>
                         </div>

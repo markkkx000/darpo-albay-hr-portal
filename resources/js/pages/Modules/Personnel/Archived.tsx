@@ -62,7 +62,7 @@ export default function Archived({ employees, filters }: Props) {
                 </div>
 
                 {/* Filters */}
-                <div className="grid grid-cols-1 gap-4 bg-destructive/5 p-4 rounded-xl border border-destructive/20">
+                <div className="grid grid-cols-1 gap-4 liquid-glass border-destructive/20 p-4 rounded-xl">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input

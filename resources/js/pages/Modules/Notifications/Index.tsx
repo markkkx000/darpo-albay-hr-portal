@@ -61,7 +61,7 @@ export default function Index({ notifications }: Props) {
                     </Button>
                 </div>
 
-                <Card className="flex-1 border-sidebar-border/50">
+                <Card className="flex-1 liquid-glass-card border-none">
                     <CardHeader className="pb-3">
                         <CardTitle className="text-lg">Recent Notifications</CardTitle>
                         <CardDescription>
@@ -156,12 +156,11 @@ export default function Index({ notifications }: Props) {
                                 ))
                             )}
                         </div>
+                        <div className="px-6 border-t border-sidebar-border/30">
+                            <Pagination links={notifications.links} meta={notifications} />
+                        </div>
                     </CardContent>
                 </Card>
-
-                <div className="mt-4">
-                    <Pagination links={notifications.links} meta={notifications} />
-                </div>
             </div>
         </>
     );
@@ -169,6 +168,6 @@ export default function Index({ notifications }: Props) {
 
 Index.layout = {
     breadcrumbs: [
-        { title: 'Notifications', href: '/notifications' },
+        { title: 'Notifications', href: NotificationActions.index().url },
     ],
 };

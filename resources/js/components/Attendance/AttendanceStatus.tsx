@@ -57,7 +57,7 @@ export function AttendanceStatus({ attendance }: AttendanceStatusProps) {
                     "px-6 py-1.5 uppercase text-xs font-black tracking-widest",
                     attendance.clock_out 
                         ? 'bg-muted/10 text-muted-foreground border-muted-foreground/20' 
-                        : 'bg-green-600 hover:bg-green-700 text-white shadow-[0_0_20px_rgba(34,197,94,0.4)] animate-pulse'
+                        : 'bg-primary/20 text-primary border-primary/30 shadow-[0_0_20px_rgba(56,229,77,0.3)] animate-pulse'
                 )}
             >
                 {attendance.clock_out ? 'Shift Finalized' : 'Currently Active'}

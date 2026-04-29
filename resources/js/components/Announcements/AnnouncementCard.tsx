@@ -27,7 +27,7 @@ export function AnnouncementCard({ announcement, defaultExpanded = false }: Prop
     const priorityColors = {
         low: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200/50 dark:border-blue-800/50',
         normal: 'bg-muted text-muted-foreground border-border',
-        high: 'bg-red-600 text-white border-red-500 shadow-[0_0_15px_rgba(220,38,38,0.4)] animate-pulse font-bold',
+        high: 'bg-destructive/10 text-destructive border-destructive/30 shadow-[0_0_15px_rgba(220,38,38,0.2)] animate-pulse font-bold',
     };
 
     const sanitizedContent = DOMPurify.sanitize(announcement.content);

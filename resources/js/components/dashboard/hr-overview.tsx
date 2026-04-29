@@ -38,20 +38,20 @@ export function HROverview() {
                     <div className="relative z-10 p-6">
                         <h3 className="text-lg font-semibold tracking-tight drop-shadow-sm mb-4">HR Quick Actions</h3>
                         <div className="grid gap-3">
-                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#2192FF]/10 dark:bg-[#2192FF]/20 hover:bg-[#2192FF]/20 dark:hover:bg-[#2192FF]/30 rounded-xl border border-[#2192FF]/30 shadow-sm transition-all duration-300 hover:-translate-y-0.5">
-                                <div className="font-medium text-zinc-800 dark:text-[#2192FF] drop-shadow-sm group-hover/btn:text-[#2192FF] transition-colors">Employee Management</div>
+                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#2192FF]/10 dark:bg-[#2192FF]/20 rounded-xl border border-[#2192FF]/30 shadow-sm pointer-events-none opacity-60">
+                                <div className="font-medium text-zinc-800 dark:text-[#2192FF] drop-shadow-sm transition-colors">Employee Management <span className="text-xs font-normal opacity-70 ml-1">(Coming Soon)</span></div>
                                 <div className="text-sm text-zinc-600 dark:text-zinc-400 opacity-90">View and manage employee records</div>
                             </button>
-                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#38E54D]/10 dark:bg-[#38E54D]/20 hover:bg-[#38E54D]/20 dark:hover:bg-[#38E54D]/30 rounded-xl border border-[#38E54D]/30 shadow-sm transition-all duration-300 hover:-translate-y-0.5">
-                                <div className="font-medium text-zinc-800 dark:text-[#38E54D] drop-shadow-sm group-hover/btn:text-[#38E54D] transition-colors">Leave Management</div>
+                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#38E54D]/10 dark:bg-[#38E54D]/20 rounded-xl border border-[#38E54D]/30 shadow-sm pointer-events-none opacity-60">
+                                <div className="font-medium text-zinc-800 dark:text-[#38E54D] drop-shadow-sm transition-colors">Leave Management <span className="text-xs font-normal opacity-70 ml-1">(Coming Soon)</span></div>
                                 <div className="text-sm text-zinc-600 dark:text-zinc-400 opacity-90">Approve and manage leave requests</div>
                             </button>
-                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#84cc16]/10 dark:bg-[#84cc16]/20 hover:bg-[#84cc16]/20 dark:hover:bg-[#84cc16]/30 rounded-xl border border-[#84cc16]/30 shadow-sm transition-all duration-300 hover:-translate-y-0.5">
-                                <div className="font-medium text-zinc-800 dark:text-[#84cc16] drop-shadow-sm group-hover/btn:text-[#84cc16] transition-colors">Attendance Reports</div>
+                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#84cc16]/10 dark:bg-[#84cc16]/20 rounded-xl border border-[#84cc16]/30 shadow-sm pointer-events-none opacity-60">
+                                <div className="font-medium text-zinc-800 dark:text-[#84cc16] drop-shadow-sm transition-colors">Attendance Reports <span className="text-xs font-normal opacity-70 ml-1">(Coming Soon)</span></div>
                                 <div className="text-sm text-zinc-600 dark:text-zinc-400 opacity-90">Generate attendance and payroll reports</div>
                             </button>
-                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#eab308]/10 dark:bg-[#eab308]/20 hover:bg-[#eab308]/20 dark:hover:bg-[#eab308]/30 rounded-xl border border-[#eab308]/30 shadow-sm transition-all duration-300 hover:-translate-y-0.5">
-                                <div className="font-medium text-zinc-800 dark:text-[#eab308] drop-shadow-sm group-hover/btn:text-[#eab308] transition-colors">Recruitment</div>
+                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#eab308]/10 dark:bg-[#eab308]/20 rounded-xl border border-[#eab308]/30 shadow-sm pointer-events-none opacity-60">
+                                <div className="font-medium text-zinc-800 dark:text-[#eab308] drop-shadow-sm transition-colors">Recruitment <span className="text-xs font-normal opacity-70 ml-1">(Coming Soon)</span></div>
                                 <div className="text-sm text-zinc-600 dark:text-zinc-400 opacity-90">Manage job postings and applications</div>
                             </button>
                         </div>
