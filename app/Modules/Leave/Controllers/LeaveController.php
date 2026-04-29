@@ -45,7 +45,9 @@ class LeaveController extends Controller
             $keywords = explode(' ', $search);
             $q->whereHas('user', function ($uq) use ($keywords) {
                 foreach ($keywords as $keyword) {
-                    if (empty($keyword)) continue;
+                    if (empty($keyword)) {
+                        continue;
+                    }
                     $uq->where(function ($inner) use ($keyword) {
                         $inner->where('first_name', 'like', "%{$keyword}%")
                             ->orWhere('last_name', 'like', "%{$keyword}%")

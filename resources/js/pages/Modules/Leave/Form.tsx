@@ -12,7 +12,10 @@ import { Textarea } from '@/components/ui/textarea';
 import LeaveNavigation from './Components/LeaveNavigation';
 
 const formatDateForInput = (dateString: string | null | undefined) => {
-    if (!dateString) return '';
+    if (!dateString) {
+return '';
+}
+
     return dateString.substring(0, 10);
 };
 
@@ -49,6 +52,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
     useEffect(() => {
         if (isFirstRender.current) {
             isFirstRender.current = false;
+
             return;
         }
 
@@ -87,7 +91,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
 
             setData('days_requested', weekdayCount.toString());
         }
-    }, [data.start_date, data.end_date, data.specific_dates.length, dateMode]);
+    }, [data.start_date, data.end_date, data.specific_dates, dateMode, setData]);
 
     const addSpecificDate = () => {
         if (specificDateInput && !data.specific_dates.includes(specificDateInput)) {

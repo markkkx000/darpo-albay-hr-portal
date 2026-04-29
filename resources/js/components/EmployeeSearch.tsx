@@ -36,6 +36,7 @@ export function EmployeeSearch({
 
     const filteredUsers = useMemo(() => {
         const usersArray = Array.isArray(users) ? users : [];
+
         if (query === '') {
             return usersArray;
         }
@@ -93,6 +94,7 @@ export function EmployeeSearch({
 
                                 if (returnValue === 'id' || !isNaN(Number(val))) {
                                     const found = users.find((u) => u.id.toString() === val);
+
                                     return found ? `${found.first_name} ${found.last_name}` : val;
                                 }
 
