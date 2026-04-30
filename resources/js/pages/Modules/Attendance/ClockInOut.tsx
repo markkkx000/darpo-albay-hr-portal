@@ -1,11 +1,12 @@
-import { Head, useForm, router, usePage, Link } from '@inertiajs/react';
-import { LogIn, LogOut, CheckCircle2, AlertCircle, Settings } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { AlertCircle, CheckCircle2, LogIn, LogOut, Settings } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+
 import { Button } from '@/components/ui/button';
-import { AttendanceStatus } from '@/components/Attendance/AttendanceStatus';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { clockIn, clockOut } from '@/routes/attendance/index';
+import { clockIn, clockOut, index as attendanceIndexRoute } from '@/routes/attendance/index';
 import { index as records_index } from '@/routes/attendance/manage/records/index';
 
 interface Attendance {
@@ -101,65 +102,67 @@ return;
                         <CardDescription className="text-muted-foreground font-medium">Keep track of your daily work hours with precision.</CardDescription>
                     </CardHeader>
                     
-                    {/* Left Pane: Date Card — Figma spec gradient + inner glows */}
-                    <div
-                        className="w-full md:w-52 rounded-[2rem] p-6 flex flex-col justify-between shrink-0 overflow-hidden border border-black/5 dark:border-white/5 shadow-sm"
-                        style={{
-                            background: 'var(--stat-card-bg)',
-                            boxShadow: `
-                                inset 0 -80px 60px -30px rgba(34, 197, 94, 0.4),
-                                inset 0 -40px 30px -8px rgba(132, 204, 22, 0.2),
-                                inset 0 -20px 20px 0px rgba(255, 255, 255, 0.2),
-                                inset 0 0 6px -2px rgba(56, 229, 77, 0.1)
-                            `,
-                            minHeight: '180px',
-                        }}
-                    >
-                        <div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-foreground/40 dark:text-white/40 mb-1">Today</p>
-                            <h2 className="text-4xl font-extrabold text-foreground dark:text-white tracking-tight leading-none">{todayDate}</h2>
+                    <CardContent className="flex flex-col md:flex-row gap-6 p-6">
+                        {/* Left Pane: Date Card — Figma spec gradient + inner glows */}
+                        <div
+                            className="w-full md:w-52 rounded-[2rem] p-6 flex flex-col justify-between shrink-0 overflow-hidden border border-black/5 dark:border-white/5 shadow-sm"
+                            style={{
+                                background: 'var(--stat-card-bg)',
+                                boxShadow: `
+                                    inset 0 -80px 60px -30px rgba(34, 197, 94, 0.4),
+                                    inset 0 -40px 30px -8px rgba(132, 204, 22, 0.2),
+                                    inset 0 -20px 20px 0px rgba(255, 255, 255, 0.2),
+                                    inset 0 0 6px -2px rgba(56, 229, 77, 0.1)
+                                `,
+                                minHeight: '180px',
+                            }}
+                        >
+                            <div>
+                                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-foreground/40 dark:text-white/40 mb-1">Today</p>
+                                <h2 className="text-4xl font-extrabold text-foreground dark:text-white tracking-tight leading-none">{todayDate}</h2>
+                            </div>
+                            <div className="mt-auto pt-6">
+                                <p className="text-lg font-semibold text-foreground/80 dark:text-white/80">{todayDay}</p>
+                                <p className="text-xs font-medium text-foreground/40 dark:text-white/40 mt-0.5 tracking-wide">{historyCount} {historyCount === 1 ? 'log' : 'logs'} this week</p>
+                            </div>
                         </div>
-                        <div className="mt-auto pt-6">
-                            <p className="text-lg font-semibold text-foreground/80 dark:text-white/80">{todayDay}</p>
-                            <p className="text-xs font-medium text-foreground/40 dark:text-white/40 mt-0.5 tracking-wide">{historyCount} {historyCount === 1 ? 'log' : 'logs'} this week</p>
-                        </div>
-                    </div>
 
-                    {/* Right Pane: History Timeline */}
-                    <div className="flex-1 py-4 px-3 flex flex-col overflow-hidden">
-                        <p className="text-[10px] font-black tracking-[0.25em] text-foreground/30 dark:text-white/30 uppercase mb-4">Recent History</p>
+                        {/* Right Pane: History Timeline */}
+                        <div className="flex-1 py-2 px-1 flex flex-col overflow-hidden">
+                            <p className="text-[10px] font-black tracking-[0.25em] text-foreground/30 dark:text-white/30 uppercase mb-4">Recent History</p>
 
-                        <div className="space-y-1 overflow-y-auto">
-                            {timelineItems.length === 0 ? (
-                                <div className="flex flex-col items-start gap-1 py-4">
-                                    <p className="text-sm text-foreground/30 dark:text-white/30 italic">No records yet.</p>
-                                    <p className="text-[10px] text-foreground/20 dark:text-white/20">Your logs will appear here after clocking in.</p>
-                                </div>
-                            ) : (
-                                timelineItems.map((item, idx) => {
-                                    const palette = ['#2192FF', '#9CFF2E', '#a855f7', '#FDFF00', '#38E54D'];
-                                    const barColor = item.status === 'active' ? '#38E54D' : palette[idx % palette.length];
+                            <div className="space-y-1 overflow-y-auto max-h-[160px] pr-2 scrollbar-thin">
+                                {timelineItems.length === 0 ? (
+                                    <div className="flex flex-col items-start gap-1 py-4">
+                                        <p className="text-sm text-foreground/30 dark:text-white/30 italic">No records yet.</p>
+                                        <p className="text-[10px] text-foreground/20 dark:text-white/20">Your logs will appear here after clocking in.</p>
+                                    </div>
+                                ) : (
+                                    timelineItems.map((item, idx) => {
+                                        const palette = ['#2192FF', '#9CFF2E', '#a855f7', '#FDFF00', '#38E54D'];
+                                        const barColor = item.status === 'active' ? '#38E54D' : palette[idx % palette.length];
 
-                                    return (
-                                        <div key={item.id} className="group flex items-center gap-3 px-2 py-2.5 rounded-xl hover:bg-white/5 transition-colors">
-                                            <div
-                                                className={cn("w-[3px] h-10 rounded-full shrink-0", item.status === 'active' ? 'animate-pulse' : '')}
-                                                style={{
-                                                    background: barColor,
-                                                    boxShadow: item.status === 'active' ? `0 0 10px ${barColor}` : 'none'
-                                                }}
-                                            />
-                                            <div className="flex flex-col min-w-0">
-                                                <p className="text-[13px] font-semibold text-foreground/90 dark:text-white/90 truncate">{item.date}</p>
-                                                <p className="text-[11px] text-foreground/40 dark:text-white/40 mt-0.5 font-mono tracking-wide">{item.timeStr}</p>
+                                        return (
+                                            <div key={item.id} className="group flex items-center gap-3 px-2 py-2.5 rounded-xl hover:bg-white/5 transition-colors">
+                                                <div
+                                                    className={cn("w-[3px] h-10 rounded-full shrink-0", item.status === 'active' ? 'animate-pulse' : '')}
+                                                    style={{
+                                                        background: barColor,
+                                                        boxShadow: item.status === 'active' ? `0 0 10px ${barColor}` : 'none'
+                                                    }}
+                                                />
+                                                <div className="flex flex-col min-w-0">
+                                                    <p className="text-[13px] font-semibold text-foreground/90 dark:text-white/90 truncate">{item.date}</p>
+                                                    <p className="text-[11px] text-foreground/40 dark:text-white/40 mt-0.5 font-mono tracking-wide">{item.timeStr}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    );
-                                })
-                            )}
+                                        );
+                                    })
+                                )}
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </CardContent>
+                </Card>
 
                 {/* Clock Action Button — full-width, below the card */}
                 <div className="w-full max-w-xl flex flex-col items-stretch gap-3">

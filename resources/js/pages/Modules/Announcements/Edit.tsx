@@ -1,6 +1,5 @@
 import { Head } from '@inertiajs/react';
 import { AnnouncementForm } from '@/components/Announcements/AnnouncementForm';
-import Heading from '@/components/heading';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { index, manage, update } from '@/routes/announcements';
 

@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/dialog';
 
 import { cn } from '@/lib/utils';
-import Heading from '@/components/heading';
 import { index as attendanceIndexRoute } from '@/routes/attendance';
 import { index as manageRecordsIndexRoute, destroy as destroyRecord } from '@/routes/attendance/manage/records';
 

@@ -1,9 +1,10 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Megaphone, Settings } from 'lucide-react';
 import { AnnouncementCard } from '@/components/Announcements/AnnouncementCard';
+import Heading from '@/components/heading';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
-import { manage } from '@/routes/announcements/index';
+import { index, manage } from '@/routes/announcements/index';
 
 interface Props {
     announcements: {
@@ -68,6 +69,6 @@ export default function Index({ announcements }: Props) {
 
 Index.layout = {
     breadcrumbs: [
-        { title: 'Announcements', href: '#' },
+        { title: 'Announcements', href: index().url },
     ],
 };

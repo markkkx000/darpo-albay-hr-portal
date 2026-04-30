@@ -9,8 +9,8 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useCurrentUrl } from '@/hooks/use-current-url';
-import type { NavItem } from '@/types';
 import { cn } from '@/lib/utils';
+import type { NavItem } from '@/types';
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
     const { isCurrentUrl } = useCurrentUrl();
@@ -21,6 +21,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
             <SidebarMenu>
                 {items.map((item) => {
                     const active = isCurrentUrl(item.href);
+
                     return (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton

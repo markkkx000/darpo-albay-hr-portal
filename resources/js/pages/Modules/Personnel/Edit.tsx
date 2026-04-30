@@ -1,7 +1,7 @@
 import { Head, router } from '@inertiajs/react';
 import { toast } from 'sonner';
 import { EmployeeForm } from '@/components/Personnel/EmployeeForm';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { update as updateRoute, index as indexRoute } from '@/routes/personnel';
 
 interface Props {
