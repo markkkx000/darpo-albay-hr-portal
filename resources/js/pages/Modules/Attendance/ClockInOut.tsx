@@ -106,7 +106,15 @@ return;
                         {/* Left Pane: Date Card — Premium Matte Surface */}
                         <div
                             className="w-full md:w-52 rounded-[2rem] p-6 flex flex-col justify-between shrink-0 overflow-hidden matte-card elev-1"
-                            style={{ minHeight: '180px' }}
+                            style={{ 
+                                minHeight: '180px',
+                                boxShadow: `
+                                    inset 0 -80px 60px -30px rgba(21, 128, 61, 1),
+                                    inset 0 -40px 30px -8px rgba(74, 222, 128, 0.5),
+                                    inset 0 -20px 20px -6px rgba(255, 255, 255, 0.4),
+                                    inset 0 6px 6px -2px rgba(34, 197, 94, 0.15)
+                                `
+                            }}
                         >
                             <div>
                                 <p className="t-caption mb-1">Today</p>
