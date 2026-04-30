@@ -46,8 +46,13 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
         leaveRequest?.specific_dates && leaveRequest.specific_dates.length > 0 ? 'specific' : 'range'
     );
     const [specificDateInput, setSpecificDateInput] = useState('');
+    const [mounted, setMounted] = useState(false);
 
     const isFirstRender = useRef(true);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     useEffect(() => {
         if (isFirstRender.current) {
@@ -56,6 +61,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
             return;
         }
 
+        let calculatedDays = '';
         if (dateMode === 'range') {
             if (data.start_date && data.end_date) {
                 const start = new Date(data.start_date);
@@ -77,10 +83,8 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                         current.setDate(current.getDate() + 1);
                     }
 
-                    setData('days_requested', weekdays.toString());
+                    calculatedDays = weekdays.toString();
                 }
-            } else if (!data.start_date || !data.end_date) {
-                setData('days_requested', '');
             }
         } else {
             const weekdayCount = data.specific_dates.filter((d: string) => {
@@ -89,9 +93,13 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                 return day !== 0 && day !== 6;
             }).length;
 
-            setData('days_requested', weekdayCount.toString());
+            calculatedDays = weekdayCount.toString();
         }
-    }, [data.start_date, data.end_date, data.specific_dates, dateMode, setData]);
+
+        if (data.days_requested !== calculatedDays) {
+            setData('days_requested', calculatedDays);
+        }
+    }, [data.start_date, data.end_date, data.specific_dates, dateMode, data.days_requested, setData]);
 
     const addSpecificDate = () => {
         if (specificDateInput && !data.specific_dates.includes(specificDateInput)) {
@@ -161,14 +169,20 @@ return { category: '', specify: '' };
     const { category, specify } = getDetailsParts(data.leave_details);
 
     const updateDetails = (newCategory: string, newSpecify: string) => {
-        if (newSpecify && newSpecify.trim() !== '') {
-            setData('leave_details', `${newCategory}: ${newSpecify}`);
-        } else {
-            setData('leave_details', newCategory);
+        const newValue = newSpecify && newSpecify.trim() !== '' 
+            ? `${newCategory}: ${newSpecify}` 
+            : newCategory;
+
+        if (data.leave_details !== newValue) {
+            setData('leave_details', newValue);
         }
     };
 
     const handleLeaveTypeChange = (v: string) => {
+        if (data.leave_type_id === v) {
+            return;
+        }
+
         setData({
             ...data,
             leave_type_id: v,
@@ -251,9 +265,9 @@ return { category: '', specify: '' };
                                 <Select 
                                     value={category} 
                                     onValueChange={(val) => updateDetails(val, specify)}
-                                    disabled={!typeName}
+                                    disabled={!mounted || !typeName}
                                 >
-                                    <SelectTrigger className={!typeName ? "opacity-50" : ""}>
+                                    <SelectTrigger className={(!mounted || !typeName) ? "opacity-50" : ""}>
                                         <SelectValue placeholder={!typeName ? "Select Leave Type first" : "Select details..."} />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -270,8 +284,8 @@ return { category: '', specify: '' };
                                     placeholder={specifyPlaceholder}
                                     value={specify}
                                     onChange={(e) => updateDetails(category, e.target.value)}
-                                    disabled={!typeName || !category || hideSpecify}
-                                    className={(!typeName || !category || hideSpecify) ? "opacity-50 bg-muted cursor-not-allowed" : ""}
+                                    disabled={!mounted || !typeName || !category || hideSpecify}
+                                    className={(!mounted || !typeName || !category || hideSpecify) ? "opacity-50 bg-muted cursor-not-allowed" : ""}
                                 />
                             </div>
                         </div>
