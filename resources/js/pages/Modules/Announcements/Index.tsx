@@ -45,7 +45,7 @@ export default function Index({ announcements }: Props) {
                             <Megaphone className="h-12 w-12 text-muted-foreground" />
                         </div>
                         <div className="space-y-1">
-                            <h3 className="text-xl font-semibold">No announcements yet</h3>
+                            <h3 className="t-headline">No announcements yet</h3>
                             <p className="text-muted-foreground max-w-xs">
                                 Check back later for updates and news.
                             </p>

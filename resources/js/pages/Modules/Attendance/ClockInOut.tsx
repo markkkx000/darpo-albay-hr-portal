@@ -88,7 +88,7 @@ return;
                 <div className="w-full flex justify-end max-w-5xl">
                     {canManage && (
                         <Link href={records_index().url}>
-                            <Button variant="outline" className="bg-background/50 backdrop-blur-sm border-white/20 shadow-sm">
+                            <Button variant="outline">
                                 <Settings className="mr-2 h-4 w-4" />
                                 Attendance Management
                             </Button>
@@ -96,64 +96,48 @@ return;
                     )}
                 </div>
 
-                <Card className="w-full max-w-xl overflow-hidden border-none shadow-2xl glass-panel mt-4">
+                <Card className="w-full max-w-xl elev-3">
                     <CardHeader className="text-center">
-                        <CardTitle className="text-3xl font-extrabold tracking-tight text-highlight">Attendance Registry</CardTitle>
+                        <CardTitle className="t-title">Attendance Registry</CardTitle>
                         <CardDescription className="text-muted-foreground font-medium">Keep track of your daily work hours with precision.</CardDescription>
                     </CardHeader>
                     
                     <CardContent className="flex flex-col md:flex-row gap-6 p-6">
-                        {/* Left Pane: Date Card — Figma spec gradient + inner glows */}
+                        {/* Left Pane: Date Card — Premium Matte Surface */}
                         <div
-                            className="w-full md:w-52 rounded-[2rem] p-6 flex flex-col justify-between shrink-0 overflow-hidden border border-black/5 dark:border-white/5 shadow-sm"
-                            style={{
-                                background: 'var(--stat-card-bg)',
-                                boxShadow: `
-                                    inset 0 -80px 60px -30px rgba(34, 197, 94, 0.4),
-                                    inset 0 -40px 30px -8px rgba(132, 204, 22, 0.2),
-                                    inset 0 -20px 20px 0px rgba(255, 255, 255, 0.2),
-                                    inset 0 0 6px -2px rgba(56, 229, 77, 0.1)
-                                `,
-                                minHeight: '180px',
-                            }}
+                            className="w-full md:w-52 rounded-[2rem] p-6 flex flex-col justify-between shrink-0 overflow-hidden matte-card elev-1"
+                            style={{ minHeight: '180px' }}
                         >
                             <div>
-                                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-foreground/40 dark:text-white/40 mb-1">Today</p>
-                                <h2 className="text-4xl font-extrabold text-foreground dark:text-white tracking-tight leading-none">{todayDate}</h2>
+                                <p className="t-caption mb-1">Today</p>
+                                <h2 className="t-title leading-none">{todayDate}</h2>
                             </div>
                             <div className="mt-auto pt-6">
-                                <p className="text-lg font-semibold text-foreground/80 dark:text-white/80">{todayDay}</p>
-                                <p className="text-xs font-medium text-foreground/40 dark:text-white/40 mt-0.5 tracking-wide">{historyCount} {historyCount === 1 ? 'log' : 'logs'} this week</p>
+                                <p className="text-lg font-semibold text-foreground/80">{todayDay}</p>
+                                <p className="text-xs font-medium text-muted-foreground mt-0.5 tracking-wide">{historyCount} {historyCount === 1 ? 'log' : 'logs'} this week</p>
                             </div>
                         </div>
 
                         {/* Right Pane: History Timeline */}
                         <div className="flex-1 py-2 px-1 flex flex-col overflow-hidden">
-                            <p className="text-[10px] font-black tracking-[0.25em] text-foreground/30 dark:text-white/30 uppercase mb-4">Recent History</p>
+                            <p className="t-caption mb-4">Recent History</p>
 
                             <div className="space-y-1 overflow-y-auto max-h-[160px] pr-2 scrollbar-thin">
                                 {timelineItems.length === 0 ? (
                                     <div className="flex flex-col items-start gap-1 py-4">
-                                        <p className="text-sm text-foreground/30 dark:text-white/30 italic">No records yet.</p>
-                                        <p className="text-[10px] text-foreground/20 dark:text-white/20">Your logs will appear here after clocking in.</p>
+                                        <p className="text-sm text-muted-foreground italic">No records yet.</p>
+                                        <p className="text-[10px] text-muted-foreground/50">Your logs will appear here after clocking in.</p>
                                     </div>
                                 ) : (
-                                    timelineItems.map((item, idx) => {
-                                        const palette = ['#2192FF', '#9CFF2E', '#a855f7', '#FDFF00', '#38E54D'];
-                                        const barColor = item.status === 'active' ? '#38E54D' : palette[idx % palette.length];
-
+                                    timelineItems.map((item) => {
                                         return (
-                                            <div key={item.id} className="group flex items-center gap-3 px-2 py-2.5 rounded-xl hover:bg-white/5 transition-colors">
+                                            <div key={item.id} className="group flex items-center gap-3 px-2 py-2.5 rounded-xl hover:bg-surface-2 transition-colors">
                                                 <div
-                                                    className={cn("w-[3px] h-10 rounded-full shrink-0", item.status === 'active' ? 'animate-pulse' : '')}
-                                                    style={{
-                                                        background: barColor,
-                                                        boxShadow: item.status === 'active' ? `0 0 10px ${barColor}` : 'none'
-                                                    }}
+                                                    className={cn("w-[3px] h-10 rounded-full shrink-0", item.status === 'active' ? 'bg-primary animate-pulse shadow-[0_0_8px_var(--green-glow)]' : 'bg-muted')}
                                                 />
                                                 <div className="flex flex-col min-w-0">
-                                                    <p className="text-[13px] font-semibold text-foreground/90 dark:text-white/90 truncate">{item.date}</p>
-                                                    <p className="text-[11px] text-foreground/40 dark:text-white/40 mt-0.5 font-mono tracking-wide">{item.timeStr}</p>
+                                                    <p className="text-[13px] font-semibold text-foreground/90 truncate">{item.date}</p>
+                                                    <p className="text-[11px] text-muted-foreground mt-0.5 font-mono tracking-wide">{item.timeStr}</p>
                                                 </div>
                                             </div>
                                         );
@@ -170,12 +154,8 @@ return;
                         <Button
                             onClick={handleClockIn}
                             disabled={isButtonDisabled}
-                            className={cn(
-                                "w-full h-14 rounded-2xl text-base font-bold tracking-wide shadow-xl transition-all duration-200",
-                                isButtonDisabled
-                                    ? "btn-locked"
-                                    : "btn-gradient hover:scale-[1.01] shadow-[0_8px_32px_rgba(33,146,255,0.3)]"
-                            )}
+                            size="lg"
+                            className="w-full h-14 rounded-2xl text-base font-bold tracking-wide"
                         >
                             <LogIn className="mr-2 h-5 w-5" />
                             {processing ? 'Processing...' : cooldown > 0 ? `Locked (${cooldown}s)` : 'Clock In'}
@@ -184,32 +164,28 @@ return;
                         <Button
                             onClick={handleClockOut}
                             disabled={isButtonDisabled}
-                            className={cn(
-                                "w-full h-14 rounded-2xl text-base font-bold tracking-wide shadow-xl transition-all duration-200 relative overflow-hidden",
-                                isButtonDisabled
-                                    ? "btn-locked"
-                                    : "btn-gradient-amber hover:scale-[1.01] shadow-[0_8px_32px_rgba(245,158,11,0.35)]"
-                            )}
+                            variant="warning"
+                            size="lg"
+                            className="w-full h-14 rounded-2xl text-base font-bold tracking-wide relative overflow-hidden"
                         >
-                            {!isButtonDisabled && <span className="absolute inset-0 bg-white/10 animate-pulse rounded-2xl" />}
                             <LogOut className="mr-2 h-5 w-5 relative z-10" />
                             <span className="relative z-10">{processing ? 'Processing...' : cooldown > 0 ? `Locked (${cooldown}s)` : 'Clock Out'}</span>
                         </Button>
                     ) : (
-                        <div className="w-full h-14 rounded-2xl flex items-center justify-center gap-2 border border-border bg-muted/20 text-muted-foreground text-sm font-semibold tracking-wide dark:border-white/10 dark:bg-white/5 dark:text-white/40">
+                        <div className="w-full h-14 rounded-2xl flex items-center justify-center gap-2 border border-border bg-muted/20 text-muted-foreground text-sm font-semibold tracking-wide">
                             <CheckCircle2 className="h-5 w-5" />
                             Done for Today
                         </div>
                     )}
 
                     {errors.attendance && (
-                        <div className="flex items-center gap-2 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-2 text-xs text-red-400 font-bold uppercase tracking-widest backdrop-blur-md">
+                        <div className="flex items-center gap-2 rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-2 text-xs text-destructive font-bold uppercase tracking-widest">
                             <AlertCircle className="h-3.5 w-3.5 shrink-0" />
                             {errors.attendance}
                         </div>
                     )}
 
-                    <p className="text-center text-[10px] text-foreground/25 dark:text-white/20 tracking-wider">
+                    <p className="text-center text-[10px] text-muted-foreground tracking-wider uppercase opacity-50">
                         Timestamps are server-recorded and tamper-proof.
                     </p>
                 </div>

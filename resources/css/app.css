@@ -62,81 +62,99 @@
     --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* ═══════════════════════════════════════════
+   Premium Design System (Apple-Grade)
+   ═══════════════════════════════════════════ */
+
 :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --destructive-foreground: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.87 0 0);
-    --chart-1: oklch(0.646 0.222 41.116);
-    --chart-2: oklch(0.6 0.118 184.704);
-    --chart-3: oklch(0.398 0.07 227.392);
-    --chart-4: oklch(0.828 0.189 84.429);
-    --chart-5: oklch(0.769 0.188 70.08);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.87 0 0);
-    --stat-card-bg: linear-gradient(180deg, oklch(1 0 0) 0%, oklch(0.97 0 0) 100%);
-    --stat-card-shadow-base: rgba(0, 0, 0, 0.05);
-    --radius-2xl: 1rem;
+    /* ── Neutrals (iOS light system) ── */
+    --background: #f2f2f7;
+    --foreground: #000000;
+    --card: #ffffff;
+    --card-foreground: #1c1c1e;
+    --popover: #ffffff;
+    --popover-foreground: #1c1c1e;
+    --primary: #22c55e;
+    --primary-foreground: #ffffff;
+    --secondary: #f2f2f7;
+    --secondary-foreground: #1c1c1e;
+    --muted: #f2f2f7;
+    --muted-foreground: #636366;
+    --accent: #f2f2f7;
+    --accent-foreground: #22c55e;
+    --destructive: #ff3b30;
+    --destructive-foreground: #ffffff;
+    --border: rgba(0, 0, 0, 0.1);
+    --input: rgba(0, 0, 0, 0.1);
+    --ring: rgba(34, 197, 94, 0.4);
+
+    /* ── Brand ── */
+    --green-300: #86efac;
+    --green-400: #4ade80;
+    --green-500: #22c55e;
+    --green-600: #16a34a;
+    --green-glow: rgba(34, 197, 94, 0.35);
+    --green-tint: rgba(34, 197, 94, 0.08);
+
+    --yellow-300: #fde047;
+    --yellow-400: #facc15;
+    --yellow-500: #eab308;
+    --yellow-glow: rgba(250, 204, 21, 0.30);
+    --yellow-tint: rgba(250, 204, 21, 0.08);
+
+    /* ── Surfaces ── */
+    --surface-1: #ffffff;
+    --surface-2: #f9f9f9;
+    --surface-3: #f2f2f7;
+    --surface-4: #ebebeb;
+
+    --border-1: rgba(0, 0, 0, 0.05);
+    --border-2: rgba(0, 0, 0, 0.08);
+    --border-3: rgba(0, 0, 0, 0.12);
+
+    /* ── Radius ── */
+    --r-sm: 8px;
+    --r-md: 12px;
+    --r-lg: 16px;
+    --r-xl: 20px;
+    --r-2xl: 28px;
+
+    /* ── Spring easing ── */
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.145 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.145 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.985 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.396 0.141 25.723);
-    --destructive-foreground: oklch(0.637 0.237 25.331);
-    --border: oklch(0.269 0 0);
-    --input: oklch(0.269 0 0);
-    --ring: oklch(0.439 0 0);
-    --chart-1: oklch(0.488 0.243 264.376);
-    --chart-2: oklch(0.696 0.17 162.48);
-    --chart-3: oklch(0.769 0.188 70.08);
-    --chart-4: oklch(0.627 0.265 303.9);
-    --chart-5: oklch(0.645 0.246 16.439);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.985 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(0.269 0 0);
-    --sidebar-ring: oklch(0.439 0 0);
-    --stat-card-bg: linear-gradient(180deg, color-mix(in srgb, #040909 60%, transparent) 0%, color-mix(in srgb, #20101F 40%, transparent) 100%);
-    --stat-card-shadow-base: rgba(0, 0, 0, 0.5);
-    --radius-2xl: 1rem;
+    /* ── Neutrals (iOS dark system) ── */
+    --background: #0a0a0a;
+    --foreground: #f0f0f0;
+    --card: #111111;
+    --card-foreground: #f0f0f0;
+    --popover: #1c1c1e;
+    --popover-foreground: #f0f0f0;
+    --primary: #22c55e;
+    --primary-foreground: #ffffff;
+    --secondary: #1c1c1e;
+    --secondary-foreground: #f0f0f0;
+    --muted: #1c1c1e;
+    --muted-foreground: #8e8e93;
+    --accent: #1c1c1e;
+    --accent-foreground: #22c55e;
+    --destructive: #ff453a;
+    --destructive-foreground: #ffffff;
+    --border: rgba(255, 255, 255, 0.08);
+    --input: rgba(255, 255, 255, 0.08);
+    --ring: rgba(34, 197, 94, 0.5);
+
+    /* ── Surfaces ── */
+    --surface-1: #111111;
+    --surface-2: #161616;
+    --surface-3: #1e1e1e;
+    --surface-4: #252525;
+
+    --border-1: rgba(255, 255, 255, 0.05);
+    --border-2: rgba(255, 255, 255, 0.08);
+    --border-3: rgba(255, 255, 255, 0.12);
 }
 
 @layer base {
@@ -146,586 +164,153 @@
 
     body {
         @apply bg-background text-foreground;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 }
 
-/* ═══════════════════════════════════════════
-   Premium Design Utilities
-   ═══════════════════════════════════════════ */
-
 @layer utilities {
-    /* Motion-safe: fade-up + related animate classes */
+    /* Technique 01: Noise Texture */
+    .matte-card {
+        @apply relative overflow-hidden;
+        background: var(--surface-1);
+        border: 1px solid var(--border-1);
+        border-radius: var(--r-xl);
+    }
+
+    .matte-card::before {
+        content: '';
+        @apply absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05];
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' /%3E%3C/svg%3E");
+        mix-blend-mode: overlay;
+    }
+
+    /* Technique 02: Specular Highlights */
+    .btn-specular {
+        @apply relative overflow-hidden transition-all duration-200;
+        background: linear-gradient(180deg, var(--green-400) 0%, var(--green-600) 100%);
+        box-shadow: 
+            0 1px 0 rgba(255, 255, 255, 0.2) inset,
+            0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+            0 8px 24px var(--green-glow);
+    }
+
+    .btn-specular::before {
+        content: '';
+        @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, transparent 100%);
+        border-radius: var(--r-md) var(--r-md) 40% 40%;
+    }
+
+    /* Technique 03: Progressive Elevation */
+    .elev-1 {
+        background: var(--surface-1);
+        border: 1px solid var(--border-1);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    .dark .elev-1 { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+
+    .elev-2 {
+        background: var(--surface-2);
+        border: 1px solid var(--border-2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+    .dark .elev-2 { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3); }
+
+    .elev-3 {
+        background: var(--surface-3);
+        border: 1px solid var(--border-3);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    .dark .elev-3 { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3); }
+
+    /* Technique 04: Mesh Gradients */
+    .mesh-container {
+        @apply relative overflow-hidden bg-background;
+    }
+
+    .mesh-blob {
+        @apply absolute rounded-full blur-[80px] pointer-events-none opacity-20 dark:opacity-30;
+        animation: blobFloat 12s ease-in-out infinite;
+    }
+
+    @keyframes blobFloat {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33%       { transform: translate(20px, -20px) scale(1.1); }
+        66%       { transform: translate(-15px, 10px) scale(0.9); }
+    }
+
+    /* Technique 05: Precision Typography */
+    .t-display {
+        @apply font-bold tracking-tight leading-[1.1];
+        font-size: clamp(40px, 5vw, 56px);
+        letter-spacing: -0.03em;
+        background: linear-gradient(160deg, var(--foreground) 40%, color-mix(in srgb, var(--foreground) 50%, transparent) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .t-title {
+        @apply font-bold tracking-tight leading-tight;
+        font-size: clamp(26px, 3vw, 34px);
+        letter-spacing: -0.025em;
+    }
+
+    .t-headline {
+        @apply font-semibold leading-snug;
+        font-size: 22px;
+        letter-spacing: -0.02em;
+    }
+
+    .t-caption {
+        @apply font-medium uppercase tracking-[0.1em];
+        font-size: 11px;
+        color: var(--muted-foreground);
+    }
+
+    /* Technique 06: Spring Physics */
+    .spring-press {
+        @apply transition-transform duration-200;
+        transition-timing-function: var(--spring);
+    }
+    .spring-press:active { transform: scale(0.96); }
+    .spring-press:hover { transform: scale(1.02); }
+
+    /* Technique 07: Inset Surfaces */
+    .input-etched {
+        @apply w-full bg-surface-2 border border-border-1 rounded-lg px-4 py-2.5 outline-none transition-all duration-200;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .dark .input-etched { box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4); }
+    .input-etched:focus {
+        @apply border-primary/50;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05), 0 0 0 3px var(--ring);
+    }
+
+    /* Technique 08: Squircle Icons */
+    .sqicon {
+        @apply relative flex items-center justify-center overflow-hidden transition-transform duration-200;
+        transition-timing-function: var(--spring);
+    }
+    .sqicon::before {
+        content: '';
+        @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+    }
+
+    /* Animation Utilities */
     @media (prefers-reduced-motion: no-preference) {
         @keyframes fade-up {
-            from { opacity: 0; transform: translateY(24px); }
+            from { opacity: 0; transform: translateY(16px); }
             to   { opacity: 1; transform: translateY(0); }
         }
-
         .animate-fade-up {
-            animation: fade-up 0.7s ease forwards;
-        }
-
-        .animate-fade-up-delay-1 {
-            opacity: 0;
-            animation: fade-up 0.7s ease 0.15s forwards;
-        }
-
-        .animate-fade-up-delay-2 {
-            opacity: 0;
-            animation: fade-up 0.7s ease 0.3s forwards;
-        }
-
-        .animate-fade-up-delay-3 {
-            opacity: 0;
-            animation: fade-up 0.7s ease 0.45s forwards;
+            animation: fade-up 0.5s var(--ease-out) forwards;
         }
     }
-
-    /* Non-animated fallback — content stays visible if motion is reduced */
-    .animate-fade-up,
-    .animate-fade-up-delay-1,
-    .animate-fade-up-delay-2,
-    .animate-fade-up-delay-3 {
-        opacity: 1;
-    }
-
-    .text-shadow-glow {
-        text-shadow: 
-            0 2px 10px rgba(0, 0, 0, 0.8), 
-            0 0 25px rgba(0, 0, 0, 0.4);
-    }
-
-    /* ═══════════════════════════════════════════
-       Liquid Orb & Background System
-    ═══════════════════════════════════════════ */
-    @keyframes orb-float {
-        0%, 100% { transform: translate(-50%, -50%) translateY(0) scale(1); }
-        50% { transform: translate(-50%, -50%) translateY(-30px) scale(1.05); }
-    }
-
-    @keyframes orb-rotate {
-        0% { transform: translate(-50%, -50%) rotate(0deg); }
-        100% { transform: translate(-50%, -50%) rotate(360deg); }
-    }
-
-    html, body {
-        background-color: var(--background) !important;
-    }
-
-    :root:not(.dark) .premium-bg-container {
-        background-color: oklch(0.99 0 0);
-    }
-
-    .liquid-orb {
-        --size: 600px;
-        --color-main: #38E54D;
-        --color-secondary: #FDFF00;
-        @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
-        width: var(--size);
-        height: var(--size);
-        border-radius: 50%;
-        background: radial-gradient(circle at 30% 30%, var(--color-main) 0%, #16a34a 40%, #030f04 100%);
-        box-shadow: 
-            0 0 100px color-mix(in srgb, var(--color-main) 50%, transparent),
-            inset 0 20px 40px rgba(255, 255, 255, 0.5),
-            inset 0 -20px 40px rgba(0, 0, 0, 0.6),
-            inset 10px 0 30px color-mix(in srgb, var(--color-secondary) 30%, transparent);
-        filter: blur(2px);
-        animation: orb-float 15s ease-in-out infinite;
-        opacity: 0.8; /* High opacity for visibility */
-        will-change: transform;
-    }
-
-    .dark .liquid-orb {
-        opacity: 0.7; /* High opacity for visibility */
-        background: radial-gradient(circle at 30% 30%, var(--color-main) 20%, #22c55e 50%, #064e3b 100%);
-        box-shadow: 
-            0 0 160px color-mix(in srgb, var(--color-main) 60%, transparent),
-            inset 0 15px 40px rgba(255, 255, 255, 0.3),
-            inset 0 -40px 80px rgba(0, 0, 0, 0.8),
-            inset 30px 0 70px color-mix(in srgb, var(--color-secondary) 25%, transparent);
-    }
-
-    .orb-reflection {
-        @apply absolute top-[calc(50%+320px)] left-1/2 -translate-x-1/2;
-        width: 600px;
-        height: 300px;
-        background: linear-gradient(to bottom, color-mix(in srgb, #38E54D 40%, transparent), transparent);
-        filter: blur(40px);
-        border-radius: 50%;
-        opacity: 0.4;
-        transform: translate(-50%, 0) scaleY(0.4);
-    }
-
-    .liquid-orb-mini {
-        --size: 300px;
-        --color-main: #9CFF2E;
-        @apply absolute top-[20%] left-[80%] -translate-x-1/2 -translate-y-1/2;
-        width: var(--size);
-        height: var(--size);
-        border-radius: 50%;
-        background: radial-gradient(circle at 30% 30%, var(--color-main) 0%, #3f6212 60%, #1a2e05 100%);
-        box-shadow: 0 0 80px color-mix(in srgb, var(--color-main) 40%, transparent);
-        opacity: 0.5;
-        animation: orb-float 20s ease-in-out infinite reverse;
-        filter: blur(10px);
-    }
-
-    .dark .liquid-orb-mini {
-        opacity: 0.4;
-    }
-
-    /* ═══════════════════════════════════════════
-       Luminous Horizon (Planetary Arc Concept)
-    ═══════════════════════════════════════════ */
-    /* ═══════════════════════════════════════════
-       Luminous Green & Yellow Background System
-    ═══════════════════════════════════════════ */
-    .premium-bg-container {
-        @apply fixed inset-0 overflow-hidden transition-colors duration-700;
-        pointer-events: none !important;
-        z-index: 0;
-        background: radial-gradient(
-            circle at 50% 50%,
-            color-mix(in srgb, #38E54D 15%, transparent) 0%,
-            color-mix(in srgb, #fef08a 10%, transparent) 50%,
-            transparent 100%
-        );
-    }
-
-    html, body {
-        background-color: var(--background) !important;
-    }
-
-    [data-slot="sidebar-wrapper"] {
-        background-color: transparent !important;
-    }
-
-    .dark .premium-bg-container {
-        background: radial-gradient(
-            circle at 50% 50%,
-            color-mix(in srgb, #38E54D 20%, transparent) 0%,
-            color-mix(in srgb, #fef08a 15%, transparent) 50%,
-            transparent 100%
-        );
-    }
-
-    /* The main organic blobs - Increased opacity and size */
-    .liquid-orb {
-        @apply absolute blur-[150px] rounded-full;
-        animation: float 10s ease-in-out infinite;
-        width: 90vw;
-        height: 70vh;
-        top: -15%;
-        left: -15%;
-        background: radial-gradient(circle at center, #38E54D 0%, transparent 70%);
-        opacity: 0.3; 
-    }
-
-    .liquid-orb-mini {
-        @apply absolute blur-[120px] rounded-full;
-        animation: float-slow 15s ease-in-out infinite;
-        width: 70vw;
-        height: 50vh;
-        bottom: -10%;
-        right: -15%;
-        background: radial-gradient(circle at center, #fef08a 0%, transparent 70%);
-        opacity: 0.25; 
-    }
-
-    .orb-reflection {
-        @apply absolute blur-[100px] rounded-full;
-        width: 50vw;
-        height: 40vh;
-        top: 25%;
-        right: 10%;
-        background: radial-gradient(circle at center, #9CFF2E 0%, transparent 70%);
-        opacity: 0.2; /* Increased from 0.1 */
-    }
-
-    @keyframes float {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        50% { transform: translate(30px, 20px) scale(1.05); }
-    }
-
-    @keyframes float-slow {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        50% { transform: translate(-20px, -30px) scale(0.95); }
-    }
-
-    /* Remove obsolete Beam variables */
-    :root {
-        --beam-haze-1: transparent;
-        --beam-haze-2: transparent;
-    }
-
-    /* Premium Input Focus Glow */
-    .focus-glow:focus-within {
-        @apply ring-4 ring-[hsl(142,70%,45%)]/20 border-[hsl(142,70%,45%)]/40 transition-all duration-300;
-    }
-
-    /* ═══════════════════════════════════════════
-       Animated gradient blob background
-    ═══════════════════════════════════════════ */
-    /* Motion-safe: blob-rotate + blob-background animations */
-    @media (prefers-reduced-motion: no-preference) {
-        @keyframes blob-rotate {
-            0%   { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .blob-background {
-            animation: blob-rotate var(--speed) var(--easing) alternate infinite;
-        }
-    }
-
-    .blob-background {
-        --size: 350px;
-        --speed: 40s;
-        --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
-        @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
-        width: var(--size);
-        height: var(--size);
-        filter: blur(calc(var(--size) / 10));
-        background-image: linear-gradient(
-            to bottom right,
-            var(--color-1, hsl(142, 85%, 45%)),
-            var(--color-2, hsl(52, 100%, 55%))
-        );
-        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-        will-change: transform;
-        opacity: 0.3;
-    }
-
-    .dark .blob-background {
-        opacity: 0.25;
-    }
-
-    @media (min-width: 1024px) {
-        .blob-background {
-            --size: 650px;
-        }
-    }
-
-    .grain-overlay {
-        @apply fixed inset-0;
-        pointer-events: none !important;
-        z-index: -90;
-        opacity: 0.04;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-        background-size: 200px 200px;
-    }
-
-    /* ═══════════════════════════════════════════
-       Premium Components
-    ═══════════════════════════════════════════ */
-
-    .btn-gradient {
-        @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all duration-300;
-        background: linear-gradient(135deg, hsl(142, 70%, 48%), hsl(52, 95%, 55%));
-        color: #030f04;
-        box-shadow: 
-            0 10px 15px -3px rgba(0, 0, 0, 0.2), 
-            0 0 20px rgba(110, 210, 100, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    }
-
-    .btn-gradient:hover:not(:disabled) {
-        @apply brightness-110 -translate-y-0.5 scale-[1.02];
-        box-shadow: 
-            0 20px 25px -5px rgba(0, 0, 0, 0.3), 
-            0 0 40px rgba(110, 210, 100, 0.5);
-    }
-
-    .btn-gradient:active:not(:disabled) {
-        @apply translate-y-0 scale-100;
-    }
-
-    .btn-gradient:disabled {
-        @apply opacity-50 cursor-not-allowed grayscale;
-    }
-
-    .btn-gradient-amber {
-        @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all duration-300;
-        background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #fcd34d 100%);
-        color: #030f04;
-        box-shadow: 
-            0 10px 15px -3px rgba(0, 0, 0, 0.2), 
-            0 0 20px rgba(245, 158, 11, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    }
-
-    .btn-gradient-amber:hover:not(:disabled) {
-        @apply brightness-110 -translate-y-0.5 scale-[1.02];
-        box-shadow: 
-            0 20px 25px -5px rgba(0, 0, 0, 0.3), 
-            0 0 40px rgba(245, 158, 11, 0.5);
-    }
-
-    .btn-locked {
-        @apply w-full h-14 rounded-2xl text-base font-bold tracking-wide shadow-inner transition-all duration-200 
-               bg-muted/40 text-foreground/80 border border-border/50 cursor-not-allowed backdrop-blur-sm;
-    }
-
-    .dark .btn-locked {
-        @apply bg-white/5 text-white/60 border-white/10;
-    }
-
-    .glass-panel {
-        @apply backdrop-blur-xl border border-white/10 dark:border-white/5;
-        background: rgba(255, 255, 255, 0.7);
-    }
-
-    .dark .glass-panel {
-        background: rgba(0, 0, 0, 0.4);
-    }
-
-    .text-highlight {
-        @apply text-foreground font-bold tracking-tight;
-        text-shadow: 0 0 10px hsla(142, 70%, 55%, 0.12);
-    }
-
-    .dark .text-highlight {
-        color: hsl(142, 80%, 75%);
-    }
-
-    /* ═══════════════════════════════════════════
-       Liquid Glass Effect
-    ═══════════════════════════════════════════ */
-
-    @keyframes liquid-shimmer {
-        0%   { background-position: 0% 50%; }
-        50%  { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
-    @keyframes liquid-border-flow {
-        0%   { background-position: 0% 50%; }
-        50%  { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
-    /* Liquid Glass — panel/card variant
-       Backgrounds use color-mix() with semantic tokens so light/dark adapts automatically.
-       Only the decorative iridescent gradients need explicit .dark variants. */
-    .liquid-glass {
-        position: relative;
-        border-radius: var(--radius-lg);
-        backdrop-filter: blur(12px) saturate(1.8);
-        -webkit-backdrop-filter: blur(12px) saturate(1.8);
-        /* Lowered light-mode opacity for evident glassmorphism */
-        background: color-mix(in srgb, var(--background) 30%, transparent);
-        box-shadow:
-            0 8px 32px color-mix(in srgb, black 8%, transparent),
-            0 1px 0 color-mix(in srgb, white 88%, transparent) inset,
-            0 -1px 0 color-mix(in srgb, white 18%, transparent) inset;
-        border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
-    }
-
-    .liquid-glass::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        padding: 1px;
-        /* Light mode: soft green/yellow iridescence */
-        background: linear-gradient(
-            135deg,
-            color-mix(in srgb, white 90%, transparent) 0%,
-            color-mix(in srgb, #4ade80 30%, transparent) 33%,
-            color-mix(in srgb, #facc15 20%, transparent) 66%,
-            color-mix(in srgb, white 90%, transparent) 100%
-        );
-        background-size: 300% 300%;
-        animation: liquid-border-flow 6s ease infinite;
-        -webkit-mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        pointer-events: none;
-    }
-
-    /* Dark mode: Green and Yellow iridescence */
-    .dark .liquid-glass::before {
-        background: linear-gradient(
-            135deg,
-            color-mix(in srgb, #4ade80 40%, transparent) 0%,
-            color-mix(in srgb, #facc15 30%, transparent) 33%,
-            color-mix(in srgb, #16a34a 40%, transparent) 66%,
-            color-mix(in srgb, #4ade80 40%, transparent) 100%
-        );
-        background-size: 300% 300%;
-        animation: liquid-border-flow 6s ease infinite;
-    }
-
-    /* Dark mode: reduce the inset shine and lower opacity */
-    .dark .liquid-glass {
-        background: color-mix(in srgb, var(--background) 15%, transparent);
-        box-shadow:
-            0 8px 32px color-mix(in srgb, black 40%, transparent),
-            0 1px 0 color-mix(in srgb, white 6%, transparent) inset,
-            0 -1px 0 color-mix(in srgb, white 2%, transparent) inset;
-    }
-
-    /* Liquid Glass — sticky header bar variant */
-    .liquid-glass-header {
-        backdrop-filter: blur(12px) saturate(2);
-        -webkit-backdrop-filter: blur(12px) saturate(2);
-        /* Uses --background token — auto-adapts to light/dark */
-        background: color-mix(in srgb, var(--background) 72%, transparent);
-        border-bottom: 1px solid transparent;
-        background-clip: padding-box;
-        box-shadow:
-            0 1px 0 color-mix(in srgb, white 88%, transparent) inset,
-            0 4px 24px color-mix(in srgb, black 6%, transparent);
-        position: relative;
-    }
-
-    /* Dark mode: reduce the inset shine only */
-    .dark .liquid-glass-header {
-        box-shadow:
-            0 1px 0 color-mix(in srgb, white 5%, transparent) inset,
-            0 4px 24px color-mix(in srgb, black 30%, transparent);
-    }
-
-    .liquid-glass-header::after {
-        content: '';
-        position: absolute;
-        bottom: -1px;
-        left: 0;
-        right: 0;
-        height: 1px;
-        /* Light mode: soft green/yellow shimmer */
-        background: linear-gradient(
-            90deg,
-            transparent 0%,
-            color-mix(in srgb, #4ade80 50%, transparent) 33%,
-            color-mix(in srgb, #facc15 40%, transparent) 66%,
-            transparent 100%
-        );
-        background-size: 200% 100%;
-        animation: liquid-shimmer 5s ease infinite;
-        pointer-events: none;
-    }
-
-    /* Dark mode: vivid green/yellow neon shimmer */
-    .dark .liquid-glass-header::after {
-        background: linear-gradient(
-            90deg,
-            transparent 0%,
-            color-mix(in srgb, #4ade80 60%, transparent) 33%,
-            color-mix(in srgb, #facc15 50%, transparent) 66%,
-            transparent 100%
-        );
-        background-size: 200% 100%;
-        animation: liquid-shimmer 5s ease infinite;
-    }
-
-    /* Liquid Glass — page section heading wrapper */
-    .liquid-glass-title {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .liquid-glass-title::after {
-        content: '';
-        position: absolute;
-        bottom: -4px;
-        left: 0;
-        right: 0;
-        height: 2px;
-        border-radius: 999px;
-        /* Brand green/yellow palette */
-        background: linear-gradient(
-            90deg,
-            color-mix(in srgb, #4ade80 80%, transparent),
-            color-mix(in srgb, #facc15 60%, transparent),
-            color-mix(in srgb, #16a34a 50%, transparent),
-            color-mix(in srgb, #ca8a04 60%, transparent),
-            color-mix(in srgb, #4ade80 80%, transparent)
-        );
-        background-size: 200% 100%;
-        animation: liquid-shimmer 4s ease infinite;
-    }
-
-    /* Liquid Glass — card variant */
-    .liquid-glass-card {
-        position: relative;
-        border-radius: var(--radius-2xl);
-        backdrop-filter: blur(16px) saturate(1.8);
-        -webkit-backdrop-filter: blur(16px) saturate(1.8);
-        background: color-mix(in srgb, var(--card) 30%, transparent);
-        border: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
-        box-shadow: 
-            0 8px 30px color-mix(in srgb, black 10%, transparent),
-            inset 0 1px 0 color-mix(in srgb, white 20%, transparent);
-        transition: all 300ms ease;
-    }
-
-    .liquid-glass-card:hover {
-        box-shadow: 
-            0 8px 30px color-mix(in srgb, black 15%, transparent),
-            inset 0 1px 0 color-mix(in srgb, white 25%, transparent);
-    }
-    
-    .dark .liquid-glass-card {
-        background: color-mix(in srgb, var(--card) 15%, transparent);
-        border: 1px solid color-mix(in srgb, white 10%, transparent);
-        box-shadow: 
-            0 8px 30px color-mix(in srgb, black 50%, transparent),
-            inset 0 1px 0 color-mix(in srgb, white 5%, transparent);
-    }
-    
-    .dark .liquid-glass-card:hover {
-        box-shadow: 
-            0 8px 30px color-mix(in srgb, black 60%, transparent),
-            inset 0 1px 0 color-mix(in srgb, white 10%, transparent);
-    }
-
-    /* Liquid Glass — navigation variant */
-    .liquid-glass-nav {
-        backdrop-filter: blur(32px) saturate(2);
-        -webkit-backdrop-filter: blur(32px) saturate(2);
-        background: color-mix(in srgb, var(--background) 70%, transparent);
-        border-bottom: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
-        transition: all 300ms ease;
-    }
-
-    .dark .liquid-glass-nav {
-        background: color-mix(in srgb, var(--background) 40%, transparent);
-        border-bottom: 1px solid color-mix(in srgb, white 5%, transparent);
-    }
-
-    /* Liquid Glass — sidebar variant */
-    .liquid-glass-sidebar {
-        backdrop-filter: blur(16px) saturate(1.8);
-        -webkit-backdrop-filter: blur(16px) saturate(1.8);
-        background: color-mix(in srgb, var(--sidebar) 80%, transparent);
-        border-right: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
-        transition: all 300ms ease;
-    }
-
-    .dark .liquid-glass-sidebar {
-        background: color-mix(in srgb, var(--sidebar) 40%, transparent);
-        border-right: 1px solid color-mix(in srgb, white 5%, transparent);
-    }
-
-    /* Fix for Shadcn Sidebar & Inset opaque backgrounds to allow body orbs to show through */
-    [data-slot="sidebar-wrapper"],
-    [data-sidebar="sidebar"],
-    [data-slot="sidebar-inset"],
-    .liquid-glass-sidebar,
-    main {
-        background-color: transparent !important;
-    }
-
-    @keyframes sidebar-gradient-flow {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+}
+background-position: 0% 50%; }
     }
 
     /* Liquid Glass — header variant (Vivid Translucency) */

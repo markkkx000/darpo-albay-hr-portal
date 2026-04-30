@@ -35,7 +35,7 @@ export function AnnouncementCard({ announcement, defaultExpanded = false }: Prop
     return (
         <div 
             className={cn(
-                "overflow-hidden transition-all duration-300 liquid-glass-card group cursor-pointer",
+                "matte-card elev-2 overflow-hidden transition-all duration-300 group cursor-pointer",
                 announcement.priority === 'high' ? "border-red-500/40 ring-1 ring-red-500/10" : "",
                 isExpanded ? "ring-2 ring-primary/20" : "hover:translate-x-1"
             )}
@@ -50,7 +50,7 @@ export function AnnouncementCard({ announcement, defaultExpanded = false }: Prop
                         )}>
                             <Megaphone className="h-4 w-4" />
                         </div>
-                        <h3 className="text-xl font-bold leading-tight tracking-tight text-foreground">
+                        <h3 className="t-headline leading-tight text-foreground">
                             {announcement.title}
                         </h3>
                     </div>
