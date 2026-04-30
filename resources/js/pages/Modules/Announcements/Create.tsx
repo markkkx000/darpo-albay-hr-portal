@@ -22,7 +22,7 @@ export default function Create({ departments, positions, users }: Props) {
                         description="Draft a new announcement. You can publish it once you are done."
                     />
 
-                    <Card className="liquid-glass-card border-none overflow-hidden shadow-2xl">
+                    <Card className="matte-card elev-2 border-none overflow-hidden">
                         <CardHeader className="border-b border-white/5 pb-6 px-8 pt-8">
                             <CardTitle className="text-xl font-bold tracking-tight">Announcement Details</CardTitle>
                         </CardHeader>

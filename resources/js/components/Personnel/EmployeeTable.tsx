@@ -96,7 +96,7 @@ return 'N/A';
 
     return (
         <>
-            <div className="liquid-glass-card overflow-hidden">
+            <div className="matte-card elev-2 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
                         <thead className="text-[10px] text-muted-foreground uppercase bg-muted/40 font-bold tracking-widest border-b border-border/50">

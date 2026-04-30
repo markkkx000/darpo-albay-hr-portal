@@ -28,7 +28,7 @@ return 'Not set';
     };
 
     return (
-        <div className="liquid-glass-card overflow-hidden">
+        <div className="matte-card elev-2 overflow-hidden">
             <div className="bg-primary/5 p-6 border-b border-border/40">
                 <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                     <div className="h-24 w-24 rounded-3xl bg-primary flex items-center justify-center text-primary-foreground text-4xl font-black shadow-2xl ring-4 ring-background/50">

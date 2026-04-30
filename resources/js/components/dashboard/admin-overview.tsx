@@ -23,9 +23,9 @@ export function AdminOverview() {
             </div>
 
             <div className="grid animate-fade-up-delay-1 gap-4 md:grid-cols-2">
-                <div className="group liquid-glass-card min-h-[400px]">
+                <div className="matte-card elev-2 min-h-[400px]">
                     <div className="relative z-10 p-6 h-full flex flex-col">
-                        <h3 className="text-lg font-semibold tracking-tight drop-shadow-sm mb-4">Recent System Activity</h3>
+                        <h3 className="t-headline mb-4">Recent System Activity</h3>
                         <div className="flex-1 flex flex-col items-center justify-center gap-3 py-8 text-center">
                             <Activity className="h-10 w-10 text-muted-foreground opacity-20" />
                             <p className="text-sm font-medium text-muted-foreground">No recent activity</p>
@@ -34,21 +34,21 @@ export function AdminOverview() {
                     </div>
                 </div>
 
-                <div className="group liquid-glass-card min-h-[400px]">
+                <div className="matte-card elev-2 min-h-[400px]">
                     <div className="relative z-10 p-6">
-                        <h3 className="text-lg font-semibold tracking-tight drop-shadow-sm mb-4">Admin Quick Actions</h3>
+                        <h3 className="t-headline mb-4">Admin Quick Actions</h3>
                         <div className="grid gap-3">
-                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#2192FF]/10 dark:bg-[#2192FF]/20 rounded-xl border border-[#2192FF]/30 shadow-sm pointer-events-none opacity-60">
-                                <div className="font-medium text-zinc-800 dark:text-[#2192FF] drop-shadow-sm transition-colors">User Management <span className="text-xs font-normal opacity-70 ml-1">(Coming Soon)</span></div>
-                                <div className="text-sm text-zinc-600 dark:text-zinc-400 opacity-90">Manage user accounts and permissions</div>
+                            <button className="matte-card elev-1 p-4 text-left border border-border-2 pointer-events-none opacity-60">
+                                <div className="font-medium text-foreground transition-colors">User Management <span className="text-xs font-normal text-muted-foreground ml-1">(Coming Soon)</span></div>
+                                <div className="text-sm text-muted-foreground mt-1">Manage user accounts and permissions</div>
                             </button>
-                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#38E54D]/10 dark:bg-[#38E54D]/20 rounded-xl border border-[#38E54D]/30 shadow-sm pointer-events-none opacity-60">
-                                <div className="font-medium text-zinc-800 dark:text-[#38E54D] drop-shadow-sm transition-colors">System Settings <span className="text-xs font-normal opacity-70 ml-1">(Coming Soon)</span></div>
-                                <div className="text-sm text-zinc-600 dark:text-zinc-400 opacity-90">Configure system preferences</div>
+                            <button className="matte-card elev-1 p-4 text-left border border-border-2 pointer-events-none opacity-60">
+                                <div className="font-medium text-foreground transition-colors">System Settings <span className="text-xs font-normal text-muted-foreground ml-1">(Coming Soon)</span></div>
+                                <div className="text-sm text-muted-foreground mt-1">Configure system preferences</div>
                             </button>
-                            <button className="group/btn focus-glow p-4 text-left backdrop-blur-md bg-[#84cc16]/10 dark:bg-[#84cc16]/20 rounded-xl border border-[#84cc16]/30 shadow-sm pointer-events-none opacity-60">
-                                <div className="font-medium text-zinc-800 dark:text-[#84cc16] drop-shadow-sm transition-colors">Reports <span className="text-xs font-normal opacity-70 ml-1">(Coming Soon)</span></div>
-                                <div className="text-sm text-zinc-600 dark:text-zinc-400 opacity-90">Generate system reports</div>
+                            <button className="matte-card elev-1 p-4 text-left border border-border-2 pointer-events-none opacity-60">
+                                <div className="font-medium text-foreground transition-colors">Reports <span className="text-xs font-normal text-muted-foreground ml-1">(Coming Soon)</span></div>
+                                <div className="text-sm text-muted-foreground mt-1">Generate system reports</div>
                             </button>
                         </div>
                     </div>

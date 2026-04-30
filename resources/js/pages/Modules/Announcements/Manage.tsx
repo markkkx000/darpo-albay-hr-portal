@@ -87,9 +87,9 @@ export default function Manage({ announcements }: Props) {
             <Head title="Manage Announcements" />
 
             <div className="p-4 w-full space-y-6">
-                <div className="liquid-glass mb-2 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5">
-                    <div>
-                        <h1 className="liquid-glass-title text-3xl font-bold tracking-tight">Manage Announcements</h1>
+                <div className="matte-card elev-1 mb-2 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 rounded-2xl">
+                    <div className="flex items-center gap-3">
+                        <h1 className="t-headline">Manage Announcements</h1>
                         <p className="text-muted-foreground text-sm mt-2">
                             Create, edit, and publish announcements for the organization.
                         </p>
@@ -102,7 +102,7 @@ export default function Manage({ announcements }: Props) {
                     </Link>
                 </div>
 
-                <Card className="liquid-glass-card border-none overflow-hidden">
+                <Card className="matte-card elev-2 border-none overflow-hidden">
                     <CardHeader className="border-b border-muted/20 pb-4">
                         <CardTitle className="text-lg font-semibold flex items-center gap-2">
                             <Megaphone className="h-5 w-5 text-primary" />

@@ -26,16 +26,16 @@ export default function Edit({ employee, departments, positions, employmentStatu
             <Head title={`Edit ${employee.first_name} ${employee.last_name}`} />
             
             <div className="p-4 w-full max-w-4xl mx-auto space-y-6">
-                <div className="liquid-glass flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5">
-                    <div>
-                        <h1 className="liquid-glass-title text-3xl font-bold tracking-tight">Edit Employee Record</h1>
+                <div className="matte-card elev-1 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 rounded-2xl">
+                    <div className="flex items-center gap-3">
+                        <h1 className="t-headline">Edit Employee Record</h1>
                         <p className="text-muted-foreground text-sm mt-2">
                             Update the information for {employee.first_name} {employee.last_name}.
                         </p>
                     </div>
                 </div>
 
-                <Card className="liquid-glass-card border-none shadow-xl">
+                <Card className="matte-card elev-2 border-none">
                     <CardContent className="pt-6">
                         <EmployeeForm 
                             employee={employee}

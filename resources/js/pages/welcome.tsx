@@ -2,246 +2,37 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { CalendarCheck, Clock, ShieldCheck, Users2 } from 'lucide-react';
 import AppLogoIcon from '@/components/app-logo-icon';
 import { dashboard, login } from '@/routes';
+import { cn } from '@/lib/utils';
 
 export default function Welcome() {
     const { auth } = usePage().props;
 
     return (
-        <>
+        <div className="dark">
             <Head title="DARPO Albay HR Portal — Smarter Workforce Management">
-                <link rel="preconnect" href="https://fonts.bunny.net" />
-                <link
-                    href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700"
-                    rel="stylesheet"
-                />
                 <style>{`
-                    /* ═══════════════════════════════════════════
-                       Animated gradient blob background
-                       Adapted from: codepen.io/wilvander/pen/KKQrGgP
-                       Colours: Green → Yellow
-                    ═══════════════════════════════════════════ */
-
-                    .welcome-bg {
+                    .mesh-bg {
                         position: fixed;
                         inset: 0;
-                        background-color: #030f04;
-                        overflow: hidden;
                         z-index: 0;
+                        background: var(--background);
+                        overflow: hidden;
                     }
 
-                    .blob {
-                        --size: 350px;
-                        --speed: 40s;
-                        --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
-                        position: absolute;
-                        top: 50%;
-                        left: 50%;
-                        translate: -50% -50%;
-                        width: var(--size);
-                        height: var(--size);
-                        filter: blur(calc(var(--size) / 5));
-                        background-image: linear-gradient(
-                            hsl(142, 85%, 45%),
-                            hsl(52, 100%, 55%)
-                        );
-                        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-                        will-change: transform;
-                        opacity: 0.4;
-                    }
-
-                    .blob-offset-1 {
-                        position: absolute;
-                        top: 15%;
-                        left: 75%;
-                        width: 300px;
-                        height: 300px;
-                        filter: blur(80px);
-                        background-image: linear-gradient(hsl(52, 100%, 55%), hsl(142, 70%, 40%));
-                        border-radius: 50% 30% 70% 40% / 40% 60% 30% 60%;
-                        opacity: 0.2;
-                    }
-
-                    .blob-offset-2 {
-                        position: absolute;
-                        top: 70%;
-                        left: 10%;
-                        width: 260px;
-                        height: 260px;
-                        filter: blur(70px);
-                        background-image: linear-gradient(hsl(142, 85%, 45%), hsl(180, 60%, 40%));
-                        border-radius: 40% 60% 30% 70% / 60% 40% 60% 30%;
-                        opacity: 0.18;
-                    }
-
-                    @media (min-width: 1024px) {
-                        .blob { 
-                            --size: 650px; 
-                            opacity: 0.6;
-                        }
-                        .blob-offset-1 { width: 420px; height: 420px; opacity: 0.25; }
-                        .blob-offset-2 { width: 360px; height: 360px; opacity: 0.22; }
-                    }
-
-                    /* Grain noise overlay for premium texture */
-                    .grain-overlay {
-                        position: fixed;
-                        inset: 0;
-                        z-index: 1;
-                        opacity: 0.04;
-                        pointer-events: none;
-                        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-                        background-size: 200px 200px;
-                    }
-
-                    /* Glassmorphism card — Follows GLASSMORPHISM-RULES.md */
-                    .glass-card {
-                        background: rgba(255, 255, 255, 0.08);
-                        border: 1px solid rgba(255, 255, 255, 0.18);
-                        backdrop-filter: blur(20px);
-                        -webkit-backdrop-filter: blur(20px);
-                        border-radius: 24px;
-                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-                    }
-
-                    /* Primary CTA button — Enhanced Shadow */
-                    .btn-primary {
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 0.5rem;
-                        padding: 0.875rem 2rem;
-                        border-radius: 12px;
-                        font-weight: 700;
-                        font-size: 1rem;
-                        line-height: 1;
-                        color: #030f04;
-                        background: linear-gradient(135deg, #4ade80, #facc15);
-                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                        box-shadow: 
-                            0 10px 15px -3px rgba(0, 0, 0, 0.5), 
-                            0 0 30px rgba(74, 222, 128, 0.4),
-                            inset 0 1px 0 rgba(255, 255, 255, 0.3);
-                        white-space: nowrap;
-                    }
-
-                    /* Nav button — Glass Ghost variant */
-                    .btn-ghost {
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 0.5rem;
-                        padding: 0.625rem 1.25rem;
-                        border-radius: 12px;
-                        font-weight: 600;
-                        font-size: 0.875rem;
-                        line-height: 1;
-                        color: #f0fdf4;
-                        border: 1px solid rgba(255, 255, 255, 0.15);
-                        background: rgba(255, 255, 255, 0.05);
-                        backdrop-filter: blur(16px);
-                        -webkit-backdrop-filter: blur(16px);
-                        transition: all 0.2s ease;
-                        white-space: nowrap;
-                    }
-                    .btn-ghost:hover {
-                        background: rgba(255, 255, 255, 0.12);
-                        border-color: rgba(255, 255, 255, 0.25);
-                        box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-                        transform: translateY(-1px);
-                    }
-
-                    /* Highlight text — Green-Yellow Gradient as per rules */
-                    .text-highlight {
-                        background: linear-gradient(90deg, #4ade80, #facc15);
-                        -webkit-background-clip: text;
-                        -webkit-text-fill-color: transparent;
-                        background-clip: text;
-                        font-weight: 900;
-                        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.8));
-                    }
-
-                    /* Feature icon ring */
-                    .icon-ring {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        width: 3rem;
-                        height: 3rem;
-                        border-radius: 1rem;
-                        background: rgba(74, 222, 128, 0.1);
-                        border: 1px solid rgba(74, 222, 128, 0.2);
-                        flex-shrink: 0;
-                    }
-
-                    /* Text shadow for better readability on moving gradients */
-                    .text-shadow-glow {
-                        text-shadow: 
-                            0 2px 10px rgba(0, 0, 0, 0.8), 
-                            0 0 25px rgba(0, 0, 0, 0.4);
-                    }
-
-                    /* ── Motion-safe animations ── */
                     @media (prefers-reduced-motion: no-preference) {
-                        @keyframes blob-rotate {
-                            0%   { transform: rotate(0deg); }
-                            100% { transform: rotate(360deg); }
-                        }
-                        @keyframes blob-float {
-                            0%, 100% { transform: translateY(0px) scale(1); }
-                            50%       { transform: translateY(-20px) scale(1.03); }
-                        }
                         @keyframes fade-up {
                             from { opacity: 0; transform: translateY(24px); }
                             to   { opacity: 1; transform: translateY(0); }
                         }
-
-                        .blob {
-                            animation: blob-rotate var(--speed) var(--easing) alternate infinite;
-                        }
-                        .blob-offset-1 {
-                            animation: blob-float 18s ease-in-out infinite;
-                        }
-                        .blob-offset-2 {
-                            animation: blob-float 22s ease-in-out infinite reverse;
-                        }
                         .animate-fade-up {
-                            animation: fade-up 0.7s ease forwards;
+                            animation: fade-up 0.7s var(--ease-out) forwards;
                         }
-                        .animate-fade-up-delay-1 {
-                            opacity: 0;
-                            animation: fade-up 0.7s ease 0.15s forwards;
-                        }
-                        .animate-fade-up-delay-2 {
-                            opacity: 0;
-                            animation: fade-up 0.7s ease 0.3s forwards;
-                        }
-                        .animate-fade-up-delay-3 {
-                            opacity: 0;
-                            animation: fade-up 0.7s ease 0.45s forwards;
-                        }
-                        .animate-fade-up-delay-4 {
-                            opacity: 0;
-                            animation: fade-up 0.7s ease 0.6s forwards;
-                        }
-                        .glass-card:hover {
-                            transform: translateY(-6px);
-                            border-color: rgba(74, 222, 128, 0.32);
-                            box-shadow:
-                                0 20px 60px rgba(0, 0, 0, 0.4),
-                                0 0 30px rgba(74, 222, 128, 0.12),
-                                inset 0 1px 0 rgba(255, 255, 255, 0.15);
-                        }
-                        .btn-primary:hover {
-                            filter: brightness(1.1);
-                            transform: translateY(-3px) scale(1.02);
-                            box-shadow: 
-                                0 25px 30px -5px rgba(0, 0, 0, 0.6), 
-                                0 15px 15px -5px rgba(0, 0, 0, 0.4),
-                                0 0 50px rgba(110, 210, 100, 0.6);
-                        }
-                        .btn-primary:active { transform: translateY(0); }
+                        .animate-fade-up-delay-1 { opacity: 0; animation: fade-up 0.7s var(--ease-out) 0.15s forwards; }
+                        .animate-fade-up-delay-2 { opacity: 0; animation: fade-up 0.7s var(--ease-out) 0.3s forwards; }
+                        .animate-fade-up-delay-3 { opacity: 0; animation: fade-up 0.7s var(--ease-out) 0.45s forwards; }
+                        .animate-fade-up-delay-4 { opacity: 0; animation: fade-up 0.7s var(--ease-out) 0.6s forwards; }
                     }
 
-                    /* Non-animated fallback states */
                     .animate-fade-up,
                     .animate-fade-up-delay-1,
                     .animate-fade-up-delay-2,
@@ -253,36 +44,44 @@ export default function Welcome() {
             </Head>
 
             {/* ── Animated background ── */}
-            <div className="welcome-bg" aria-hidden="true">
-                <div className="blob" />
-                <div className="blob-offset-1" />
-                <div className="blob-offset-2" />
+            <div className="mesh-bg" aria-hidden="true">
+                <div 
+                    className="mesh-blob" 
+                    style={{ width: '400px', height: '400px', top: '-10%', left: '-5%', background: 'rgba(34, 197, 94, 0.25)', animationDelay: '0s' }} 
+                />
+                <div 
+                    className="mesh-blob" 
+                    style={{ width: '300px', height: '300px', bottom: '10%', right: '5%', background: 'rgba(250, 204, 21, 0.15)', animationDelay: '-4s' }} 
+                />
+                <div 
+                    className="mesh-blob" 
+                    style={{ width: '250px', height: '250px', top: '40%', left: '30%', background: 'rgba(22, 163, 74, 0.15)', animationDelay: '-8s' }} 
+                />
             </div>
-            <div className="grain-overlay" aria-hidden="true" />
 
             {/* ── Page wrapper — sits above the background ── */}
             <div className="relative z-10 flex min-h-screen flex-col font-sans">
 
                 {/* ── Navbar ── */}
-                <header className="sticky top-0 z-50 liquid-glass-header">
+                <header className="sticky top-0 z-50 border-b border-border-2 bg-background/80 backdrop-blur-md">
                     <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
                         {/* Logo */}
                         <div className="flex items-center gap-2.5">
                             <AppLogoIcon className="h-10 w-10 shrink-0" />
-                            <span className="text-sm font-semibold tracking-tight text-white shadow-black/40 drop-shadow-sm">
+                            <span className="text-sm font-semibold tracking-tight text-foreground shadow-black/40 drop-shadow-sm">
                                 DARPO Albay
-                                <span className="ml-1 text-white/70 font-normal">HR Portal</span>
+                                <span className="ml-1 text-muted-foreground font-normal">HR Portal</span>
                             </span>
                         </div>
 
                         {/* Nav CTA */}
                         <nav aria-label="Primary navigation">
                             {auth.user ? (
-                                <Link href={dashboard()} className="btn-ghost text-sm">
+                                <Link href={dashboard()} className="text-sm font-medium hover:text-primary transition-colors">
                                     Go to Dashboard
                                 </Link>
                             ) : (
-                                <Link href={login()} className="btn-ghost text-sm">
+                                <Link href={login()} className="text-sm font-medium hover:text-primary transition-colors">
                                     Sign In
                                 </Link>
                             )}
@@ -294,38 +93,38 @@ export default function Welcome() {
                 <main className="flex flex-1 flex-col items-center justify-center px-6 py-16 sm:py-24 text-center lg:py-32" id="hero">
                     {/* Badge / pill */}
                     <div
-                        className="animate-fade-up mb-6 inline-flex items-center gap-2 rounded-full liquid-glass border-white/30 px-4 py-1.5 text-xs font-black text-white uppercase tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]"
+                        className="animate-fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-black text-primary uppercase tracking-widest shadow-sm"
                         aria-label="Province of Albay official HR system"
                     >
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#4ade80] animate-pulse" aria-hidden="true" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" aria-hidden="true" />
                         Province of Albay — Official HR System
                     </div>
 
                     {/* Headline */}
-                    <h1 className="animate-fade-up-delay-1 text-shadow-glow mx-auto max-w-4xl text-3xl font-extrabold tracking-tight text-[#f0fdf4] sm:text-5xl lg:text-7xl">
+                    <h1 className="animate-fade-up-delay-1 t-display mx-auto max-w-4xl text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-500">
                         Smarter{' '}
-                        <span className="text-highlight">Workforce</span>
+                        <span className="text-primary">Workforce</span>
                         {' '}Management
                     </h1>
 
                     {/* Subheadline */}
-                    <p className="animate-fade-up-delay-2 text-shadow-glow mx-auto mt-6 max-w-xl text-base leading-relaxed text-[#f0fdf4]/60 sm:text-lg">
+                    <p className="animate-fade-up-delay-2 t-body mx-auto mt-6 max-w-xl text-lg">
                         A unified platform for attendance tracking, leave management, and personnel administration — designed for DARPO Albay's team.
                     </p>
 
                     {/* CTAs */}
                     <div className="animate-fade-up-delay-3 mt-10 flex flex-col items-center gap-3 sm:flex-row">
                         {auth.user ? (
-                            <Link href={dashboard()} className="btn-primary" id="cta-dashboard">
+                            <Link href={dashboard()} className="btn-specular flex items-center justify-center min-w-[200px]" id="cta-dashboard">
                                 Open Dashboard
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <path d="M5 12h14M12 5l7 7-7 7" />
                                 </svg>
                             </Link>
                         ) : (
-                            <Link href={login()} className="btn-primary" id="cta-signin">
+                            <Link href={login()} className="btn-specular flex items-center justify-center min-w-[200px]" id="cta-signin">
                                 Sign In to Portal
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <path d="M5 12h14M12 5l7 7-7 7" />
                                 </svg>
                             </Link>
@@ -336,52 +135,52 @@ export default function Welcome() {
                     <div className="animate-fade-up-delay-4 mt-20 grid w-full max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" role="list" aria-label="Portal features">
 
                         {/* Card: Attendance */}
-                        <article className="glass-card flex flex-col items-start gap-3 rounded-xl p-5 text-left" role="listitem">
-                            <div className="icon-ring" aria-hidden="true">
-                                <Clock className="h-5 w-5 text-[hsl(142,70%,65%)]" strokeWidth={1.75} />
+                        <article className="matte-card elev-2 flex flex-col items-start gap-3 p-5 text-left transition-all duration-300 hover:elev-3 hover:-translate-y-1" role="listitem">
+                            <div className="sqicon bg-primary/10 text-primary border border-primary/20 shrink-0" style={{ width: '40px', height: '40px', borderRadius: '10px' }} aria-hidden="true">
+                                <Clock className="h-5 w-5" strokeWidth={1.75} />
                             </div>
                             <div>
-                                <h2 className="text-sm font-semibold text-[#f0fdf4]">Attendance</h2>
-                                <p className="mt-1 text-sm leading-relaxed text-[#f0fdf4]/60">
+                                <h2 className="text-sm font-semibold text-foreground">Attendance</h2>
+                                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                                     Clock in and out with a single tap. Accurate, real-time records.
                                 </p>
                             </div>
                         </article>
 
                         {/* Card: Leave Requests */}
-                        <article className="glass-card flex flex-col items-start gap-3 rounded-xl p-5 text-left" role="listitem">
-                            <div className="icon-ring" aria-hidden="true">
-                                <CalendarCheck className="h-5 w-5 text-[hsl(52,95%,65%)]" strokeWidth={1.75} />
+                        <article className="matte-card elev-2 flex flex-col items-start gap-3 p-5 text-left transition-all duration-300 hover:elev-3 hover:-translate-y-1" role="listitem">
+                            <div className="sqicon bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 shrink-0" style={{ width: '40px', height: '40px', borderRadius: '10px' }} aria-hidden="true">
+                                <CalendarCheck className="h-5 w-5" strokeWidth={1.75} />
                             </div>
                             <div>
-                                <h2 className="text-sm font-semibold text-white">Leave Requests</h2>
-                                <p className="mt-1 text-sm leading-relaxed text-white/60">
+                                <h2 className="text-sm font-semibold text-foreground">Leave Requests</h2>
+                                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                                     Submit and track leave applications with approval workflows.
                                 </p>
                             </div>
                         </article>
 
                         {/* Card: Personnel */}
-                        <article className="glass-card flex flex-col items-start gap-3 rounded-xl p-5 text-left" role="listitem">
-                            <div className="icon-ring" aria-hidden="true">
-                                <Users2 className="h-5 w-5 text-[hsl(142,70%,65%)]" strokeWidth={1.75} />
+                        <article className="matte-card elev-2 flex flex-col items-start gap-3 p-5 text-left transition-all duration-300 hover:elev-3 hover:-translate-y-1" role="listitem">
+                            <div className="sqicon bg-primary/10 text-primary border border-primary/20 shrink-0" style={{ width: '40px', height: '40px', borderRadius: '10px' }} aria-hidden="true">
+                                <Users2 className="h-5 w-5" strokeWidth={1.75} />
                             </div>
                             <div>
-                                <h2 className="text-sm font-semibold text-white">Personnel</h2>
-                                <p className="mt-1 text-sm leading-relaxed text-white/60">
+                                <h2 className="text-sm font-semibold text-foreground">Personnel</h2>
+                                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                                     Manage employee profiles, departments, and positions.
                                 </p>
                             </div>
                         </article>
 
                         {/* Card: Role-Based Access */}
-                        <article className="glass-card flex flex-col items-start gap-3 rounded-xl p-5 text-left" role="listitem">
-                            <div className="icon-ring" aria-hidden="true">
-                                <ShieldCheck className="h-5 w-5 text-[hsl(52,95%,65%)]" strokeWidth={1.75} />
+                        <article className="matte-card elev-2 flex flex-col items-start gap-3 p-5 text-left transition-all duration-300 hover:elev-3 hover:-translate-y-1" role="listitem">
+                            <div className="sqicon bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 shrink-0" style={{ width: '40px', height: '40px', borderRadius: '10px' }} aria-hidden="true">
+                                <ShieldCheck className="h-5 w-5" strokeWidth={1.75} />
                             </div>
                             <div>
-                                <h2 className="text-sm font-semibold text-white">Role-Based Access</h2>
-                                <p className="mt-1 text-sm leading-relaxed text-white/60">
+                                <h2 className="text-sm font-semibold text-foreground">Role-Based Access</h2>
+                                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                                     Granular permissions for Admins, HR Staff, and Employees.
                                 </p>
                             </div>
@@ -391,10 +190,10 @@ export default function Welcome() {
                 </main>
 
                 {/* ── Footer ── */}
-                <footer className="border-t border-white/10 py-6 text-center text-xs text-[#f0fdf4]/30">
+                <footer className="border-t border-border-1 py-6 text-center text-xs text-muted-foreground">
                     © {new Date().getFullYear()} DARPO Albay. All rights reserved.
                 </footer>
             </div>
-        </>
+        </div>
     );
 }
