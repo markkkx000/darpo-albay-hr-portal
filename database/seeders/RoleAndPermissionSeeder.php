@@ -9,9 +9,6 @@ use Spatie\Permission\PermissionRegistrar;
 
 class RoleAndPermissionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         // Reset cached roles and permissions
@@ -23,10 +20,12 @@ class RoleAndPermissionSeeder extends Seeder
             'attendance.view_own',
             'attendance.manage',
             'attendance.delete',
-            'leave.file',
+            'leave.access_module',
             'leave.view_own',
-            'leave.approve',
-            'leave.manage',
+            'leave.encode',
+            'leave.manage_tardiness',
+            'leave.manage_credits',
+            'leave.manage_settings',
             'personnel.view',
             'personnel.create',
             'personnel.update',
@@ -35,7 +34,6 @@ class RoleAndPermissionSeeder extends Seeder
             'announcements.manage',
             'announcements.view',
             'dtr.export',
-            'leave_credits.override',
             'travel_order.file',
             'travel_order.approve',
         ];
@@ -48,8 +46,6 @@ class RoleAndPermissionSeeder extends Seeder
 
         // Super Admin
         $superAdmin = Role::firstOrCreate(['name' => 'super_admin']);
-        // Super Admin gets all permissions via a gate (usually done in AuthServiceProvider)
-        // but we can also assign all for consistency
         $superAdmin->syncPermissions(Permission::all());
 
         // HR Admin
@@ -59,8 +55,12 @@ class RoleAndPermissionSeeder extends Seeder
             'attendance.view_own',
             'attendance.manage',
             'attendance.delete',
-            'leave.approve',
-            'leave.manage',
+            'leave.access_module',
+            'leave.view_own',
+            'leave.encode',
+            'leave.manage_tardiness',
+            'leave.manage_credits',
+            'leave.manage_settings',
             'personnel.view',
             'personnel.create',
             'personnel.update',
@@ -68,7 +68,6 @@ class RoleAndPermissionSeeder extends Seeder
             'announcements.manage',
             'announcements.view',
             'dtr.export',
-            'leave_credits.override',
             'travel_order.approve',
         ]);
 
@@ -78,7 +77,11 @@ class RoleAndPermissionSeeder extends Seeder
             'attendance.clock',
             'attendance.view_own',
             'attendance.manage',
-            'leave.approve',
+            'leave.access_module',
+            'leave.view_own',
+            'leave.encode',
+            'leave.manage_tardiness',
+            'leave.manage_credits',
             'personnel.view',
             'announcements.view',
             'announcements.manage',
@@ -90,7 +93,6 @@ class RoleAndPermissionSeeder extends Seeder
         $deptHead->syncPermissions([
             'attendance.clock',
             'attendance.view_own',
-            'leave.file',
             'leave.view_own',
             'announcements.view',
             'announcements.manage',
@@ -102,7 +104,6 @@ class RoleAndPermissionSeeder extends Seeder
         $employee->syncPermissions([
             'attendance.clock',
             'attendance.view_own',
-            'leave.file',
             'leave.view_own',
             'announcements.view',
             'travel_order.file',

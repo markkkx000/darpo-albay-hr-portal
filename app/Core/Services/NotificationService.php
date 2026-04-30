@@ -60,6 +60,15 @@ class NotificationService
     }
 
     /**
+     * Mark a single notification as unread.
+     */
+    public function markAsUnread(string $notificationId, User $user): void
+    {
+        $notification = $user->notifications()->findOrFail($notificationId);
+        $notification->markAsUnread();
+    }
+
+    /**
      * Mark all dismissible notifications as read for a user.
      */
     public function markAllAsRead(User $user): void

@@ -1,12 +1,12 @@
-import { Head, useForm, router } from '@inertiajs/react';
-import { LogIn, LogOut, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Head, useForm, router, usePage, Link } from '@inertiajs/react';
+import { LogIn, LogOut, CheckCircle2, AlertCircle, Settings } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { AttendanceStatus } from '@/components/Attendance/AttendanceStatus';
 import { cn } from '@/lib/utils';
-import { index as attendanceIndexRoute } from '@/routes/attendance';
-import { clockIn, clockOut } from '@/routes/attendance';
+import { clockIn, clockOut } from '@/routes/attendance/index';
+import { index as records_index } from '@/routes/attendance/manage/records/index';
 
 interface Attendance {
     id: number;
@@ -22,6 +22,10 @@ interface Props {
 }
 
 export default function ClockInOut({ attendance, history = [] }: Props) {
+    const { auth } = usePage().props as any;
+    const permissions = (auth.permissions || auth.user?.permissions || []) as string[];
+    const canManage = permissions.includes('attendance.manage');
+
     const { post, processing, errors } = useForm<{ attendance?: string }>();
     const [cooldown, setCooldown] = useState(0);
 
@@ -79,13 +83,23 @@ return;
             <Head title="Attendance Registry" />
             
 
-            
-            <div className="relative z-10 p-6 w-full min-h-[calc(100vh-8rem)] flex flex-col items-center justify-center gap-5 animate-fade-up">
-                
+            <div className="relative z-10 flex min-h-[calc(100vh-12rem)] flex-col items-center justify-start p-4 pt-4 gap-4 animate-fade-up">
+                <div className="w-full flex justify-end max-w-5xl">
+                    {canManage && (
+                        <Link href={records_index().url}>
+                            <Button variant="outline" className="bg-background/50 backdrop-blur-sm border-white/20 shadow-sm">
+                                <Settings className="mr-2 h-4 w-4" />
+                                Attendance Management
+                            </Button>
+                        </Link>
+                    )}
+                </div>
 
-                
-                {/* Main Widget */}
-                <div className="w-full max-w-xl liquid-glass-card p-6 flex flex-col md:flex-row gap-6 items-center md:items-start justify-between">
+                <Card className="w-full max-w-xl overflow-hidden border-none shadow-2xl glass-panel mt-4">
+                    <CardHeader className="text-center">
+                        <CardTitle className="text-3xl font-extrabold tracking-tight text-highlight">Attendance Registry</CardTitle>
+                        <CardDescription className="text-muted-foreground font-medium">Keep track of your daily work hours with precision.</CardDescription>
+                    </CardHeader>
                     
                     {/* Left Pane: Date Card — Figma spec gradient + inner glows */}
                     <div

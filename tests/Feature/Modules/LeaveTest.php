@@ -1,0 +1,36 @@
+<?php
+
+use App\Models\User;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+
+beforeEach(function () {
+    Permission::firstOrCreate(['name' => 'leave.access_module']);
+    Permission::firstOrCreate(['name' => 'leave.manage_settings']);
+
+    $this->superAdmin = User::factory()->create();
+    $superRole = Role::firstOrCreate(['name' => 'super_admin']);
+    $superRole->syncPermissions(['leave.access_module', 'leave.manage_settings']);
+    $this->superAdmin->assignRole($superRole);
+
+    $this->employee = User::factory()->create();
+    $this->employee->assignRole(Role::firstOrCreate(['name' => 'employee']));
+});
+
+it('restricts leave module from regular employees', function () {
+    $this->actingAs($this->employee)
+        ->get('/leave')
+        ->assertForbidden();
+});
+
+it('allows super admin to access leave dashboard', function () {
+    $this->actingAs($this->superAdmin)
+        ->get('/leave')
+        ->assertOk();
+});
+
+it('allows super admin to access leave settings', function () {
+    $this->actingAs($this->superAdmin)
+        ->get('/leave/settings')
+        ->assertOk();
+});

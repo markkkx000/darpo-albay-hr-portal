@@ -16,6 +16,7 @@
 - Run `php artisan wayfinder:generate` after registering any new backend routes.
 - **Never manually wrap page components in `<AppLayout>`**. The layout is auto-applied by `app.tsx` via the `layout` resolver. Wrapping manually causes double-wrapping (double header/sidebar). Pages must render with a fragment (`<>...</>`) and use a static `.layout` property for breadcrumbs: `Index.layout = { breadcrumbs: [...] }`. Check existing module pages (e.g., `Personnel/Index.tsx`) for the correct pattern.
 
+- **State Refresh Rule**: Whenever a module's subpage or main page changes anything in the database (e.g., creating, updating, deleting), ensure that the whole module is refreshed whenever a user goes back to the main route (e.g., `/personnel`). This eliminates the need to manually refresh the page. Keep the existing redirection/navigation behavior of pages intact (e.g., achieve this by clearing Inertia history using `router.clearHistory()` on successful form submissions so that clicking 'back' forces a fresh data fetch).
 
 ---
 

@@ -1,7 +1,9 @@
-import { Head } from '@inertiajs/react';
-import { Megaphone } from 'lucide-react';
+import { Head, Link, usePage } from '@inertiajs/react';
+import { Megaphone, Settings } from 'lucide-react';
 import { AnnouncementCard } from '@/components/Announcements/AnnouncementCard';
 import { Pagination } from '@/components/Pagination';
+import { Button } from '@/components/ui/button';
+import { manage } from '@/routes/announcements/index';
 
 interface Props {
     announcements: {
@@ -12,18 +14,28 @@ interface Props {
 }
 
 export default function Index({ announcements }: Props) {
+    const { auth } = usePage().props as any;
+    const permissions = (auth.permissions || auth.user?.permissions || []) as string[];
+    const canManage = permissions.includes('announcements.manage');
+
     return (
         <>
             <Head title="Announcements" />
 
             <div className="p-4 w-full space-y-6">
-                <div className="liquid-glass flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5">
-                    <div>
-                        <h1 className="liquid-glass-title text-3xl font-bold tracking-tight">Announcements</h1>
-                        <p className="text-muted-foreground text-sm mt-2">
-                            Stay updated with the latest news and information from the HR and management.
-                        </p>
-                    </div>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <Heading 
+                        title="Announcements" 
+                        description="Stay updated with the latest news and information from the HR and management."
+                    />
+                    {canManage && (
+                        <Link href={manage().url}>
+                            <Button>
+                                <Settings className="mr-2 h-4 w-4" />
+                                Manage Announcements
+                            </Button>
+                        </Link>
+                    )}
                 </div>
 
                 {announcements.data.length === 0 ? (

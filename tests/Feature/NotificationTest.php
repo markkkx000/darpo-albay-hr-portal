@@ -47,6 +47,21 @@ test('can mark a dismissible notification as read', function () {
     expect($user->fresh()->notifications->first()->read_at)->not->toBeNull();
 });
 
+test('can mark a notification as unread', function () {
+    $user = User::factory()->create();
+    $this->notificationService->notifyUser($user, ['title' => 'Test']);
+    $notificationId = $user->notifications->first()->id;
+    $user->notifications->first()->markAsRead();
+
+    expect($user->fresh()->notifications->first()->read_at)->not->toBeNull();
+
+    $this->actingAs($user)
+        ->postJson("/notifications/{$notificationId}/unread")
+        ->assertSuccessful();
+
+    expect($user->fresh()->notifications->first()->read_at)->toBeNull();
+});
+
 test('cannot mark a non-dismissible notification as read', function () {
     $user = User::factory()->create();
     $this->notificationService->notifyUser($user, [

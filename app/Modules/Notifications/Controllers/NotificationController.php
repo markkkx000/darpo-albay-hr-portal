@@ -53,6 +53,20 @@ class NotificationController extends Controller
     }
 
     /**
+     * Mark a single notification as unread.
+     */
+    public function unread(Request $request, string $id): JsonResponse|RedirectResponse
+    {
+        $this->notificationService->markAsUnread($id, $request->user());
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Notification marked as unread.']);
+        }
+
+        return back();
+    }
+
+    /**
      * Mark all dismissible notifications as read.
      */
     public function readAll(Request $request): JsonResponse|RedirectResponse

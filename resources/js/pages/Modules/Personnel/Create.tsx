@@ -13,7 +13,10 @@ interface Props {
 export default function Create({ departments, positions, employmentStatuses }: Props) {
     const handleSubmit = (data: any) => {
         router.post(storeRoute().url, data, {
-            onSuccess: () => toast.success('Employee created successfully'),
+            onSuccess: () => {
+                toast.success('Employee created successfully');
+                router.clearHistory();
+            },
         });
     };
 

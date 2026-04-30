@@ -14,7 +14,10 @@ interface Props {
 export default function Edit({ employee, departments, positions, employmentStatuses }: Props) {
     const handleSubmit = (data: any) => {
         router.put(updateRoute({ user: employee.id }).url, data, {
-            onSuccess: () => toast.success('Employee record updated successfully'),
+            onSuccess: () => {
+                toast.success('Employee record updated successfully');
+                router.clearHistory();
+            },
         });
     };
 
