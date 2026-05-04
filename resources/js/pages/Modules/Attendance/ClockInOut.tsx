@@ -33,14 +33,10 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
     const [cooldown, setCooldown] = useState(0);
 
     useEffect(() => {
-        if (cooldown <= 0) {
-return;
-}
-
+        if (cooldown <= 0) return;
         const timer = setInterval(() => {
             setCooldown((prev) => prev - 1);
         }, 1000);
-
         return () => clearInterval(timer);
     }, [cooldown]);
 
@@ -76,107 +72,108 @@ return;
         <>
             <Head title="Attendance Registry" />
             
-            <div className="premium-bg-container" aria-hidden="true">
-                <div className="blob-background" />
-                <div className="grain-overlay" />
-            </div>
-
-            <div className="relative z-10 flex min-h-[calc(100vh-12rem)] flex-col items-center justify-start p-4 pt-4 gap-4 animate-fade-up">
-                <div className="w-full flex justify-end max-w-5xl">
-                    {canManage && (
-                        <Link href={records_index().url}>
-                            <Button variant="outline" className="bg-background/50 backdrop-blur-sm border-white/20 shadow-sm">
-                                <Settings className="mr-2 h-4 w-4" />
-                                Attendance Management
-                            </Button>
-                        </Link>
-                    )}
-                </div>
-
-                <Card className="w-full max-w-xl overflow-hidden border-none shadow-2xl glass-panel mt-4">
-                    <CardHeader className="text-center">
-                        <CardTitle className="text-3xl font-extrabold tracking-tight text-highlight">Attendance Registry</CardTitle>
-                        <CardDescription className="text-muted-foreground font-medium">Keep track of your daily work hours with precision.</CardDescription>
-                    </CardHeader>
-                    
-                    <CardContent className="flex flex-col items-center gap-8 pb-12">
-                        <ClockDisplay />
-                        
-                        <AttendanceStatus attendance={attendance} />
-
-                        {errors.attendance && (
-                            <div className="flex items-center gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
-                                <AlertCircle className="h-4 w-4" />
-                                {errors.attendance}
-                            </div>
+            <div className="p-4 w-full flex flex-col items-center">
+                <div className="w-full max-w-xl flex flex-col gap-6">
+                    <div className="flex items-center justify-end">
+                        {canManage && (
+                            <Link href={records_index().url}>
+                                <Button variant="outline" size="sm" className="gap-2 bg-background/50 backdrop-blur-sm shadow-sm border-border/50">
+                                    <Settings className="h-4 w-4" />
+                                    <span className="hidden sm:inline">Attendance Management</span>
+                                </Button>
+                            </Link>
                         )}
+                    </div>
 
-                        <div className="w-full max-w-xs space-y-4">
-                            {!isClockedIn && (
-                                <Button 
-                                    size="lg" 
-                                    className={cn(
-                                        "w-full h-14 text-lg font-bold shadow-lg transition-all hover:scale-[1.02]",
-                                        cooldown > 0 
-                                            ? "bg-muted text-muted-foreground hover:scale-100 cursor-not-allowed" 
-                                            : "bg-green-600 hover:bg-green-700 text-white shadow-green-600/20"
-                                    )}
-                                    onClick={handleClockIn}
-                                    disabled={isButtonDisabled}
-                                >
-                                    <LogIn className="mr-2 h-5 w-5" />
-                                    {processing ? 'Processing...' : 'Clock In Now'}
-                                </Button>
-                            )}
-
-                            {isClockedIn && !isClockedOut && (
-                                <Button 
-                                    size="lg" 
-                                    variant={cooldown > 0 ? "outline" : "warning"}
-                                    className={cn(
-                                        "w-full h-14 text-lg font-bold shadow-lg transition-all hover:scale-[1.02]",
-                                        cooldown > 0 
-                                            ? "bg-muted text-muted-foreground hover:scale-100 cursor-not-allowed border-none" 
-                                            : "text-white shadow-amber-600/20"
-                                    )}
-                                    onClick={handleClockOut}
-                                    disabled={isButtonDisabled}
-                                >
-                                    <LogOut className="mr-2 h-5 w-5" />
-                                    {processing ? 'Processing...' : 'Clock Out Now'}
-                                </Button>
-                            )}
-
-                            {isClockedOut && (
-                                <Button 
-                                    size="lg" 
-                                    disabled 
-                                    className="w-full h-14 text-lg font-bold bg-muted text-muted-foreground rounded-xl"
-                                >
-                                    <CheckCircle2 className="mr-2 h-5 w-5" />
-                                    Done for Today
-                                </Button>
-                            )}
-                        </div>
+                    <Card className="w-full overflow-hidden border-none shadow-2xl dark:bg-gray-900/50 dark:backdrop-blur-xl glass-panel">
+                        <CardHeader className="text-center pt-8">
+                            <CardTitle className="text-3xl font-extrabold tracking-tight text-highlight">Attendance Registry</CardTitle>
+                            <CardDescription className="text-muted-foreground font-medium">Keep track of your daily work hours with precision.</CardDescription>
+                        </CardHeader>
                         
-                        <p className="text-xs text-gray-400 dark:text-gray-500 max-w-[280px] text-center">
-                            {cooldown > 0 
-                                ? (
-                                    <span>
-                                        Action locked for <strong className="text-foreground font-bold">{cooldown}s</strong> to prevent accidental double-clicks.
-                                    </span>
-                                )
-                                : "Timestamps are recorded by the server to ensure accuracy and prevent tampering."}
-                        </p>
-                    </CardContent>
-                </Card>
+                        <CardContent className="flex flex-col items-center gap-8 pb-12">
+                            <ClockDisplay />
+                            
+                            <AttendanceStatus attendance={attendance} />
 
-                <div className="w-full max-w-xl">
-                    <AttendanceHistory history={history} />
+                            {errors.attendance && (
+                                <div className="flex items-center gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+                                    <AlertCircle className="h-4 w-4" />
+                                    {errors.attendance}
+                                </div>
+                            )}
+
+                            <div className="w-full max-w-xs space-y-4">
+                                {!isClockedIn && (
+                                    <Button 
+                                        size="lg" 
+                                        className={cn(
+                                            "w-full h-14 text-lg font-bold shadow-lg transition-all hover:scale-[1.02]",
+                                            cooldown > 0 
+                                                ? "bg-muted text-muted-foreground hover:scale-100 cursor-not-allowed" 
+                                                : "bg-green-600 hover:bg-green-700 text-white shadow-green-600/20"
+                                        )}
+                                        onClick={handleClockIn}
+                                        disabled={isButtonDisabled}
+                                    >
+                                        <LogIn className="mr-2 h-5 w-5" />
+                                        {processing ? 'Processing...' : 'Clock In Now'}
+                                    </Button>
+                                )}
+
+                                {isClockedIn && !isClockedOut && (
+                                    <Button 
+                                        size="lg" 
+                                        variant={cooldown > 0 ? "outline" : "warning"}
+                                        className={cn(
+                                            "w-full h-14 text-lg font-bold shadow-lg transition-all hover:scale-[1.02]",
+                                            cooldown > 0 
+                                                ? "bg-muted text-muted-foreground hover:scale-100 cursor-not-allowed border-none" 
+                                                : "text-white shadow-amber-600/20 font-bold"
+                                        )}
+                                        onClick={handleClockOut}
+                                        disabled={isButtonDisabled}
+                                    >
+                                        <LogOut className="mr-2 h-5 w-5" />
+                                        {processing ? 'Processing...' : 'Clock Out Now'}
+                                    </Button>
+                                )}
+
+                                {isClockedOut && (
+                                    <Button 
+                                        size="lg" 
+                                        disabled 
+                                        className="w-full h-14 text-lg font-bold bg-muted text-muted-foreground"
+                                    >
+                                        <CheckCircle2 className="mr-2 h-5 w-5" />
+                                        Done for Today
+                                    </Button>
+                                )}
+                            </div>
+                            
+                            <p className="text-xs text-gray-400 dark:text-gray-500 max-w-[280px] text-center">
+                                {cooldown > 0 
+                                    ? (
+                                        <span>
+                                            Action locked for <strong className="text-foreground font-bold">{cooldown}s</strong> to prevent accidental double-clicks.
+                                        </span>
+                                    )
+                                    : "Timestamps are recorded by the server to ensure accuracy and prevent tampering."}
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <div className="w-full">
+                        <AttendanceHistory history={history} />
+                    </div>
                 </div>
             </div>
         </>
     );
 }
 
-
+ClockInOut.layout = {
+    breadcrumbs: [
+        { title: 'Attendance Registry', href: '#' },
+    ],
+};

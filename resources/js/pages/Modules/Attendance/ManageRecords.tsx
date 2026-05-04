@@ -126,11 +126,6 @@ export default function ManageRecords({ records, employees, filters }: Props) {
         <>
             <Head title="Manage Attendance Records" />
 
-            <div className="premium-bg-container" aria-hidden="true">
-                <div className="blob-background opacity-10 dark:opacity-20" />
-                <div className="grain-overlay" />
-            </div>
-
             <div className="relative z-10 p-4 w-full animate-fade-up">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
