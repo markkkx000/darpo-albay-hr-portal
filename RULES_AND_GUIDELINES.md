@@ -20,6 +20,16 @@
 
 ---
 
+## UI Feedback & Interaction
+- **Immediate Feedback**: Always provide immediate visual feedback for user actions.
+- **Toast Notifications**: Use `sonner` for toast notifications after successful data-modifying operations (POST, PUT, DELETE).
+    - Example: `toast.success('Employee updated successfully');`
+    - Implementation: Call `toast` within the `onSuccess` callback of Inertia `router` or `useForm` methods.
+- **Scroll Position**: Use `preserveScroll: true` in the router options for operations that shouldn't reset the page scroll, such as inline updates in a table.
+- **Form States**: Ensure submit buttons are disabled and show a loading state (e.g., `processing` from `useForm`) during form submission.
+
+---
+
 ## Common Components & Patterns
 - **EmployeeSearch Component**:
     - When using `EmployeeSearch.tsx` for searching users in the backend, always implement **keyword-splitting logic** in the controller.
@@ -83,6 +93,7 @@ Before considering a module complete, verify:
 - [ ] No large conditionals added to `dashboard.tsx`
 - [ ] Permissions seeded in `RoleAndPermissionSeeder` using dot notation
 - [ ] `navigation.php` present and formatted correctly if module needs a sidebar link
+- [ ] Success actions provide toast notifications via `sonner`
 - [ ] `php artisan migrate:fresh --seed` runs cleanly with no errors
 - [ ] All Pest tests pass (`php artisan test --compact --filter={ModuleName}`)
 - [ ] `vendor/bin/pint --dirty --format agent` run on all PHP files

@@ -6,8 +6,8 @@ import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useDebounce } from '@/hooks/use-debounce';
-import LeaveNavigation from './Components/LeaveNavigation';
 import LeaveRoutes from '@/routes/leave';
+import LeaveNavigation from './Components/LeaveNavigation';
 
 export default function LeaveDashboard({ leaves, allEmployees, leaveTypes, leaveStatuses, filters }: any) {
     const { auth } = usePage<any>().props;

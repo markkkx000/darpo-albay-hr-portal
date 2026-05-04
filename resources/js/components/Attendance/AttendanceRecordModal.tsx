@@ -4,6 +4,7 @@ import { clsx  } from 'clsx';
 import type {ClassValue} from 'clsx';
 import { Check, ChevronsUpDown, User as UserIcon } from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';
+import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 import { Button } from '@/components/ui/button';
 import {
@@ -126,12 +127,14 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
         if (isEditing && record) {
             put(updateRecord({ attendance: record.id }).url, {
                 onSuccess: () => {
+                    toast.success('Attendance record updated successfully');
                     onClose();
                 },
             });
         } else {
             post(storeRecord().url, {
                 onSuccess: () => {
+                    toast.success('Attendance record created successfully');
                     onClose();
                     reset();
                 },

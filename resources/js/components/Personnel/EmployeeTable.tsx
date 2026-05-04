@@ -1,5 +1,6 @@
 import { Link, router } from '@inertiajs/react';
 import { Edit, Eye, RotateCcw, Trash2, User as UserIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { Pagination } from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -51,13 +52,17 @@ return 'N/A';
 
     const handleDelete = (id: number) => {
         if (confirm('Are you sure you want to archive this employee?')) {
-            router.delete(destroyRoute({ user: id }).url);
+            router.delete(destroyRoute({ user: id }).url, {
+                onSuccess: () => toast.success('Employee archived successfully')
+            });
         }
     };
 
     const handleRestore = (id: number) => {
         if (confirm('Restore this employee record?')) {
-            router.post(restoreRoute({ id }).url);
+            router.post(restoreRoute({ id }).url, {}, {
+                onSuccess: () => toast.success('Employee record restored successfully')
+            });
         }
     };
 

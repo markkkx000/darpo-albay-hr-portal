@@ -1,12 +1,13 @@
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Pagination } from '@/components/Pagination';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import LeaveNavigation from './Components/LeaveNavigation';
 import LeaveRoutes from '@/routes/leave';
+import LeaveNavigation from './Components/LeaveNavigation';
 
 
 export default function LeaveTardiness({ users, currentYear, allEmployees, filters }: any) {
@@ -24,7 +25,10 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
             [field]: parseInt(value) || 0,
         };
 
-        router.put(LeaveRoutes.tardiness.update({ user_id: userId }).url, payload, { preserveScroll: true });
+        router.put(LeaveRoutes.tardiness.update({ user_id: userId }).url, payload, { 
+            preserveScroll: true,
+            onSuccess: () => toast.success('Tardiness record updated successfully')
+        });
     };
 
     return (

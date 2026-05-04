@@ -1,5 +1,6 @@
 import { useForm } from '@inertiajs/react';
 import { AlertCircle, ShieldAlert } from 'lucide-react';
+import { toast } from 'sonner';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -34,7 +35,10 @@ return;
 }
         
         put(RolesRoutes.users.assign(user.id).url, {
-            onSuccess: () => onOpenChange(false),
+            onSuccess: () => {
+                toast.success('User role updated successfully');
+                onOpenChange(false);
+            },
         });
     };
 

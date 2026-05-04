@@ -1,11 +1,12 @@
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import LeaveNavigation from './Components/LeaveNavigation';
 import LeaveRoutes from '@/routes/leave';
+import LeaveNavigation from './Components/LeaveNavigation';
 
 
 export default function LeaveCredits({ users, leaveTypes, currentYear, allEmployees, filters }: any) {
@@ -18,7 +19,10 @@ export default function LeaveCredits({ users, leaveTypes, currentYear, allEmploy
             year: year,
             earned: parseFloat(earned) || 0,
             used: parseFloat(used) || 0,
-        }, { preserveScroll: true });
+        }, { 
+            preserveScroll: true,
+            onSuccess: () => toast.success('Leave credits updated successfully')
+        });
     };
 
     // Filter to only show common types that have credits typically tracked (e.g. Vacation, Sick)
