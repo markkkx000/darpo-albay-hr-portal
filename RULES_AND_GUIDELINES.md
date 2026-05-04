@@ -20,6 +20,16 @@
 
 ---
 
+## Common Components & Patterns
+- **EmployeeSearch Component**:
+    - When using `EmployeeSearch.tsx` for searching users in the backend, always implement **keyword-splitting logic** in the controller.
+    - Instead of a single `where like` query, split the search string by spaces and iterate through the keywords.
+    - Each keyword must be checked against `first_name`, `last_name`, and `employee_number` using a nested `where` closure.
+    - This ensures that searching for a full name (e.g., "John Doe") correctly finds users whose names are split across columns.
+    - Example implementation can be found in `UserRoleController@index` or `LeaveController@index`.
+
+---
+
 ## Backend Rules
 - Module controllers go in `app/Modules/{ModuleName}/Controllers/` — never in `app/Http/Controllers/`.
 - Module routes go in `app/Modules/{ModuleName}/routes.php` — auto-registered by `ModuleServiceProvider`.
