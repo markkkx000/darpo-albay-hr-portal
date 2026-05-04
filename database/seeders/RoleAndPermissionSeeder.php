@@ -36,6 +36,7 @@ class RoleAndPermissionSeeder extends Seeder
             'dtr.export',
             'travel_order.file',
             'travel_order.approve',
+            'roles.manage',
         ];
 
         foreach ($permissions as $permission) {

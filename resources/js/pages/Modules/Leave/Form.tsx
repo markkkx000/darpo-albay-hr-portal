@@ -1,6 +1,6 @@
 import { Head, router, useForm } from '@inertiajs/react';
 import { X } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useSyncExternalStore } from 'react';
 import type { FormEvent } from 'react';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Button } from '@/components/ui/button';
@@ -46,13 +46,13 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
         leaveRequest?.specific_dates && leaveRequest.specific_dates.length > 0 ? 'specific' : 'range'
     );
     const [specificDateInput, setSpecificDateInput] = useState('');
-    const [mounted, setMounted] = useState(false);
+    const mounted = useSyncExternalStore(
+        () => () => {},
+        () => true,
+        () => false
+    );
 
     const isFirstRender = useRef(true);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     useEffect(() => {
         if (isFirstRender.current) {
@@ -62,6 +62,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
         }
 
         let calculatedDays = '';
+
         if (dateMode === 'range') {
             if (data.start_date && data.end_date) {
                 const start = new Date(data.start_date);

@@ -1,0 +1,136 @@
+import { Head } from '@inertiajs/react';
+import { UserCog, ShieldCheck } from 'lucide-react';
+import { useState } from 'react';
+import { EmployeeSearch } from '@/components/EmployeeSearch';
+import { Pagination } from '@/components/Pagination';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import RolesRoutes from '@/routes/roles';
+import { RoleAssignmentModal } from './RoleAssignmentModal';
+import { RolesNavigation } from './RolesNavigation';
+
+interface Props {
+    users: any;
+    allUsers: any[];
+    roles: any[];
+    filters: {
+        search?: string;
+    };
+}
+
+export default function UserRolesIndex({ users, allUsers, roles, filters }: Props) {
+    const [assignmentOpen, setAssignmentOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<any>(null);
+
+    const openAssignment = (user: any) => {
+        setSelectedUser(user);
+        setAssignmentOpen(true);
+    };
+
+    return (
+        <>
+            <Head title="User Role Assignments" />
+
+            <div className="p-4 w-full">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight">User Role Assignments</h1>
+                        <p className="text-muted-foreground text-sm mt-1">
+                            Assign primary roles to individual user accounts.
+                        </p>
+                    </div>
+                </div>
+
+                <RolesNavigation />
+
+                <Card className="border-border/50">
+                    <CardContent className="p-0">
+                        <div className="p-4 border-b border-border/50 bg-muted/20">
+                            <EmployeeSearch 
+                                users={allUsers}
+                                route={RolesRoutes.users.index().url}
+                                placeholder="Search by name or employee number..."
+                                selectedId={filters?.search}
+                            />
+                        </div>
+
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm text-left">
+                                <thead className="text-xs text-muted-foreground uppercase bg-muted/50 font-bold">
+                                    <tr>
+                                        <th className="px-6 py-4 border-b w-[120px]">Emp. No.</th>
+                                        <th className="px-6 py-4 border-b">Full Name</th>
+                                        <th className="px-6 py-4 border-b">Primary Role</th>
+                                        <th className="px-6 py-4 border-b text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-border">
+                                    {users.data.map((user: any) => (
+                                        <tr key={user.id} className="group hover:bg-muted/30 transition-colors">
+                                            <td className="px-6 py-4 font-mono text-xs font-semibold">{user.employee_number || 'N/A'}</td>
+                                            <td className="px-6 py-4">
+                                                <div className="font-medium text-foreground">{user.first_name} {user.last_name}</div>
+                                                <div className="text-[10px] text-muted-foreground">{user.email}</div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {user.roles && user.roles.length > 0 ? (
+                                                    <Badge variant={user.roles[0].name === 'super_admin' ? 'default' : 'secondary'} className="capitalize gap-1 px-2 text-[10px]">
+                                                        <ShieldCheck className="h-3 w-3" />
+                                                        {user.roles[0].name.replace('_', ' ')}
+                                                    </Badge>
+                                                ) : (
+                                                    <span className="text-xs text-muted-foreground italic">No role assigned</span>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <Button 
+                                                    variant="ghost" 
+                                                    size="sm" 
+                                                    onClick={() => openAssignment(user)}
+                                                    disabled={user.roles?.some((r: any) => r.name === 'super_admin')}
+                                                    className="gap-2 h-8 px-2 sm:opacity-0 group-hover:opacity-100 transition-opacity hover:bg-primary/10 hover:text-primary border border-transparent hover:border-primary/20"
+                                                >
+                                                    <UserCog className="h-4 w-4" />
+                                                    <span className="hidden sm:inline">Edit Role</span>
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {users.data.length === 0 && (
+                                        <tr>
+                                            <td colSpan={4} className="h-48 text-center text-muted-foreground py-10">
+                                                <div className="flex flex-col items-center gap-2">
+                                                    <UserCog className="h-10 w-10 opacity-10" />
+                                                    <p>No users found matching your search.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div className="p-4 border-t border-border/50">
+                            <Pagination links={users.links} meta={users} />
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            <RoleAssignmentModal 
+                open={assignmentOpen} 
+                onOpenChange={setAssignmentOpen} 
+                user={selectedUser} 
+                roles={roles} 
+            />
+        </>
+    );
+}
+
+UserRolesIndex.layout = {
+    breadcrumbs: [
+        { title: 'Roles & Permissions', href: RolesRoutes.index().url },
+        { title: 'User Assignments', href: '#' },
+    ],
+};

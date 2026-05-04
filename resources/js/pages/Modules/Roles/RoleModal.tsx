@@ -1,0 +1,135 @@
+import { useForm } from '@inertiajs/react';
+import { AlertCircle } from 'lucide-react';
+import { useEffect } from 'react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import * as RolesRoutes from '@/routes/roles';
+
+interface Props {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    role?: any;
+    permissions: any[];
+}
+
+export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
+    const isEdit = !!role;
+    
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+        name: role?.name || '',
+        permissions: role?.permissions?.map((p: any) => p.name) || [],
+    });
+
+    useEffect(() => {
+        if (open) {
+            setData({
+                name: role?.name || '',
+                permissions: role?.permissions?.map((p: any) => p.name) || [],
+            });
+            clearErrors();
+        } else {
+            reset();
+        }
+    }, [open, role, setData, clearErrors, reset]);
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (isEdit) {
+            put(RolesRoutes.update(role.id).url, {
+                onSuccess: () => onOpenChange(false),
+            });
+        } else {
+            post(RolesRoutes.store().url, {
+                onSuccess: () => onOpenChange(false),
+            });
+        }
+    };
+
+    const togglePermission = (permName: string) => {
+        const current = [...data.permissions];
+        const index = current.indexOf(permName);
+
+        if (index > -1) {
+            current.splice(index, 1);
+        } else {
+            current.push(permName);
+        }
+
+        setData('permissions', current);
+    };
+
+    const isProtected = ['super_admin', 'hr_admin', 'hr_staff', 'department_head', 'employee'].includes(role?.name);
+
+    return (
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col">
+                <form onSubmit={handleSubmit} className="flex flex-col h-full overflow-hidden">
+                    <DialogHeader>
+                        <DialogTitle>{isEdit ? 'Edit Role' : 'Create New Role'}</DialogTitle>
+                        <DialogDescription>
+                            {isEdit ? 'Update role name and permissions.' : 'Define a new role and its associated permissions.'}
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    {errors.error && (
+                        <Alert variant="destructive" className="my-4">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertDescription>{errors.error}</AlertDescription>
+                        </Alert>
+                    )}
+
+                    <div className="space-y-6 py-4 overflow-y-auto pr-2">
+                        <div className="space-y-2">
+                            <Label htmlFor="name">Role Name</Label>
+                            <Input
+                                id="name"
+                                value={data.name}
+                                onChange={e => setData('name', e.target.value)}
+                                disabled={isProtected}
+                                placeholder="e.g. Content Moderator"
+                            />
+                            {errors.name && <p className="text-sm text-destructive font-medium">{errors.name}</p>}
+                            {isProtected && <p className="text-xs text-muted-foreground">Core role names are immutable.</p>}
+                        </div>
+
+                        <div className="space-y-3">
+                            <Label>Permissions</Label>
+                            <div className="h-[300px] overflow-y-auto border rounded-md p-4 bg-muted/5">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {permissions.map((permission) => (
+                                        <div key={permission.id} className="flex items-center space-x-2">
+                                            <Checkbox
+                                                id={`perm-${permission.id}`}
+                                                checked={data.permissions.includes(permission.name)}
+                                                onCheckedChange={() => togglePermission(permission.name)}
+                                            />
+                                            <label
+                                                htmlFor={`perm-${permission.id}`}
+                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                            >
+                                                {permission.name}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            {errors.permissions && <p className="text-sm text-destructive font-medium">{errors.permissions}</p>}
+                        </div>
+                    </div>
+
+                    <DialogFooter className="pt-4 border-t mt-auto">
+                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+                        <Button type="submit" disabled={processing}>
+                            {isEdit ? 'Update Role' : 'Create Role'}
+                        </Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
+    );
+}
