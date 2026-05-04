@@ -35,7 +35,7 @@ export function AttendanceHistory({ history }: AttendanceHistoryProps) {
     }
 
     return (
-        <Card className="w-full border-none shadow-xl bg-white/50 backdrop-blur-sm dark:bg-gray-950/50">
+        <Card className="w-full matte-card elev-2">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <Calendar className="h-5 w-5 text-blue-500" />
@@ -81,7 +81,7 @@ export function AttendanceHistory({ history }: AttendanceHistoryProps) {
                                             variant={record.clock_out ? 'secondary' : 'default'}
                                             className={cn(
                                                 "text-[10px] px-2 py-0 uppercase tracking-wider font-bold",
-                                                !record.clock_out && "bg-green-600 hover:bg-green-700 animate-pulse text-white"
+                                                !record.clock_out && "bg-primary/20 hover:bg-primary/30 text-primary border-primary/30 animate-pulse"
                                             )}
                                         >
                                             {record.clock_out ? 'Completed' : 'Working'}

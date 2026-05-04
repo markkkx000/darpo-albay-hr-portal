@@ -17,7 +17,7 @@ export default function AppLogo({ auth }: Props) {
                 alt="DAR Logo"
                 className="h-7 w-7 object-contain"
             />
-            <div className="ml-1 grid flex-1 text-left text-sm">
+            <div className="ml-1 flex-1 text-left text-sm group-data-[collapsible=icon]:hidden">
                 <span className="mb-0.5 truncate leading-tight font-semibold">
                     {title}
                 </span>

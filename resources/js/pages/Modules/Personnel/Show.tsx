@@ -25,7 +25,7 @@ export default function Show({ employee }: Props) {
                         <h1 className="text-2xl font-bold tracking-tight">Employee Profile</h1>
                     </div>
                     {canEdit && (
-                        <Button asChild className="gap-2 shadow-sm">
+                        <Button asChild className="btn-gradient gap-2 px-6 py-5 rounded-xl shadow-lg border-none">
                             <Link href={editRoute({ user: employee.id }).url}>
                                 <Edit className="h-4 w-4" />
                                 Edit Profile

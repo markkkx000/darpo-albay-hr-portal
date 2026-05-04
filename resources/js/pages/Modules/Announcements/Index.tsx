@@ -4,7 +4,7 @@ import { AnnouncementCard } from '@/components/Announcements/AnnouncementCard';
 import Heading from '@/components/heading';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
-import { manage } from '@/routes/announcements/index';
+import { index, manage } from '@/routes/announcements/index';
 
 interface Props {
     announcements: {
@@ -45,14 +45,14 @@ export default function Index({ announcements }: Props) {
                             <Megaphone className="h-12 w-12 text-muted-foreground" />
                         </div>
                         <div className="space-y-1">
-                            <h3 className="text-xl font-semibold">No announcements yet</h3>
+                            <h3 className="t-headline">No announcements yet</h3>
                             <p className="text-muted-foreground max-w-xs">
                                 Check back later for updates and news.
                             </p>
                         </div>
                     </div>
                 ) : (
-                    <div className="space-y-4 max-w-4xl mx-auto">
+                    <div className="space-y-4">
                         {announcements.data.map((announcement) => (
                             <AnnouncementCard key={announcement.id} announcement={announcement} />
                         ))}
@@ -69,6 +69,6 @@ export default function Index({ announcements }: Props) {
 
 Index.layout = {
     breadcrumbs: [
-        { title: 'Announcements', href: '#' },
+        { title: 'Announcements', href: index().url },
     ],
 };

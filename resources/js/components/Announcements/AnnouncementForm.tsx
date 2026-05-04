@@ -104,8 +104,8 @@ export function AnnouncementForm({
                 />
             </div>
 
-            <div className="flex justify-end gap-2">
-                <Button type="submit" disabled={processing}>
+            <div className="flex justify-end gap-2 pt-4 border-t border-muted/20">
+                <Button type="submit" disabled={processing} className="btn-gradient gap-2 px-8 py-6 rounded-xl shadow-lg border-none">
                     {processing ? 'Saving...' : announcement ? 'Update Draft' : 'Save Draft'}
                 </Button>
             </div>

@@ -1,6 +1,6 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import { Plus, Edit, Trash2, Clock, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { AttendanceFilters } from '@/components/Attendance/AttendanceFilters';
 import { AttendanceRecordModal } from '@/components/Attendance/AttendanceRecordModal';
@@ -16,6 +16,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+
 import { cn } from '@/lib/utils';
 import { index as attendanceIndexRoute } from '@/routes/attendance';
 import { index as manageRecordsIndexRoute, destroy as destroyRecord } from '@/routes/attendance/manage/records';
@@ -59,16 +60,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState<AttendanceRecord | null>(null);
     const [recordToDelete, setRecordToDelete] = useState<AttendanceRecord | null>(null);
-    const [isRefreshing, setIsRefreshing] = useState(true);
-
     const canDelete = auth.permissions?.includes('attendance.delete');
-
-    useEffect(() => {
-        router.reload({
-            only: ['records', 'employees'],
-            onFinish: () => setIsRefreshing(false)
-        });
-    }, []);
 
     const handleEdit = (record: AttendanceRecord) => {
         setSelectedRecord(record);
@@ -126,19 +118,16 @@ export default function ManageRecords({ records, employees, filters }: Props) {
         <>
             <Head title="Manage Attendance Records" />
 
-            <div className="relative z-10 p-4 w-full animate-fade-up">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="relative z-10 p-6 lg:p-10 w-full animate-fade-up space-y-8">
+                <div className="matte-card elev-2 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 mb-6">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-                            Attendance Management
-                            {isRefreshing && <Clock className="h-5 w-5 animate-spin text-primary opacity-50" />}
-                        </h1>
-                        <p className="text-muted-foreground text-sm mt-1">
-                            Manually manage employee attendance records, correct timestamps, and resolve anomalies.
+                        <h1 className="t-title">Attendance Management</h1>
+                        <p className="text-muted-foreground text-sm mt-2">
+                            Systematically manage records and resolve logging anomalies.
                         </p>
                     </div>
-                    <Button onClick={handleAddNew} className="btn-gradient">
-                        <Plus className="h-4 w-4" />
+                    <Button onClick={handleAddNew} size="lg" className="btn-specular">
+                        <Plus className="h-5 w-5 mr-2" />
                         Add Missing Record
                     </Button>
                 </div>
@@ -149,11 +138,11 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                         routeName={manageRecordsIndexRoute().url}
                     />
 
-                    <Card className="border-none shadow-xl overflow-hidden glass-panel">
-                    <CardHeader className="bg-muted/10 pb-4 border-b border-white/10">
+                    <Card className="overflow-hidden border-none shadow-xl">
+                    <CardHeader className="bg-surface-2 pb-4 border-b border-border-1">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <CardTitle className="flex items-center gap-2 text-xl">
+                                <CardTitle className="flex items-center gap-2 t-headline">
                                     <Clock className="h-5 w-5 text-primary" />
                                     Attendance Logs
                                 </CardTitle>
@@ -164,17 +153,17 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                     <CardContent className="p-0">
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm text-left">
-                                <thead className="text-xs text-muted-foreground uppercase bg-muted/20 font-bold">
+                                <thead className="text-xs text-muted-foreground uppercase font-bold bg-surface-1">
                                     <tr>
-                                        <th className="px-6 py-4 border-b">Employee</th>
-                                        <th className="px-6 py-4 border-b">Date</th>
-                                        <th className="px-6 py-4 border-b">Clock In</th>
-                                        <th className="px-6 py-4 border-b">Clock Out</th>
-                                        <th className="px-6 py-4 border-b">Status</th>
-                                        <th className="px-6 py-4 border-b text-right">Actions</th>
+                                        <th className="px-6 py-4 border-b border-border-1">Employee</th>
+                                        <th className="px-6 py-4 border-b border-border-1">Date</th>
+                                        <th className="px-6 py-4 border-b border-border-1">Clock In</th>
+                                        <th className="px-6 py-4 border-b border-border-1">Clock Out</th>
+                                        <th className="px-6 py-4 border-b border-border-1">Status</th>
+                                        <th className="px-6 py-4 border-b border-border-1 text-right">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-border">
+                                <tbody className="divide-y divide-border-1">
                                     {records.data.length === 0 ? (
                                         <tr>
                                             <td colSpan={6} className="text-center py-20 text-muted-foreground">
@@ -189,7 +178,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                             const status = getStatusInfo(record);
 
                                             return (
-                                                <tr key={record.id} className="hover:bg-muted/30 transition-colors group">
+                                                <tr key={record.id} className="hover:bg-surface-2 transition-colors group">
                                                     <td className="px-6 py-4 font-medium">
                                                         <div className="flex items-center gap-3">
                                                             <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs uppercase">
@@ -210,13 +199,13 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4">
-                                                        <Badge variant="outline" className="font-mono bg-muted/20 text-foreground border-transparent">
+                                                        <Badge variant="outline" className="font-mono bg-surface-2 text-foreground border-transparent">
                                                             {formatTime(record.clock_in)}
                                                         </Badge>
                                                     </td>
                                                     <td className="px-6 py-4">
                                                         {record.clock_out ? (
-                                                            <Badge variant="outline" className="font-mono bg-muted/20 text-foreground border-transparent">
+                                                            <Badge variant="outline" className="font-mono bg-surface-2 text-foreground border-transparent">
                                                                 {formatTime(record.clock_out)}
                                                             </Badge>
                                                         ) : (
@@ -231,8 +220,8 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                             variant={status.variant} 
                                                             className={cn(
                                                                 "uppercase text-[9px] px-2 py-0.5 font-bold tracking-tight shadow-sm",
-                                                                status.label === 'Completed' && "bg-green-500/10 text-green-500 border-green-500/20",
-                                                                status.label === 'Incomplete' && "bg-amber-500/10 text-amber-500 border-amber-500/20",
+                                                                status.label === 'Completed' && "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
+                                                                status.label === 'Incomplete' && "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
                                                                 status.label === 'Working' && "bg-primary/10 text-primary border-primary/20 animate-pulse"
                                                             )}
                                                         >
@@ -240,12 +229,12 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                         </Badge>
                                                     </td>
                                                     <td className="px-6 py-4 text-right">
-                                                        <div className="flex justify-end gap-2 opacity-40 group-hover:opacity-100 transition-all duration-300">
+                                                        <div className="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-all duration-300">
                                                             <Button
                                                                 variant="outline"
                                                                 size="sm"
                                                                 onClick={() => handleEdit(record)}
-                                                                className="h-8 w-8 p-0 border-white/10 hover:bg-primary/10 hover:text-primary hover:border-primary/20"
+                                                                className="h-8 w-8 p-0"
                                                                 title="Edit Record"
                                                             >
                                                                 <Edit className="h-3.5 w-3.5" />
@@ -255,7 +244,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                                     variant="outline"
                                                                     size="sm"
                                                                     onClick={() => confirmDelete(record)}
-                                                                    className="h-8 w-8 p-0 border-white/10 text-destructive/70 hover:text-destructive hover:bg-destructive/10 hover:border-destructive/20"
+                                                                    className="h-8 w-8 p-0 text-destructive/70 hover:text-destructive hover:bg-destructive/10"
                                                                     title="Delete Record"
                                                                 >
                                                                     <Trash2 className="h-3.5 w-3.5" />
@@ -270,7 +259,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                 </tbody>
                             </table>
                         </div>
-                        <div className="px-6 border-t border-muted/30">
+                        <div className="px-6 border-t border-border-1">
                             <Pagination links={records.links} meta={records} />
                         </div>
                     </CardContent>

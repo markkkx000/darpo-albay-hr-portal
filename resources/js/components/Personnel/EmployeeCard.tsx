@@ -1,6 +1,5 @@
 import { Mail, Phone, MapPin, Calendar, Briefcase, Building2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 interface Employee {
     first_name: string;
@@ -29,90 +28,96 @@ return 'Not set';
     };
 
     return (
-        <Card className="overflow-hidden border-none shadow-lg">
-            <CardHeader className="bg-primary/5 pb-2 border-b border-primary/10">
-                <div className="flex items-start gap-4">
-                    <div className="h-20 w-20 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground text-3xl font-black shadow-inner">
+        <div className="matte-card elev-2 overflow-hidden">
+            <div className="bg-primary/5 p-6 border-b border-border/40">
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+                    <div className="sqicon sqicon-green h-24 w-24 !rounded-[24px] flex items-center justify-center text-white text-4xl font-black shadow-2xl ring-4 ring-surface-1">
                         {employee.first_name[0]}{employee.last_name[0]}
                     </div>
-                    <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-2xl font-bold tracking-tight">{employee.first_name} {employee.last_name}</h2>
-                            <Badge variant="outline" className="font-mono bg-background shadow-sm">
+                    <div className="flex-1 text-center md:text-left space-y-1">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                            <h2 className="text-3xl font-black tracking-tighter text-foreground">{employee.first_name} {employee.last_name}</h2>
+                            <Badge variant="outline" className="font-mono bg-surface-2 border-border-2 px-3 py-1 rounded-lg w-fit mx-auto md:mx-0">
                                 {employee.employee_number || 'NO-ID'}
                             </Badge>
                         </div>
-                        <div className="flex items-center gap-2 mt-1 text-primary font-medium">
+                        <div className="flex items-center justify-center md:justify-start gap-2 text-primary font-bold">
                             <Briefcase className="h-4 w-4" />
-                            <span>{employee.position?.name || 'Unassigned Position'}</span>
+                            <span className="text-sm uppercase tracking-wide">{employee.position?.name || 'Unassigned Position'}</span>
                         </div>
-                        <div className="flex items-center gap-2 mt-1 text-muted-foreground text-sm">
+                        <div className="flex items-center justify-center md:justify-start gap-2 text-muted-foreground">
                             <Building2 className="h-4 w-4" />
-                            <span>{employee.department?.name || 'Department Not Set'}</span>
+                            <span className="text-sm font-medium">{employee.department?.name || 'Department Not Set'}</span>
                         </div>
                     </div>
                 </div>
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-                <div className="space-y-4">
-                    <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">Contact Information</h3>
-                    <div className="space-y-3">
-                        <div className="flex items-center gap-3 group">
-                            <div className="p-2 rounded-lg bg-secondary group-hover:bg-primary/10 transition-colors">
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+                <div className="space-y-6">
+                    <div className="flex items-center gap-2">
+                        <div className="h-1 w-8 bg-primary rounded-full" />
+                        <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">Contact Information</h3>
+                    </div>
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-4 group">
+                            <div className="p-2.5 rounded-xl bg-muted/40 group-hover:bg-primary/10 border border-border/20 group-hover:border-primary/20 transition-all duration-300">
                                 <Mail className="h-4 w-4 text-primary" />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-xs text-muted-foreground font-semibold">Email</span>
-                                <span className="text-sm font-medium">{employee.email || 'No email provided'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Email Address</span>
+                                <span className="text-sm font-bold text-foreground/90">{employee.email || 'No email provided'}</span>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3 group">
-                            <div className="p-2 rounded-lg bg-secondary group-hover:bg-primary/10 transition-colors">
+                        <div className="flex items-center gap-4 group">
+                            <div className="p-2.5 rounded-xl bg-muted/40 group-hover:bg-primary/10 border border-border/20 group-hover:border-primary/20 transition-all duration-300">
                                 <Phone className="h-4 w-4 text-primary" />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-xs text-muted-foreground font-semibold">Phone</span>
-                                <span className="text-sm font-medium">{employee.contact_number || 'No contact number'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Contact Number</span>
+                                <span className="text-sm font-bold text-foreground/90">{employee.contact_number || 'No contact number'}</span>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3 group items-start">
-                            <div className="p-2 rounded-lg bg-secondary group-hover:bg-primary/10 transition-colors mt-1">
+                        <div className="flex items-center gap-4 group items-start">
+                            <div className="p-2.5 rounded-xl bg-muted/40 group-hover:bg-primary/10 border border-border/20 group-hover:border-primary/20 transition-all duration-300 mt-1">
                                 <MapPin className="h-4 w-4 text-primary" />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-xs text-muted-foreground font-semibold">Residential Address</span>
-                                <span className="text-sm font-medium leading-relaxed">{employee.address || 'Address not listed'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Residential Address</span>
+                                <span className="text-sm font-bold leading-relaxed text-foreground/90">{employee.address || 'Address not listed'}</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="space-y-4">
-                    <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">Employment Details</h3>
-                    <div className="space-y-3">
-                        <div className="flex items-center gap-3 group">
-                            <div className="p-2 rounded-lg bg-secondary group-hover:bg-primary/10 transition-colors">
+                <div className="space-y-6">
+                    <div className="flex items-center gap-2">
+                        <div className="h-1 w-8 bg-primary rounded-full" />
+                        <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">Employment Details</h3>
+                    </div>
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-4 group">
+                            <div className="p-2.5 rounded-xl bg-muted/40 group-hover:bg-primary/10 border border-border/20 group-hover:border-primary/20 transition-all duration-300">
                                 <Calendar className="h-4 w-4 text-primary" />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-xs text-muted-foreground font-semibold">Date of Hire</span>
-                                <span className="text-sm font-medium">{formatDate(employee.hire_date)}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Date of Hire</span>
+                                <span className="text-sm font-bold text-foreground/90">{formatDate(employee.hire_date)}</span>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3 group">
-                            <div className="p-2 rounded-lg bg-secondary group-hover:bg-primary/10 transition-colors">
+                        <div className="flex items-center gap-4 group">
+                            <div className="p-2.5 rounded-xl bg-muted/40 group-hover:bg-primary/10 border border-border/20 group-hover:border-primary/20 transition-all duration-300">
                                 <Briefcase className="h-4 w-4 text-primary" />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-xs text-muted-foreground font-semibold">Employment Status</span>
-                                <Badge className="mt-0.5 w-fit uppercase text-[10px] py-0 font-bold">
+                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Employment Status</span>
+                                <Badge className="mt-1 w-fit uppercase text-[10px] py-0.5 px-3 font-black rounded-full shadow-lg shadow-primary/10">
                                     {employee.employment_status?.name || 'N/A'}
                                 </Badge>
                             </div>
                         </div>
                     </div>
                 </div>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 }

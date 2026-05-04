@@ -1,6 +1,5 @@
 import { Head } from '@inertiajs/react';
 import { AnnouncementForm } from '@/components/Announcements/AnnouncementForm';
-import Heading from '@/components/heading';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { index, manage, update } from '@/routes/announcements';
 
@@ -17,12 +16,16 @@ export default function Edit({ announcement, departments, positions, users }: Pr
             <Head title={`Edit: ${announcement.title}`} />
 
             <div className="p-4 w-full space-y-6">
-                <Heading 
-                    title="Edit Announcement" 
-                    description="Update your announcement draft."
-                />
+                <div className="matte-card elev-1 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 rounded-2xl">
+                    <div className="flex items-center gap-3">
+                        <h1 className="t-headline">Edit Announcement</h1>
+                        <p className="text-muted-foreground text-sm mt-2">
+                            Update your announcement draft.
+                        </p>
+                    </div>
+                </div>
 
-                <Card className="max-w-4xl border-none shadow-md">
+                <Card className="matte-card elev-2 max-w-4xl border-none">
                     <CardHeader>
                         <CardTitle>Announcement Details</CardTitle>
                     </CardHeader>

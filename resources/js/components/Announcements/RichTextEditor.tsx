@@ -180,6 +180,7 @@ export function RichTextEditor({ content, onChange, error }: Props) {
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
+                link: false,
                 bulletList: {
                     HTMLAttributes: {
                         class: 'list-disc ml-4',
