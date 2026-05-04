@@ -2,7 +2,6 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { CalendarCheck, Clock, ShieldCheck, Users2 } from 'lucide-react';
 import AppLogoIcon from '@/components/app-logo-icon';
 import { dashboard, login } from '@/routes';
-import { cn } from '@/lib/utils';
 
 export default function Welcome() {
     const { auth } = usePage().props;

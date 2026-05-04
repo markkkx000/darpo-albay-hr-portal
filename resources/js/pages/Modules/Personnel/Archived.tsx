@@ -1,6 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
-import { Search, ArrowLeft, Trash2 } from 'lucide-react';
+import { Search, ArrowLeft } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { EmployeeTable } from '@/components/Personnel/EmployeeTable';
 import { Button } from '@/components/ui/button';

@@ -41,11 +41,17 @@ export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
         
         if (isEdit) {
             put(RolesRoutes.update(role.id).url, {
-                onSuccess: () => onOpenChange(false),
+                onSuccess: () => {
+                    toast.success('Role updated successfully');
+                    onOpenChange(false);
+                },
             });
         } else {
             post(RolesRoutes.store().url, {
-                onSuccess: () => onOpenChange(false),
+                onSuccess: () => {
+                    toast.success('Role created successfully');
+                    onOpenChange(false);
+                },
             });
         }
     };

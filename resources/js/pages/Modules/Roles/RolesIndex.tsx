@@ -42,7 +42,10 @@ return;
 }
         
         router.delete(RolesRoutes.destroy(roleToDelete.id).url, {
-            onSuccess: () => setDeleteConfirmOpen(false),
+            onSuccess: () => {
+                toast.success('Role deleted successfully');
+                setDeleteConfirmOpen(false);
+            },
         });
     };
 
