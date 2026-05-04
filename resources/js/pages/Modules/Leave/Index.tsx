@@ -79,7 +79,7 @@ return '';
             <div className="container mx-auto py-6 max-w-7xl">
                 <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Leave Tracking</h1>
+                        <h1 className="t-title">Leave Tracking</h1>
                         <p className="text-muted-foreground">Manage and track employee leave requests.</p>
                     </div>
                     <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -96,22 +96,22 @@ return '';
 
                 <LeaveNavigation />
 
-                <div className="rounded-lg border bg-card text-card-foreground shadow-sm mb-6">
+                <div className="matte-card elev-2 mb-6">
                     <div className="p-4 border-b bg-muted/20">
                         <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                             
                             {/* View Toggle (Only for Encoders) */}
                             {canEncode ? (
-                                <div className="flex items-center space-x-1 rounded-md border bg-muted p-1">
+                                <div className="flex items-center space-x-1 rounded-full border border-border-1 bg-surface-2 p-1">
                                     <button
                                         onClick={() => setViewMode('all')}
-                                        className={`px-3 py-1 text-sm font-medium rounded-sm transition-colors ${viewMode === 'all' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                                        className={`px-4 py-1.5 text-sm font-bold rounded-full transition-all ${viewMode === 'all' ? 'btn-specular' : 'text-muted-foreground hover:text-foreground'}`}
                                     >
                                         All Leaves
                                     </button>
                                     <button
                                         onClick={() => setViewMode('mine')}
-                                        className={`px-3 py-1 text-sm font-medium rounded-sm transition-colors ${viewMode === 'mine' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                                        className={`px-4 py-1.5 text-sm font-bold rounded-full transition-all ${viewMode === 'mine' ? 'btn-specular' : 'text-muted-foreground hover:text-foreground'}`}
                                     >
                                         My Leave History
                                     </button>

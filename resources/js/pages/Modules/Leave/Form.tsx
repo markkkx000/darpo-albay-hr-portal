@@ -205,13 +205,13 @@ return { category: '', specify: '' };
             <Head title={isEdit ? "Edit Leave Request" : "Encode Leave Request"} />
             <div className="container mx-auto py-6 max-w-4xl">
                 <div className="mb-6">
-                    <h1 className="text-3xl font-bold tracking-tight">{isEdit ? 'Edit Leave Request' : 'Encode Leave Request'}</h1>
+                    <h1 className="t-title">{isEdit ? 'Edit Leave Request' : 'Encode Leave Request'}</h1>
                     <p className="text-muted-foreground">CS Form No. 6 digitizer.</p>
                 </div>
 
                 <LeaveNavigation />
 
-                <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                <div className="matte-card elev-2">
                     <form onSubmit={submit} className="p-6 space-y-6" noValidate>
                         
                         <div className="grid grid-cols-2 gap-4">
@@ -279,7 +279,7 @@ return { category: '', specify: '' };
                         <div className="space-y-4 border-y py-4 my-4">
                             <div className="flex items-center justify-between">
                                 <Label className="text-base">Date Selection</Label>
-                                <div className="flex items-center space-x-2 bg-muted p-1 rounded-md">
+                                <div className="flex items-center space-x-2 bg-muted p-1 rounded-full">
                                     <Button type="button" size="sm" variant={dateMode === 'range' ? 'default' : 'ghost'} onClick={() => toggleDateMode('range')}>Date Range</Button>
                                     <Button type="button" size="sm" variant={dateMode === 'specific' ? 'default' : 'ghost'} onClick={() => toggleDateMode('specific')}>Specific Dates</Button>
                                 </div>

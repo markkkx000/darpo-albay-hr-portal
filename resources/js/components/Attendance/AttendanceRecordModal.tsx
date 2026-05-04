@@ -141,7 +141,7 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="sm:max-w-[425px] matte-card elev-3 border-none">
+            <DialogContent className="sm:max-w-[425px] bg-surface-1 border-border-1 rounded-2xl shadow-2xl !fixed">
                 <DialogHeader>
                     <DialogTitle>{isEditing ? 'Edit Attendance Record' : 'Add Missing Record'}</DialogTitle>
                     <DialogDescription>
@@ -154,7 +154,7 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
                     <div className="grid gap-2">
                         <Label>Employee</Label>
                         {isEditing ? (
-                            <div className="flex items-center gap-2 p-2 rounded-md border bg-muted/50 text-muted-foreground cursor-not-allowed">
+                            <div className="flex items-center gap-2 p-2 rounded-xl border bg-muted/50 text-muted-foreground cursor-not-allowed">
                                 <UserIcon className="h-4 w-4" />
                                 <span className="text-sm font-medium">
                                     {selectedEmployee ? `${selectedEmployee.first_name} ${selectedEmployee.last_name}` : 'Unknown'}
@@ -167,7 +167,7 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
                                     onChange={(value) => setData('user_id', value as string)}
                                 >
                                     <div className="relative">
-                                        <div className="relative w-full cursor-default overflow-hidden rounded-md border border-input bg-background text-left shadow-sm focus-within:ring-1 focus-within:ring-ring">
+                                        <div className="relative w-full cursor-default overflow-hidden rounded-xl border border-input bg-background text-left shadow-sm focus-within:ring-1 focus-within:ring-ring">
                                             <ComboboxInput
                                                 className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-foreground bg-transparent focus:ring-0 outline-none"
                                                 displayValue={() => {
@@ -186,7 +186,7 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
                                             leaveTo="opacity-0"
                                             afterLeave={() => setQuery('')}
                                         >
-                                            <ComboboxOptions className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-popover py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-50 border">
+                                            <ComboboxOptions className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-popover py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-50 border">
                                                 {filteredEmployees.length === 0 && query !== '' ? (
                                                     <div className="relative cursor-default select-none py-2 px-4 text-muted-foreground">
                                                         Nothing found.

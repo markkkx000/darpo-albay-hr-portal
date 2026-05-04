@@ -89,14 +89,14 @@ export default function Index({ employees, filters, departments = [], employment
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <Button variant="ghost" asChild className="gap-2 rounded-xl hover:bg-primary/5 border border-primary/10">
+                        <Button variant="outline-primary" asChild className="gap-2 rounded-full">
                             <Link href={archivedRoute().url}>
                                 <Archive className="h-4 w-4" />
                                 View Archived
                             </Link>
                         </Button>
                         {canCreate && (
-                            <Button asChild className="btn-specular px-6 py-5 rounded-xl shadow-lg border-none">
+                            <Button asChild className="btn-specular px-6 border-none">
                                 <Link href={createRoute().url}>
                                     <Plus className="h-4 w-4" />
                                     Add Employee
@@ -107,12 +107,12 @@ export default function Index({ employees, filters, departments = [], employment
                 </div>
 
                 {/* Filters */}
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 matte-card elev-2 px-4 py-4 rounded-xl mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 matte-card elev-2 px-4 py-4 rounded-2xl mb-6">
                     <div className="relative md:col-span-6">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
                         <Input
                             placeholder="Search by name or ID..."
-                            className="input-etched pl-10"
+                            className="input-etched !pl-11"
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             onKeyDown={(e) => {

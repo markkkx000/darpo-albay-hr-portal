@@ -88,7 +88,7 @@ return;
                 <div className="w-full flex justify-end max-w-5xl">
                     {canManage && (
                         <Link href={records_index().url}>
-                            <Button variant="outline">
+                            <Button variant="default">
                                 <Settings className="mr-2 h-4 w-4" />
                                 Attendance Management
                             </Button>
@@ -163,7 +163,7 @@ return;
                             onClick={handleClockIn}
                             disabled={isButtonDisabled}
                             size="lg"
-                            className="w-full h-14 rounded-2xl text-base font-bold tracking-wide"
+                            className="w-full h-14 rounded-full text-base font-bold tracking-wide"
                         >
                             <LogIn className="mr-2 h-5 w-5" />
                             {processing ? 'Processing...' : cooldown > 0 ? `Locked (${cooldown}s)` : 'Clock In'}
@@ -174,13 +174,13 @@ return;
                             disabled={isButtonDisabled}
                             variant="warning"
                             size="lg"
-                            className="w-full h-14 rounded-2xl text-base font-bold tracking-wide relative overflow-hidden"
+                            className="w-full h-14 rounded-full text-base font-bold tracking-wide relative overflow-hidden"
                         >
                             <LogOut className="mr-2 h-5 w-5 relative z-10" />
                             <span className="relative z-10">{processing ? 'Processing...' : cooldown > 0 ? `Locked (${cooldown}s)` : 'Clock Out'}</span>
                         </Button>
                     ) : (
-                        <div className="w-full h-14 rounded-2xl flex items-center justify-center gap-2 border border-border bg-muted/20 text-muted-foreground text-sm font-semibold tracking-wide">
+                        <div className="w-full h-14 rounded-full flex items-center justify-center gap-2 border border-border bg-muted/20 text-muted-foreground text-sm font-semibold tracking-wide">>
                             <CheckCircle2 className="h-5 w-5" />
                             Done for Today
                         </div>

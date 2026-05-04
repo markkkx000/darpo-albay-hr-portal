@@ -205,7 +205,7 @@ export function RichTextEditor({ content, onChange, error }: Props) {
             }),
             Image.configure({
                 HTMLAttributes: {
-                    class: 'max-w-full h-auto rounded-md my-2',
+                    class: 'max-w-full h-auto rounded-xl my-2',
                 },
             }),
         ],
@@ -227,7 +227,7 @@ export function RichTextEditor({ content, onChange, error }: Props) {
     }, [content, editor]);
 
     return (
-        <div className={`border rounded-md overflow-hidden ${error ? 'border-destructive' : 'border-input'}`}>
+        <div className={`border rounded-xl overflow-hidden ${error ? 'border-destructive' : 'border-input'}`}>
             <MenuBar editor={editor} />
             <EditorContent editor={editor} />
             {error && <p className="text-xs text-destructive p-2">{error}</p>}

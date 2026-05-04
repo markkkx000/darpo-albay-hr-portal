@@ -98,7 +98,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
             <Head title="Leave Settings" />
             <div className="container mx-auto py-6 max-w-7xl">
                 <div className="mb-6">
-                    <h1 className="text-3xl font-bold tracking-tight">Leave Settings</h1>
+                    <h1 className="t-title">Leave Settings</h1>
                     <p className="text-muted-foreground">Manage holidays, leave types, and leave statuses.</p>
                 </div>
 
@@ -106,11 +106,11 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
 
                 <div className="grid gap-6 md:grid-cols-2">
                     {/* Holidays */}
-                    <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <div className="matte-card elev-2">
                         <div className="p-6">
                             <h2 className="text-xl font-semibold mb-4">Holidays ({year})</h2>
                             
-                            <div className="mb-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-4 rounded-md">
+                            <div className="mb-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-4 rounded-xl">
                                 <p className="text-sm text-amber-800 dark:text-amber-200">
                                     <strong>Official Reference:</strong> Please verify dates with the 
                                     <a href="https://www.officialgazette.gov.ph/nationwide-holidays/" target="_blank" rel="noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline ml-1">
@@ -145,7 +145,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
 
                             <div className="space-y-2">
                                 {holidays.map((h: any) => (
-                                    <div key={h.id} className="flex justify-between items-center p-3 border rounded-md">
+                                    <div key={h.id} className="flex justify-between items-center p-3 matte-card elev-1">
                                         <div>
                                             <span className="font-medium block">{h.name}</span>
                                             <span className="text-sm text-muted-foreground">{h.date}</span>
@@ -163,11 +163,11 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                     </div>
 
                     <div className="space-y-6">
-                        <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                        <div className="matte-card elev-2">
                             <div className="p-6">
                                 <h2 className="text-xl font-semibold mb-4">Leave Types</h2>
                                 
-                                <form onSubmit={handleAddType} className="space-y-3 mb-6 p-4 border rounded-md bg-muted/30">
+                                <form onSubmit={handleAddType} className="space-y-3 mb-6 p-4 matte-card elev-1 bg-muted/30">
                                     <div className="grid grid-cols-2 gap-3">
                                         <div className="space-y-1">
                                             <Label>Name</Label>
@@ -192,7 +192,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
 
                                 <div className="space-y-2">
                                     {leaveTypes.map((t: any) => (
-                                        <div key={t.id} className={cn("flex items-center justify-between p-3 border rounded-md", !t.is_active && "opacity-50 grayscale bg-muted")}>
+                                        <div key={t.id} className={cn("flex items-center justify-between p-3 matte-card elev-1", !t.is_active && "opacity-50 grayscale bg-muted")}>
                                             <div className="flex items-center space-x-3">
                                                 <div className="w-4 h-4 rounded-full shrink-0" style={{ backgroundColor: t.color_code }}></div>
                                                 <div>
@@ -214,7 +214,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                             </div>
                         </div>
 
-                        <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                        <div className="matte-card elev-2">
                             <div className="p-6">
                                 <h2 className="text-xl font-semibold mb-4">Leave Statuses</h2>
                                 
@@ -230,7 +230,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
 
                                 <div className="space-y-2">
                                     {leaveStatuses.map((s: any) => (
-                                        <div key={s.id} className={cn("flex items-center justify-between p-3 border rounded-md", !s.is_active && "opacity-50 grayscale bg-muted")}>
+                                        <div key={s.id} className={cn("flex items-center justify-between p-3 matte-card elev-1", !s.is_active && "opacity-50 grayscale bg-muted")}>
                                             <span className="font-medium">{s.name}</span>
                                             <Button 
                                                 variant="ghost" 

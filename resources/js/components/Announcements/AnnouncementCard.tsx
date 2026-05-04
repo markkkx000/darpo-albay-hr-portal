@@ -25,7 +25,7 @@ export function AnnouncementCard({ announcement, defaultExpanded = false }: Prop
     const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
     const priorityColors = {
-        low: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200/50 dark:border-blue-800/50',
+        low: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
         normal: 'bg-muted text-muted-foreground border-border',
         high: 'bg-destructive/10 text-destructive border-destructive/30 shadow-[0_0_15px_rgba(220,38,38,0.2)] animate-pulse font-bold',
     };

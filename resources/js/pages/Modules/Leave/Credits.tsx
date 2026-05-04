@@ -29,13 +29,13 @@ export default function LeaveCredits({ users, leaveTypes, currentYear, allEmploy
             <Head title="Leave Credits" />
             <div className="container mx-auto py-6 max-w-7xl">
                 <div className="mb-6">
-                    <h1 className="text-3xl font-bold tracking-tight">Leave Credits</h1>
+                    <h1 className="t-title">Leave Credits</h1>
                     <p className="text-muted-foreground">Manage leave credits balances.</p>
                 </div>
 
                 <LeaveNavigation />
 
-                <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+                <div className="matte-card elev-2 p-6">
                     <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6">
                         <div className="flex items-center space-x-2">
                             <Input 

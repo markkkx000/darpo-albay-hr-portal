@@ -50,7 +50,7 @@ const mainNavItems: NavItem[] = [
 const rightNavItems: NavItem[] = [];
 
 const activeItemStyles =
-    'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
+    'bg-surface-2 text-foreground font-semibold';
 
 export function AppHeader({ breadcrumbs = [] }: Props) {
     const page = usePage();
@@ -82,7 +82,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                     Navigation menu
                                 </SheetTitle>
                                 <SheetHeader className="flex justify-start text-left">
-                                    <AppLogoIcon className="h-6 w-6 fill-current text-black dark:text-white" />
+                                    <AppLogoIcon className="h-6 w-6 fill-current text-foreground" />
                                 </SheetHeader>
                                 <div className="flex h-full flex-1 flex-col space-y-4 p-4">
                                     <div className="flex h-full flex-col justify-between text-sm">
@@ -148,7 +148,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                                     item.href,
                                                     activeItemStyles,
                                                 ),
-                                                'h-9 cursor-pointer px-3 rounded-lg transition-all hover:bg-primary/5',
+                                                'h-9 cursor-pointer px-3 rounded-full transition-all hover:bg-primary/5',
                                             )}
                                         >
                                             {item.icon && (
@@ -210,7 +210,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                             src={auth.user?.avatar}
                                             alt={auth.user?.name}
                                         />
-                                        <AvatarFallback className="rounded-lg bg-primary/10 text-primary font-bold">
+                                        <AvatarFallback className="rounded-full bg-primary/10 text-primary font-bold">
                                             {getInitials(auth.user?.name ?? '')}
                                         </AvatarFallback>
                                     </Avatar>

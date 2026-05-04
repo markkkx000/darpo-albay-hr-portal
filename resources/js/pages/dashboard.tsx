@@ -15,10 +15,10 @@ export default function Dashboard() {
             <Head title={`${isSuperAdmin ? 'Admin' : isHR ? 'HR' : 'Employee'} Dashboard`} />
             <div className="flex animate-fade-up h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4 md:p-6 transition-all duration-500">
                 <div className="mb-8 px-2">
-                    <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white drop-shadow-sm mb-2 transition-all">
+                    <h1 className="text-4xl font-extrabold tracking-tight text-foreground drop-shadow-sm mb-2 transition-all">
                         {isSuperAdmin ? 'Admin Dashboard' : isHR ? 'HR Dashboard' : 'Employee Dashboard'}
                     </h1>
-                    <p className="text-lg font-medium text-gray-500 dark:text-gray-400 tracking-wide opacity-90">
+                    <p className="text-lg font-medium text-muted-foreground tracking-wide opacity-90">
                         {isSuperAdmin
                             ? 'System administration and management overview'
                             : isHR

@@ -31,6 +31,7 @@
 ### Light & Dark Mode Variants
 - **Rule:** Every component or UI update must have light and dark mode variants or be visually acceptable for both modes.
 - **Apply:** Test all UI changes in both themes. Use semantic color tokens (e.g., `text-foreground`, `bg-background`) that adapt automatically, or use `.dark` specific variants when custom colors are required. Avoid hardcoding colors that only work in one mode.
+- **Strict Requirement:** Every element should adapt depending on the appearance (light/dark/system).
 
 ### Aesthetic-Usability Effect
 - **Rule:** Users perceive visually pleasing designs as more usable, even when they are functionally identical to less attractive designs.
@@ -344,6 +345,24 @@
   - Absorb complexity into the system so the user does not have to deal with it.
   - Smart defaults, auto-fill, and intelligent suggestions reduce complexity for the user by shifting it to the backend.
   - Do not oversimplify to the point of removing necessary control from power users.
+
+---
+
+## 13. Specifications
+
+### Rounded Elements
+- **Rule:** Use consistent rounding across the interface to maintain a unified, modern aesthetic.
+- **Apply:**
+  - Standard containers and cards should use `rounded-xl` or `rounded-2xl` for a soft, premium feel.
+  - Interactive buttons and pills should be fully rounded (`rounded-full`) or precisely match the container's inner radius.
+  - Avoid sharp corners (`rounded-none`) unless explicitly required by a full-bleed layout.
+
+### Light & Dark Mode Synchronization
+- **Rule:** Both modes must feel like two sides of the same coin — thematic parallel and cohesive.
+- **Apply:**
+  - Ensure visual hierarchy and physical depth translate perfectly between light and dark themes.
+  - Shadows in light mode must translate to subtle borders or inner glows in dark mode to maintain elevation.
+  - Colors should automatically map to their mode-specific semantic tokens without requiring explicit overriding classes whenever possible.
 
 ---
 

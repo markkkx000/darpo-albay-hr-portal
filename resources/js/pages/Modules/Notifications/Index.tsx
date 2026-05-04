@@ -142,7 +142,7 @@ export default function Index({ notifications }: Props) {
                                         </div>
                                         {expandedIds.has(notification.id) && (
                                             <div className="mt-4 animate-in slide-in-from-top-1 duration-200">
-                                                <div className="rounded-lg bg-muted/30 p-4 text-sm leading-relaxed text-foreground/90 border border-sidebar-border/20">
+                                                <div className="rounded-xl bg-muted/30 p-4 text-sm leading-relaxed text-foreground/90 border border-sidebar-border/20">
                                                     {(() => {
                                                         const snippet = notification.data.body ?? notification.data.message ?? '';
                                                         const isLong = snippet.length > 200;
