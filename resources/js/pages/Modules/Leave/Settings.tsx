@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { store as holidays_store, destroy as holidays_destroy } from '@/routes/leave/holidays/index';
-import { settings } from '@/routes/leave/index';
+import { settings, index as leave_index } from '@/routes/leave/index';
 import { store as statuses_store, update as statuses_update, destroy as statuses_destroy } from '@/routes/leave/statuses/index';
 import { store as types_store, update as types_update, destroy as types_destroy } from '@/routes/leave/types/index';
 import LeaveNavigation from './Components/LeaveNavigation';
@@ -254,7 +254,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
 
 LeaveSettings.layout = {
     breadcrumbs: [
-        { title: 'Leave Tracking', href: '/leave' },
-        { title: 'Settings', href: '/leave/settings' },
+        { title: 'Leave Tracking', href: leave_index().url },
+        { title: 'Settings', href: settings().url },
     ],
 };

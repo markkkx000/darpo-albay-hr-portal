@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import LeaveNavigation from './Components/LeaveNavigation';
+import LeaveRoutes from '@/routes/leave';
 
 const formatDateForInput = (dateString: string | null | undefined) => {
     if (!dateString) {
@@ -201,7 +202,7 @@ return { category: '', specify: '' };
         e.preventDefault();
         
         if (isEdit) {
-            router.post(`/leave/${leaveRequest.id}`, {
+            router.post(LeaveRoutes.update({ leaveRequest: leaveRequest.id }).url, {
                 _method: 'put',
                 ...data,
             }, { 
@@ -209,7 +210,7 @@ return { category: '', specify: '' };
                 onSuccess: () => router.clearHistory()
             });
         } else {
-            post('/leave', {
+            post(LeaveRoutes.store().url, {
                 onSuccess: () => router.clearHistory()
             });
         }
@@ -431,7 +432,7 @@ return { category: '', specify: '' };
 
 LeaveForm.layout = {
     breadcrumbs: [
-        { title: 'Leave Tracking', href: '/leave' },
-        { title: 'Encode', href: '' },
+        { title: 'Leave Tracking', href: LeaveRoutes.index().url },
+        { title: 'Encode', href: '#' },
     ],
 };

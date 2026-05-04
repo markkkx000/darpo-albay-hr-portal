@@ -5,13 +5,14 @@ import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import LeaveNavigation from './Components/LeaveNavigation';
+import LeaveRoutes from '@/routes/leave';
 
 
 export default function LeaveCredits({ users, leaveTypes, currentYear, allEmployees, filters }: any) {
     const [year, setYear] = useState(currentYear);
 
     const handleUpdate = (userId: number, typeId: number, earned: string, used: string) => {
-        router.put('/leave/credits', {
+        router.put(LeaveRoutes.credits.update().url, {
             user_id: userId,
             leave_type_id: typeId,
             year: year,
@@ -44,14 +45,14 @@ export default function LeaveCredits({ users, leaveTypes, currentYear, allEmploy
                                 onChange={(e) => setYear(Number(e.target.value))} 
                                 className="w-24"
                             />
-                            <Button variant="outline" onClick={() => router.get('/leave/credits', { year, search: filters?.search })}>
+                            <Button variant="outline" onClick={() => router.get(LeaveRoutes.credits.index().url, { year, search: filters?.search })}>
                                 Filter Year
                             </Button>
                         </div>
                         <EmployeeSearch 
                             users={allEmployees} 
                             selectedId={filters?.search} 
-                            route="/leave/credits"
+                            route={LeaveRoutes.credits.index().url}
                             params={{ year }}
                             withAllEmployees
                         />
@@ -119,7 +120,7 @@ export default function LeaveCredits({ users, leaveTypes, currentYear, allEmploy
 
 LeaveCredits.layout = {
     breadcrumbs: [
-        { title: 'Leave Tracking', href: '/leave' },
-        { title: 'Credits', href: '/leave/credits' },
+        { title: 'Leave Tracking', href: LeaveRoutes.index().url },
+        { title: 'Credits', href: LeaveRoutes.credits.index().url },
     ],
 };
