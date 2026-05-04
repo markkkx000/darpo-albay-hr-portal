@@ -3,7 +3,6 @@
 namespace App\Modules\Roles\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class RoleCreateRequest extends FormRequest
 {

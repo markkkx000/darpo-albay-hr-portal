@@ -205,6 +205,6 @@ export default function Index({ notifications }: Props) {
 
 Index.layout = {
     breadcrumbs: [
-        { title: 'Notifications', href: '/notifications' },
+        { title: 'Notifications', href: NotificationActions.index().url },
     ],
 };

@@ -81,7 +81,7 @@ return;
                     <div className="flex items-center justify-end">
                         {canManage && (
                             <Link href={records_index().url}>
-                                <Button variant="outline" size="sm" className="gap-2 bg-background/50 backdrop-blur-sm shadow-sm border-border/50">
+                                <Button variant="outline" size="sm" className="gap-2">
                                     <Settings className="h-4 w-4" />
                                     <span className="hidden sm:inline">Attendance Management</span>
                                 </Button>
@@ -89,7 +89,7 @@ return;
                         )}
                     </div>
 
-                    <Card className="w-full overflow-hidden border-none shadow-2xl dark:bg-gray-900/50 dark:backdrop-blur-xl glass-panel">
+                    <Card className="w-full">
                         <CardHeader className="text-center pt-8">
                             <CardTitle className="text-3xl font-extrabold tracking-tight text-highlight">Attendance Registry</CardTitle>
                             <CardDescription className="text-muted-foreground font-medium">Keep track of your daily work hours with precision.</CardDescription>

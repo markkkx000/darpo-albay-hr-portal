@@ -3,10 +3,10 @@
 namespace App\Modules\Roles\Services;
 
 use App\Models\User;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-use Illuminate\Support\Collection;
 use DomainException;
+use Illuminate\Support\Collection;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleService
 {
@@ -41,7 +41,7 @@ class RoleService
     {
         $role = Role::create(['name' => $name]);
         $role->syncPermissions($permissions);
-        
+
         return $role;
     }
 
@@ -79,7 +79,7 @@ class RoleService
     public function syncUserRole(User $user, string $roleName): void
     {
         if ($roleName === 'super_admin') {
-            throw new DomainException("The super_admin role cannot be assigned via the UI.");
+            throw new DomainException('The super_admin role cannot be assigned via the UI.');
         }
 
         $user->syncRoles([$roleName]);

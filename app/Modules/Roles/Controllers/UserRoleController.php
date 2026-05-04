@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\Roles\Requests\UserRoleSyncRequest;
 use App\Modules\Roles\Services\RoleService;
-use Inertia\Inertia;
-use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class UserRoleController extends Controller
 {
@@ -46,6 +46,7 @@ class UserRoleController extends Controller
     {
         try {
             $this->service->syncUserRole($user, $request->role);
+
             return redirect()->back()->with('success', "Role assigned successfully to {$user->name}.");
         } catch (\DomainException $e) {
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);

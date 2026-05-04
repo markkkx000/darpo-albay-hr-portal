@@ -30,7 +30,7 @@ export function RolesNavigation() {
                     className={cn(
                         "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-all",
                         tab.active 
-                            ? "bg-white dark:bg-gray-800 text-primary shadow-sm" 
+                            ? "bg-background text-foreground shadow-sm ring-1 ring-border/50" 
                             : "text-muted-foreground hover:text-foreground hover:bg-muted"
                     )}
                 >

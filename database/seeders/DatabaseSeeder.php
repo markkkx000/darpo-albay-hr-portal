@@ -78,13 +78,13 @@ class DatabaseSeeder extends Seeder
         User::factory()->count(30)->create()->each(function ($u) use ($departments, $employmentStatuses) {
             $dept = $departments->random();
             $pos = Position::where('department_id', $dept->id)->first();
-            
+
             $u->update([
                 'department_id' => $dept->id,
                 'position_id' => $pos?->id,
                 'employment_status_id' => $employmentStatuses->random()->id,
             ]);
-            
+
             $u->assignRole('employee');
         });
     }

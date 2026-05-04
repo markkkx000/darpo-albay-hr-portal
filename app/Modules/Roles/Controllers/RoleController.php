@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Modules\Roles\Requests\RoleCreateRequest;
 use App\Modules\Roles\Requests\RoleUpdateRequest;
 use App\Modules\Roles\Services\RoleService;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\RedirectResponse;
 use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
@@ -41,6 +41,7 @@ class RoleController extends Controller
     {
         try {
             $this->service->deleteRole($role);
+
             return redirect()->back()->with('success', 'Role deleted successfully.');
         } catch (\DomainException $e) {
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);

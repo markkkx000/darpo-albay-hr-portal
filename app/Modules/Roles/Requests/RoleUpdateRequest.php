@@ -3,9 +3,9 @@
 namespace App\Modules\Roles\Requests;
 
 use App\Modules\Roles\Services\RoleService;
+use DomainException;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use DomainException;
 
 class RoleUpdateRequest extends FormRequest
 {
@@ -17,7 +17,7 @@ class RoleUpdateRequest extends FormRequest
     public function rules(): array
     {
         $role = $this->route('role');
-        
+
         return [
             'name' => ['required', 'string', 'max:255', Rule::unique('roles')->ignore($role->id)],
             'permissions' => ['array'],
@@ -29,7 +29,7 @@ class RoleUpdateRequest extends FormRequest
     {
         $role = $this->route('role');
         $service = app(RoleService::class);
-        
+
         if ($service->isProtected($role->name) && $this->name !== $role->name) {
             throw new DomainException("Core role '{$role->name}' cannot be renamed.");
         }

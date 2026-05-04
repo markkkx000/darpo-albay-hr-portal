@@ -3,16 +3,18 @@
 namespace Tests\Feature\Modules\Roles;
 
 use App\Models\User;
+use App\Modules\Roles\Services\RoleService;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use DomainException;
+use Spatie\Permission\PermissionRegistrar;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-    $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class);
+    app()[PermissionRegistrar::class]->forgetCachedPermissions();
+    $this->withoutMiddleware(PreventRequestForgery::class);
     $this->withoutVite();
 
     // Permissions are seeded by DatabaseSeeder usually, but for unit-like feature tests we ensure they exist
@@ -54,7 +56,7 @@ it('allows super admin to create a new role', function () {
     $this->actingAs($this->superAdmin)
         ->postJson('/roles', [
             'name' => 'auditor',
-            'permissions' => ['personnel.view']
+            'permissions' => ['personnel.view'],
         ])
         ->assertStatus(302);
 
@@ -70,7 +72,7 @@ it('prevents renaming core roles', function () {
     $this->actingAs($this->superAdmin)
         ->put("/roles/{$hrRole->id}", [
             'name' => 'human_resources_administrator',
-            'permissions' => ['personnel.view']
+            'permissions' => ['personnel.view'],
         ]);
 
     $this->assertDatabaseHas('roles', ['name' => 'hr_admin']);
@@ -94,7 +96,7 @@ it('allows super admin to assign a role to a user', function () {
 
     $this->actingAs($this->superAdmin)
         ->putJson("/roles/users/{$user->id}/assign", [
-            'role' => 'hr_admin'
+            'role' => 'hr_admin',
         ])
         ->assertValid(['role'])
         ->assertStatus(302);
@@ -110,7 +112,7 @@ it('prevents assigning super_admin role via UI', function () {
 
     $this->actingAs($this->superAdmin)
         ->putJson("/roles/users/{$user->id}/assign", [
-            'role' => 'super_admin'
+            'role' => 'super_admin',
         ])
         ->assertStatus(302)
         ->assertSessionHasErrors(['error']);
@@ -119,10 +121,10 @@ it('prevents assigning super_admin role via UI', function () {
 it('service syncs user role correctly', function () {
     $user = User::factory()->create();
     $user->assignRole('employee');
-    
-    $service = app(\App\Modules\Roles\Services\RoleService::class);
+
+    $service = app(RoleService::class);
     $service->syncUserRole($user, 'hr_admin');
-    
+
     expect($user->fresh()->hasRole('hr_admin'))->toBeTrue();
     expect($user->fresh()->hasRole('employee'))->toBeFalse();
 });
