@@ -97,19 +97,39 @@
     --input: rgba(0, 0, 0, 0.1);
     --ring: rgba(34, 197, 94, 0.4);
 
+    /* ── Sidebar tokens ── */
+    --sidebar: #f9f9f9;
+    --sidebar-foreground: #1c1c1e;
+    --sidebar-primary: #22c55e;
+    --sidebar-primary-foreground: #000000;
+    --sidebar-accent: #f2f2f7;
+    /* Always black — gradient ends in yellow, black text required for WCAG */
+    --sidebar-accent-foreground: #000000;
+    --sidebar-border: rgba(0, 0, 0, 0.06);
+    --sidebar-ring: rgba(34, 197, 94, 0.4);
+
     /* ── Brand ── */
     --green-300: #86efac;
-    --green-400: #4ade80;
+    --green-400: #38e54d;
     --green-500: #22c55e;
     --green-600: #16a34a;
-    --green-glow: rgba(34, 197, 94, 0.35);
-    --green-tint: rgba(34, 197, 94, 0.08);
+    --green-glow: rgba(56, 229, 77, 0.4);
+    --green-tint: rgba(56, 229, 77, 0.08);
 
-    --yellow-300: #fde047;
-    --yellow-400: #facc15;
+    --yellow-300: #fff100;
+    --yellow-400: #fde047;
     --yellow-500: #eab308;
-    --yellow-glow: rgba(250, 204, 21, 0.30);
-    --yellow-tint: rgba(250, 204, 21, 0.08);
+    --yellow-glow: rgba(255, 241, 0, 0.35);
+    --yellow-tint: rgba(255, 241, 0, 0.08);
+
+    /* ── Brand Gradient ── */
+    --grad-primary: linear-gradient(135deg, var(--green-400) 0%, var(--yellow-400) 100%);
+    --grad-primary-180: linear-gradient(180deg, var(--green-400) 0%, var(--yellow-400) 100%);
+    --grad-warning: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    --grad-warning-180: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+    --grad-glow: rgba(34, 197, 94, 0.4), rgba(250, 204, 21, 0.3);
+    --grad-shadow: 0 8px 20px rgba(34, 197, 94, 0.3), 0 4px 10px rgba(250, 204, 21, 0.2);
+    --grad-warning-shadow: 0 8px 24px rgba(245, 158, 11, 0.25), 0 4px 12px rgba(251, 191, 36, 0.15);
 
     /* ── Surfaces ── */
     --surface-1: #ffffff;
@@ -155,6 +175,21 @@
     --input: rgba(255, 255, 255, 0.08);
     --ring: rgba(34, 197, 94, 0.5);
 
+    /* ── Sidebar tokens ── */
+    --sidebar: #111111;
+    --sidebar-foreground: #f0f0f0;
+    --sidebar-primary: #22c55e;
+    --sidebar-primary-foreground: #000000;
+    --sidebar-accent: #1e1e1e;
+    /* Hover state text must be visible, active state (gradient) is forced to black via .sidebar-active-text */
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: rgba(255, 255, 255, 0.06);
+    --sidebar-ring: rgba(34, 197, 94, 0.5);
+    
+    --grad-warning: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+    --grad-warning-180: linear-gradient(180deg, #f59e0b 0%, #b45309 100%);
+    --grad-warning-shadow: 0 8px 24px rgba(245, 158, 11, 0.2), 0 4px 12px rgba(0, 0, 0, 0.3);
+
     /* ── Surfaces ── */
     --surface-1: #111111;
     --surface-2: #161616;
@@ -197,19 +232,71 @@
 
     /* Technique 02: Specular Highlights */
     .btn-specular {
-        @apply relative overflow-hidden transition-all duration-200;
-        background: linear-gradient(180deg, var(--green-400) 0%, var(--green-600) 100%);
+        @apply relative overflow-hidden transition-all duration-200 rounded-full;
+        background: var(--grad-primary);
+        color: #000;
+        font-weight: 700;
         box-shadow: 
-            0 1px 0 rgba(255, 255, 255, 0.2) inset,
+            0 1px 0 rgba(255, 255, 255, 0.25) inset,
             0 -1px 0 rgba(0, 0, 0, 0.1) inset,
-            0 8px 24px var(--green-glow);
+            var(--grad-shadow);
+    }
+
+    .btn-specular:hover {
+        filter: brightness(1.08) saturate(1.1);
+        box-shadow: 
+            0 1px 0 rgba(255, 255, 255, 0.25) inset,
+            0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+            0 12px 32px rgba(34, 197, 94, 0.3), 0 6px 16px rgba(250, 204, 21, 0.2);
     }
 
     .btn-specular::before {
         content: '';
         @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, transparent 100%);
-        border-radius: var(--r-md) var(--r-md) 40% 40%;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
+        border-radius: 9999px 9999px 40% 40%;
+    }
+    
+    .btn-warning-specular {
+        @apply relative overflow-hidden transition-all duration-200 rounded-full;
+        background: var(--grad-warning-180);
+        color: #000;
+        font-weight: 700;
+        box-shadow: 
+            0 1px 0 rgba(255, 255, 255, 0.25) inset,
+            0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+            var(--grad-warning-shadow);
+    }
+    
+    .btn-warning-specular:hover {
+        filter: brightness(1.08) saturate(1.1);
+        box-shadow: 
+            0 1px 0 rgba(255, 255, 255, 0.25) inset,
+            0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+            0 12px 32px rgba(245, 158, 11, 0.3);
+    }
+    
+    .btn-warning-specular::before {
+        content: '';
+        @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
+        border-radius: 9999px 9999px 40% 40%;
+    }
+
+    .sidebar-active-gradient {
+        background: var(--grad-primary);
+        box-shadow: 
+            0 1px 0 rgba(255, 255, 255, 0.25) inset,
+            var(--grad-shadow);
+    }
+
+    /* Force dark text on all gradient-backed active sidebar items
+       The green→yellow gradient always ends bright — black text is required for WCAG */
+    .sidebar-active-text {
+        color: #000 !important;
+    }
+    .sidebar-active-text svg {
+        color: #000 !important;
     }
 
     /* Technique 03: Progressive Elevation */
@@ -250,12 +337,44 @@
         66%       { transform: translate(-15px, 10px) scale(0.9); }
     }
 
+    .mesh-blob-1 {
+        width: 400px; height: 400px;
+        background: var(--green-glow);
+    }
+    .mesh-blob-2 {
+        width: 300px; height: 300px;
+        background: var(--yellow-glow);
+    }
+    .mesh-blob-3 {
+        width: 250px; height: 250px;
+        background: var(--green-tint);
+    }
+
+    .mesh-halo {
+        @apply absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-40 dark:opacity-60 blur-[100px] md:blur-[140px];
+        width: 100vw;
+        height: 80vh;
+        max-width: 1200px;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at center, var(--green-glow) 0%, transparent 60%);
+        z-index: 0;
+    }
+
     /* Technique 05: Precision Typography */
     .t-display {
         @apply font-bold tracking-tight leading-[1.1];
         font-size: clamp(40px, 5vw, 56px);
         letter-spacing: -0.03em;
         background: linear-gradient(160deg, var(--foreground) 40%, color-mix(in srgb, var(--foreground) 50%, transparent) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .t-display-green {
+        @apply font-bold tracking-tight leading-[1.1];
+        font-size: clamp(40px, 5vw, 56px);
+        letter-spacing: -0.03em;
+        background: linear-gradient(120deg, var(--foreground) 0%, var(--green-500) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -288,7 +407,7 @@
 
     /* Technique 07: Inset Surfaces */
     .input-etched {
-        @apply w-full bg-surface-2 border border-border-1 rounded-lg px-4 py-2.5 outline-none transition-all duration-200;
+        @apply w-full bg-surface-2 border border-border-1 rounded-2xl px-4 py-2.5 outline-none transition-all duration-200;
         box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
     }
     .dark .input-etched { box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4); }
@@ -313,9 +432,10 @@
     }
 
     .sqicon-green {
-        background: linear-gradient(145deg, #40e070, #20b040);
-        box-shadow: 0 4px 16px rgba(34, 197, 94, 0.40);
-        color: white;
+        background: var(--grad-primary);
+        box-shadow: 0 4px 16px rgba(34, 197, 94, 0.35), 0 2px 8px rgba(250, 204, 21, 0.2);
+        color: #000;
+        font-weight: 800;
     }
 
     .sqicon-yellow {

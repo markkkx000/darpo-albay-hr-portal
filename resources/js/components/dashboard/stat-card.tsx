@@ -71,7 +71,7 @@ export function StatCard({
                     <div className={cn("mt-2 flex justify-center", valueClasses)}>
                         {isLoading ? (
                             <div
-                                className="h-10 w-24 animate-pulse rounded-md"
+                                className="h-10 w-24 animate-pulse rounded-xl"
                                 style={{ background: hexToRgba(accentColor, 0.15) }}
                                 aria-hidden="true"
                             />

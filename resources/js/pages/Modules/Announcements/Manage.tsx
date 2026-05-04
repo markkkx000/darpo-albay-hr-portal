@@ -95,7 +95,7 @@ export default function Manage({ announcements }: Props) {
                         </p>
                     </div>
                     <Link href={create().url}>
-                        <Button className="btn-gradient gap-2 px-6 py-5 rounded-xl shadow-lg border-none">
+                        <Button className="btn-gradient gap-2 px-6 py-5 rounded-full shadow-lg border-none">
                             <Plus className="h-4 w-4" />
                             Create Announcement
                         </Button>
@@ -131,7 +131,7 @@ export default function Manage({ announcements }: Props) {
                                                     <p className="font-medium text-sm">No announcements yet</p>
                                                     <p className="text-xs opacity-60 max-w-[220px]">Create your first announcement to notify the organization.</p>
                                                     <Link href={create().url}>
-                                                        <Button size="sm" className="btn-gradient mt-2 gap-2 px-4 py-4 rounded-lg shadow-md border-none">
+                                                        <Button size="sm" className="btn-gradient mt-2 gap-2 px-4 py-4 rounded-full shadow-md border-none">
                                                             <Plus className="h-3.5 w-3.5" />
                                                             Create Announcement
                                                         </Button>
@@ -254,7 +254,7 @@ export default function Manage({ announcements }: Props) {
                     </DialogHeader>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setAnnouncementToPublish(null)} className="rounded-xl">Cancel</Button>
-                        <Button onClick={handlePublish} className="btn-gradient gap-2 px-6 py-5 rounded-xl shadow-lg border-none">
+                        <Button onClick={handlePublish} className="btn-gradient gap-2 px-6 py-5 rounded-full shadow-lg border-none">
                             <Send className="h-4 w-4" />
                             Publish Now
                         </Button>

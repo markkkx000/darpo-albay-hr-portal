@@ -177,10 +177,10 @@ return 'N/A';
                                                 
                                                 {canEdit && !isArchivedView && (
                                                     <Button 
-                                                        variant="outline" 
+                                                        variant="outline-primary" 
                                                         size="sm" 
                                                         asChild
-                                                        className="h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform border-primary/20"
+                                                        className="h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
                                                     >
                                                         <Link
                                                             href={editRoute({ user: employee.id }).url}
@@ -258,7 +258,7 @@ return 'N/A';
                     </DialogHeader>
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setEmployeeToRestore(null)} className="rounded-xl">Cancel</Button>
-                        <Button onClick={handleRestore} className="btn-specular px-6 py-2 rounded-xl border-none">Restore Employee</Button>
+                        <Button onClick={handleRestore} className="btn-specular px-6 border-none">Restore Employee</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

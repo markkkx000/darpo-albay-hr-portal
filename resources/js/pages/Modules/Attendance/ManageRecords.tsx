@@ -126,7 +126,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                             Systematically manage records and resolve logging anomalies.
                         </p>
                     </div>
-                    <Button onClick={handleAddNew} size="lg" className="btn-specular">
+                    <Button onClick={handleAddNew} size="lg" className="btn-specular border-none">
                         <Plus className="h-5 w-5 mr-2" />
                         Add Missing Record
                     </Button>

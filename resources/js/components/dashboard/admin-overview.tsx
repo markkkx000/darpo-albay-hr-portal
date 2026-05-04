@@ -38,15 +38,15 @@ export function AdminOverview() {
                     <div className="relative z-10 p-6">
                         <h3 className="t-headline mb-4">Admin Quick Actions</h3>
                         <div className="grid gap-3">
-                            <button className="matte-card elev-1 p-4 text-left border border-border-2 pointer-events-none opacity-60">
+                            <button className="matte-card elev-2 p-4 text-left spring-hover pointer-events-none opacity-60">
                                 <div className="font-medium text-foreground transition-colors">User Management <span className="text-xs font-normal text-muted-foreground ml-1">(Coming Soon)</span></div>
                                 <div className="text-sm text-muted-foreground mt-1">Manage user accounts and permissions</div>
                             </button>
-                            <button className="matte-card elev-1 p-4 text-left border border-border-2 pointer-events-none opacity-60">
+                            <button className="matte-card elev-2 p-4 text-left spring-hover pointer-events-none opacity-60">
                                 <div className="font-medium text-foreground transition-colors">System Settings <span className="text-xs font-normal text-muted-foreground ml-1">(Coming Soon)</span></div>
                                 <div className="text-sm text-muted-foreground mt-1">Configure system preferences</div>
                             </button>
-                            <button className="matte-card elev-1 p-4 text-left border border-border-2 pointer-events-none opacity-60">
+                            <button className="matte-card elev-2 p-4 text-left spring-hover pointer-events-none opacity-60">
                                 <div className="font-medium text-foreground transition-colors">Reports <span className="text-xs font-normal text-muted-foreground ml-1">(Coming Soon)</span></div>
                                 <div className="text-sm text-muted-foreground mt-1">Generate system reports</div>
                             </button>

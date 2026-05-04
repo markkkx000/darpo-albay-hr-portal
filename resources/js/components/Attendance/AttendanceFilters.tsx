@@ -83,17 +83,17 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
 
     return (
         <div className="matte-card elev-2 p-6 space-y-6">
-            <div className="flex items-center gap-2 text-foreground font-bold bg-muted/20 w-fit px-3 py-1 rounded-lg border border-white/5">
+            <div className="flex items-center gap-2 text-foreground font-bold bg-muted/20 w-fit px-3 py-1 rounded-xl border border-white/5">
                 <Filter className="h-4 w-4 text-primary" />
                 <span className="text-xs uppercase tracking-widest">Filters</span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
                 {/* Search */}
-                <div className="space-y-2 group">
-                    <Label htmlFor="search" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Search Employee</Label>
-                    <div className="relative focus-glow rounded-lg">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
+                <div className="space-y-2.5 group">
+                    <Label htmlFor="search" className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80 ml-0.5">Search Employee</Label>
+                    <div className="relative focus-glow rounded-2xl">
+                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60 transition-colors group-focus-within:text-primary" />
                         <Input
                             id="search"
                             value={search}
@@ -104,25 +104,26 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                                 }
                             }}
                             placeholder="Type name..."
-                            className="input-etched pl-10"
+                            className="input-etched !pl-11"
                         />
                         {search && (
                             <button
                                 onClick={() => {
- setSearch(''); updateFilters({ search: '' }); 
-}}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-destructive transition-colors"
+                                    setSearch('');
+                                    updateFilters({ search: '' });
+                                }}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/40 hover:text-destructive transition-colors"
                             >
-                                <X className="h-3 w-3" />
+                                <X className="h-3.5 w-3.5" />
                             </button>
                         )}
                     </div>
                 </div>
 
                 {/* Status Dropdown */}
-                <div className="space-y-2 group">
-                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Status</Label>
-                    <div className="focus-glow rounded-lg">
+                <div className="space-y-2.5 group">
+                    <Label className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80 ml-0.5">Status</Label>
+                    <div className="focus-glow rounded-2xl">
                         <Select
                             value={status}
                             onValueChange={(val) => {
@@ -130,7 +131,7 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                                 updateFilters({ status: val });
                             }}
                         >
-                            <SelectTrigger className="input-etched h-10">
+                            <SelectTrigger className="input-etched h-11">
                                 <SelectValue placeholder="All Status" />
                             </SelectTrigger>
                             <SelectContent className="matte-card elev-3 border-white/10">
@@ -144,10 +145,10 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                 </div>
 
                 {/* Date Range From */}
-                <div className="space-y-2 group">
-                    <Label htmlFor="from_date" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">From Date</Label>
-                    <div className="relative focus-glow rounded-lg">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none group-focus-within:text-primary transition-colors" />
+                <div className="space-y-2.5 group">
+                    <Label htmlFor="from_date" className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80 ml-0.5">From Date</Label>
+                    <div className="relative focus-glow rounded-2xl">
+                        <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60 pointer-events-none group-focus-within:text-primary transition-colors z-10" />
                         <Input
                             id="from_date"
                             type="date"
@@ -157,16 +158,16 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                                 setFromDate(val);
                                 updateFilters({ from_date: val });
                             }}
-                            className="input-etched pl-10"
+                            className="input-etched !pl-11"
                         />
                     </div>
                 </div>
 
                 {/* Date Range To */}
-                <div className="space-y-2 group">
-                    <Label htmlFor="to_date" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">To Date</Label>
-                    <div className="relative focus-glow rounded-lg">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none group-focus-within:text-primary transition-colors" />
+                <div className="space-y-2.5 group">
+                    <Label htmlFor="to_date" className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80 ml-0.5">To Date</Label>
+                    <div className="relative focus-glow rounded-2xl">
+                        <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60 pointer-events-none group-focus-within:text-primary transition-colors z-10" />
                         <Input
                             id="to_date"
                             type="date"
@@ -176,7 +177,7 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                                 setToDate(val);
                                 updateFilters({ to_date: val });
                             }}
-                            className="input-etched pl-10"
+                            className="input-etched !pl-11"
                         />
                     </div>
                 </div>

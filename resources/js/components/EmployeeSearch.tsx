@@ -81,12 +81,12 @@ export function EmployeeSearch({
                 immediate
             >
                 <div className="relative w-full z-10">
-                    <div className="relative w-full cursor-default overflow-hidden rounded-md border border-input bg-background text-left shadow-sm focus-within:ring-1 focus-within:ring-ring">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <Search className="h-4 w-4 text-muted-foreground" />
+                    <div className="relative w-full cursor-default overflow-hidden rounded-2xl border border-input bg-background text-left shadow-sm focus-within:ring-1 focus-within:ring-ring">
+                        <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
+                            <Search className="h-4 w-4 text-muted-foreground/60" />
                         </div>
                         <ComboboxInput
-                            className="w-full border-none py-2 pl-9 pr-10 text-sm leading-5 text-foreground bg-transparent focus:ring-0 outline-none"
+                            className="w-full border-none py-2.5 pl-11 pr-10 text-sm leading-5 text-foreground bg-transparent focus:ring-0 outline-none"
                             displayValue={(val: string) => {
                                 if (val === 'all' || !val) {
                                     return '';
@@ -121,7 +121,7 @@ export function EmployeeSearch({
                     </div>
                     <ComboboxOptions 
                         transition
-                        className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-popover py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm border z-50 transition duration-100 ease-in data-[leave]:opacity-0"
+                        className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-popover py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm border z-50 transition duration-100 ease-in data-[leave]:opacity-0"
                     >
                             {filteredUsers.length === 0 && query !== '' ? (
                                 <div className="relative cursor-default select-none py-2 px-4 text-muted-foreground">

@@ -52,7 +52,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                     key={`${toUrl(item.href)}-${index}`}
                                     href={item.href}
                                     className={cn(
-                                        'relative flex items-center rounded-xl px-4 py-2.5 transition-all duration-300',
+                                        'relative flex items-center rounded-2xl px-4 py-2.5 transition-all duration-300',
                                         active
                                             ? 'text-[#030f04] font-bold'
                                             : 'text-neutral-500 hover:text-black dark:text-neutral-400 dark:hover:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/5',
@@ -61,7 +61,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                     {active && (
                                         <motion.div 
                                             layoutId="settings-active"
-                                            className="sidebar-active-gradient absolute inset-0 rounded-xl"
+                                            className="sidebar-active-gradient absolute inset-0 rounded-2xl"
                                             transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
                                         />
                                     )}

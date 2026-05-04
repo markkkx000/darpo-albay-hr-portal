@@ -34,7 +34,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                     {active && (
                                         <motion.div 
                                             layoutId="sidebar-active"
-                                            className="sidebar-active-gradient absolute inset-0 rounded-md"
+                                            className="sidebar-active-gradient absolute inset-0 rounded-xl"
                                             transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
                                         />
                                     )}

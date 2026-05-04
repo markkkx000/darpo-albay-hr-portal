@@ -21,7 +21,7 @@ export default function AppearanceToggleTab({
     return (
         <div
             className={cn(
-                'inline-flex gap-1 rounded-xl bg-neutral-100 p-1 dark:bg-neutral-800/50 backdrop-blur-md border border-black/5 dark:border-white/5',
+                'inline-flex gap-1 rounded-xl bg-surface-2 p-1 backdrop-blur-md border border-border-1',
                 className,
             )}
             {...props}
@@ -31,16 +31,16 @@ export default function AppearanceToggleTab({
                     key={value}
                     onClick={() => updateAppearance(value)}
                     className={cn(
-                        'relative flex items-center rounded-lg px-4 py-2 transition-all duration-300',
+                        'relative flex items-center rounded-full px-4 py-2 transition-all duration-300',
                         appearance === value
-                            ? 'text-[#030f04] font-bold'
-                            : 'text-neutral-500 hover:text-black dark:text-neutral-400 dark:hover:text-neutral-200',
+                            ? 'text-black font-bold'
+                            : 'text-muted-foreground hover:text-foreground',
                     )}
                 >
                     {appearance === value && (
                         <motion.div 
                             layoutId="appearance-active"
-                            className="sidebar-active-gradient absolute inset-0 rounded-lg"
+                            className="sidebar-active-gradient absolute inset-0 rounded-full"
                             transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
                         />
                     )}

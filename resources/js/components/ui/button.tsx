@@ -5,22 +5,24 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] spring-press",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] spring-press",
   {
     variants: {
       variant: {
         default:
-          "btn-specular text-primary-foreground",
+          "btn-specular",
         destructive:
           "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40",
         outline:
           "border border-border-2 bg-background shadow-xs hover:bg-surface-3 hover:text-accent-foreground",
+        "outline-primary":
+          "border border-primary/30 bg-transparent text-primary font-semibold hover:border-transparent hover:bg-gradient-to-br hover:from-green-400 hover:to-yellow-400 hover:text-black hover:shadow-[0_4px_16px_rgba(34,197,94,0.3),0_2px_8px_rgba(250,204,21,0.2)] transition-all duration-300",
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-surface-4",
         ghost: "hover:bg-surface-3 hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         warning:
-          "bg-amber-500 text-white shadow-xs hover:bg-amber-600 focus-visible:ring-amber-500/20",
+          "btn-warning-specular",
       },
       size: {
         default: "h-10 px-5 py-2 has-[>svg]:px-4",
