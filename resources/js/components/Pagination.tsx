@@ -66,10 +66,10 @@ export function Pagination({ links, meta }: PaginationProps) {
                                 aria-label={isPrev ? 'Go to previous page' : isNext ? 'Go to next page' : `Go to page ${link.label}`}
                                 aria-current={link.active ? 'page' : undefined}
                                 className={cn(
-                                    "flex h-11 min-w-11 items-center justify-center rounded-xl border text-sm transition-all duration-300 hover:bg-muted font-bold",
+                                    "flex h-11 min-w-11 items-center justify-center rounded-xl border text-sm transition-all duration-300 font-bold",
                                     link.active 
-                                        ? "sidebar-active-gradient sidebar-active-text shadow-lg border-none" 
-                                        : "bg-background/40 backdrop-blur-sm border-white/10 text-muted-foreground hover:text-foreground",
+                                        ? "btn-specular text-white border-none shadow-lg" 
+                                        : "bg-surface-1 border-border-1 text-muted-foreground hover:bg-surface-2 hover:text-foreground",
                                     (isPrev || isNext) && "px-2"
                                 )}
                             >

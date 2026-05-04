@@ -54,10 +54,10 @@ export default function Index({ notifications }: Props) {
             <Head title="Notifications" />
 
             <div className="flex h-full flex-col gap-4 p-4 md:gap-8 md:p-8">
-                <div className="liquid-glass flex items-center justify-between px-6 py-5">
-                    <div>
-                        <h1 className="liquid-glass-title text-2xl font-bold tracking-tight">Notifications</h1>
-                        <p className="text-muted-foreground mt-2">
+                <div className="matte-card elev-1 flex items-center justify-between px-6 py-5 rounded-2xl">
+                    <div className="flex items-center gap-3">
+                        <h1 className="t-headline">Notifications</h1>
+                        <p className="text-muted-foreground text-sm mt-2">
                             Manage your system and module notifications.
                         </p>
                     </div>
@@ -67,7 +67,7 @@ export default function Index({ notifications }: Props) {
                     </Button>
                 </div>
 
-                <Card className="flex-1 liquid-glass-card border-none">
+                <Card className="flex-1 matte-card elev-2 border-none">
                     <CardHeader className="pb-3">
                         <CardTitle className="text-lg">Recent Notifications</CardTitle>
                         <CardDescription>

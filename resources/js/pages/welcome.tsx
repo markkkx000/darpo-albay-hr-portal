@@ -63,7 +63,7 @@ export default function Welcome() {
             <div className="relative z-10 flex min-h-screen flex-col font-sans">
 
                 {/* ── Navbar ── */}
-                <header className="sticky top-0 z-50 border-b border-border-2 bg-background/80 backdrop-blur-md">
+                <header className="sticky top-0 z-50 border-b border-border-2 bg-background/80">
                     <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
                         {/* Logo */}
                         <div className="flex items-center gap-2.5">

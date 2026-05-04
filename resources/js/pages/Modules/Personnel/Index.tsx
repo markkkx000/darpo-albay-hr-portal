@@ -81,7 +81,7 @@ export default function Index({ employees, filters, departments = [], employment
             <Head title="Personnel Directory" />
 
             <div className="p-4 w-full">
-                <div className="matte-card elev-1 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 rounded-2xl">
+                <div className="matte-card elev-2 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 rounded-2xl">
                     <div className="flex items-center gap-3">
                         <h1 className="t-headline">Personnel Directory</h1>
                         <p className="text-muted-foreground text-sm mt-2">
@@ -96,7 +96,7 @@ export default function Index({ employees, filters, departments = [], employment
                             </Link>
                         </Button>
                         {canCreate && (
-                            <Button asChild className="btn-gradient px-6 py-5 rounded-xl shadow-lg border-none">
+                            <Button asChild className="btn-specular px-6 py-5 rounded-xl shadow-lg border-none">
                                 <Link href={createRoute().url}>
                                     <Plus className="h-4 w-4" />
                                     Add Employee
@@ -107,12 +107,12 @@ export default function Index({ employees, filters, departments = [], employment
                 </div>
 
                 {/* Filters */}
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 matte-card elev-1 px-4 py-4 rounded-xl">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 matte-card elev-2 px-4 py-4 rounded-xl mb-6">
                     <div className="relative md:col-span-6">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
                             placeholder="Search by name or ID..."
-                            className="pl-10"
+                            className="input-etched pl-10"
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             onKeyDown={(e) => {
@@ -124,7 +124,7 @@ export default function Index({ employees, filters, departments = [], employment
                     </div>
                     <div className="md:col-span-3">
                         <Select value={deptId} onValueChange={handleDeptChange}>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="input-etched w-full">
                                 <div className="truncate text-left flex-1">
                                     <SelectValue placeholder="Department" />
                                 </div>
@@ -139,7 +139,7 @@ export default function Index({ employees, filters, departments = [], employment
                     </div>
                     <div className="md:col-span-3">
                         <Select value={statusId} onValueChange={handleStatusChange}>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="input-etched w-full">
                                 <div className="truncate text-left flex-1">
                                     <SelectValue placeholder="Employment Status" />
                                 </div>

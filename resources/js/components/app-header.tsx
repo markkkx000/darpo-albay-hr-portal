@@ -60,7 +60,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
 
     return (
         <header className="sticky top-0 z-40 w-full">
-            <div className="liquid-glass-nav border-b-0 shadow-none">
+            <div className="matte-card elev-4 border-b-0 shadow-none">
                 <div className="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
                     {/* Mobile Menu */}
                     <div className="lg:hidden">
@@ -76,7 +76,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                             </SheetTrigger>
                             <SheetContent
                                 side="left"
-                                className="flex h-full w-64 flex-col items-stretch justify-between bg-sidebar liquid-glass-sidebar"
+                                className="flex h-full w-64 flex-col items-stretch justify-between bg-sidebar matte-card"
                             >
                                 <SheetTitle className="sr-only">
                                     Navigation menu
@@ -216,7 +216,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                     </Avatar>
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56 liquid-glass-card !bg-background/95 backdrop-blur-xl" align="end">
+                            <DropdownMenuContent className="w-56 matte-card elev-3" align="end">
                                 {auth.user && (
                                     <UserMenuContent user={auth.user} />
                                 )}
@@ -226,7 +226,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                 </div>
             </div>
             {breadcrumbs.length > 1 && (
-                <div className="flex w-full liquid-glass-nav h-11 border-t border-border/10">
+                <div className="flex w-full matte-card h-11 border-t border-border/10">
                     <div className="mx-auto flex h-full w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl">
                         <Breadcrumbs breadcrumbs={breadcrumbs} />
                     </div>

@@ -35,7 +35,7 @@ export function AttendanceHistory({ history }: AttendanceHistoryProps) {
     }
 
     return (
-        <Card className="w-full liquid-glass-card">
+        <Card className="w-full matte-card elev-2">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <Calendar className="h-5 w-5 text-blue-500" />

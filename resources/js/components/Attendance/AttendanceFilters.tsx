@@ -82,7 +82,7 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
     };
 
     return (
-        <div className="liquid-glass rounded-xl p-6 space-y-6">
+        <div className="matte-card elev-2 p-6 space-y-6">
             <div className="flex items-center gap-2 text-foreground font-bold bg-muted/20 w-fit px-3 py-1 rounded-lg border border-white/5">
                 <Filter className="h-4 w-4 text-primary" />
                 <span className="text-xs uppercase tracking-widest">Filters</span>
@@ -104,7 +104,7 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                                 }
                             }}
                             placeholder="Type name..."
-                            className="pl-10 h-10 bg-muted/20 border-white/10 ring-offset-background focus-visible:ring-0"
+                            className="input-etched pl-10"
                         />
                         {search && (
                             <button
@@ -130,10 +130,10 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                                 updateFilters({ status: val });
                             }}
                         >
-                            <SelectTrigger className="h-10 bg-muted/20 border-white/10 focus:ring-0">
+                            <SelectTrigger className="input-etched h-10">
                                 <SelectValue placeholder="All Status" />
                             </SelectTrigger>
-                            <SelectContent className="liquid-glass border-white/10">
+                            <SelectContent className="matte-card elev-3 border-white/10">
                                 <SelectItem value="all">All Status</SelectItem>
                                 <SelectItem value="working">Currently Working</SelectItem>
                                 <SelectItem value="completed">Completed</SelectItem>
@@ -157,7 +157,7 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                                 setFromDate(val);
                                 updateFilters({ from_date: val });
                             }}
-                            className="pl-10 h-10 bg-muted/20 border-white/10 focus:ring-0"
+                            className="input-etched pl-10"
                         />
                     </div>
                 </div>
@@ -176,7 +176,7 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                                 setToDate(val);
                                 updateFilters({ to_date: val });
                             }}
-                            className="pl-10 h-10 bg-muted/20 border-white/10 focus:ring-0"
+                            className="input-etched pl-10"
                         />
                     </div>
                 </div>

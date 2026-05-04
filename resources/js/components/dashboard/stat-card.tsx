@@ -51,7 +51,7 @@ export function StatCard({
 
     return (
         <div
-            className="group relative aspect-video overflow-hidden rounded-2xl border border-black/5 dark:border-white/5 transition-all duration-300 hover:-translate-y-1 shadow-sm backdrop-blur-2xl"
+            className="group relative aspect-video overflow-hidden rounded-2xl border border-border-1 transition-all duration-300 hover:-translate-y-1 shadow-sm"
             style={cardStyle}
         >
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">

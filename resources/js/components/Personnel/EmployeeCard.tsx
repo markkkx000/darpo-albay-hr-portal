@@ -31,13 +31,13 @@ return 'Not set';
         <div className="matte-card elev-2 overflow-hidden">
             <div className="bg-primary/5 p-6 border-b border-border/40">
                 <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-                    <div className="h-24 w-24 rounded-3xl bg-primary flex items-center justify-center text-primary-foreground text-4xl font-black shadow-2xl ring-4 ring-background/50">
+                    <div className="sqicon sqicon-green h-24 w-24 !rounded-[24px] flex items-center justify-center text-white text-4xl font-black shadow-2xl ring-4 ring-surface-1">
                         {employee.first_name[0]}{employee.last_name[0]}
                     </div>
                     <div className="flex-1 text-center md:text-left space-y-1">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
                             <h2 className="text-3xl font-black tracking-tighter text-foreground">{employee.first_name} {employee.last_name}</h2>
-                            <Badge variant="outline" className="font-mono bg-background/50 backdrop-blur-md shadow-sm border-border/40 px-3 py-1 rounded-lg w-fit mx-auto md:mx-0">
+                            <Badge variant="outline" className="font-mono bg-surface-2 border-border-2 px-3 py-1 rounded-lg w-fit mx-auto md:mx-0">
                                 {employee.employee_number || 'NO-ID'}
                             </Badge>
                         </div>

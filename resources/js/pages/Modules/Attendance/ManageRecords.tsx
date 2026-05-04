@@ -128,7 +128,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                             Systematically manage records and resolve logging anomalies.
                         </p>
                     </div>
-                    <Button onClick={handleAddNew} size="lg">
+                    <Button onClick={handleAddNew} size="lg" className="btn-specular">
                         <Plus className="h-5 w-5 mr-2" />
                         Add Missing Record
                     </Button>
@@ -140,8 +140,8 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                         routeName={manageRecordsIndexRoute().url}
                     />
 
-                    <Card className="elev-2 overflow-hidden border-none shadow-xl">
-                    <CardHeader className="bg-surface-2 pb-4 border-b border-border/5">
+                    <Card className="overflow-hidden border-none shadow-xl">
+                    <CardHeader className="bg-surface-2 pb-4 border-b border-border-1">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
                                 <CardTitle className="flex items-center gap-2 t-headline">
@@ -157,15 +157,15 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                             <table className="w-full text-sm text-left">
                                 <thead className="text-xs text-muted-foreground uppercase font-bold bg-surface-1">
                                     <tr>
-                                        <th className="px-6 py-4 border-b border-border/5">Employee</th>
-                                        <th className="px-6 py-4 border-b border-border/5">Date</th>
-                                        <th className="px-6 py-4 border-b border-border/5">Clock In</th>
-                                        <th className="px-6 py-4 border-b border-border/5">Clock Out</th>
-                                        <th className="px-6 py-4 border-b border-border/5">Status</th>
-                                        <th className="px-6 py-4 border-b border-border/5 text-right">Actions</th>
+                                        <th className="px-6 py-4 border-b border-border-1">Employee</th>
+                                        <th className="px-6 py-4 border-b border-border-1">Date</th>
+                                        <th className="px-6 py-4 border-b border-border-1">Clock In</th>
+                                        <th className="px-6 py-4 border-b border-border-1">Clock Out</th>
+                                        <th className="px-6 py-4 border-b border-border-1">Status</th>
+                                        <th className="px-6 py-4 border-b border-border-1 text-right">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-border/5">
+                                <tbody className="divide-y divide-border-1">
                                     {records.data.length === 0 ? (
                                         <tr>
                                             <td colSpan={6} className="text-center py-20 text-muted-foreground">
@@ -261,7 +261,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                 </tbody>
                             </table>
                         </div>
-                        <div className="px-6 border-t border-border/5">
+                        <div className="px-6 border-t border-border-1">
                             <Pagination links={records.links} meta={records} />
                         </div>
                     </CardContent>

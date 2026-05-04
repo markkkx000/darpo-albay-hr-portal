@@ -124,7 +124,7 @@ return 'N/A';
                                     <tr key={employee.id} className="hover:bg-muted/40 transition-colors group">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="h-10 w-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-black text-xs uppercase border border-primary/20 shadow-sm">
+                                                <div className="sqicon sqicon-green h-10 w-10 !rounded-[10px] flex items-center justify-center text-white font-black text-xs uppercase shadow-sm">
                                                     {(employee.first_name?.[0] || '')}{(employee.last_name?.[0] || '') || <UserIcon className="h-4 w-4" />}
                                                 </div>
                                                 <div className="flex flex-col">
@@ -258,7 +258,7 @@ return 'N/A';
                     </DialogHeader>
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setEmployeeToRestore(null)} className="rounded-xl">Cancel</Button>
-                        <Button onClick={handleRestore} className="btn-gradient px-6 py-2 rounded-xl border-none">Restore Employee</Button>
+                        <Button onClick={handleRestore} className="btn-specular px-6 py-2 rounded-xl border-none">Restore Employee</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

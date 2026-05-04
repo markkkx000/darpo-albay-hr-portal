@@ -141,7 +141,7 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="sm:max-w-[425px] liquid-glass-card border-none shadow-2xl">
+            <DialogContent className="sm:max-w-[425px] matte-card elev-3 border-none">
                 <DialogHeader>
                     <DialogTitle>{isEditing ? 'Edit Attendance Record' : 'Add Missing Record'}</DialogTitle>
                     <DialogDescription>
