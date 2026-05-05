@@ -7,7 +7,10 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
     server: {
-        host: 'localhost',
+        host: '0.0.0.0',
+        hmr: {
+            host: process.env.VITE_SERVER_HMR_HOST || 'localhost',
+        },
     },
     plugins: [
         laravel({
