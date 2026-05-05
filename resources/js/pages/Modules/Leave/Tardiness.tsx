@@ -1,10 +1,12 @@
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Pagination } from '@/components/Pagination';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import LeaveRoutes from '@/routes/leave';
 import LeaveNavigation from './Components/LeaveNavigation';
 
 
@@ -23,7 +25,10 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
             [field]: parseInt(value) || 0,
         };
 
-        router.put(`/leave/tardiness/${userId}`, payload, { preserveScroll: true });
+        router.put(LeaveRoutes.tardiness.update({ user_id: userId }).url, payload, { 
+            preserveScroll: true,
+            onSuccess: () => toast.success('Tardiness record updated successfully')
+        });
     };
 
     return (
@@ -51,7 +56,7 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
                             <div className="w-40">
                                 <Select value={month.toString()} onValueChange={(v) => {
                                     setMonth(parseInt(v));
-                                    router.get('/leave/tardiness', { year, month: v, search: filters?.search }, { preserveState: true });
+                                    router.get(LeaveRoutes.tardiness.index().url, { year, month: v, search: filters?.search }, { preserveState: true });
                                 }}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Month" />
@@ -69,7 +74,7 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
                         <EmployeeSearch 
                             users={allEmployees} 
                             selectedId={filters?.search} 
-                            route="/leave/tardiness"
+                            route={LeaveRoutes.tardiness.index().url}
                             params={{ year, month }}
                             withAllEmployees
                         />
@@ -152,7 +157,7 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
 
 LeaveTardiness.layout = {
     breadcrumbs: [
-        { title: 'Leave Tracking', href: '/leave' },
-        { title: 'Tardiness', href: '/leave/tardiness' },
+        { title: 'Leave Tracking', href: LeaveRoutes.index().url },
+        { title: 'Tardiness', href: LeaveRoutes.tardiness.index().url },
     ],
 };

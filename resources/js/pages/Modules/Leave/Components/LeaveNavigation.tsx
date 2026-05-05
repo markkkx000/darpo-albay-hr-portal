@@ -39,8 +39,8 @@ export default function LeaveNavigation() {
         <div className="mb-6 flex space-x-4 border-b border-gray-200 dark:border-gray-800">
             {tabs.map((tab) => {
                 const Icon = tab.icon;
-                const isActive = tab.href === '/leave' 
-                    ? url === '/leave' || url.startsWith('/leave/create') || url.includes('/edit')
+                const isActive = tab.href === index().url 
+                    ? url === index().url || url.startsWith(index().url + '/create') || url.includes('/edit')
                     : url.startsWith(tab.href);
 
                 return (

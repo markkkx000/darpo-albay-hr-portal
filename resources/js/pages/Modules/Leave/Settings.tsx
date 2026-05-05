@@ -1,12 +1,13 @@
 import { Head, router } from '@inertiajs/react';
 import { Plus, Power, PowerOff } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { store as holidays_store, destroy as holidays_destroy } from '@/routes/leave/holidays/index';
-import { settings } from '@/routes/leave/index';
+import { settings, index as leave_index } from '@/routes/leave/index';
 import { store as statuses_store, update as statuses_update, destroy as statuses_destroy } from '@/routes/leave/statuses/index';
 import { store as types_store, update as types_update, destroy as types_destroy } from '@/routes/leave/types/index';
 import LeaveNavigation from './Components/LeaveNavigation';
@@ -29,6 +30,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
         }, {
             preserveScroll: true,
             onSuccess: () => {
+                toast.success('Holiday added successfully');
                 setHolidayName('');
                 setHolidayDate('');
             }
@@ -37,7 +39,10 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
 
     const handleDeleteHoliday = (id: number) => {
         if (confirm('Are you sure you want to delete this holiday?')) {
-            router.delete(holidays_destroy(id).url, { preserveScroll: true });
+            router.delete(holidays_destroy(id).url, { 
+                preserveScroll: true,
+                onSuccess: () => toast.success('Holiday deleted successfully')
+            });
         }
     };
 
@@ -51,6 +56,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
         }, {
             preserveScroll: true,
             onSuccess: () => {
+                toast.success('Leave type added successfully');
                 setTypeName('');
                 setTypeDescription('');
                 setTypeColor('#3b82f6');
@@ -63,9 +69,15 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
 
         if (confirm(`Are you sure you want to ${action} this leave type?`)) {
             if (type.is_active) {
-                router.delete(types_destroy(type.id).url, { preserveScroll: true });
+                router.delete(types_destroy(type.id).url, { 
+                    preserveScroll: true,
+                    onSuccess: () => toast.success(`Leave type ${action}d successfully`)
+                });
             } else {
-                router.put(types_update(type.id).url, { ...type, is_active: true }, { preserveScroll: true });
+                router.put(types_update(type.id).url, { ...type, is_active: true }, { 
+                    preserveScroll: true,
+                    onSuccess: () => toast.success(`Leave type ${action}d successfully`)
+                });
             }
         }
     };
@@ -77,7 +89,10 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
             is_active: true,
         }, {
             preserveScroll: true,
-            onSuccess: () => setStatusName('')
+            onSuccess: () => {
+                toast.success('Leave status added successfully');
+                setStatusName('');
+            }
         });
     };
 
@@ -86,9 +101,15 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
 
         if (confirm(`Are you sure you want to ${action} this leave status?`)) {
             if (status.is_active) {
-                router.delete(statuses_destroy(status.id).url, { preserveScroll: true });
+                router.delete(statuses_destroy(status.id).url, { 
+                    preserveScroll: true,
+                    onSuccess: () => toast.success(`Leave status ${action}d successfully`)
+                });
             } else {
-                router.put(statuses_update(status.id).url, { ...status, is_active: true }, { preserveScroll: true });
+                router.put(statuses_update(status.id).url, { ...status, is_active: true }, { 
+                    preserveScroll: true,
+                    onSuccess: () => toast.success(`Leave status ${action}d successfully`)
+                });
             }
         }
     };
@@ -254,7 +275,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
 
 LeaveSettings.layout = {
     breadcrumbs: [
-        { title: 'Leave Tracking', href: '/leave' },
-        { title: 'Settings', href: '/leave/settings' },
+        { title: 'Leave Tracking', href: leave_index().url },
+        { title: 'Settings', href: settings().url },
     ],
 };

@@ -83,7 +83,6 @@ return;
         <>
             <Head title="Attendance Registry" />
             
-
             <div className="relative z-10 flex min-h-[calc(100vh-12rem)] flex-col items-center justify-start p-4 pt-4 gap-4 animate-fade-up">
                 <div className="w-full flex justify-end max-w-5xl">
                     {canManage && (
@@ -180,7 +179,7 @@ return;
                             <span className="relative z-10">{processing ? 'Processing...' : cooldown > 0 ? `Locked (${cooldown}s)` : 'Clock Out'}</span>
                         </Button>
                     ) : (
-                        <div className="w-full h-14 rounded-full flex items-center justify-center gap-2 border border-border bg-muted/20 text-muted-foreground text-sm font-semibold tracking-wide">>
+                        <div className="w-full h-14 rounded-full flex items-center justify-center gap-2 border border-border bg-muted/20 text-muted-foreground text-sm font-semibold tracking-wide">
                             <CheckCircle2 className="h-5 w-5" />
                             Done for Today
                         </div>
@@ -214,5 +213,3 @@ ClockInOut.layout = {
         },
     ],
 };
-
-

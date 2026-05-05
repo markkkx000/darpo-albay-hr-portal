@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
-import { calendar } from '@/routes/leave/index';
+import { index, calendar } from '@/routes/leave/index';
 import LeaveNavigation from './Components/LeaveNavigation';
 
 
@@ -332,7 +332,7 @@ return 'All Employees';
 
 LeaveCalendar.layout = {
     breadcrumbs: [
-        { title: 'Leave Tracking', href: '/leave' },
-        { title: 'Calendar', href: '/leave/calendar' },
+        { title: 'Leave Tracking', href: index().url },
+        { title: 'Calendar', href: calendar().url },
     ],
 };

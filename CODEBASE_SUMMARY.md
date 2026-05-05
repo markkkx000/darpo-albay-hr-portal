@@ -14,23 +14,30 @@ This application is a **Laravel 13** backend with an **Inertia.js React** fronte
 - `app/Core/Services/NotificationService.php` — cross-cutting notification infrastructure. Any module can import this service to dispatch notifications. See Notifications Infrastructure below.
 - `app/Observers/UserObserver.php` — listens for User model `password` changes and auto-dismisses the default password notification via `NotificationService::dismissBySubtype()`.
 - `app/Providers/ModuleServiceProvider.php` — bootstraps modules by automatically scanning for and registering `routes.php` and `navigation.php` files in each module directory under `app/Modules/`.
-- `app/Http/Middleware/HandleInertiaRequests.php` — shares common Inertia props: `auth.user`, `auth.roles`, `auth.permissions`, `auth.navigation`, `sidebarOpen`, and `notifications.unread_count` (lazy-loaded, global infrastructure exception).
+- `app/Http/Middleware/HandleInertiaRequests.php` — shares common Inertia props. Navigation is filtered by role/permission here.
+  - **Lazy Loading**: Heavy props like `notifications.unread_count` are lazy-loaded via closures for performance.
 - `spatie/laravel-permission` — used for all role and permission management via `config/permission.php`.
-- **Laravel Wayfinder** — auto-generates typed TypeScript functions for Laravel routes. All frontend route calls must use Wayfinder. Run `php artisan wayfinder:generate` after registering new routes.
+- **Laravel 13 Attributes** — models use PHP attributes like `#[Fillable]` and `#[Hidden]` instead of protected properties.
+- **Laravel Wayfinder** — auto-generates typed TypeScript functions for Laravel routes. All frontend route calls must use Wayfinder. Run `php artisan wayfinder:generate` after registering new routes. Supports `.form()` variants for Inertia `useForm`.
 
 ### Database
 - **Local**: SQLite for development.
 - **Production**: PostgreSQL via Supabase. All migrations must be PostgreSQL-compatible. See `rules_and_guidelines.md` for migration rules.
 
 ### Frontend
-- `resources/js/app.tsx` — initializes Inertia, selects layouts by page name, and adds global providers.
+- `resources/js/app.tsx` — initializes Inertia, adds global providers, and centralizes **layout resolution logic** based on page name (e.g., `settings/*` uses nested layouts).
 - `resources/js/pages/dashboard.tsx` — dispatcher that renders role-specific overview components (`AdminOverview`, `HROverview`, `EmployeeOverview`).
 - `resources/js/pages/auth/login.tsx` — login page (dual-field: email or employee number).
 - `resources/js/pages/welcome.tsx` — public landing page.
-- `resources/js/components/app-sidebar.tsx` — renders the core Dashboard link plus dynamic module links from `auth.navigation`. Settings and Logout are in the user dropdown at the bottom.
+- `resources/js/components/app-sidebar.tsx` — renders the core Dashboard link plus dynamic module links from `auth.navigation`.
+  - **Persistence**: Sidebar open/close state is persisted via a `sidebar_state` cookie managed by `SidebarProvider`.
 - `resources/js/components/dynamic-icon.tsx` — renders Lucide icons from string names with a `LayoutDashboard` fallback.
 - `resources/js/components/Pagination.tsx` — reusable pagination component. **Use this for all paginated views. Do not create module-specific pagination components.**
-- `resources/js/components/EmployeeSearch.tsx` — reusable Headless UI Combobox-based employee search with autocomplete filtering by name and employee number. Used across Leave module tabs (Dashboard, Credits, Tardiness) and available for any module needing employee selection.
+- `resources/js/components/EmployeeSearch.tsx` — reusable Headless UI Combobox-based employee search with autocomplete filtering by name and employee number.
+- **Inertia v3 Features**:
+  - **Standalone HTTP**: `useHttp` hook used for background requests that don't trigger full page navigation (e.g., marking notifications as read).
+  - **Strict Mode**: Enabled via `strictMode: true` in `app.tsx`.
+  - **Instant Visits**: Used in navigation for near-instant transitions.
 
 ---
 
@@ -103,7 +110,7 @@ routes/
 - **Record Management**: HR roles with `attendance.manage` can manually add missing records and edit clock-in/out timestamps via `ManageRecords.tsx` and `AttendanceRecordModal.tsx`. Management button is rendered in-module (top-right of ClockInOut page), not in the sidebar.
 - **Soft Delete**: HR admins and super admins with `attendance.delete` can soft delete records.
 - **Filtering & Search**: Server-side filtering by status (Working/Incomplete/Completed), date range, and full-text employee name search. 500ms debounce with instant Enter key trigger. Paginated via `paginate(15)`.
-- **Permissions**: `attendance.clock` (employee, hr_staff, hr_admin), `attendance.manage` (hr_staff, hr_admin, super_admin), `attendance.delete` (hr_admin, super_admin).
+- **Permissions**: `attendance.clock` (employee, hr_staff, hr_admin), `attendance.manage` (hr_staff, hr_admin, super_admin), `attendance.delete` (hr_admin, super_admin), `attendance.view_own` (employee, department_head) — allows viewing one's own attendance records only.
 
 ### Leave Tracking Module (`app/Modules/Leave/`)
 - **Dashboard** (`Index.tsx`): Paginated table of all leave requests with employee search (via `EmployeeSearch` component). Shows employee, leave type (with color dot), dates (specific or range), days requested, status badge, and who encoded it. "Encode" button to create new leave requests.
@@ -161,3 +168,4 @@ This is **infrastructure, not a feature module**. It is a hybrid: the dispatch/m
 - **Icons**: Always use `lucide-react`. For dynamic icon rendering from strings, use `DynamicIcon.tsx`.
 - **Management buttons**: Module management actions (e.g., "Manage Announcements", "Attendance Management") are rendered as in-module buttons (top-right of the module page), not as sidebar entries. They are gated by appropriate permissions (e.g., `announcements.manage`, `attendance.manage`).
 - **Inertia History Management**: For subpage forms (like `Create`/`Edit` pages), append `router.clearHistory()` to the `onSuccess` callback of mutations. This ensures that when a user navigates back to the main list via the browser's "Back" button, Inertia forces a fresh data fetch rather than loading a stale cache. This eliminates the need for manual page refreshes while preserving the expected redirection flows.
+- **Toast Notifications**: Use `sonner` for immediate visual feedback after successful data-modifying operations (POST, PUT, DELETE). Use `toast.success('Message')` within the `onSuccess` callback.

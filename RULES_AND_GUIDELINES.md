@@ -20,12 +20,33 @@
 
 ---
 
+## UI Feedback & Interaction
+- **Immediate Feedback**: Always provide immediate visual feedback for user actions.
+- **Toast Notifications**: Use `sonner` for toast notifications after successful data-modifying operations (POST, PUT, DELETE).
+    - Example: `toast.success('Employee updated successfully');`
+    - Implementation: Call `toast` within the `onSuccess` callback of Inertia `router` or `useForm` methods.
+- **Scroll Position**: Use `preserveScroll: true` in the router options for operations that shouldn't reset the page scroll, such as inline updates in a table.
+- **Form States**: Ensure submit buttons are disabled and show a loading state (e.g., `processing` from `useForm`) during form submission.
+
+---
+
+## Common Components & Patterns
+- **EmployeeSearch Component**:
+    - When using `EmployeeSearch.tsx` for searching users in the backend, always implement **keyword-splitting logic** in the controller.
+    - Instead of a single `where like` query, split the search string by spaces and iterate through the keywords.
+    - Each keyword must be checked against `first_name`, `last_name`, and `employee_number` using a nested `where` closure.
+    - This ensures that searching for a full name (e.g., "John Doe") correctly finds users whose names are split across columns.
+    - Example implementation can be found in `UserRoleController@index` or `LeaveController@index`.
+
+---
+
 ## Backend Rules
 - Module controllers go in `app/Modules/{ModuleName}/Controllers/` — never in `app/Http/Controllers/`.
 - Module routes go in `app/Modules/{ModuleName}/routes.php` — auto-registered by `ModuleServiceProvider`.
 - **Never** manually `require` module routes in `web.php`. `routes/web.php` contains core auth and dashboard routes only.
 - Business logic goes in a Service class under `app/Modules/{ModuleName}/Services/` — keep controllers thin.
 - Validation goes in Form Request classes under `app/Modules/{ModuleName}/Requests/` — never validate inside controllers.
+- **Model Definition**: Use Laravel 13 PHP attributes (`#[Fillable]`, `#[Hidden]`) instead of protected properties.
 - Real-world entity tables must use `softDeletes()`.
 - Each module that needs a sidebar link must include `app/Modules/{ModuleName}/navigation.php`. Read `ModuleServiceProvider.php` and an existing `navigation.php` (e.g. Attendance) before writing a new one to match the expected format.
 
@@ -43,8 +64,10 @@
 
 ---
 
-## Shared Props Rule
+## Shared Props & Background Tasks
 - Never add module-specific data to `HandleInertiaRequests.php` global shared props.
+- **Lazy Loading**: Use closures in `HandleInertiaRequests.php` for any global prop that requires a database query to ensure it only runs when needed.
+- **Background Mutations**: For operations that don't need full page navigation or reloads (e.g., status updates, marking as read), use the Inertia v3 **`useHttp`** hook instead of `router.post()`.
 - Pass module data via individual Inertia page responses in the controller.
 - Changes to `HandleInertiaRequests.php` must be deliberate and affect all pages — not one module.
 
@@ -73,6 +96,7 @@ Before considering a module complete, verify:
 - [ ] No large conditionals added to `dashboard.tsx`
 - [ ] Permissions seeded in `RoleAndPermissionSeeder` using dot notation
 - [ ] `navigation.php` present and formatted correctly if module needs a sidebar link
+- [ ] Success actions provide toast notifications via `sonner`
 - [ ] `php artisan migrate:fresh --seed` runs cleanly with no errors
 - [ ] All Pest tests pass (`php artisan test --compact --filter={ModuleName}`)
 - [ ] `vendor/bin/pint --dirty --format agent` run on all PHP files

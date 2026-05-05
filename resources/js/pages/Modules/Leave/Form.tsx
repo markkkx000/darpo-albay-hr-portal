@@ -1,7 +1,8 @@
 import { Head, router, useForm } from '@inertiajs/react';
 import { X } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useSyncExternalStore } from 'react';
 import type { FormEvent } from 'react';
+import { toast } from 'sonner';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -9,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import LeaveRoutes from '@/routes/leave';
 import LeaveNavigation from './Components/LeaveNavigation';
 
 const formatDateForInput = (dateString: string | null | undefined) => {
@@ -46,6 +48,11 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
         leaveRequest?.specific_dates && leaveRequest.specific_dates.length > 0 ? 'specific' : 'range'
     );
     const [specificDateInput, setSpecificDateInput] = useState('');
+    const mounted = useSyncExternalStore(
+        () => () => {},
+        () => true,
+        () => false
+    );
 
     const isFirstRender = useRef(true);
 
@@ -55,6 +62,8 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
 
             return;
         }
+
+        let calculatedDays = '';
 
         if (dateMode === 'range') {
             if (data.start_date && data.end_date) {
@@ -77,10 +86,8 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                         current.setDate(current.getDate() + 1);
                     }
 
-                    setData('days_requested', weekdays.toString());
+                    calculatedDays = weekdays.toString();
                 }
-            } else if (!data.start_date || !data.end_date) {
-                setData('days_requested', '');
             }
         } else {
             const weekdayCount = data.specific_dates.filter((d: string) => {
@@ -89,9 +96,13 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                 return day !== 0 && day !== 6;
             }).length;
 
-            setData('days_requested', weekdayCount.toString());
+            calculatedDays = weekdayCount.toString();
         }
-    }, [data.start_date, data.end_date, data.specific_dates, dateMode, setData]);
+
+        if (data.days_requested !== calculatedDays) {
+            setData('days_requested', calculatedDays);
+        }
+    }, [data.start_date, data.end_date, data.specific_dates, dateMode, data.days_requested, setData]);
 
     const addSpecificDate = () => {
         if (specificDateInput && !data.specific_dates.includes(specificDateInput)) {
@@ -161,14 +172,20 @@ return { category: '', specify: '' };
     const { category, specify } = getDetailsParts(data.leave_details);
 
     const updateDetails = (newCategory: string, newSpecify: string) => {
-        if (newSpecify && newSpecify.trim() !== '') {
-            setData('leave_details', `${newCategory}: ${newSpecify}`);
-        } else {
-            setData('leave_details', newCategory);
+        const newValue = newSpecify && newSpecify.trim() !== '' 
+            ? `${newCategory}: ${newSpecify}` 
+            : newCategory;
+
+        if (data.leave_details !== newValue) {
+            setData('leave_details', newValue);
         }
     };
 
     const handleLeaveTypeChange = (v: string) => {
+        if (data.leave_type_id === v) {
+            return;
+        }
+
         setData({
             ...data,
             leave_type_id: v,
@@ -186,16 +203,22 @@ return { category: '', specify: '' };
         e.preventDefault();
         
         if (isEdit) {
-            router.post(`/leave/${leaveRequest.id}`, {
+            router.post(LeaveRoutes.update({ leaveRequest: leaveRequest.id }).url, {
                 _method: 'put',
                 ...data,
             }, { 
                 preserveScroll: true,
-                onSuccess: () => router.clearHistory()
+                onSuccess: () => {
+                    toast.success('Leave request updated successfully');
+                    router.clearHistory();
+                }
             });
         } else {
-            post('/leave', {
-                onSuccess: () => router.clearHistory()
+            post(LeaveRoutes.store().url, {
+                onSuccess: () => {
+                    toast.success('Leave request created successfully');
+                    router.clearHistory();
+                }
             });
         }
     };
@@ -251,9 +274,9 @@ return { category: '', specify: '' };
                                 <Select 
                                     value={category} 
                                     onValueChange={(val) => updateDetails(val, specify)}
-                                    disabled={!typeName}
+                                    disabled={!mounted || !typeName}
                                 >
-                                    <SelectTrigger className={!typeName ? "opacity-50" : ""}>
+                                    <SelectTrigger className={(!mounted || !typeName) ? "opacity-50" : ""}>
                                         <SelectValue placeholder={!typeName ? "Select Leave Type first" : "Select details..."} />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -270,8 +293,8 @@ return { category: '', specify: '' };
                                     placeholder={specifyPlaceholder}
                                     value={specify}
                                     onChange={(e) => updateDetails(category, e.target.value)}
-                                    disabled={!typeName || !category || hideSpecify}
-                                    className={(!typeName || !category || hideSpecify) ? "opacity-50 bg-muted cursor-not-allowed" : ""}
+                                    disabled={!mounted || !typeName || !category || hideSpecify}
+                                    className={(!mounted || !typeName || !category || hideSpecify) ? "opacity-50 bg-muted cursor-not-allowed" : ""}
                                 />
                             </div>
                         </div>
@@ -416,7 +439,7 @@ return { category: '', specify: '' };
 
 LeaveForm.layout = {
     breadcrumbs: [
-        { title: 'Leave Tracking', href: '/leave' },
-        { title: 'Encode', href: '' },
+        { title: 'Leave Tracking', href: LeaveRoutes.index().url },
+        { title: 'Encode', href: '#' },
     ],
 };

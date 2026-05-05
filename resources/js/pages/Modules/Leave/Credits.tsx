@@ -1,9 +1,11 @@
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import LeaveRoutes from '@/routes/leave';
 import LeaveNavigation from './Components/LeaveNavigation';
 
 
@@ -11,13 +13,16 @@ export default function LeaveCredits({ users, leaveTypes, currentYear, allEmploy
     const [year, setYear] = useState(currentYear);
 
     const handleUpdate = (userId: number, typeId: number, earned: string, used: string) => {
-        router.put('/leave/credits', {
+        router.put(LeaveRoutes.credits.update().url, {
             user_id: userId,
             leave_type_id: typeId,
             year: year,
             earned: parseFloat(earned) || 0,
             used: parseFloat(used) || 0,
-        }, { preserveScroll: true });
+        }, { 
+            preserveScroll: true,
+            onSuccess: () => toast.success('Leave credits updated successfully')
+        });
     };
 
     // Filter to only show common types that have credits typically tracked (e.g. Vacation, Sick)
@@ -44,14 +49,14 @@ export default function LeaveCredits({ users, leaveTypes, currentYear, allEmploy
                                 onChange={(e) => setYear(Number(e.target.value))} 
                                 className="w-24"
                             />
-                            <Button variant="outline" onClick={() => router.get('/leave/credits', { year, search: filters?.search })}>
+                            <Button variant="outline" onClick={() => router.get(LeaveRoutes.credits.index().url, { year, search: filters?.search })}>
                                 Filter Year
                             </Button>
                         </div>
                         <EmployeeSearch 
                             users={allEmployees} 
                             selectedId={filters?.search} 
-                            route="/leave/credits"
+                            route={LeaveRoutes.credits.index().url}
                             params={{ year }}
                             withAllEmployees
                         />
@@ -119,7 +124,7 @@ export default function LeaveCredits({ users, leaveTypes, currentYear, allEmploy
 
 LeaveCredits.layout = {
     breadcrumbs: [
-        { title: 'Leave Tracking', href: '/leave' },
-        { title: 'Credits', href: '/leave/credits' },
+        { title: 'Leave Tracking', href: LeaveRoutes.index().url },
+        { title: 'Credits', href: LeaveRoutes.credits.index().url },
     ],
 };

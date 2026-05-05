@@ -118,8 +118,6 @@ export default function ManageRecords({ records, employees, filters }: Props) {
         <>
             <Head title="Manage Attendance Records" />
 
-
-
             <div className="relative z-10 p-6 lg:p-10 w-full animate-fade-up space-y-8">
                 <div className="matte-card elev-2 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 mb-6">
                     <div>

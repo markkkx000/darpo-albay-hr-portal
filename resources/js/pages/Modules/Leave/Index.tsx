@@ -6,6 +6,7 @@ import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useDebounce } from '@/hooks/use-debounce';
+import LeaveRoutes from '@/routes/leave';
 import LeaveNavigation from './Components/LeaveNavigation';
 
 export default function LeaveDashboard({ leaves, allEmployees, leaveTypes, leaveStatuses, filters }: any) {
@@ -59,7 +60,7 @@ params.approved_by_id = approvedBy;
             params.approved_by_id !== filters?.approved_by_id;
 
         if (hasChanged) {
-            router.get('/leave', params, { preserveState: true, replace: true });
+            router.get(LeaveRoutes.index().url, params, { preserveState: true, replace: true });
         }
     }, [debouncedSearch, viewMode, sort, leaveType, status, approvedBy, filters]);
 
@@ -85,7 +86,7 @@ return '';
                     <div className="flex items-center gap-2 w-full sm:w-auto">
                         {canEncode && (
                             <Button asChild>
-                                <Link href="/leave/create">
+                                <Link href={LeaveRoutes.create().url}>
                                     <Plus className="mr-2 h-4 w-4" />
                                     Encode
                                 </Link>
@@ -244,7 +245,7 @@ return '';
                                             {canEncode && (
                                                 <td className="p-4 align-middle text-right">
                                                     <Button variant="ghost" size="sm" asChild>
-                                                        <Link href={`/leave/${leave.id}/edit`}>Edit</Link>
+                                                        <Link href={LeaveRoutes.edit({ leaveRequest: leave.id }).url}>Edit</Link>
                                                     </Button>
                                                 </td>
                                             )}
@@ -276,7 +277,7 @@ LeaveDashboard.layout = {
     breadcrumbs: [
         {
             title: 'Leave Tracking',
-            href: '/leave',
+            href: LeaveRoutes.index().url,
         },
     ],
 };

@@ -1,7 +1,8 @@
 import { Head, Link, router, useHttp } from '@inertiajs/react';
 import { Bell, ChevronDown, ChevronUp, CheckCheck, RotateCcw } from 'lucide-react';
-
 import { useState } from 'react';
+import { toast } from 'sonner';
+
 import * as NotificationActions from '@/actions/App/Modules/Notifications/Controllers/NotificationController';
 import { Pagination } from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';
@@ -36,6 +37,7 @@ export default function Index({ notifications }: Props) {
     const markAsUnread = (id: string) => {
         httpPost(NotificationActions.unread.url({ id }), {
             onSuccess: () => {
+                toast.success('Notification marked as unread');
                 router.reload({ only: ['notifications', 'appNotifications'] });
             },
         });
@@ -44,6 +46,7 @@ export default function Index({ notifications }: Props) {
     const markAllAsRead = () => {
         httpPost(NotificationActions.readAll.url(), {
             onSuccess: () => {
+                toast.success('All notifications marked as read');
                 router.reload({ only: ['notifications', 'appNotifications'] });
             }
         });
