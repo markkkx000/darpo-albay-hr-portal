@@ -19,7 +19,22 @@ class AttendanceService
 
     public function clockIn(User $user): Attendance
     {
-        if ($this->getTodayAttendance($user)) {
+        $attendance = Attendance::where('user_id', $user->id)
+            ->whereDate('date', Carbon::today())
+            ->withTrashed()
+            ->first();
+
+        if ($attendance) {
+            if ($attendance->trashed()) {
+                $attendance->restore();
+                $attendance->update([
+                    'clock_in' => Carbon::now(),
+                    'clock_out' => null,
+                ]);
+
+                return $attendance;
+            }
+
             throw ValidationException::withMessages([
                 'attendance' => 'You have already clocked in for today.',
             ]);
@@ -86,10 +101,10 @@ class AttendanceService
      */
     public function storeManualRecord(array $data): Attendance
     {
-        // Unique constraint user_id + date check
-        if (Attendance::where('user_id', $data['user_id'])->whereDate('date', $data['date'])->exists()) {
+        // Unique constraint user_id + date check (including trashed)
+        if (Attendance::where('user_id', $data['user_id'])->whereDate('date', $data['date'])->withTrashed()->exists()) {
             throw ValidationException::withMessages([
-                'user_id' => 'This employee already has an attendance record for this date.',
+                'user_id' => 'This employee already has an attendance record (active or archived) for this date.',
             ]);
         }
 

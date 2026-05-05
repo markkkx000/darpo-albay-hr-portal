@@ -71,7 +71,7 @@ export default function Login({ status }: Props) {
                             <div className="animate-fade-up-delay-3">
                                 <Button
                                     type="submit"
-                                    className="mt-4 w-full bg-linear-to-br from-[hsl(142,70%,48%)] to-[hsl(52,95%,55%)] font-bold text-[#030f04] shadow-[0_10px_20px_-5px_rgba(0,0,0,0.3),0_0_20px_rgba(110,210,100,0.3)] transition-all duration-300 hover:brightness-110 hover:-translate-y-0.5"
+                                    className="mt-4 w-full"
                                     tabIndex={4}
                                     disabled={processing}
                                     data-test="login-button"
@@ -84,9 +84,9 @@ export default function Login({ status }: Props) {
                     </>
                 )}
             </Form>
-
+ 
             {status && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
+                <div className="mb-4 text-center text-sm font-medium text-primary">
                     {status}
                 </div>
             )}

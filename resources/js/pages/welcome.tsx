@@ -1,5 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { CalendarCheck, Clock, ShieldCheck, Users2 } from 'lucide-react';
+import { CalendarCheck, Clock, ShieldCheck, Users2, ArrowRight } from 'lucide-react';
 import AppLogoIcon from '@/components/app-logo-icon';
 import { dashboard, login } from '@/routes';
 
@@ -7,219 +7,55 @@ export default function Welcome() {
     const { auth } = usePage().props;
 
     return (
-        <>
+        <div className="relative min-h-screen">
             <Head title="DARPO Albay HR Portal — Smarter Workforce Management">
-                <link rel="preconnect" href="https://fonts.bunny.net" />
-                <link
-                    href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700"
-                    rel="stylesheet"
-                />
                 <style>{`
-                    /* ═══════════════════════════════════════════
-                       Animated gradient blob background
-                       Adapted from: codepen.io/wilvander/pen/KKQrGgP
-                       Colours: Green → Yellow
-                    ═══════════════════════════════════════════ */
-                    @keyframes blob-rotate {
-                        0%   { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-
-                    .welcome-bg {
+                    .mesh-bg {
                         position: fixed;
                         inset: 0;
-                        background-color: #030f04;
-                        overflow: hidden;
                         z-index: 0;
+                        background: var(--background);
+                        overflow: hidden;
                     }
 
-                    .blob {
-                        --size: 350px;
-                        --speed: 40s;
-                        --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
-                        position: absolute;
-                        top: 50%;
-                        left: 50%;
-                        translate: -50% -50%;
-                        width: var(--size);
-                        height: var(--size);
-                        filter: blur(calc(var(--size) / 5));
-                        background-image: linear-gradient(
-                            hsl(142, 85%, 45%),
-                            hsl(52, 100%, 55%)
-                        );
-                        animation: blob-rotate var(--speed) var(--easing) alternate infinite;
-                        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-                        will-change: transform;
-                        opacity: 0.4;
-                    }
-
-                    @media (min-width: 1024px) {
-                        .blob { 
-                            --size: 650px; 
-                            opacity: 0.6;
+                    @media (prefers-reduced-motion: no-preference) {
+                        @keyframes fade-up {
+                            from { opacity: 0; transform: translateY(30px); }
+                            to   { opacity: 1; transform: translateY(0); }
                         }
-                    }
-
-                    /* Grain noise overlay for premium texture */
-                    .grain-overlay {
-                        position: fixed;
-                        inset: 0;
-                        z-index: 1;
-                        opacity: 0.04;
-                        pointer-events: none;
-                        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-                        background-size: 200px 200px;
-                    }
-
-                    /* Smooth fade-in on load */
-                    @keyframes fade-up {
-                        from { opacity: 0; transform: translateY(24px); }
-                        to   { opacity: 1; transform: translateY(0); }
-                    }
-
-                    .animate-fade-up {
-                        animation: fade-up 0.7s ease forwards;
-                    }
-                    .animate-fade-up-delay-1 {
-                        opacity: 0;
-                        animation: fade-up 0.7s ease 0.15s forwards;
-                    }
-                    .animate-fade-up-delay-2 {
-                        opacity: 0;
-                        animation: fade-up 0.7s ease 0.3s forwards;
-                    }
-                    .animate-fade-up-delay-3 {
-                        opacity: 0;
-                        animation: fade-up 0.7s ease 0.45s forwards;
-                    }
-                    .animate-fade-up-delay-4 {
-                        opacity: 0;
-                        animation: fade-up 0.7s ease 0.6s forwards;
-                    }
-
-                    /* Glassmorphism card — dark-tinted */
-                    .glass-card {
-                        background: rgba(0, 0, 0, 0.42);
-                        border: 1px solid rgba(255, 255, 255, 0.09);
-                        backdrop-filter: blur(16px);
-                        -webkit-backdrop-filter: blur(16px);
-                    }
-
-                    /* Primary CTA button — Enhanced Shadow */
-                    .btn-primary {
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 0.5rem;
-                        padding: 0.875rem 2rem;
-                        border-radius: 0.625rem;
-                        font-weight: 600;
-                        font-size: 1rem;
-                        line-height: 1;
-                        color: #030f04;
-                        background: linear-gradient(135deg, hsl(142, 70%, 48%), hsl(52, 95%, 55%));
-                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                        box-shadow: 
-                            0 10px 15px -3px rgba(0, 0, 0, 0.5), 
-                            0 4px 6px -2px rgba(0, 0, 0, 0.3),
-                            0 0 30px rgba(110, 210, 100, 0.4),
-                            inset 0 1px 0 rgba(255, 255, 255, 0.2);
-                        white-space: nowrap;
-                    }
-                    .btn-primary:hover {
-                        filter: brightness(1.1);
-                        transform: translateY(-3px) scale(1.02);
-                        box-shadow: 
-                            0 25px 30px -5px rgba(0, 0, 0, 0.6), 
-                            0 15px 15px -5px rgba(0, 0, 0, 0.4),
-                            0 0 50px rgba(110, 210, 100, 0.6);
-                    }
-                    .btn-primary:active { transform: translateY(0); }
-
-                    /* Nav button — solid dark, high contrast */
-                    .btn-ghost {
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 0.5rem;
-                        padding: 0.625rem 1.25rem;
-                        border-radius: 0.5rem;
-                        font-weight: 600;
-                        font-size: 0.875rem;
-                        line-height: 1;
-                        color: #ffffff;
-                        border: 1px solid rgba(255,255,255,0.15);
-                        background: rgba(0, 0, 0, 0.55);
-                        backdrop-filter: blur(8px);
-                        -webkit-backdrop-filter: blur(8px);
-                        transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-                        white-space: nowrap;
-                        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-                    }
-                    .btn-ghost:hover {
-                        background: rgba(0, 0, 0, 0.72);
-                        border-color: rgba(255,255,255,0.28);
-                        box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-                    }
-
-                    /* Highlight text — Clean, high-contrast light green with sharp shadow */
-                    .text-highlight {
-                        color: #f0fdf4; /* emerald-50 */
-                        text-shadow: 
-                            0 4px 12px rgba(0, 0, 0, 1),
-                            0 0 40px rgba(0, 0, 0, 0.6);
-                    }
-
-                    /* Feature icon ring */
-                    .icon-ring {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        width: 3rem;
-                        height: 3rem;
-                        border-radius: 0.875rem;
-                        background: linear-gradient(135deg, rgba(110, 210, 100, 0.2), rgba(250, 220, 60, 0.2));
-                        border: 1px solid rgba(110, 210, 100, 0.25);
-                        flex-shrink: 0;
-                    }
-
-                    /* Text shadow for better readability on moving gradients */
-                    .text-shadow-glow {
-                        text-shadow: 
-                            0 2px 10px rgba(0, 0, 0, 0.8), 
-                            0 0 25px rgba(0, 0, 0, 0.4);
+                        .animate-fade-up {
+                            animation: fade-up 0.8s var(--spring) forwards;
+                        }
+                        .animate-fade-up-delay-1 { opacity: 0; animation: fade-up 0.8s var(--spring) 0.15s forwards; }
+                        .animate-fade-up-delay-2 { opacity: 0; animation: fade-up 0.8s var(--spring) 0.3s forwards; }
+                        .animate-fade-up-delay-3 { opacity: 0; animation: fade-up 0.8s var(--spring) 0.45s forwards; }
                     }
                 `}</style>
             </Head>
 
-            {/* ── Animated background ── */}
-            <div className="welcome-bg" aria-hidden="true">
-                <div className="blob" />
+            {/* ── Cinematic Background ── */}
+            <div className="mesh-bg" aria-hidden="true">
+                <div className="mesh-halo" />
             </div>
-            <div className="grain-overlay" aria-hidden="true" />
 
-            {/* ── Page wrapper — sits above the background ── */}
             <div className="relative z-10 flex min-h-screen flex-col font-sans">
-
                 {/* ── Navbar ── */}
-                <header className="sticky top-0 z-50 border-b border-white/10 bg-black/20 backdrop-blur-md">
+                <header className="sticky top-0 z-50 border-b border-border-1 bg-background/60 backdrop-blur-xl saturate-[1.8]">
                     <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-                        {/* Logo */}
                         <div className="flex items-center gap-2.5">
-                            <AppLogoIcon className="h-10 w-10 shrink-0" />
-                            <span className="text-sm font-semibold tracking-tight text-white shadow-black/40 drop-shadow-sm">
+                            <AppLogoIcon className="h-9 w-9 shrink-0" />
+                            <span className="text-sm font-semibold tracking-tight text-foreground">
                                 DARPO Albay
-                                <span className="ml-1 text-white/70 font-normal">HR Portal</span>
+                                <span className="ml-1 text-muted-foreground font-normal">HR Portal</span>
                             </span>
                         </div>
-
-                        {/* Nav CTA */}
                         <nav aria-label="Primary navigation">
                             {auth.user ? (
-                                <Link href={dashboard()} className="btn-ghost text-sm">
-                                    Go to Dashboard
+                                <Link href={dashboard()} className="text-sm font-medium hover:text-green-600 dark:hover:text-green-400 transition-colors">
+                                    Dashboard
                                 </Link>
                             ) : (
-                                <Link href={login()} className="btn-ghost text-sm">
+                                <Link href={login()} className="btn-specular px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider">
                                     Sign In
                                 </Link>
                             )}
@@ -228,98 +64,96 @@ export default function Welcome() {
                 </header>
 
                 {/* ── Hero section ── */}
-                <main className="flex flex-1 flex-col items-center justify-center px-6 py-16 sm:py-24 text-center lg:py-32" id="hero">
-                    {/* Badge / pill */}
-                    <div
-                        className="animate-fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-white/70 backdrop-blur-sm"
-                        aria-label="Province of Albay official HR system"
-                    >
-                        <span className="h-1.5 w-1.5 rounded-full bg-[hsl(142,70%,55%)]" aria-hidden="true" />
-                        Province of Albay — Official HR System
+                <main className="flex flex-1 flex-col items-center px-6 py-20 sm:py-32 lg:py-40" id="hero">
+                    <div className="text-center max-w-5xl mx-auto w-full">
+                        {/* Badge */}
+                        <div
+                            className="animate-fade-up mb-8 inline-flex items-center gap-2 rounded-full border border-green-500/20 bg-green-500/10 px-5 py-2 text-xs font-bold text-green-600 dark:text-green-400 uppercase tracking-[0.06em] shadow-sm backdrop-blur-md"
+                            aria-label="Province of Albay official HR system"
+                        >
+                            <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" aria-hidden="true" />
+                            Official HR System — Province of Albay
+                        </div>
+
+                        {/* Headline */}
+                        <h1 className="animate-fade-up-delay-1 t-display-green leading-[1.05] md:text-7xl lg:text-8xl">
+                            Smarter Workforce <br className="hidden md:block" /> Management
+                        </h1>
+
+                        {/* Subheadline */}
+                        <p className="animate-fade-up-delay-2 mt-8 text-lg md:text-xl font-medium text-muted-foreground max-w-2xl mx-auto tracking-tight">
+                            A unified platform for attendance tracking, leave management, and personnel administration — designed exclusively for DARPO Albay.
+                        </p>
+
+                        {/* CTAs */}
+                        <div className="animate-fade-up-delay-3 mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                            {auth.user ? (
+                                <Link href={dashboard()} className="btn-specular px-8 py-4 flex items-center justify-center min-w-[220px] text-base font-semibold" id="cta-dashboard">
+                                    Open Dashboard
+                                    <ArrowRight className="ml-2 h-5 w-5" strokeWidth={2} aria-hidden="true" />
+                                </Link>
+                            ) : (
+                                <>
+                                    <Link href={login()} className="btn-specular px-8 py-4 flex items-center justify-center min-w-[220px] text-base font-semibold" id="cta-signin">
+                                        Sign In to Portal
+                                        <ArrowRight className="ml-2 h-5 w-5" strokeWidth={2} aria-hidden="true" />
+                                    </Link>
+                                </>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Headline */}
-                    <h1 className="animate-fade-up-delay-1 text-shadow-glow mx-auto max-w-4xl text-3xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-7xl">
-                        Smarter{' '}
-                        <span className="text-highlight">Workforce</span>
-                        {' '}Management
-                    </h1>
-
-                    {/* Subheadline */}
-                    <p className="animate-fade-up-delay-2 text-shadow-glow mx-auto mt-6 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">
-                        A unified platform for attendance tracking, leave management, and personnel administration — designed for DARPO Albay's team.
-                    </p>
-
-                    {/* CTAs */}
-                    <div className="animate-fade-up-delay-3 mt-10 flex flex-col items-center gap-3 sm:flex-row">
-                        {auth.user ? (
-                            <Link href={dashboard()} className="btn-primary" id="cta-dashboard">
-                                Open Dashboard
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                    <path d="M5 12h14M12 5l7 7-7 7" />
-                                </svg>
-                            </Link>
-                        ) : (
-                            <Link href={login()} className="btn-primary" id="cta-signin">
-                                Sign In to Portal
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                    <path d="M5 12h14M12 5l7 7-7 7" />
-                                </svg>
-                            </Link>
-                        )}
-                    </div>
-
-                    {/* ── Feature cards ── */}
-                    <div className="animate-fade-up-delay-4 mt-20 grid w-full max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" role="list" aria-label="Portal features">
-
-                        {/* Card: Attendance */}
-                        <article className="glass-card flex flex-col items-start gap-3 rounded-xl p-5 text-left" role="listitem">
-                            <div className="icon-ring" aria-hidden="true">
-                                <Clock className="h-5 w-5 text-[hsl(142,70%,65%)]" strokeWidth={1.75} />
+                    {/* ── Bento Box Feature Grid ── */}
+                    <div className="animate-fade-up-delay-3 mt-24 md:mt-32 grid w-full max-w-6xl grid-cols-1 md:grid-cols-3 gap-6" role="list" aria-label="Portal features">
+                        
+                        {/* Primary Feature (Spans 2 columns on desktop) */}
+                        <article className="matte-card elev-2 md:col-span-2 flex flex-col md:flex-row items-center gap-8 p-8 md:p-10 text-left spring-hover" role="listitem">
+                            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-green-500/10 shrink-0" aria-hidden="true">
+                                <Clock className="h-8 w-8 text-green-500" strokeWidth={1.5} />
                             </div>
                             <div>
-                                <h2 className="text-sm font-semibold text-white">Attendance</h2>
-                                <p className="mt-1 text-sm leading-relaxed text-white/60">
-                                    Clock in and out with a single tap. Accurate, real-time records.
+                                <h2 className="t-title text-2xl md:text-3xl mb-3">Real-Time Attendance</h2>
+                                <p className="t-body text-base text-muted-foreground max-w-lg">
+                                    Clock in and out with absolute precision. Our unified ledger ensures that timekeeping is transparent, instantaneous, and strictly audited.
                                 </p>
                             </div>
                         </article>
 
-                        {/* Card: Leave Requests */}
-                        <article className="glass-card flex flex-col items-start gap-3 rounded-xl p-5 text-left" role="listitem">
-                            <div className="icon-ring" aria-hidden="true">
-                                <CalendarCheck className="h-5 w-5 text-[hsl(52,95%,65%)]" strokeWidth={1.75} />
+                        {/* Standard Feature */}
+                        <article className="matte-card elev-2 flex flex-col items-start gap-5 p-8 text-left spring-hover" role="listitem">
+                            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-yellow-500/10" aria-hidden="true">
+                                <CalendarCheck className="h-6 w-6 text-yellow-500" strokeWidth={1.5} />
                             </div>
                             <div>
-                                <h2 className="text-sm font-semibold text-white">Leave Requests</h2>
-                                <p className="mt-1 text-sm leading-relaxed text-white/60">
-                                    Submit and track leave applications with approval workflows.
+                                <h2 className="t-headline text-xl mb-2">Leave Management</h2>
+                                <p className="t-body text-sm text-muted-foreground">
+                                    Submit and track leave applications with robust approval workflows.
                                 </p>
                             </div>
                         </article>
 
-                        {/* Card: Personnel */}
-                        <article className="glass-card flex flex-col items-start gap-3 rounded-xl p-5 text-left" role="listitem">
-                            <div className="icon-ring" aria-hidden="true">
-                                <Users2 className="h-5 w-5 text-[hsl(142,70%,65%)]" strokeWidth={1.75} />
+                        {/* Standard Feature */}
+                        <article className="matte-card elev-2 flex flex-col items-start gap-5 p-8 text-left spring-hover" role="listitem">
+                            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-green-500/10" aria-hidden="true">
+                                <Users2 className="h-6 w-6 text-green-500" strokeWidth={1.5} />
                             </div>
                             <div>
-                                <h2 className="text-sm font-semibold text-white">Personnel</h2>
-                                <p className="mt-1 text-sm leading-relaxed text-white/60">
-                                    Manage employee profiles, departments, and positions.
+                                <h2 className="t-headline text-xl mb-2">Personnel Directory</h2>
+                                <p className="t-body text-sm text-muted-foreground">
+                                    A single source of truth for all employee profiles, departments, and positions.
                                 </p>
                             </div>
                         </article>
 
-                        {/* Card: Role-Based Access */}
-                        <article className="glass-card flex flex-col items-start gap-3 rounded-xl p-5 text-left" role="listitem">
-                            <div className="icon-ring" aria-hidden="true">
-                                <ShieldCheck className="h-5 w-5 text-[hsl(52,95%,65%)]" strokeWidth={1.75} />
+                        {/* Primary/Wide Feature (Spans 2 columns) */}
+                        <article className="matte-card elev-2 md:col-span-2 flex flex-col md:flex-row items-center gap-8 p-8 md:p-10 text-left spring-hover" role="listitem">
+                            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-yellow-500/10 shrink-0" aria-hidden="true">
+                                <ShieldCheck className="h-8 w-8 text-yellow-500" strokeWidth={1.5} />
                             </div>
                             <div>
-                                <h2 className="text-sm font-semibold text-white">Role-Based Access</h2>
-                                <p className="mt-1 text-sm leading-relaxed text-white/60">
-                                    Granular permissions for Admins, HR Staff, and Employees.
+                                <h2 className="t-title text-2xl md:text-3xl mb-3">Role-Based Security</h2>
+                                <p className="t-body text-base text-muted-foreground max-w-lg">
+                                    Granular permission matrices ensure that Admins, HR Staff, and Employees only access exactly what they are authorized to see.
                                 </p>
                             </div>
                         </article>
@@ -328,10 +162,10 @@ export default function Welcome() {
                 </main>
 
                 {/* ── Footer ── */}
-                <footer className="border-t border-white/8 py-6 text-center text-xs text-white/30">
+                <footer className="border-t border-border-1 py-10 text-center text-sm font-medium text-muted-foreground/60 backdrop-blur-md">
                     © {new Date().getFullYear()} DARPO Albay. All rights reserved.
                 </footer>
             </div>
-        </>
+        </div>
     );
 }

@@ -1,7 +1,8 @@
-import { Head, router } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { toast } from 'sonner';
 import { EmployeeForm } from '@/components/Personnel/EmployeeForm';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { store as storeRoute, index as indexRoute } from '@/routes/personnel';
 
 interface Props {
@@ -24,13 +25,18 @@ export default function Create({ departments, positions, employmentStatuses }: P
         <>
             <Head title="Add Employee" />
             
-            <div className="p-4 max-w-4xl mx-auto">
-                <Card className="border-none shadow-xl">
-                    <CardHeader className="pb-4">
-                        <CardTitle className="text-2xl">Add New Employee</CardTitle>
-                        <CardDescription>Enter the personal and professional details for the new staff member.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
+            <div className="p-4 w-full max-w-4xl mx-auto space-y-6">
+                <div className="matte-card elev-1 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 rounded-2xl">
+                    <div className="flex items-center gap-3">
+                        <h1 className="t-headline">Add New Employee</h1>
+                        <p className="text-muted-foreground text-sm mt-2">
+                            Enter the personal and professional details for the new staff member.
+                        </p>
+                    </div>
+                </div>
+                
+                <Card className="matte-card elev-2 border-none">
+                    <CardContent className="pt-6">
                         <EmployeeForm 
                             departments={departments}
                             positions={positions}

@@ -27,15 +27,15 @@ export function AttendanceHistory({ history }: AttendanceHistoryProps) {
         return (
             <Card className="w-full border-dashed bg-transparent">
                 <CardContent className="flex flex-col items-center justify-center py-10 text-center">
-                    <Calendar className="h-10 w-10 text-gray-300 dark:text-gray-700 mb-2" />
-                    <p className="text-gray-500">No attendance history found for the last 7 days.</p>
+                    <Calendar className="h-10 w-10 text-muted-foreground/30 mb-2" />
+                    <p className="text-muted-foreground">No attendance history found for the last 7 days.</p>
                 </CardContent>
             </Card>
         );
     }
 
     return (
-        <Card className="w-full border-none shadow-xl bg-white/50 backdrop-blur-sm dark:bg-gray-950/50">
+        <Card className="w-full matte-card elev-2">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <Calendar className="h-5 w-5 text-blue-500" />
@@ -44,19 +44,19 @@ export function AttendanceHistory({ history }: AttendanceHistoryProps) {
                 <CardDescription>Your attendance records for the last 7 days.</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="rounded-md border border-gray-100 dark:border-gray-800 overflow-hidden">
+                <div className="rounded-xl border border-border-1 overflow-hidden">
                     <table className="w-full text-sm text-left">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50/50 dark:bg-gray-900/50 dark:text-gray-400">
+                        <thead className="text-xs text-muted-foreground uppercase bg-surface-2">
                             <tr>
-                                <th className="px-4 py-3 font-bold border-b border-gray-100 dark:border-gray-800">Date</th>
-                                <th className="px-4 py-3 font-bold border-b border-gray-100 dark:border-gray-800">Clock In</th>
-                                <th className="px-4 py-3 font-bold border-b border-gray-100 dark:border-gray-800">Clock Out</th>
-                                <th className="px-4 py-3 font-bold border-b border-gray-100 dark:border-gray-800 text-right">Status</th>
+                                <th className="px-4 py-3 font-bold border-b border-border-1">Date</th>
+                                <th className="px-4 py-3 font-bold border-b border-border-1">Clock In</th>
+                                <th className="px-4 py-3 font-bold border-b border-border-1">Clock Out</th>
+                                <th className="px-4 py-3 font-bold border-b border-border-1 text-right">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             {history.map((record) => (
-                                <tr key={record.id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-900/50 transition-colors">
+                                <tr key={record.id} className="border-b border-border-1 hover:bg-surface-3 transition-colors">
                                     <td className="px-4 py-4 font-medium whitespace-nowrap">
                                         {formatDate(record.date)}
                                     </td>
@@ -73,7 +73,7 @@ export function AttendanceHistory({ history }: AttendanceHistoryProps) {
                                                 {formatTime(record.clock_out)}
                                             </div>
                                         ) : (
-                                            <span className="text-xs text-gray-400 italic">Not clocked out</span>
+                                            <span className="text-xs text-muted-foreground italic">Not clocked out</span>
                                         )}
                                     </td>
                                     <td className="px-4 py-4 text-right">
@@ -81,7 +81,7 @@ export function AttendanceHistory({ history }: AttendanceHistoryProps) {
                                             variant={record.clock_out ? 'secondary' : 'default'}
                                             className={cn(
                                                 "text-[10px] px-2 py-0 uppercase tracking-wider font-bold",
-                                                !record.clock_out && "bg-green-600 hover:bg-green-700 animate-pulse text-white"
+                                                !record.clock_out && "bg-primary/20 hover:bg-primary/30 text-primary border-primary/30 animate-pulse"
                                             )}
                                         >
                                             {record.clock_out ? 'Completed' : 'Working'}

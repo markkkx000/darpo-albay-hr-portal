@@ -25,11 +25,6 @@ interface Props {
 export default function Index({ employees, filters, departments = [], employmentStatuses = [] }: Props) {
     const { auth } = usePage().props as any;
 
-    // Safety check for auth
-    if (!auth) {
-        console.error('Auth prop is missing');
-    }
-
     const [search, setSearch] = useState(filters?.search || '');
     const [deptId, setDeptId] = useState(filters?.department_id || 'all');
     const [statusId, setStatusId] = useState(filters?.employment_status_id || 'all');
@@ -86,22 +81,22 @@ export default function Index({ employees, filters, departments = [], employment
             <Head title="Personnel Directory" />
 
             <div className="p-4 w-full">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Personnel Directory</h1>
-                        <p className="text-muted-foreground text-sm mt-1">
+                <div className="matte-card elev-2 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 rounded-2xl">
+                    <div className="flex items-center gap-3">
+                        <h1 className="t-headline">Personnel Directory</h1>
+                        <p className="text-muted-foreground text-sm mt-2">
                             Manage and view all employee records across the agency.
                         </p>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Button variant="outline" asChild className="gap-2">
+                    <div className="flex items-center gap-3">
+                        <Button asChild className="btn-ghost-specular gap-2 border-none">
                             <Link href={archivedRoute().url}>
                                 <Archive className="h-4 w-4" />
                                 View Archived
                             </Link>
                         </Button>
                         {canCreate && (
-                            <Button asChild className="gap-2 shadow-sm">
+                            <Button asChild className="btn-ghost-specular px-6 border-none">
                                 <Link href={createRoute().url}>
                                     <Plus className="h-4 w-4" />
                                     Add Employee
@@ -112,12 +107,12 @@ export default function Index({ employees, filters, departments = [], employment
                 </div>
 
                 {/* Filters */}
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 bg-muted/30 p-4 rounded-xl border border-border/50">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 matte-card elev-2 px-4 py-4 rounded-2xl mb-6">
                     <div className="relative md:col-span-6">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
                         <Input
                             placeholder="Search by name or ID..."
-                            className="pl-10"
+                            className="input-etched !pl-11"
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             onKeyDown={(e) => {
@@ -129,7 +124,7 @@ export default function Index({ employees, filters, departments = [], employment
                     </div>
                     <div className="md:col-span-3">
                         <Select value={deptId} onValueChange={handleDeptChange}>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="input-etched w-full">
                                 <div className="truncate text-left flex-1">
                                     <SelectValue placeholder="Department" />
                                 </div>
@@ -144,7 +139,7 @@ export default function Index({ employees, filters, departments = [], employment
                     </div>
                     <div className="md:col-span-3">
                         <Select value={statusId} onValueChange={handleStatusChange}>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="input-etched w-full">
                                 <div className="truncate text-left flex-1">
                                     <SelectValue placeholder="Employment Status" />
                                 </div>
@@ -171,6 +166,6 @@ export default function Index({ employees, filters, departments = [], employment
 
 Index.layout = {
     breadcrumbs: [
-        { title: 'Personnel Directory', href: '#' },
+        { title: 'Personnel Directory', href: indexRoute().url },
     ],
 };

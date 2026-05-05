@@ -70,7 +70,11 @@ return;
     return (
         <DropdownMenu onOpenChange={(open) => open && fetchRecent()}>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-full">
+                <Button 
+                    size="icon" 
+                    className="btn-ghost-specular relative h-9 w-9 border-none shadow-none hover:scale-110 transition-transform" 
+                    aria-label="Notifications"
+                >
                     <Bell className="h-5 w-5" />
                     {unreadCount > 0 && (
                         <Badge variant="destructive" className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] animate-in zoom-in">

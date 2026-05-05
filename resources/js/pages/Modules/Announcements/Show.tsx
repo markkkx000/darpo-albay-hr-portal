@@ -4,7 +4,8 @@ import { ArrowLeft, Calendar, User, Megaphone } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatDate } from '@/lib/utils';
+import { cn, formatDate } from '@/lib/utils';
+import { index } from '@/routes/announcements';
 
 interface Props {
     announcement: any;
@@ -27,8 +28,8 @@ export default function Show({ announcement }: Props) {
                     </Link>
                 </div>
 
-                <Card className="border-none shadow-lg overflow-hidden bg-background">
-                    <CardHeader className="bg-muted/30 pb-6 border-b border-muted/30">
+                <Card className="matte-card elev-2 border-none overflow-hidden">
+                    <CardHeader className="border-b border-muted/20 pb-6">
                         <div className="space-y-4">
                             <div className="flex items-center gap-2 text-primary font-medium">
                                 <Megaphone className="h-5 w-5" />
@@ -58,12 +59,14 @@ export default function Show({ announcement }: Props) {
                                     </span>
                                 </div>
                                 <Badge variant="outline" className={cn(
-                                    "capitalize font-normal text-xs",
-                                    announcement.priority === 'high' ? 'bg-red-500/10 text-red-600 border-red-200' :
-                                    announcement.priority === 'low' ? 'bg-blue-500/10 text-blue-600 border-blue-200' : 
-                                    'bg-gray-500/10 text-gray-600 border-gray-200'
+                                    "uppercase font-bold text-[10px] px-3 py-1 rounded-full border tracking-wider transition-all",
+                                    announcement.priority === 'high'
+                                        ? 'bg-red-500/10 text-red-500 border-red-500/50 dark:text-red-400 dark:border-red-500/30 animate-pulse ring-1 ring-red-500/20'
+                                        : announcement.priority === 'low'
+                                        ? 'bg-green-500/10 text-green-600 border-green-500/30 dark:text-green-400 dark:border-green-500/20'
+                                        : 'bg-muted text-muted-foreground border-border dark:bg-muted/50 dark:text-muted-foreground dark:border-border/50'
                                 )}>
-                                    {announcement.priority} Priority
+                                    {announcement.priority}
                                 </Badge>
                             </div>
                         </div>
@@ -78,10 +81,6 @@ export default function Show({ announcement }: Props) {
         </>
     );
 }
-
-// Need to import cn since it's used in the badge
-import { cn } from '@/lib/utils';
-import { index } from '@/routes/announcements';
 
 Show.layout = {
     breadcrumbs: [

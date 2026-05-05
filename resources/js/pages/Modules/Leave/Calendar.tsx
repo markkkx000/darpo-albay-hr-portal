@@ -83,13 +83,13 @@ return '';
             <Head title="Leave Calendar" />
             <div className="container mx-auto py-6 max-w-7xl">
                 <div className="mb-6">
-                    <h1 className="text-3xl font-bold tracking-tight">Leave Calendar</h1>
+                    <h1 className="t-title">Leave Calendar</h1>
                     <p className="text-muted-foreground">Visual overview of employee leaves.</p>
                 </div>
 
                 <LeaveNavigation />
 
-                <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+                <div className="matte-card elev-2 p-6">
                     
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-center mb-6">
                         {/* 25% - Navigation */}
@@ -138,7 +138,7 @@ return '';
                                 onChange={changeUser}
                             >
                                 <div className="relative w-full z-50">
-                                    <div className="relative w-full cursor-default overflow-hidden rounded-md border border-input bg-background text-left shadow-sm focus-within:ring-1 focus-within:ring-ring">
+                                    <div className="relative w-full cursor-default overflow-hidden rounded-xl border border-input bg-background text-left shadow-sm focus-within:ring-1 focus-within:ring-ring">
                                         <ComboboxInput
                                             className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-foreground bg-transparent focus:ring-0 outline-none"
                                             displayValue={(val: string) => {
@@ -163,7 +163,7 @@ return 'All Employees';
                                         leaveTo="opacity-0"
                                         afterLeave={() => setQuery('')}
                                     >
-                                        <ComboboxOptions className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-popover py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm border">
+                                        <ComboboxOptions className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-popover py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm border">
                                             {filteredUsers.length === 0 && query !== '' ? (
                                                 <div className="relative cursor-default select-none py-2 px-4 text-muted-foreground">
                                                     Nothing found.
@@ -236,7 +236,7 @@ return 'All Employees';
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-7 gap-px bg-muted rounded-lg overflow-hidden border">
+                    <div className="grid grid-cols-7 gap-px bg-muted matte-card elev-1 overflow-hidden border">
                         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
                             <div key={day} className="bg-muted/50 p-2 text-center text-sm font-medium text-muted-foreground">
                                 {day}
@@ -274,7 +274,7 @@ return 'All Employees';
                                             return (
                                                 <div 
                                                     key={leave.id} 
-                                                    className="text-[10px] leading-tight p-1 rounded text-white truncate"
+                                                    className="text-[10px] leading-tight p-1 rounded-md text-white truncate"
                                                     style={{ 
                                                         backgroundColor: leave.leave_type?.color_code,
                                                         opacity: isHalfDay ? 0.7 : 1,
@@ -301,7 +301,7 @@ return 'All Employees';
                                                     </DialogHeader>
                                                     <div className="space-y-2 mt-4 max-h-[60vh] overflow-y-auto pr-2">
                                                         {dayLeaves.map((leave: any) => (
-                                                            <div key={leave.id} className="flex items-center justify-between p-2 border rounded-md">
+                                                            <div key={leave.id} className="flex items-center justify-between p-2 border rounded-xl">
                                                                 <div className="flex items-center space-x-3">
                                                                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: leave.leave_type?.color_code }}></div>
                                                                     <div>

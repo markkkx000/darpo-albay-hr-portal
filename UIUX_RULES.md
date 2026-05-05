@@ -19,6 +19,7 @@
 10. [Feedback & System Response](#10-feedback--system-response)
 11. [Accessibility](#11-accessibility)
 12. [Performance & Perception](#12-performance--perception)
+13. [Code Efficiency & Anti-Bloat](#13-code-efficiency--anti-bloat)
 
 ---
 
@@ -27,6 +28,11 @@
 ### Occam's Razor
 - **Rule:** Always choose the simplest solution that works. Remove any element that does not serve a clear purpose.
 - **Apply:** If two designs achieve the same goal, always ship the simpler one. Every added element must justify its existence.
+
+### Light & Dark Mode Variants
+- **Rule:** Every component or UI update must have light and dark mode variants or be visually acceptable for both modes.
+- **Apply:** Test all UI changes in both themes. Use semantic color tokens (e.g., `text-foreground`, `bg-background`) that adapt automatically, or use `.dark` specific variants when custom colors are required. Avoid hardcoding colors that only work in one mode.
+- **Strict Requirement:** Every element should adapt depending on the appearance (light/dark/system).
 
 ### Aesthetic-Usability Effect
 - **Rule:** Users perceive visually pleasing designs as more usable, even when they are functionally identical to less attractive designs.
@@ -109,6 +115,15 @@
 ### Law of Prägnanz (Law of Good Form)
 - **Rule:** Users interpret ambiguous or complex visuals in the simplest possible way.
 - **Apply:** Simplify icons, illustrations, and layouts. Use clean, recognizable shapes. Avoid overly abstract or ambiguous visual metaphors.
+
+### Dual-Mode Design Mandate
+- **Rule:** Every element introduced to the interface — whether created from scratch or imported — must be explicitly designed for both light and dark mode appearances, ensuring full visual cohesion across system themes. Color values, borders, shadows, icons, and illustrations must never be hardcoded to a single appearance; instead, they must be defined in paired opposites (e.g., near-black on light / near-white on dark for text, elevated surfaces inverting accordingly) and must remain consistent with all other active design rules such as contrast ratios, hierarchy, and spacing. Any change made in one mode must be mirrored and validated in the other before it is considered complete.
+- **Apply:** When assigning color to any element, always define both states:
+  - **Text:** Use a dark tone (e.g., `#1A1A1A`) on light backgrounds and a light tone (e.g., `#F5F5F5`) on dark backgrounds.
+  - **Surfaces:** Use white or light-neutral fills in light mode and deep-neutral or near-black fills in dark mode.
+  - **Borders & dividers:** Use low-contrast darks in light mode and low-contrast lights in dark mode.
+  - **Shadows:** Use dark semi-transparent drops in light mode; switch to subtle inner glows or lightened edges in dark mode.
+  - **Icons & illustrations:** Ensure assets are either theme-adaptive (SVG with dynamic fills) or provided in two explicit variants — never rely on a single static asset to serve both modes.
 
 ---
 
@@ -343,6 +358,40 @@
 
 ---
 
+## 13. Code Efficiency & Anti-Bloat
+
+### Prevent Code Bloating
+- **Rule:** Every line of UI code must justify its existence. Redundant markup, duplicated utility classes, and re-implemented existing components are treated as bugs, not style.
+- **Apply:**
+  - **Reuse before you write.** Before adding any new component, class, or style block, check the existing component inventory (`FRONTEND_MODIFICATIONS_GUIDE.md §3`) and the design token system (`app.css`). If something already does the job, use it.
+  - **Deduplicate Tailwind classes.** Never repeat the same utility class on the same element. Conflicting or overriding classes (e.g., `p-4 p-6` on one element) must be resolved immediately.
+  - **Use `cn()` for conditional classes.** Never concatenate class strings manually — it produces duplicates and conflicts that are invisible at a glance but break the rendered output.
+  - **CSS tokens over inline values.** Never hardcode a spacing, color, radius, or shadow value that already has a corresponding CSS custom property or Tailwind token. Hardcoded values fork the design system and create drift.
+  - **No wrapper divs without purpose.** Every `<div>` must serve a declared layout or grouping role. Pure "just in case" wrappers are removed.
+  - **Flatten shallow component trees.** If a component renders a single child with no added logic or styling, it is not a component — inline it.
+  - **One source of truth per visual rule.** If a style is defined in `app.css` as a utility class, do not redefine it inline in JSX. Reference the class; do not copy the declaration.
+  - **Dead code is removed immediately.** Commented-out JSX blocks, unused imports, and orphaned CSS classes must be deleted — not left "for reference."
+
+---
+
+## 14. Specifications
+
+### Rounded Elements
+- **Rule:** Use consistent rounding across the interface to maintain a unified, modern aesthetic.
+- **Apply:**
+  - Standard containers and cards should use `rounded-xl` or `rounded-2xl` for a soft, premium feel.
+  - Interactive buttons and pills should be fully rounded (`rounded-full`) or precisely match the container's inner radius.
+  - Avoid sharp corners (`rounded-none`) unless explicitly required by a full-bleed layout.
+
+### Light & Dark Mode Synchronization
+- **Rule:** Both modes must feel like two sides of the same coin — thematic parallel and cohesive.
+- **Apply:**
+  - Ensure visual hierarchy and physical depth translate perfectly between light and dark themes.
+  - Shadows in light mode must translate to subtle borders or inner glows in dark mode to maintain elevation.
+  - Colors should automatically map to their mode-specific semantic tokens without requiring explicit overriding classes whenever possible.
+
+---
+
 ## ✅ Quick-Reference Checklist
 
 Use this before shipping any UI screen or flow:
@@ -359,6 +408,8 @@ Use this before shipping any UI screen or flow:
 - [ ] Is the design accessible by keyboard and screen reader?
 - [ ] Have we designed a memorable peak and a positive ending? (Peak-End Rule)
 - [ ] Is this the simplest design that solves the problem? (Occam's Razor)
+- [ ] Are all existing components and tokens reused instead of re-implemented? (Anti-Bloat)
+- [ ] Are there any unused imports, dead JSX blocks, or duplicate classes to remove? (Anti-Bloat)
 
 ---
 

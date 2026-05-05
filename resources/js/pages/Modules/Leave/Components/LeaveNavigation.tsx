@@ -48,14 +48,32 @@ export default function LeaveNavigation() {
                         key={tab.name}
                         href={tab.href}
                         className={cn(
-                            'flex items-center space-x-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors',
+                            'relative flex items-center space-x-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors',
                             isActive
-                                ? 'border-primary text-primary'
+                                ? 'border-transparent font-semibold'
                                 : 'border-transparent text-muted-foreground hover:border-gray-300 hover:text-gray-700 dark:hover:border-gray-700 dark:hover:text-gray-300'
                         )}
                     >
-                        <Icon className="h-4 w-4" />
-                        <span>{tab.name}</span>
+                        {isActive && (
+                            <span
+                                className="pointer-events-none absolute bottom-0 left-0 right-0 h-0.5 rounded-full"
+                                style={{ background: 'var(--grad-primary)' }}
+                            />
+                        )}
+                        <Icon
+                            className="h-4 w-4"
+                            style={isActive ? { color: 'var(--color-primary)' } : {}}
+                        />
+                        <span
+                            style={isActive ? {
+                                background: 'var(--grad-primary)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                backgroundClip: 'text',
+                            } : {}}
+                        >
+                            {tab.name}
+                        </span>
                     </Link>
                 );
             })}

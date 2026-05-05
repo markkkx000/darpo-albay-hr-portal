@@ -1,6 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
-import { Search, ArrowLeft, Trash2 } from 'lucide-react';
+import { Search, ArrowLeft } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { EmployeeTable } from '@/components/Personnel/EmployeeTable';
 import { Button } from '@/components/ui/button';
@@ -42,18 +42,14 @@ export default function Archived({ employees, filters }: Props) {
             <Head title="Archived Personnel" />
 
             <div className="p-4 w-full">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <div className="flex items-center gap-2 text-destructive font-semibold text-sm mb-1">
-                            <Trash2 className="h-4 w-4" />
-                            <span>System Archive</span>
-                        </div>
-                        <h1 className="text-3xl font-bold tracking-tight">Archived Personnel</h1>
-                        <p className="text-muted-foreground text-sm mt-1">
+                <div className="matte-card elev-1 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 rounded-2xl">
+                    <div className="flex items-center gap-3">
+                        <h1 className="t-headline">Archived Personnel</h1>
+                        <p className="text-muted-foreground text-sm mt-2">
                             Review and restore soft-deleted employee records.
                         </p>
                     </div>
-                    <Button variant="ghost" asChild className="gap-2">
+                    <Button asChild className="btn-ghost-specular gap-2 px-6 border-none">
                         <Link href={indexRoute().url}>
                             <ArrowLeft className="h-4 w-4" />
                             Back to Directory
@@ -62,7 +58,7 @@ export default function Archived({ employees, filters }: Props) {
                 </div>
 
                 {/* Filters */}
-                <div className="grid grid-cols-1 gap-4 bg-destructive/5 p-4 rounded-xl border border-destructive/20">
+                <div className="grid grid-cols-1 gap-4 matte-card elev-1 border border-destructive/20 p-4 rounded-xl">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
