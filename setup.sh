@@ -136,7 +136,7 @@ success "Application setup complete"
 # └─────────────────────────────────────────────────────────────────────────────┘
 step "Step 5/6 — Summary"
 
-echo -e "\n${GREEN}${BOLD}✅ Setup completed successfully!${NC}"
+echo -e "\n${GREEN}${BOLD}Setup completed successfully!${NC}"
 echo -e "\n  ${BOLD}Commands:${NC}"
 if [ "$HAS_DOCKER" = true ]; then
     echo -e "  Start App:      ${CYAN}./vendor/bin/sail up -d${NC}"
