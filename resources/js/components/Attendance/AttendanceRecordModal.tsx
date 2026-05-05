@@ -268,7 +268,7 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
                         <Button type="button" variant="outline" onClick={onClose}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={processing}>
+                        <Button type="submit" disabled={processing} className="btn-specular px-6 border-none">
                             {isEditing ? 'Save Changes' : 'Create Record'}
                         </Button>
                     </DialogFooter>

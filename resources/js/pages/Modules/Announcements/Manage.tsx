@@ -95,7 +95,7 @@ export default function Manage({ announcements }: Props) {
                         </p>
                     </div>
                     <Link href={create().url}>
-                        <Button className="btn-gradient gap-2 px-6 py-5 rounded-full shadow-lg border-none">
+                        <Button className="btn-ghost-specular gap-2 px-6 py-5 border-none">
                             <Plus className="h-4 w-4" />
                             Create Announcement
                         </Button>
@@ -116,8 +116,8 @@ export default function Manage({ announcements }: Props) {
                                     <tr>
                                         <th className="px-6 py-4">Title</th>
                                         <th className="px-6 py-4">Target</th>
-                                        <th className="px-6 py-4">Status</th>
-                                        <th className="px-6 py-4">Priority</th>
+                                        <th className="px-6 py-4 text-center">Status</th>
+                                        <th className="px-6 py-4 text-center">Priority</th>
                                         <th className="px-6 py-4">Created By</th>
                                         <th className="px-6 py-4 text-right">Actions</th>
                                     </tr>
@@ -131,7 +131,7 @@ export default function Manage({ announcements }: Props) {
                                                     <p className="font-medium text-sm">No announcements yet</p>
                                                     <p className="text-xs opacity-60 max-w-[220px]">Create your first announcement to notify the organization.</p>
                                                     <Link href={create().url}>
-                                                        <Button size="sm" className="btn-gradient mt-2 gap-2 px-4 py-4 rounded-full shadow-md border-none">
+                                                        <Button size="sm" className="btn-specular mt-2 gap-2 px-4 py-4 rounded-full shadow-md border-none">
                                                             <Plus className="h-3.5 w-3.5" />
                                                             Create Announcement
                                                         </Button>
@@ -155,7 +155,7 @@ export default function Manage({ announcements }: Props) {
                                                         <span className="capitalize">{announcement.target_type}</span>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-4 text-center">
                                                     <Badge 
                                                         variant={announcement.status === 'published' ? 'default' : 'secondary'} 
                                                         className={cn(
@@ -168,12 +168,14 @@ export default function Manage({ announcements }: Props) {
                                                         {announcement.status}
                                                     </Badge>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                 <td className="px-6 py-4 text-center">
                                                     <Badge variant="outline" className={cn(
-                                                        "capitalize font-normal",
-                                                        announcement.priority === 'high' ? 'border-destructive/30 text-destructive bg-destructive/10' :
-                                                        announcement.priority === 'low' ? 'border-primary/30 text-primary bg-primary/10' : 
-                                                        'border-muted-foreground/30 text-muted-foreground bg-muted-foreground/10'
+                                                        "uppercase font-bold text-[10px] px-3 py-0.5 rounded-full border tracking-wider",
+                                                        announcement.priority === 'high'
+                                                            ? 'bg-red-500/10 text-red-500 border-red-500/50 dark:text-red-400 dark:border-red-500/30 animate-pulse ring-1 ring-red-500/20'
+                                                            : announcement.priority === 'low'
+                                                            ? 'bg-green-500/10 text-green-600 border-green-500/30 dark:text-green-400 dark:border-green-500/20'
+                                                            : 'bg-muted text-muted-foreground border-border dark:bg-muted/50 dark:text-muted-foreground dark:border-border/50'
                                                     )}>
                                                         {announcement.priority}
                                                     </Badge>
@@ -254,7 +256,7 @@ export default function Manage({ announcements }: Props) {
                     </DialogHeader>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setAnnouncementToPublish(null)} className="rounded-xl">Cancel</Button>
-                        <Button onClick={handlePublish} className="btn-gradient gap-2 px-6 py-5 rounded-full shadow-lg border-none">
+                        <Button onClick={handlePublish} className="btn-specular gap-2 px-6 py-5 rounded-full shadow-lg border-none">
                             <Send className="h-4 w-4" />
                             Publish Now
                         </Button>

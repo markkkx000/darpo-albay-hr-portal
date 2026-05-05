@@ -89,14 +89,14 @@ export default function Index({ employees, filters, departments = [], employment
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <Button variant="outline-primary" asChild className="gap-2 rounded-full">
+                        <Button asChild className="btn-ghost-specular gap-2 border-none">
                             <Link href={archivedRoute().url}>
                                 <Archive className="h-4 w-4" />
                                 View Archived
                             </Link>
                         </Button>
                         {canCreate && (
-                            <Button asChild className="btn-specular px-6 border-none">
+                            <Button asChild className="btn-ghost-specular px-6 border-none">
                                 <Link href={createRoute().url}>
                                     <Plus className="h-4 w-4" />
                                     Add Employee

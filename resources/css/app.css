@@ -131,6 +131,12 @@
     --grad-shadow: 0 8px 20px rgba(34, 197, 94, 0.3), 0 4px 10px rgba(250, 204, 21, 0.2);
     --grad-warning-shadow: 0 8px 24px rgba(245, 158, 11, 0.25), 0 4px 12px rgba(251, 191, 36, 0.15);
 
+    /* ── Danger Gradient ── */
+    --grad-danger: linear-gradient(135deg, #ff453a 0%, #ff3b30 100%);
+    --grad-danger-180: linear-gradient(180deg, #ff453a 0%, #ff3b30 100%);
+    --danger-glow: rgba(255, 69, 58, 0.4);
+    --grad-danger-shadow: 0 8px 24px rgba(255, 69, 58, 0.3), 0 4px 12px rgba(255, 69, 58, 0.15);
+
     /* ── Surfaces ── */
     --surface-1: #ffffff;
     --surface-2: #f9f9f9;
@@ -189,6 +195,10 @@
     --grad-warning: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
     --grad-warning-180: linear-gradient(180deg, #f59e0b 0%, #b45309 100%);
     --grad-warning-shadow: 0 8px 24px rgba(245, 158, 11, 0.2), 0 4px 12px rgba(0, 0, 0, 0.3);
+
+    --grad-danger: linear-gradient(135deg, #ff453a 0%, #c12a23 100%);
+    --grad-danger-180: linear-gradient(180deg, #ff453a 0%, #c12a23 100%);
+    --grad-danger-shadow: 0 8px 24px rgba(255, 69, 58, 0.2), 0 4px 12px rgba(0, 0, 0, 0.4);
 
     /* ── Surfaces ── */
     --surface-1: #111111;
@@ -282,6 +292,88 @@
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
         border-radius: 9999px 9999px 40% 40%;
     }
+    
+    .btn-danger-specular {
+        @apply relative overflow-hidden transition-all duration-200 rounded-full;
+        background: var(--grad-danger-180);
+        color: #fff;
+        font-weight: 700;
+        box-shadow: 
+            0 1px 0 rgba(255, 255, 255, 0.25) inset,
+            0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+            var(--grad-danger-shadow);
+    }
+    
+    .btn-danger-specular:hover {
+        filter: brightness(1.1) saturate(1.1);
+        box-shadow: 
+            0 1px 0 rgba(255, 255, 255, 0.25) inset,
+            0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+            0 12px 32px rgba(255, 69, 58, 0.35);
+    }
+    
+    .btn-danger-specular::before {
+        content: '';
+        @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
+        border-radius: 9999px 9999px 40% 40%;
+    }
+
+    /* Hover-only Ghost Specular */
+    .btn-ghost-specular {
+        @apply relative overflow-hidden transition-all duration-200 rounded-full;
+        background: var(--surface-1);
+        color: var(--foreground);
+        border: 1px solid var(--border-2);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .dark .btn-ghost-specular { box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .btn-ghost-specular:hover {
+        background: var(--grad-primary);
+        color: #000;
+        border-color: transparent;
+        box-shadow: 
+            0 1px 0 rgba(255, 255, 255, 0.25) inset,
+            0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+            0 8px 24px rgba(34, 197, 94, 0.35);
+    }
+    .btn-ghost-specular::before {
+        content: '';
+        @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none opacity-0 transition-opacity duration-200;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
+        border-radius: 9999px 9999px 40% 40%;
+    }
+    .btn-ghost-specular:hover::before {
+        @apply opacity-100;
+    }
+
+    /* Hover-only Danger Specular */
+    .btn-ghost-danger-specular {
+        @apply relative overflow-hidden transition-all duration-200 rounded-full;
+        background: var(--surface-1);
+        color: var(--foreground);
+        border: 1px solid var(--border-2);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .dark .btn-ghost-danger-specular { box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .btn-ghost-danger-specular:hover {
+        background: var(--grad-danger-180);
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 
+            0 1px 0 rgba(255, 255, 255, 0.25) inset,
+            0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+            0 8px 24px rgba(255, 69, 58, 0.3);
+    }
+    .btn-ghost-danger-specular::before {
+        content: '';
+        @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none opacity-0 transition-opacity duration-200;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
+        border-radius: 9999px 9999px 40% 40%;
+    }
+    .btn-ghost-danger-specular:hover::before {
+        @apply opacity-100;
+    }
 
     .sidebar-active-gradient {
         background: var(--grad-primary);
@@ -320,6 +412,20 @@
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
     }
     .dark .elev-3 { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3); }
+
+    .elev-4 {
+        background: var(--surface-4);
+        border: 1px solid var(--border-3); /* using border-3 as max */
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+    .dark .elev-4 { box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.5); }
+
+    /* Hover rules: elevate by one level */
+    .elev-1:hover { background: var(--surface-2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04); }
+    .dark .elev-1:hover { background: var(--surface-2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3); }
+    
+    .elev-2:hover { background: var(--surface-3); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08); }
+    .dark .elev-2:hover { background: var(--surface-3); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3); }
 
     /* Technique 04: Mesh Gradients */
     .mesh-container {
@@ -404,6 +510,13 @@
     }
     .spring-press:active { transform: scale(0.96); }
     .spring-press:hover { transform: scale(1.02); }
+
+    .spring-hover {
+        @apply transition-transform duration-200;
+        transition-timing-function: var(--spring);
+    }
+    .spring-hover:hover  { transform: scale(1.04); }
+    .spring-hover:active { transform: scale(0.97); }
 
     /* Technique 07: Inset Surfaces */
     .input-etched {

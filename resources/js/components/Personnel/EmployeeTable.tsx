@@ -124,7 +124,7 @@ return 'N/A';
                                     <tr key={employee.id} className="hover:bg-muted/40 transition-colors group">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="sqicon sqicon-green h-10 w-10 !rounded-[10px] flex items-center justify-center text-white font-black text-xs uppercase shadow-sm">
+                                                <div className="sqicon sqicon-green h-10 w-10 !rounded-[10px] flex items-center justify-center font-black text-xs uppercase">
                                                     {(employee.first_name?.[0] || '')}{(employee.last_name?.[0] || '') || <UserIcon className="h-4 w-4" />}
                                                 </div>
                                                 <div className="flex flex-col">
@@ -160,10 +160,9 @@ return 'N/A';
                                             <div className="flex justify-end gap-2 sm:opacity-60 group-hover:opacity-100 transition-all duration-300">
                                                 {!isArchivedView && (
                                                     <Button 
-                                                        variant="secondary" 
                                                         size="sm" 
                                                         asChild 
-                                                        className="h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
+                                                        className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
                                                     >
                                                         <Link
                                                             href={showRoute({ user: employee.id }).url}
@@ -177,10 +176,9 @@ return 'N/A';
                                                 
                                                 {canEdit && !isArchivedView && (
                                                     <Button 
-                                                        variant="outline-primary" 
                                                         size="sm" 
                                                         asChild
-                                                        className="h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
+                                                        className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
                                                     >
                                                         <Link
                                                             href={editRoute({ user: employee.id }).url}
@@ -194,10 +192,9 @@ return 'N/A';
  
                                                 {canDelete && !isArchivedView && (
                                                     <Button 
-                                                        variant="outline" 
                                                         size="sm" 
                                                         onClick={() => setEmployeeToDelete(employee)}
-                                                        className="h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform text-destructive hover:bg-destructive/10 border-destructive/20"
+                                                        className="btn-ghost-danger-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
                                                         title="Archive Record"
                                                         aria-label={`Archive ${fullName(employee)}`}
                                                     >
@@ -207,10 +204,9 @@ return 'N/A';
  
                                                 {canRestore && isArchivedView && (
                                                     <Button 
-                                                        variant="outline" 
                                                         size="sm" 
                                                         onClick={() => setEmployeeToRestore(employee)}
-                                                        className="h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform text-primary hover:bg-primary/10 border-primary/20"
+                                                        className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
                                                         title="Restore Record"
                                                         aria-label={`Restore ${fullName(employee)}`}
                                                     >
@@ -241,8 +237,8 @@ return 'N/A';
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setEmployeeToDelete(null)}>Cancel</Button>
-                        <Button variant="destructive" onClick={handleDelete}>Archive Employee</Button>
+                        <Button variant="ghost" onClick={() => setEmployeeToDelete(null)} className="btn-ghost-specular px-6 border-none">Cancel</Button>
+                        <Button onClick={handleDelete} className="btn-ghost-danger-specular px-6 border-none">Archive Employee</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
@@ -257,8 +253,8 @@ return 'N/A';
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button variant="ghost" onClick={() => setEmployeeToRestore(null)} className="rounded-xl">Cancel</Button>
-                        <Button onClick={handleRestore} className="btn-specular px-6 border-none">Restore Employee</Button>
+                        <Button variant="ghost" onClick={() => setEmployeeToRestore(null)} className="btn-ghost-specular px-6 border-none">Cancel</Button>
+                        <Button onClick={handleRestore} className="btn-ghost-specular px-6 border-none">Restore Employee</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

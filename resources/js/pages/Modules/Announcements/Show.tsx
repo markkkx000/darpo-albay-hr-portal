@@ -59,12 +59,14 @@ export default function Show({ announcement }: Props) {
                                     </span>
                                 </div>
                                 <Badge variant="outline" className={cn(
-                                    "capitalize font-normal text-xs",
-                                    announcement.priority === 'high' ? 'bg-red-500/10 text-red-600 border-red-200' :
-                                    announcement.priority === 'low' ? 'bg-blue-500/10 text-blue-600 border-blue-200' : 
-                                    'bg-gray-500/10 text-gray-600 border-gray-200'
+                                    "uppercase font-bold text-[10px] px-3 py-1 rounded-full border tracking-wider transition-all",
+                                    announcement.priority === 'high'
+                                        ? 'bg-red-500/10 text-red-500 border-red-500/50 dark:text-red-400 dark:border-red-500/30 animate-pulse ring-1 ring-red-500/20'
+                                        : announcement.priority === 'low'
+                                        ? 'bg-green-500/10 text-green-600 border-green-500/30 dark:text-green-400 dark:border-green-500/20'
+                                        : 'bg-muted text-muted-foreground border-border dark:bg-muted/50 dark:text-muted-foreground dark:border-border/50'
                                 )}>
-                                    {announcement.priority} Priority
+                                    {announcement.priority}
                                 </Badge>
                             </div>
                         </div>

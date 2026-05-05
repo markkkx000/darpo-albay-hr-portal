@@ -25,9 +25,9 @@ export function AnnouncementCard({ announcement, defaultExpanded = false }: Prop
     const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
     const priorityColors = {
-        low: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
+        low: 'bg-green-500/10 text-green-600 border-green-500/30 dark:text-green-400 dark:border-green-500/20',
         normal: 'bg-muted text-muted-foreground border-border',
-        high: 'bg-destructive/10 text-destructive border-destructive/30 shadow-[0_0_15px_rgba(220,38,38,0.2)] animate-pulse font-bold',
+        high: 'bg-red-500/10 text-red-500 border-red-500/50 dark:text-red-400 dark:border-red-500/30 animate-pulse ring-1 ring-red-500/20',
     };
 
     const sanitizedContent = DOMPurify.sanitize(announcement.content);
@@ -63,7 +63,7 @@ export function AnnouncementCard({ announcement, defaultExpanded = false }: Prop
                             <Calendar className="h-3.5 w-3.5" />
                             {announcement.published_at ? formatDate(announcement.published_at) : 'Draft'}
                         </span>
-                        <Badge variant="outline" className={cn("px-3 py-0.5 rounded-full text-[10px]", priorityColors[announcement.priority as keyof typeof priorityColors])}>
+                        <Badge variant="outline" className={cn("px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider", priorityColors[announcement.priority as keyof typeof priorityColors])}>
                             {announcement.priority}
                         </Badge>
                     </div>

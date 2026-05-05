@@ -128,7 +128,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                             Systematically manage records and resolve logging anomalies.
                         </p>
                     </div>
-                    <Button onClick={handleAddNew} size="lg" className="btn-specular border-none">
+                    <Button onClick={handleAddNew} size="lg" className="btn-ghost-specular border-none px-6">
                         <Plus className="h-5 w-5 mr-2" />
                         Add Missing Record
                     </Button>
@@ -183,7 +183,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                 <tr key={record.id} className="hover:bg-surface-2 transition-colors group">
                                                     <td className="px-6 py-4 font-medium">
                                                         <div className="flex items-center gap-3">
-                                                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs uppercase">
+                                                            <div className="sqicon sqicon-green h-8 w-8 !rounded-[8px] flex items-center justify-center font-bold text-[10px] uppercase">
                                                                 {record.user?.first_name[0]}{record.user?.last_name[0]}
                                                             </div>
                                                             <div className="flex flex-col">
@@ -233,20 +233,18 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                     <td className="px-6 py-4 text-right">
                                                         <div className="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-all duration-300">
                                                             <Button
-                                                                variant="outline"
                                                                 size="sm"
                                                                 onClick={() => handleEdit(record)}
-                                                                className="h-8 w-8 p-0"
+                                                                className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
                                                                 title="Edit Record"
                                                             >
                                                                 <Edit className="h-3.5 w-3.5" />
                                                             </Button>
                                                             {canDelete && (
                                                                 <Button
-                                                                    variant="outline"
                                                                     size="sm"
                                                                     onClick={() => confirmDelete(record)}
-                                                                    className="h-8 w-8 p-0 text-destructive/70 hover:text-destructive hover:bg-destructive/10"
+                                                                    className="btn-ghost-danger-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
                                                                     title="Delete Record"
                                                                 >
                                                                     <Trash2 className="h-3.5 w-3.5" />

@@ -212,7 +212,7 @@ export function EmployeeForm({
             </div>
 
             <div className="flex justify-end pt-6 border-t border-border/50">
-                <Button type="submit" disabled={processing} className="btn-gradient w-full md:w-auto gap-2 px-8 py-6 rounded-xl border-none shadow-lg">
+                <Button type="submit" disabled={processing} className="btn-specular w-full md:w-auto gap-2 px-8 py-6 rounded-xl border-none shadow-lg">
                     {processing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                     {employee ? 'Update Employee Record' : 'Create Employee Record'}
                 </Button>

@@ -49,7 +49,7 @@ export default function Archived({ employees, filters }: Props) {
                             Review and restore soft-deleted employee records.
                         </p>
                     </div>
-                    <Button variant="ghost" asChild className="gap-2">
+                    <Button asChild className="btn-ghost-specular gap-2 px-6 border-none">
                         <Link href={indexRoute().url}>
                             <ArrowLeft className="h-4 w-4" />
                             Back to Directory
