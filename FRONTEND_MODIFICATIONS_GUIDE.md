@@ -93,12 +93,16 @@ Before creating any new UI element, check the existing component inventory below
 | **Breadcrumbs** | `breadcrumbs.tsx` | Rendered by `AppSidebarHeader`. Do not render manually. |
 | **DynamicIcon** | `dynamic-icon.tsx` | Renders Lucide icons from string names. Fallback: `LayoutDashboard`. |
 | **StatCard** | `dashboard/stat-card.tsx` | Dashboard statistics display with gradient backgrounds. |
+| **EmployeeSearch** | `EmployeeSearch.tsx` | Reusable employee search input with autocomplete. |
 | **AppLogo / AppLogoIcon** | `app-logo.tsx` / `app-logo-icon.tsx` | Brand identity components. |
 | **NavMain / NavFooter / NavUser** | `nav-main.tsx` / `nav-footer.tsx` / `nav-user.tsx` | Sidebar navigation sections. |
 | **InputError** | `input-error.tsx` | Form field error display. |
 | **AlertError** | `alert-error.tsx` | Alert-style error banners. |
 | **TextLink** | `text-link.tsx` | Styled inline links. |
 | **UserInfo** | `user-info.tsx` | User avatar + name display. |
+| **AppearanceTabs** | `appearance-tabs.tsx` | Toggle between light, dark, and system themes. |
+| **LiquidBackground** | `liquid-background.tsx` | Animated background effect for special sections. |
+| **PasswordInput** | `password-input.tsx` | Input field with show/hide password toggle. |
 
 ### UI Primitives (`resources/js/components/ui/`)
 
@@ -130,6 +134,10 @@ These are Radix-based, CVA-styled primitives. **Do not modify files in `componen
 | **Attendance** | `AttendanceFilters`, `AttendanceHistory`, `AttendanceRecordModal`, `AttendanceStatus`, `ClockDisplay` | `components/Attendance/` |
 | **Personnel** | `EmployeeCard`, `EmployeeForm`, `EmployeeTable` | `components/Personnel/` |
 | **Dashboard** | `AdminOverview`, `HROverview`, `EmployeeOverview`, `StatCard` | `components/dashboard/` |
+| **Roles** | `RoleAssignmentModal`, `RoleModal`, `RolesNavigation` | `components/Roles/` |
+| **Announcements** | `AnnouncementCard`, `AnnouncementForm`, `RichTextEditor`, `TargetSelector` | `components/Announcements/` |
+| **Notifications** | `NotificationBell` | `components/notifications/` |
+| **Leave** | `LeaveNavigation` | `pages/Modules/Leave/Components/` |
 
 ---
 
@@ -141,9 +149,9 @@ This project uses **Tailwind CSS v4** with the `@tailwindcss/vite` plugin. The d
 
 **Rules:**
 - Use **semantic color tokens** (`text-foreground`, `bg-background`, `text-muted-foreground`, `bg-primary`, `text-destructive`, etc.) — never hardcode raw color values like `#ff0000` or `rgb(...)`.
-- Support both light and dark mode. All colour tokens have light (`:root`) and dark (`.dark`) variants. Test changes visually in both modes or at minimum ensure you are using semantic tokens that automatically adapt.
+- **Dual-Mode Design Mandate:** Every UI update must have light and dark mode variants. Refer to `UIUX_RULES.md` for detailed design principles.
 - Use the project's font stack: `font-sans` resolves to `'Instrument Sans'` — do not import additional fonts without approval.
-- Use the project's border radius tokens: `rounded-sm`, `rounded-md`, `rounded-lg` resolve to `--radius`-based values — do not hardcode pixel radii.
+- Use the project's border radius tokens: `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-2xl` — do not hardcode pixel radii.
 
 ### Class Merging
 
@@ -184,10 +192,10 @@ export default function PageName({ ...props }: Props) {
             <div className="p-4 w-full">
                 {/* Page header: title + description + primary action */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Title</h1>
-                        <p className="text-muted-foreground text-sm mt-1">Description</p>
-                    </div>
+                    <Heading 
+                        title="Title" 
+                        description="Description" 
+                    />
                     <Button>Primary Action</Button>
                 </div>
 
@@ -195,7 +203,7 @@ export default function PageName({ ...props }: Props) {
                 <ModuleFilters ... />
 
                 {/* Data table wrapped in Card */}
-                <Card className="border-none shadow-md overflow-hidden bg-background">
+                <Card className="matte-card elev-1 overflow-hidden bg-background">
                     <CardHeader className="bg-muted/30 pb-4">...</CardHeader>
                     <CardContent className="p-0">
                         <div className="overflow-x-auto">
@@ -227,11 +235,11 @@ PageName.layout = {
 
 1. **`<Head title="..." />`** — always the first child. Do not remove or reorder.
 2. **Fluid container** — `p-4 w-full` for index/table pages. Do not add `max-w-*` constraints. `mx-auto` is only meaningful when paired with a `max-w-*` — omit it on fluid pages.
-3. **Responsive header** — `flex-col md:flex-row` pattern for title + action button.
+3. **Responsive header** — `flex-col md:flex-row` pattern for title + action button. Use the `<Heading />` component.
 4. **Table overflow** — `overflow-x-auto` wrapper is required for horizontal scroll on small screens.
 5. **Pagination** — always inside the `CardContent`, after the table, with a top border separator.
 6. **Modals** — rendered as siblings to the main content `<div>`, never nested inside it.
-7. **Breadcrumbs** — defined via `PageName.layout` static property. Use Wayfinder route functions for `href` values.
+7. **Breadcrumbs & Routes** — defined via `PageName.layout` static property. **Always** use Wayfinder route functions (e.g., `attendanceIndexRoute().url`) for `href` values.
 
 ---
 
@@ -342,7 +350,7 @@ This runs `vite build`. It will catch:
 | `resources/js/app.tsx` | **Global** — layout resolution, providers, theme init |
 | `resources/js/layouts/*` | **Global** — all pages using that layout |
 | `resources/js/components/app-sidebar.tsx` | **Global** — sidebar on all authenticated pages |
-| `resources/js/components/app-header.tsx` | **Global** — header layout (if header variant is used) |
+| `resources/js/components/app-header.tsx` | **Global** — top header navigation |
 | `resources/js/components/app-content.tsx` | **Global** — content wrapper for all pages |
 | `resources/js/components/Pagination.tsx` | **Multi-page** — all paginated views |
 | `resources/js/components/heading.tsx` | **Multi-page** — wherever `<Heading>` is used |
