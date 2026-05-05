@@ -233,7 +233,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                             <Button
                                                                 size="sm"
                                                                 onClick={() => handleEdit(record)}
-                                                                className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
+                                                                className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full"
                                                                 title="Edit Record"
                                                             >
                                                                 <Edit className="h-3.5 w-3.5" />
@@ -242,7 +242,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                                 <Button
                                                                     size="sm"
                                                                     onClick={() => confirmDelete(record)}
-                                                                    className="btn-ghost-danger-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
+                                                                    className="btn-ghost-danger-specular border-none h-8 w-8 p-0 rounded-full"
                                                                     title="Delete Record"
                                                                 >
                                                                     <Trash2 className="h-3.5 w-3.5" />

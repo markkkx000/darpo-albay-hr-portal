@@ -11,8 +11,8 @@ interface LinkItem {
 interface PaginationProps {
     links: LinkItem[];
     meta?: {
-        from: number;
-        to: number;
+        from: number | null;
+        to: number | null;
         total: number;
         current_page: number;
         last_page: number;
@@ -28,7 +28,7 @@ export function Pagination({ links, meta }: PaginationProps) {
 
     return (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-2">
-            {meta && (
+            {meta && meta.from !== null && meta.to !== null && (
                 <div className="text-sm text-muted-foreground whitespace-nowrap">
                     Showing <span className="font-semibold text-foreground">{meta.from}</span> to <span className="font-semibold text-foreground">{meta.to}</span> of <span className="font-semibold text-foreground">{meta.total}</span> results
                 </div>

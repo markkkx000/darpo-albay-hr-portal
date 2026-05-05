@@ -57,16 +57,16 @@ export default function LeaveNavigation() {
                         {isActive && (
                             <span
                                 className="pointer-events-none absolute bottom-0 left-0 right-0 h-0.5 rounded-full"
-                                style={{ background: 'linear-gradient(135deg, #4ade80, #facc15)' }}
+                                style={{ background: 'var(--grad-primary)' }}
                             />
                         )}
                         <Icon
-                            className={cn('h-4 w-4')}
-                            style={isActive ? { color: '#4ade80' } : {}}
+                            className="h-4 w-4"
+                            style={isActive ? { color: 'var(--color-primary)' } : {}}
                         />
                         <span
                             style={isActive ? {
-                                background: 'linear-gradient(135deg, #4ade80, #facc15)',
+                                background: 'var(--grad-primary)',
                                 WebkitBackgroundClip: 'text',
                                 WebkitTextFillColor: 'transparent',
                                 backgroundClip: 'text',

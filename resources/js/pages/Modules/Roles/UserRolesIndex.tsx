@@ -1,19 +1,58 @@
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { UserCog, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Pagination } from '@/components/Pagination';
+import { RoleAssignmentModal } from '@/components/Roles/RoleAssignmentModal';
+import { RolesNavigation } from '@/components/Roles/RolesNavigation';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import RolesRoutes from '@/routes/roles';
-import { RoleAssignmentModal } from './RoleAssignmentModal';
-import { RolesNavigation } from './RolesNavigation';
+
+/** Minimal shape for EmployeeSearch autocomplete — loaded eagerly from the controller. */
+interface EmployeeSearchUser {
+    id: number;
+    first_name: string;
+    last_name: string;
+    employee_number: string | null;
+}
+
+interface Role {
+    id: number;
+    name: string;
+}
+
+interface UserRecord {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    employee_number: string | null;
+    roles: Role[];
+}
+
+interface PaginationLink {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
+
+interface PaginatedUsers {
+    data: UserRecord[];
+    links: PaginationLink[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    from: number | null;
+    to: number | null;
+}
 
 interface Props {
-    users: any;
-    allUsers: any[];
-    roles: any[];
+    users: PaginatedUsers;
+    allUsers: EmployeeSearchUser[];
+    roles: Role[];
     filters: {
         search?: string;
     };
@@ -21,9 +60,9 @@ interface Props {
 
 export default function UserRolesIndex({ users, allUsers, roles, filters }: Props) {
     const [assignmentOpen, setAssignmentOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState<any>(null);
+    const [selectedUser, setSelectedUser] = useState<UserRecord | null>(null);
 
-    const openAssignment = (user: any) => {
+    const openAssignment = (user: UserRecord) => {
         setSelectedUser(user);
         setAssignmentOpen(true);
     };
@@ -47,7 +86,7 @@ export default function UserRolesIndex({ users, allUsers, roles, filters }: Prop
                 <Card className="border-border/50">
                     <CardContent className="p-0">
                         <div className="p-4 border-b border-border/50 bg-muted/20">
-                            <EmployeeSearch 
+                            <EmployeeSearch
                                 users={allUsers}
                                 route={RolesRoutes.users.index().url}
                                 placeholder="Search by name or employee number..."
@@ -66,7 +105,7 @@ export default function UserRolesIndex({ users, allUsers, roles, filters }: Prop
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-border">
-                                    {users.data.map((user: any) => (
+                                    {users.data.map((user) => (
                                         <tr key={user.id} className="group hover:bg-muted/30 transition-colors">
                                             <td className="px-6 py-4 font-mono text-xs font-semibold">{user.employee_number || 'N/A'}</td>
                                             <td className="px-6 py-4">
@@ -77,18 +116,18 @@ export default function UserRolesIndex({ users, allUsers, roles, filters }: Prop
                                                 {user.roles && user.roles.length > 0 ? (
                                                     <Badge variant={user.roles[0].name === 'super_admin' ? 'default' : 'secondary'} className="capitalize gap-1 px-2 text-[10px]">
                                                         <ShieldCheck className="h-3 w-3" />
-                                                        {user.roles[0].name.replace('_', ' ')}
+                                                        {user.roles[0].name.replaceAll('_', ' ')}
                                                     </Badge>
                                                 ) : (
                                                     <span className="text-xs text-muted-foreground italic">No role assigned</span>
                                                 )}
                                             </td>
                                             <td className="px-6 py-4 text-right">
-                                                <Button 
-                                                    variant="ghost" 
-                                                    size="sm" 
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
                                                     onClick={() => openAssignment(user)}
-                                                    disabled={user.roles?.some((r: any) => r.name === 'super_admin')}
+                                                    disabled={user.roles?.some((r) => r.name === 'super_admin')}
                                                     className="gap-2 h-8 px-2 sm:opacity-0 group-hover:opacity-100 transition-opacity hover:bg-primary/10 hover:text-primary border border-transparent hover:border-primary/20"
                                                 >
                                                     <UserCog className="h-4 w-4" />
@@ -118,11 +157,17 @@ export default function UserRolesIndex({ users, allUsers, roles, filters }: Prop
                 </Card>
             </div>
 
-            <RoleAssignmentModal 
-                open={assignmentOpen} 
-                onOpenChange={setAssignmentOpen} 
-                user={selectedUser} 
-                roles={roles} 
+            <RoleAssignmentModal
+                open={assignmentOpen}
+                onOpenChange={(isOpen) => {
+                    setAssignmentOpen(isOpen);
+
+                    if (!isOpen) {
+                        router.clearHistory();
+                    }
+                }}
+                user={selectedUser}
+                roles={roles}
             />
         </>
     );

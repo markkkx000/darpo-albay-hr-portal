@@ -1,34 +1,55 @@
 import { useForm } from '@inertiajs/react';
 import { AlertCircle } from 'lucide-react';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
+import InputError from '@/components/input-error';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import * as RolesRoutes from '@/routes/roles';
+import RolesRoutes from '@/routes/roles';
+
+interface Permission {
+    id: number;
+    name: string;
+}
+
+interface Role {
+    id: number;
+    name: string;
+    permissions?: Permission[];
+}
 
 interface Props {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    role?: any;
-    permissions: any[];
+    role?: Role | null;
+    permissions: Permission[];
+}
+
+const PROTECTED_ROLES = ['super_admin', 'hr_admin', 'hr_staff', 'department_head', 'employee'];
+
+interface RoleFormData {
+    name: string;
+    permissions: string[];
+    error?: string;
 }
 
 export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
     const isEdit = !!role;
-    
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm<RoleFormData>({
         name: role?.name || '',
-        permissions: role?.permissions?.map((p: any) => p.name) || [],
+        permissions: role?.permissions?.map((p) => p.name) || [],
     });
 
     useEffect(() => {
         if (open) {
             setData({
                 name: role?.name || '',
-                permissions: role?.permissions?.map((p: any) => p.name) || [],
+                permissions: role?.permissions?.map((p) => p.name) || [],
             });
             clearErrors();
         } else {
@@ -38,7 +59,7 @@ export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (isEdit) {
             put(RolesRoutes.update(role.id).url, {
                 onSuccess: () => {
@@ -69,7 +90,7 @@ export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
         setData('permissions', current);
     };
 
-    const isProtected = ['super_admin', 'hr_admin', 'hr_staff', 'department_head', 'employee'].includes(role?.name);
+    const isProtected = PROTECTED_ROLES.includes(role?.name ?? '');
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -91,15 +112,15 @@ export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
 
                     <div className="space-y-6 py-4 overflow-y-auto pr-2">
                         <div className="space-y-2">
-                            <Label htmlFor="name">Role Name</Label>
+                            <Label htmlFor="role-name">Role Name</Label>
                             <Input
-                                id="name"
+                                id="role-name"
                                 value={data.name}
                                 onChange={e => setData('name', e.target.value)}
                                 disabled={isProtected}
                                 placeholder="e.g. Content Moderator"
                             />
-                            {errors.name && <p className="text-sm text-destructive font-medium">{errors.name}</p>}
+                            <InputError message={errors.name} />
                             {isProtected && <p className="text-xs text-muted-foreground">Core role names are immutable.</p>}
                         </div>
 
@@ -124,13 +145,13 @@ export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
                                     ))}
                                 </div>
                             </div>
-                            {errors.permissions && <p className="text-sm text-destructive font-medium">{errors.permissions}</p>}
+                            <InputError message={errors.permissions} />
                         </div>
                     </div>
 
                     <DialogFooter className="pt-4 border-t mt-auto">
                         <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-                        <Button type="submit" disabled={processing}>
+                        <Button type="submit" disabled={processing} className="btn-specular border-none px-6">
                             {isEdit ? 'Update Role' : 'Create Role'}
                         </Button>
                     </DialogFooter>
