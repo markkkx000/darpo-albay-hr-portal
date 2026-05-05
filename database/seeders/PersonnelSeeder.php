@@ -70,28 +70,32 @@ class PersonnelSeeder extends Seeder
         $allStatuses = EmploymentStatus::all();
         $allPositions = Position::all();
 
-        // 4. Create 20 random employees
-        User::factory()->count(20)->create()->each(function (User $user) use ($allPositions, $allStatuses) {
-            $position = $allPositions->random();
-            $user->update([
-                'department_id' => $position->department_id,
-                'position_id' => $position->id,
-                'employment_status_id' => $allStatuses->random()->id,
-            ]);
+        // 4. Create random employees ONLY if we don't have many yet
+        if (User::count() < 10) {
+            User::factory()->count(20)->create()->each(function (User $user) use ($allPositions, $allStatuses) {
+                $position = $allPositions->random();
+                $user->update([
+                    'department_id' => $position->department_id,
+                    'position_id' => $position->id,
+                    'employment_status_id' => $allStatuses->random()->id,
+                ]);
 
-            // Assign employee role
-            $user->assignRole('employee');
-        });
+                // Assign employee role
+                $user->assignRole('employee');
+            });
+        }
 
-        // Ensure at least one HR Admin exists for testing if not already seeded
-        if (! User::role('hr_admin')->exists()) {
-            $hrAdmin = User::factory()->create([
+        // Ensure at least one HR Admin exists for testing
+        $hrAdmin = User::updateOrCreate(
+            ['email' => 'hr@darpo.gov.ph'],
+            [
                 'first_name' => 'HR',
                 'last_name' => 'Admin',
-                'email' => 'hr@darpo.gov.ph',
                 'employee_number' => 'HR-001',
-            ]);
-            $hrAdmin->assignRole('hr_admin');
-        }
+                'password' => bcrypt('password'), // or use factory default
+                'is_active' => true,
+            ]
+        );
+        $hrAdmin->assignRole('hr_admin');
     }
 }
