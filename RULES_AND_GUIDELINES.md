@@ -46,6 +46,7 @@
 - **Never** manually `require` module routes in `web.php`. `routes/web.php` contains core auth and dashboard routes only.
 - Business logic goes in a Service class under `app/Modules/{ModuleName}/Services/` — keep controllers thin.
 - Validation goes in Form Request classes under `app/Modules/{ModuleName}/Requests/` — never validate inside controllers.
+- **Model Definition**: Use Laravel 13 PHP attributes (`#[Fillable]`, `#[Hidden]`) instead of protected properties.
 - Real-world entity tables must use `softDeletes()`.
 - Each module that needs a sidebar link must include `app/Modules/{ModuleName}/navigation.php`. Read `ModuleServiceProvider.php` and an existing `navigation.php` (e.g. Attendance) before writing a new one to match the expected format.
 
@@ -63,8 +64,10 @@
 
 ---
 
-## Shared Props Rule
+## Shared Props & Background Tasks
 - Never add module-specific data to `HandleInertiaRequests.php` global shared props.
+- **Lazy Loading**: Use closures in `HandleInertiaRequests.php` for any global prop that requires a database query to ensure it only runs when needed.
+- **Background Mutations**: For operations that don't need full page navigation or reloads (e.g., status updates, marking as read), use the Inertia v3 **`useHttp`** hook instead of `router.post()`.
 - Pass module data via individual Inertia page responses in the controller.
 - Changes to `HandleInertiaRequests.php` must be deliberate and affect all pages — not one module.
 
