@@ -14,23 +14,30 @@ This application is a **Laravel 13** backend with an **Inertia.js React** fronte
 - `app/Core/Services/NotificationService.php` — cross-cutting notification infrastructure. Any module can import this service to dispatch notifications. See Notifications Infrastructure below.
 - `app/Observers/UserObserver.php` — listens for User model `password` changes and auto-dismisses the default password notification via `NotificationService::dismissBySubtype()`.
 - `app/Providers/ModuleServiceProvider.php` — bootstraps modules by automatically scanning for and registering `routes.php` and `navigation.php` files in each module directory under `app/Modules/`.
-- `app/Http/Middleware/HandleInertiaRequests.php` — shares common Inertia props: `auth.user`, `auth.roles`, `auth.permissions`, `auth.navigation`, `sidebarOpen`, and `notifications.unread_count` (lazy-loaded, global infrastructure exception).
+- `app/Http/Middleware/HandleInertiaRequests.php` — shares common Inertia props. Navigation is filtered by role/permission here.
+  - **Lazy Loading**: Heavy props like `notifications.unread_count` are lazy-loaded via closures for performance.
 - `spatie/laravel-permission` — used for all role and permission management via `config/permission.php`.
-- **Laravel Wayfinder** — auto-generates typed TypeScript functions for Laravel routes. All frontend route calls must use Wayfinder. Run `php artisan wayfinder:generate` after registering new routes.
+- **Laravel 13 Attributes** — models use PHP attributes like `#[Fillable]` and `#[Hidden]` instead of protected properties.
+- **Laravel Wayfinder** — auto-generates typed TypeScript functions for Laravel routes. All frontend route calls must use Wayfinder. Run `php artisan wayfinder:generate` after registering new routes. Supports `.form()` variants for Inertia `useForm`.
 
 ### Database
 - **Local**: SQLite for development.
 - **Production**: PostgreSQL via Supabase. All migrations must be PostgreSQL-compatible. See `rules_and_guidelines.md` for migration rules.
 
 ### Frontend
-- `resources/js/app.tsx` — initializes Inertia, selects layouts by page name, and adds global providers.
+- `resources/js/app.tsx` — initializes Inertia, adds global providers, and centralizes **layout resolution logic** based on page name (e.g., `settings/*` uses nested layouts).
 - `resources/js/pages/dashboard.tsx` — dispatcher that renders role-specific overview components (`AdminOverview`, `HROverview`, `EmployeeOverview`).
 - `resources/js/pages/auth/login.tsx` — login page (dual-field: email or employee number).
 - `resources/js/pages/welcome.tsx` — public landing page.
-- `resources/js/components/app-sidebar.tsx` — renders the core Dashboard link plus dynamic module links from `auth.navigation`. Settings and Logout are in the user dropdown at the bottom.
+- `resources/js/components/app-sidebar.tsx` — renders the core Dashboard link plus dynamic module links from `auth.navigation`.
+  - **Persistence**: Sidebar open/close state is persisted via a `sidebar_state` cookie managed by `SidebarProvider`.
 - `resources/js/components/dynamic-icon.tsx` — renders Lucide icons from string names with a `LayoutDashboard` fallback.
 - `resources/js/components/Pagination.tsx` — reusable pagination component. **Use this for all paginated views. Do not create module-specific pagination components.**
-- `resources/js/components/EmployeeSearch.tsx` — reusable Headless UI Combobox-based employee search with autocomplete filtering by name and employee number. Used across Leave module tabs (Dashboard, Credits, Tardiness) and available for any module needing employee selection.
+- `resources/js/components/EmployeeSearch.tsx` — reusable Headless UI Combobox-based employee search with autocomplete filtering by name and employee number.
+- **Inertia v3 Features**:
+  - **Standalone HTTP**: `useHttp` hook used for background requests that don't trigger full page navigation (e.g., marking notifications as read).
+  - **Strict Mode**: Enabled via `strictMode: true` in `app.tsx`.
+  - **Instant Visits**: Used in navigation for near-instant transitions.
 
 ---
 
