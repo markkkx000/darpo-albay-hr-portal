@@ -49,6 +49,15 @@ class LeaveController extends Controller
         ]);
     }
 
+    public function show(LeaveRequest $leaveRequest)
+    {
+        $leaveRequest->load(['user', 'leaveType', 'leaveStatus', 'createdBy', 'approvedBy']);
+
+        return Inertia::render('Modules/Leave/Show', [
+            'leaveRequest' => $leaveRequest,
+        ]);
+    }
+
     public function create()
     {
         $users = User::select('id', 'first_name', 'last_name', 'employee_number')->orderBy('last_name')->get();

@@ -71,7 +71,7 @@ return '';
 
         const date = new Date(dateString);
 
-        return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Manila' });
+        return date.toLocaleDateString('en-US', { timeZone: 'Asia/Manila' });
     };
 
     return (
@@ -193,7 +193,7 @@ return '';
                                     <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Employee</th>
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Leave Type</th>
-                                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Dates</th>
+                                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Dates (mm/dd/yyyy)</th>
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Days</th>
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Date Approved</th>
@@ -216,13 +216,21 @@ return '';
                                             </td>
                                             <td className="p-4 align-middle">
                                                 {leave.specific_dates && leave.specific_dates.length > 0 ? (
-                                                    <ul className="list-disc list-inside text-sm">
-                                                        {leave.specific_dates.map((d: string, i: number) => (
-                                                            <li key={i}>{formatDate(d)}</li>
-                                                        ))}
-                                                    </ul>
+                                                    leave.specific_dates.length === 1 ? (
+                                                        <span>{formatDate(leave.specific_dates[0])}</span>
+                                                    ) : (
+                                                        <ul className="list-disc list-inside text-sm">
+                                                            {leave.specific_dates.map((d: string, i: number) => (
+                                                                <li key={i}>{formatDate(d)}</li>
+                                                            ))}
+                                                        </ul>
+                                                    )
                                                 ) : (
-                                                    <span>{formatDate(leave.start_date)} to {formatDate(leave.end_date)}</span>
+                                                    <span>
+                                                        {leave.start_date === leave.end_date 
+                                                            ? formatDate(leave.start_date) 
+                                                            : `${formatDate(leave.start_date)} to ${formatDate(leave.end_date)}`}
+                                                    </span>
                                                 )}
                                             </td>
                                             <td className="p-4 align-middle">{leave.days_requested}</td>
@@ -242,13 +250,16 @@ return '';
                                                     <span className="font-semibold text-xs uppercase tracking-wider text-muted-foreground/70">Enc:</span> {leave.created_by?.first_name} {leave.created_by?.last_name}
                                                 </div>
                                             </td>
-                                            {canEncode && (
-                                                <td className="p-4 align-middle text-right">
+                                            <td className="p-4 align-middle text-right flex justify-end gap-2">
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <Link href={LeaveRoutes.show({ leaveRequest: leave.id }).url}>View</Link>
+                                                </Button>
+                                                {canEncode && (
                                                     <Button variant="ghost" size="sm" asChild>
                                                         <Link href={LeaveRoutes.edit({ leaveRequest: leave.id }).url}>Edit</Link>
                                                     </Button>
-                                                </td>
-                                            )}
+                                                )}
+                                            </td>
                                         </tr>
                                     ))}
                                     {leaves.data.length === 0 && (

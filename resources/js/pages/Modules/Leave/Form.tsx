@@ -15,17 +15,19 @@ import LeaveNavigation from './Components/LeaveNavigation';
 
 const formatDateForInput = (dateString: string | null | undefined) => {
     if (!dateString) {
-return '';
-}
+        return '';
+    }
 
-    return dateString.substring(0, 10);
+    const date = new Date(dateString);
+
+    return date.toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
 };
 
 
 export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatuses }: any) {
     const isEdit = !!leaveRequest;
 
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, transform } = useForm({
         user_id: leaveRequest?.user_id?.toString() || '',
         leave_type_id: leaveRequest?.leave_type_id?.toString() || '',
         leave_status_id: leaveRequest?.leave_status_id?.toString() || '',
@@ -55,6 +57,30 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
     );
 
     const isFirstRender = useRef(true);
+    const prevInputs = useRef('');
+
+    useEffect(() => {
+        transform((data) => {
+            if (dateMode === 'range' && data.start_date === data.end_date && data.start_date) {
+                return {
+                    ...data,
+                    specific_dates: [data.start_date],
+                    start_date: '',
+                    end_date: '',
+                };
+            }
+
+            return data;
+        });
+    }, [dateMode, transform]);
+
+
+
+    const parseLocalDate = (dateString: string) => {
+        const [y, m, d] = dateString.split('-').map(Number);
+
+        return new Date(y, m - 1, d);
+    };
 
     useEffect(() => {
         if (isFirstRender.current) {
@@ -63,14 +89,20 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
             return;
         }
 
+        const currentInputs = `${dateMode}-${data.start_date}-${data.end_date}-${JSON.stringify(data.specific_dates)}`;
+
+        if (prevInputs.current === currentInputs) {
+            return;
+        }
+
+        prevInputs.current = currentInputs;
+
         let calculatedDays = '';
 
         if (dateMode === 'range') {
             if (data.start_date && data.end_date) {
-                const start = new Date(data.start_date);
-                const end = new Date(data.end_date);
-                start.setHours(0, 0, 0, 0);
-                end.setHours(0, 0, 0, 0);
+                const start = parseLocalDate(data.start_date);
+                const end = parseLocalDate(data.end_date);
                 
                 if (end >= start) {
                     let weekdays = 0;
@@ -91,7 +123,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
             }
         } else {
             const weekdayCount = data.specific_dates.filter((d: string) => {
-                const day = new Date(d).getDay();
+                const day = parseLocalDate(d).getDay();
 
                 return day !== 0 && day !== 6;
             }).length;
@@ -99,10 +131,10 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
             calculatedDays = weekdayCount.toString();
         }
 
-        if (data.days_requested !== calculatedDays) {
+        if (calculatedDays !== '') {
             setData('days_requested', calculatedDays);
         }
-    }, [data.start_date, data.end_date, data.specific_dates, dateMode, data.days_requested, setData]);
+    }, [data.start_date, data.end_date, data.specific_dates, dateMode, setData]);
 
     const addSpecificDate = () => {
         if (specificDateInput && !data.specific_dates.includes(specificDateInput)) {
@@ -323,7 +355,7 @@ return { category: '', specify: '' };
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Days Requested</Label>
-                                        <Input type="number" step="1" min="0" value={data.days_requested} onChange={e => setData('days_requested', e.target.value)} />
+                                        <Input type="number" step="any" min="0" value={data.days_requested} onChange={e => setData('days_requested', e.target.value)} />
                                         {errors.days_requested && <p className="text-sm text-destructive">{errors.days_requested}</p>}
                                     </div>
                                 </div>
@@ -341,14 +373,14 @@ return { category: '', specify: '' };
                                         </div>
                                         <div className="space-y-2">
                                             <Label>Days Requested</Label>
-                                            <Input type="number" step="1" min="0" value={data.days_requested} onChange={e => setData('days_requested', e.target.value)} />
+                                            <Input type="number" step="any" min="0" value={data.days_requested} onChange={e => setData('days_requested', e.target.value)} />
                                             {errors.days_requested && <p className="text-sm text-destructive">{errors.days_requested}</p>}
                                         </div>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {data.specific_dates.map((d: string) => (
                                             <div key={d} className="flex items-center space-x-1 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                                                <span className="font-medium">{new Date(d).toLocaleDateString('en-GB', { timeZone: 'Asia/Manila' })}</span>
+                                                <span className="font-medium">{parseLocalDate(d).toLocaleDateString('en-US')}</span>
                                                 <button type="button" onClick={() => removeSpecificDate(d)} className="text-primary hover:text-primary/70">
                                                     <X className="h-3 w-3 ml-1" />
                                                 </button>
