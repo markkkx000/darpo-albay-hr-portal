@@ -34,24 +34,33 @@ cd "$SCRIPT_DIR"
 
 clear
 echo -e "${BOLD}╔═══════════════════════════════════════════════════════╗${NC}"
-echo -e "${BOLD}║   DARPO Albay HR Portal — Project Jumpstart (Sail)   ║${NC}"
+echo -e "${BOLD}║   DARPO Albay HR Portal — Project Jumpstart (Sail)    ║${NC}"
 echo -e "${BOLD}╚═══════════════════════════════════════════════════════╝${NC}"
 
 # ┌─────────────────────────────────────────────────────────────────────────────┐
-# │ 1. Environment Detection                                                   │
+# │ 1. Environment Detection                                                    │
 # └─────────────────────────────────────────────────────────────────────────────┘
 step "Step 1/6 — Environment Detection"
 
 HAS_DOCKER=false
 if command -v docker &>/dev/null; then
-    HAS_DOCKER=true
-    success "Docker detected"
+    if docker info &>/dev/null; then
+        HAS_DOCKER=true
+        success "Docker is running"
+    else
+        if grep -qi microsoft /proc/version; then
+            error "Docker is NOT running. Please start Docker Desktop on Windows and ensure WSL integration is enabled."
+        else
+            error "Docker is NOT running. Please start the Docker service (e.g., 'sudo systemctl start docker')."
+        fi
+        exit 1
+    fi
 else
     warn "Docker not detected. Local installation will be required."
 fi
 
 # ┌─────────────────────────────────────────────────────────────────────────────┐
-# │ 2. Environment Configuration                                               │
+# │ 2. Environment Configuration                                                │
 # └─────────────────────────────────────────────────────────────────────────────┘
 step "Step 2/6 — Environment Configuration"
 
@@ -60,37 +69,50 @@ if [ ! -f .env ]; then
     success "Created .env from .env.example"
     
     if [ "$HAS_DOCKER" = true ]; then
-        info "Configuring .env for Docker (Postgres & Redis) ..."
+        info "Configuring .env for Docker ..."
         sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=pgsql/' .env
         sed -i 's/DB_HOST=127.0.0.1/DB_HOST=pgsql/' .env
         sed -i 's/DB_PORT=3306/DB_PORT=5432/' .env
         sed -i 's/REDIS_HOST=127.0.0.1/REDIS_HOST=redis/' .env
+        
+        # Add Sail User IDs
+        {
+            echo ""
+            echo "WWWUSER=$(id -u)"
+            echo "WWWGROUP=$(id -g)"
+        } >> .env
+        success ".env configured for Docker (User ID: $(id -u))"
     fi
 else
     success ".env file already exists"
 fi
 
 # ┌─────────────────────────────────────────────────────────────────────────────┐
-# │ 3. Dependency Installation                                                 │
+# │ 3. Dependency Installation                                                  │
 # └─────────────────────────────────────────────────────────────────────────────┘
 step "Step 3/6 — Installing Dependencies"
 
 if [ ! -d vendor ]; then
-    if [ "$HAS_DOCKER" = true ] && ! command -v php &>/dev/null; then
-        info "PHP not found locally. Using Docker to install Composer dependencies ..."
+    if [ "$HAS_DOCKER" = true ]; then
+        info "Using Docker to install Composer dependencies ..."
         docker run --rm \
             -u "$(id -u):$(id -g)" \
             -v "$(pwd):/var/www/html" \
             -w /var/www/html \
             laravelsail/php84-composer:latest \
-            composer install --ignore-platform-reqs
+            composer install --ignore-platform-reqs --no-interaction
     else
         info "Installing Composer dependencies via local PHP ..."
-        composer install
+        composer install --no-interaction
     fi
     success "Composer dependencies installed"
 else
     success "Vendor directory already exists"
+fi
+
+if [ "$HAS_DOCKER" = true ]; then
+    info "Starting Docker containers (Sail) ..."
+    ./vendor/bin/sail up -d
 fi
 
 if [ ! -d node_modules ]; then
@@ -104,35 +126,36 @@ if [ ! -d node_modules ]; then
 fi
 
 # ┌─────────────────────────────────────────────────────────────────────────────┐
-# │ 4. Application Setup                                                       │
+# │ 4. Application Setup                                                        │
 # └─────────────────────────────────────────────────────────────────────────────┘
 step "Step 4/6 — Application Setup"
 
 if [ "$HAS_DOCKER" = true ]; then
-    info "Starting Docker containers (Sail) ..."
-    ./vendor/bin/sail up -d
-    
     info "Generating App Key ..."
     ./vendor/bin/sail artisan key:generate --no-interaction
     
     info "Running Migrations ..."
     ./vendor/bin/sail artisan migrate --no-interaction
     
-    info "Running Seeders (Optional) ..."
+    info "Running Seeders ..."
     ./vendor/bin/sail artisan db:seed --no-interaction
+    
+    info "Warming up Wayfinder ..."
+    ./vendor/bin/sail artisan wayfinder:generate --with-form
     
     info "Building Assets ..."
     ./vendor/bin/sail npm run build
 else
     php artisan key:generate --no-interaction
     php artisan migrate --no-interaction
+    php artisan db:seed --no-interaction
     npm run build
 fi
 
 success "Application setup complete"
 
 # ┌─────────────────────────────────────────────────────────────────────────────┐
-# │ 5. Final Summary                                                          │
+# │ 5. Final Summary                                                            │
 # └─────────────────────────────────────────────────────────────────────────────┘
 step "Step 5/6 — Summary"
 
