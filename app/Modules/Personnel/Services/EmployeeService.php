@@ -20,7 +20,7 @@ class EmployeeService
     public function getEmployees(array $filters = []): LengthAwarePaginator
     {
         $query = User::query()
-            ->with(['department', 'position', 'employmentStatus'])
+            ->with(['division', 'unit', 'position', 'employmentStatus'])
             ->when($filters['search'] ?? null, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('first_name', 'like', "%{$search}%")
@@ -28,8 +28,8 @@ class EmployeeService
                         ->orWhere('employee_number', 'like', "%{$search}%");
                 });
             })
-            ->when($filters['department_id'] ?? null, function ($query, $departmentId) {
-                $query->where('department_id', $departmentId);
+            ->when($filters['division_id'] ?? null, function ($query, $divisionId) {
+                $query->where('division_id', $divisionId);
             })
             ->when($filters['employment_status_id'] ?? null, function ($query, $statusId) {
                 $query->where('employment_status_id', $statusId);
@@ -46,7 +46,7 @@ class EmployeeService
     public function getArchivedEmployees(array $filters = []): LengthAwarePaginator
     {
         $query = User::onlyTrashed()
-            ->with(['department', 'position', 'employmentStatus'])
+            ->with(['division', 'unit', 'position', 'employmentStatus'])
             ->when($filters['search'] ?? null, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('first_name', 'like', "%{$search}%")
@@ -73,11 +73,25 @@ class EmployeeService
                 'password' => Hash::make($data['password'] ?? 'password123'), // Default password or from data
                 'is_active' => $data['is_active'] ?? true,
                 'position_id' => $data['position_id'] ?? null,
-                'department_id' => $data['department_id'] ?? null,
+                'division_id' => $data['division_id'] ?? null,
+                'unit_id' => $data['unit_id'] ?? null,
                 'employment_status_id' => $data['employment_status_id'] ?? null,
                 'hire_date' => $data['hire_date'] ?? null,
                 'contact_number' => $data['contact_number'] ?? null,
                 'address' => $data['address'] ?? null,
+                'sex' => $data['sex'] ?? null,
+                'date_of_birth' => $data['date_of_birth'] ?? null,
+                'years_in_service' => $data['years_in_service'] ?? null,
+                'plantilla_number' => $data['plantilla_number'] ?? null,
+                'gsis_bp_number' => $data['gsis_bp_number'] ?? null,
+                'philhealth' => $data['philhealth'] ?? null,
+                'hdmf_pagibig_no' => $data['hdmf_pagibig_no'] ?? null,
+                'tin_number' => $data['tin_number'] ?? null,
+                'prc_id_no' => $data['prc_id_no'] ?? null,
+                'prc_expiration' => $data['prc_expiration'] ?? null,
+                'orig_date_of_appointment' => $data['orig_date_of_appointment'] ?? null,
+                'date_of_latest_appointment' => $data['date_of_latest_appointment'] ?? null,
+                'date_of_assumption' => $data['date_of_assumption'] ?? null,
             ]);
 
             $user->assignRole('employee');

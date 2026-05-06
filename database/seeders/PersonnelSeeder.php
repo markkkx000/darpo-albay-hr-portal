@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Modules\Personnel\Models\Department;
+use App\Modules\Personnel\Models\Division;
 use App\Modules\Personnel\Models\EmploymentStatus;
 use App\Modules\Personnel\Models\Position;
 use Illuminate\Database\Seeder;
@@ -15,8 +15,8 @@ class PersonnelSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1 & 2. Create departments and their specific positions
-        $departmentsAndPositions = [
+        // 1 & 2. Create divisions and their specific positions
+        $divisionsAndPositions = [
             'Office of the PARPO' => [
                 'Provincial Agrarian Reform Program Officer II (PARPO II)',
                 'PARPO I',
@@ -50,12 +50,12 @@ class PersonnelSeeder extends Seeder
             ],
         ];
 
-        foreach ($departmentsAndPositions as $deptName => $positions) {
-            $department = Department::updateOrCreate(['name' => $deptName], ['is_active' => true]);
+        foreach ($divisionsAndPositions as $divName => $positions) {
+            $division = Division::updateOrCreate(['name' => $divName], ['is_active' => true]);
 
             foreach ($positions as $posName) {
                 Position::updateOrCreate(
-                    ['name' => $posName, 'department_id' => $department->id],
+                    ['name' => $posName, 'division_id' => $division->id],
                     ['is_active' => true]
                 );
             }
@@ -75,7 +75,7 @@ class PersonnelSeeder extends Seeder
             User::factory()->count(20)->create()->each(function (User $user) use ($allPositions, $allStatuses) {
                 $position = $allPositions->random();
                 $user->update([
-                    'department_id' => $position->department_id,
+                    'division_id' => $position->division_id,
                     'position_id' => $position->id,
                     'employment_status_id' => $allStatuses->random()->id,
                 ]);

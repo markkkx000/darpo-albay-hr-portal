@@ -6,12 +6,13 @@ import { update as updateRoute, index as indexRoute } from '@/routes/personnel';
 
 interface Props {
     employee: any;
-    departments: any[];
+    divisions: any[];
+    units: any[];
     positions: any[];
     employmentStatuses: any[];
 }
 
-export default function Edit({ employee, departments, positions, employmentStatuses }: Props) {
+export default function Edit({ employee, divisions, units, positions, employmentStatuses }: Props) {
     const handleSubmit = (data: any) => {
         router.put(updateRoute({ user: employee.id }).url, data, {
             onSuccess: () => {
@@ -39,7 +40,8 @@ export default function Edit({ employee, departments, positions, employmentStatu
                     <CardContent className="pt-6">
                         <EmployeeForm 
                             employee={employee}
-                            departments={departments}
+                            divisions={divisions}
+                            units={units}
                             positions={positions}
                             employmentStatuses={employmentStatuses}
                             onSubmit={handleSubmit}

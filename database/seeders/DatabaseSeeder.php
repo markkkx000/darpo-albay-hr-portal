@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Modules\Personnel\Models\Department;
+use App\Modules\Personnel\Models\Division;
 use App\Modules\Personnel\Models\EmploymentStatus;
 use App\Modules\Personnel\Models\Position;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -22,10 +22,10 @@ class DatabaseSeeder extends Seeder
         $this->call(LeaveStatusSeeder::class);
         $this->call(HolidaySeeder::class);
 
-        $stod = Department::where('name', 'Support To Operations Division (STOD)')->first();
+        $stod = Division::where('name', 'Support To Operations Division (STOD)')->first();
         $permanent = EmploymentStatus::where('name', 'Permanent')->first();
-        $adminPosition = Position::where('name', 'PCAO / Administrative Officer')->where('department_id', $stod->id)->first();
-        $staffPosition = Position::where('name', 'Admin staff')->where('department_id', $stod->id)->first();
+        $adminPosition = Position::where('name', 'PCAO / Administrative Officer')->where('division_id', $stod->id)->first();
+        $staffPosition = Position::where('name', 'Admin staff')->where('division_id', $stod->id)->first();
 
         // Create a Super Admin (no employee number, uses email login)
         $superAdmin = User::updateOrCreate(
@@ -48,7 +48,7 @@ class DatabaseSeeder extends Seeder
                 'first_name' => 'Maria',
                 'last_name' => 'Santos',
                 'password' => bcrypt('password'),
-                'department_id' => $stod->id,
+                'division_id' => $stod->id,
                 'position_id' => $adminPosition?->id,
                 'employment_status_id' => $permanent?->id,
                 'hire_date' => '2015-06-16',
@@ -65,7 +65,7 @@ class DatabaseSeeder extends Seeder
                 'first_name' => 'Juan',
                 'last_name' => 'Dela Cruz',
                 'password' => bcrypt('password'),
-                'department_id' => $stod->id,
+                'division_id' => $stod->id,
                 'position_id' => $staffPosition?->id,
                 'employment_status_id' => $permanent?->id,
                 'hire_date' => '2018-03-20',
@@ -89,15 +89,15 @@ class DatabaseSeeder extends Seeder
 
         // Create 30 additional random employees ONLY if we are low on users
         if (User::count() < 30) {
-            $departments = Department::all();
+            $divisions = Division::all();
             $employmentStatuses = EmploymentStatus::all();
 
-            User::factory()->count(30)->create()->each(function ($u) use ($departments, $employmentStatuses) {
-                $dept = $departments->random();
-                $pos = Position::where('department_id', $dept->id)->first();
+            User::factory()->count(30)->create()->each(function ($u) use ($divisions, $employmentStatuses) {
+                $div = $divisions->random();
+                $pos = Position::where('division_id', $div->id)->first();
 
                 $u->update([
-                    'department_id' => $dept->id,
+                    'division_id' => $div->id,
                     'position_id' => $pos?->id,
                     'employment_status_id' => $employmentStatuses->random()->id,
                 ]);

@@ -5,7 +5,7 @@ import { EmployeeTable } from '@/components/Personnel/EmployeeTable';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import * as PersonnelRoutes from '@/routes/personnel';
+import PersonnelRoutes from '@/routes/personnel';
 
 const createRoute = () => PersonnelRoutes.create();
 const indexRoute = () => PersonnelRoutes.index();
@@ -15,18 +15,18 @@ interface Props {
     employees: any;
     filters: {
         search?: string;
-        department_id?: string;
+        division_id?: string;
         employment_status_id?: string;
     };
-    departments: any[];
+    divisions: any[];
     employmentStatuses: any[];
 }
 
-export default function Index({ employees, filters, departments = [], employmentStatuses = [] }: Props) {
+export default function Index({ employees, filters, divisions = [], employmentStatuses = [] }: Props) {
     const { auth } = usePage().props as any;
 
     const [search, setSearch] = useState(filters?.search || '');
-    const [deptId, setDeptId] = useState(filters?.department_id || 'all');
+    const [divisionId, setDivisionId] = useState(filters?.division_id || 'all');
     const [statusId, setStatusId] = useState(filters?.employment_status_id || 'all');
 
     const canCreate = auth?.permissions?.includes('personnel.create');
@@ -34,13 +34,13 @@ export default function Index({ employees, filters, departments = [], employment
     const handleFilter = useCallback(() => {
         router.get(indexRoute().url, {
             search,
-            department_id: deptId === 'all' ? undefined : deptId,
+            division_id: divisionId === 'all' ? undefined : divisionId,
             employment_status_id: statusId === 'all' ? undefined : statusId,
         }, {
             preserveState: true,
             replace: true,
         });
-    }, [search, deptId, statusId]);
+    }, [search, divisionId, statusId]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -52,11 +52,11 @@ export default function Index({ employees, filters, departments = [], employment
         return () => clearTimeout(timer);
     }, [search, filters?.search, handleFilter]);
 
-    const handleDeptChange = (val: string) => {
-        setDeptId(val);
+    const handleDivisionChange = (val: string) => {
+        setDivisionId(val);
         router.get(indexRoute().url, {
             search,
-            department_id: val === 'all' ? undefined : val,
+            division_id: val === 'all' ? undefined : val,
             employment_status_id: statusId === 'all' ? undefined : statusId
         }, { preserveState: true, replace: true });
     };
@@ -65,7 +65,7 @@ export default function Index({ employees, filters, departments = [], employment
         setStatusId(val);
         router.get(indexRoute().url, {
             search,
-            department_id: deptId === 'all' ? undefined : deptId,
+            division_id: divisionId === 'all' ? undefined : divisionId,
             employment_status_id: val === 'all' ? undefined : val
         }, { preserveState: true, replace: true });
     };
@@ -96,12 +96,19 @@ export default function Index({ employees, filters, departments = [], employment
                             </Link>
                         </Button>
                         {canCreate && (
-                            <Button asChild className="btn-ghost-specular px-6 border-none">
-                                <Link href={createRoute().url}>
-                                    <Plus className="h-4 w-4" />
-                                    Add Employee
-                                </Link>
-                            </Button>
+                            <>
+                                <Button asChild className="btn-ghost-specular border-none">
+                                    <Link href={PersonnelRoutes.organization.index().url}>
+                                        Manage Organization
+                                    </Link>
+                                </Button>
+                                <Button asChild className="btn-ghost-specular px-6 border-none">
+                                    <Link href={createRoute().url}>
+                                        <Plus className="h-4 w-4" />
+                                        Add Employee
+                                    </Link>
+                                </Button>
+                            </>
                         )}
                     </div>
                 </div>
@@ -123,15 +130,15 @@ export default function Index({ employees, filters, departments = [], employment
                         />
                     </div>
                     <div className="md:col-span-3">
-                        <Select value={deptId} onValueChange={handleDeptChange}>
+                        <Select value={divisionId} onValueChange={handleDivisionChange}>
                             <SelectTrigger className="input-etched w-full">
                                 <div className="truncate text-left flex-1">
-                                    <SelectValue placeholder="Department" />
+                                    <SelectValue placeholder="Division" />
                                 </div>
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">All Departments</SelectItem>
-                                {Array.isArray(departments) && departments.map(d => (
+                                <SelectItem value="all">All Divisions</SelectItem>
+                                {Array.isArray(divisions) && divisions.map(d => (
                                     <SelectItem key={d.id} value={d.id?.toString() || ''}>{d.name}</SelectItem>
                                 ))}
                             </SelectContent>

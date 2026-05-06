@@ -21,7 +21,8 @@ interface User {
     first_name: string;
     last_name: string;
     email: string | null;
-    department?: { name: string };
+    division?: { name: string };
+    unit?: { name: string };
     position?: { name: string };
     employment_status?: { name: string };
     hire_date: string | null;
@@ -102,7 +103,7 @@ return 'N/A';
                         <thead className="text-[10px] text-muted-foreground uppercase bg-muted/40 font-bold tracking-widest border-b border-border/50">
                             <tr>
                                 <th className="px-6 py-4">Employee</th>
-                                <th className="px-6 py-4">Dept / Position</th>
+                                <th className="px-6 py-4">Div / Unit / Position</th>
                                 <th className="px-6 py-4">Status</th>
                                 <th className="px-6 py-4">Hire Date</th>
                                 {isArchivedView && <th className="px-6 py-4">Deleted At</th>}
@@ -139,8 +140,8 @@ return 'N/A';
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex flex-col">
-                                                <span className="font-semibold text-sm">{employee.department?.name || 'No Department'}</span>
-                                                <span className="text-[11px] text-muted-foreground">{employee.position?.name || 'No Position'}</span>
+                                                <span className="font-semibold text-sm">{employee.division?.name || 'No Division'}</span>
+                                                <span className="text-[11px] text-muted-foreground">{employee.unit?.name || 'No Unit'} &bull; {employee.position?.name || 'No Position'}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">

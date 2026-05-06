@@ -2,21 +2,21 @@
 
 namespace App\Modules\Personnel\Models;
 
-use Database\Factories\DepartmentFactory;
+use Database\Factories\DivisionFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Department extends Model
+#[Fillable(['name', 'is_active'])]
+class Division extends Model
 {
     use HasFactory;
 
     protected static function newFactory()
     {
-        return DepartmentFactory::new();
+        return DivisionFactory::new();
     }
-
-    protected $fillable = ['name', 'is_active'];
 
     protected $casts = [
         'is_active' => 'boolean',
@@ -25,5 +25,10 @@ class Department extends Model
     public function positions(): HasMany
     {
         return $this->hasMany(Position::class);
+    }
+
+    public function units(): HasMany
+    {
+        return $this->hasMany(Unit::class);
     }
 }
