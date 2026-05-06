@@ -70,18 +70,23 @@ return;
     return (
         <DropdownMenu onOpenChange={(open) => open && fetchRecent()}>
             <DropdownMenuTrigger asChild>
-                <Button 
-                    size="icon" 
-                    className="btn-ghost-specular relative h-9 w-9 border-none shadow-none hover:scale-110 transition-transform" 
-                    aria-label="Notifications"
-                >
-                    <Bell className="h-5 w-5" />
+                <div className="relative inline-flex transition-transform hover:scale-110">
+                    <Button 
+                        size="icon" 
+                        className="btn-ghost-specular relative h-9 w-9 border-none shadow-none" 
+                        aria-label="Notifications"
+                    >
+                        <Bell className="h-5 w-5" />
+                    </Button>
                     {unreadCount > 0 && (
-                        <Badge variant="destructive" className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] animate-in zoom-in">
+                        <Badge 
+                            variant="destructive" 
+                            className="absolute -right-1 -top-1 z-10 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] animate-in zoom-in pointer-events-none"
+                        >
                             {unreadCount > 99 ? '99+' : unreadCount}
                         </Badge>
                     )}
-                </Button>
+                </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-80 p-0 shadow-xl border-sidebar-border/50" sideOffset={8}>
                 <DropdownMenuLabel className="flex items-center justify-between p-4 bg-muted/30">
