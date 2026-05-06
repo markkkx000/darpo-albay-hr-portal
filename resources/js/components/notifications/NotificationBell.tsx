@@ -26,8 +26,8 @@ export default function NotificationBell() {
 
     const fetchRecent = async () => {
         if (loading) {
-return;
-}
+            return;
+        }
 
         setLoading(true);
 
@@ -70,20 +70,20 @@ return;
     return (
         <DropdownMenu onOpenChange={(open) => open && fetchRecent()}>
             <DropdownMenuTrigger asChild>
-                <Button 
-                    size="icon" 
-                    className="btn-ghost-specular relative h-9 w-9 border-none shadow-none hover:scale-110 transition-transform" 
+                <Button
+                    size="icon"
+                    className="btn-ghost-specular relative !overflow-visible group h-10 w-10 p-0 flex items-center justify-center gap-0 transition-all spring-press"
                     aria-label="Notifications"
                 >
-                    <Bell className="h-5 w-5" />
+                    <Bell className="h-5 w-5 transition-colors duration-200 group-hover:text-black" />
                     {unreadCount > 0 && (
-                        <Badge variant="destructive" className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] animate-in zoom-in">
+                        <div className="absolute -top-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full px-1 text-[10px] font-bold btn-specular border-none ring-[3px] ring-background shadow-lg pointer-events-none animate-in zoom-in group-hover:scale-110">
                             {unreadCount > 99 ? '99+' : unreadCount}
-                        </Badge>
+                        </div>
                     )}
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-80 p-0 shadow-xl border-sidebar-border/50" sideOffset={8}>
+            <DropdownMenuContent align="end" className="w-80 p-0 matte-card elev-3 border-none shadow-2xl" sideOffset={8}>
                 <DropdownMenuLabel className="flex items-center justify-between p-4 bg-muted/30">
                     <span className="font-semibold text-sm">Notifications</span>
                     {unreadCount > 0 && (
@@ -106,10 +106,10 @@ return;
                         </div>
                     ) : (
                         notifications.map((notification) => (
-                            <div 
-                                key={notification.id} 
+                            <div
+                                key={notification.id}
                                 className={cn(
-                                    "flex flex-col border-b border-sidebar-border/30 p-4 transition-colors hover:bg-muted/20 cursor-pointer", 
+                                    "flex flex-col border-b border-sidebar-border/30 p-4 transition-colors hover:bg-muted/20 cursor-pointer",
                                     !notification.read_at && "bg-primary/[0.03]"
                                 )}
                                 onClick={(e) => toggleExpand(notification.id, e)}
@@ -118,7 +118,7 @@ return;
                                     <div className="flex-1 space-y-1">
                                         <div className="flex items-center gap-2">
                                             <span className={cn(
-                                                "text-sm font-medium leading-tight", 
+                                                "text-sm font-medium leading-tight",
                                                 notification.data.priority === 'high' ? "text-destructive" : "text-foreground",
                                                 !notification.read_at && "font-bold"
                                             )}>
@@ -128,7 +128,7 @@ return;
                                                 <Badge variant="outline" className="h-3 px-1 border-destructive text-destructive text-[9px] uppercase tracking-wider font-bold">High</Badge>
                                             )}
                                             {!notification.read_at && (
-                                                <span className="flex h-2 w-2 rounded-full bg-primary" />
+                                                <span className="flex h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_8px_var(--green-glow)]" />
                                             )}
                                         </div>
                                         <div className="text-[11px] text-muted-foreground flex items-center gap-1.5">
@@ -163,8 +163,8 @@ return;
                                         })()}
                                         {notification.data.url && (
                                             <div className="mt-3">
-                                                <Link 
-                                                    href={notification.data.url} 
+                                                <Link
+                                                    href={notification.data.url}
                                                     className="inline-flex items-center text-[11px] font-semibold text-primary hover:underline gap-1 group"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
@@ -194,8 +194,8 @@ return;
                 </div>
                 <DropdownMenuSeparator className="m-0" />
                 <DropdownMenuItem asChild className="p-0 focus:bg-muted/50">
-                    <Link 
-                        href={NotificationActions.index.url()} 
+                    <Link
+                        href={NotificationActions.index.url()}
                         className="flex w-full items-center justify-center py-3 text-xs font-semibold text-primary transition-colors"
                     >
                         View All Notifications

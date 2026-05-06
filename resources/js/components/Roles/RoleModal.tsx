@@ -94,7 +94,7 @@ export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col">
+            <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col matte-card !fixed elev-3">
                 <form onSubmit={handleSubmit} className="flex flex-col h-full overflow-hidden">
                     <DialogHeader>
                         <DialogTitle>{isEdit ? 'Edit Role' : 'Create New Role'}</DialogTitle>
@@ -119,6 +119,7 @@ export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
                                 onChange={e => setData('name', e.target.value)}
                                 disabled={isProtected}
                                 placeholder="e.g. Content Moderator"
+                                className="input-etched"
                             />
                             <InputError message={errors.name} />
                             {isProtected && <p className="text-xs text-muted-foreground">Core role names are immutable.</p>}

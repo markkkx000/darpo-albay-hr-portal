@@ -2,6 +2,7 @@ import { Head, router } from '@inertiajs/react';
 import { Key, Shield, ShieldAlert, Trash2, Edit2, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import Heading from '@/components/heading';
 import { RoleModal } from '@/components/Roles/RoleModal';
 import { RolesNavigation } from '@/components/Roles/RolesNavigation';
 import { Badge } from '@/components/ui/badge';
@@ -71,12 +72,10 @@ export default function RolesIndex({ roles, permissions }: Props) {
 
             <div className="p-4 w-full">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Roles & Permissions</h1>
-                        <p className="text-muted-foreground text-sm mt-1">
-                            Manage system roles and their associated capabilities.
-                        </p>
-                    </div>
+                    <Heading 
+                        title="Roles & Permissions"
+                        description="Manage system roles and their associated capabilities."
+                    />
                     <Button onClick={handleCreate} className="btn-specular gap-2 border-none px-6">
                         <Plus className="h-4 w-4" />
                         Create Role
@@ -87,13 +86,13 @@ export default function RolesIndex({ roles, permissions }: Props) {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {roles.map((role) => (
-                        <Card key={role.id} className="overflow-hidden flex flex-col border-border/50 hover:shadow-md transition-all duration-300">
+                        <Card key={role.id} className="matte-card elev-1 hover:elev-2 spring-hover flex flex-col transition-all">
                             <CardHeader className="bg-muted/30 pb-4">
                                 <div className="flex items-start justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className={cn(
-                                            "p-2 rounded-lg",
-                                            isProtected(role.name) ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
+                                            "sqicon shrink-0 h-10 w-10 text-[18px]",
+                                            isProtected(role.name) ? "sqicon-green text-white" : "sqicon-dark text-muted-foreground"
                                         )}>
                                             {isProtected(role.name) ? <ShieldAlert className="h-5 w-5" /> : <Shield className="h-5 w-5" />}
                                         </div>

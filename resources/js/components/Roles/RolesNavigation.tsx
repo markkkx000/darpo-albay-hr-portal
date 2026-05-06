@@ -22,17 +22,12 @@ export function RolesNavigation() {
     ];
 
     return (
-        <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-lg w-fit mb-6 border border-border/50">
+        <div className="flex items-center space-x-1 rounded-full border border-border-1 bg-surface-2 p-1 w-fit mb-6">
             {tabs.map((tab) => (
                 <Link
                     key={tab.title}
                     href={tab.href}
-                    className={cn(
-                        "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-all",
-                        tab.active 
-                            ? "bg-background text-foreground shadow-sm ring-1 ring-border/50" 
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                    )}
+                    className={`flex items-center gap-2 px-4 py-1.5 text-sm font-bold rounded-full transition-all ${tab.active ? 'btn-specular' : 'text-muted-foreground hover:text-foreground'}`}
                 >
                     <tab.icon className="h-4 w-4" />
                     {tab.title}

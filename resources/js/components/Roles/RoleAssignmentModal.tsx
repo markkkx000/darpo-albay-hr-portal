@@ -70,7 +70,7 @@ export function RoleAssignmentModal({ open, onOpenChange, user, roles, onSuccess
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[425px] matte-card !fixed elev-3">
                 <form onSubmit={handleSubmit}>
                     <DialogHeader>
                         <DialogTitle>Assign Role</DialogTitle>
