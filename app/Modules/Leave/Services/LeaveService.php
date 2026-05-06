@@ -12,6 +12,82 @@ use Illuminate\Validation\ValidationException;
 class LeaveService
 {
     /**
+     * Get paginated leave requests with filters
+     */
+    public function getPaginatedLeaves(array $filters, $user = null)
+    {
+        $viewMode = $filters['view'] ?? 'mine';
+        $search = $filters['search'] ?? null;
+        $sort = $filters['sort'] ?? 'desc';
+        $leaveTypeId = $filters['leave_type_id'] ?? null;
+        $statusId = $filters['status_id'] ?? null;
+        $approvedById = $filters['approved_by_id'] ?? null;
+
+        $query = LeaveRequest::with(['user', 'leaveType', 'leaveStatus', 'createdBy', 'approvedBy']);
+
+        if ($viewMode === 'mine' && $user) {
+            $query->where('user_id', $user->id);
+        }
+
+        $query->when($search, function ($q) use ($search) {
+            $keywords = explode(' ', $search);
+            $q->whereHas('user', function ($uq) use ($keywords) {
+                foreach ($keywords as $keyword) {
+                    if (empty($keyword)) {
+                        continue;
+                    }
+                    $uq->where(function ($inner) use ($keyword) {
+                        $inner->where('first_name', 'like', "%{$keyword}%")
+                            ->orWhere('last_name', 'like', "%{$keyword}%")
+                            ->orWhere('employee_number', 'like', "%{$keyword}%");
+                    });
+                }
+            });
+        });
+
+        $query->when($leaveTypeId, function ($q) use ($leaveTypeId) {
+            $q->where('leave_type_id', $leaveTypeId);
+        });
+
+        $query->when($statusId, function ($q) use ($statusId) {
+            $q->where('leave_status_id', $statusId);
+        });
+
+        $query->when($approvedById, function ($q) use ($approvedById) {
+            $q->where('approved_by_id', $approvedById);
+        });
+
+        if ($sort === 'asc') {
+            $query->oldest('start_date');
+        } else {
+            $query->latest('start_date');
+        }
+
+        return $query->paginate(15)->withQueryString();
+    }
+
+    /**
+     * Get leaves for calendar view
+     */
+    public function getCalendarLeaves(int $year, int $month, ?int $userId = null)
+    {
+        $query = LeaveRequest::with(['user', 'leaveType'])
+            ->where(function ($q) use ($year, $month) {
+                $q->where(function ($q1) use ($year, $month) {
+                    $q1->whereYear('start_date', $year)->whereMonth('start_date', $month);
+                })->orWhere(function ($q2) use ($year, $month) {
+                    $q2->whereYear('end_date', $year)->whereMonth('end_date', $month);
+                });
+            });
+
+        if ($userId) {
+            $query->where('user_id', $userId);
+        }
+
+        return $query->get();
+    }
+
+    /**
      * Store a new leave request
      */
     public function storeLeaveRequest(array $data, int $createdBy)

@@ -3,7 +3,7 @@
 use App\Core\Services\NotificationService;
 use App\Models\User;
 use App\Modules\Announcements\Models\Announcement;
-use App\Modules\Personnel\Models\Department;
+use App\Modules\Personnel\Models\Division;
 use App\Modules\Personnel\Models\EmploymentStatus;
 use App\Modules\Personnel\Models\Position;
 use Database\Seeders\RoleAndPermissionSeeder;
@@ -15,30 +15,30 @@ beforeEach(function () {
     $this->seed(RoleAndPermissionSeeder::class);
 
     // Create base data for foreign keys
-    $this->department = Department::create(['name' => 'IT', 'code' => 'IT']);
-    $this->position = Position::create(['name' => 'Developer', 'department_id' => $this->department->id]);
+    $this->division = Division::create(['name' => 'IT', 'code' => 'IT']);
+    $this->position = Position::create(['name' => 'Developer', 'division_id' => $this->division->id]);
     $this->employmentStatus = EmploymentStatus::create(['name' => 'Regular']);
 
     $this->hrAdmin = User::factory()->create([
-        'department_id' => $this->department->id,
+        'division_id' => $this->division->id,
         'position_id' => $this->position->id,
         'employment_status_id' => $this->employmentStatus->id,
     ]);
     $this->hrAdmin->assignRole('hr_admin');
 
     $this->employee = User::factory()->create([
-        'department_id' => $this->department->id,
+        'division_id' => $this->division->id,
         'position_id' => $this->position->id,
         'employment_status_id' => $this->employmentStatus->id,
     ]);
     $this->employee->assignRole('employee');
 
-    $this->deptHead = User::factory()->create([
-        'department_id' => $this->department->id,
+    $this->divisionHead = User::factory()->create([
+        'division_id' => $this->division->id,
         'position_id' => $this->position->id,
         'employment_status_id' => $this->employmentStatus->id,
     ]);
-    $this->deptHead->assignRole('department_head');
+    $this->divisionHead->assignRole('division_head');
 });
 
 test('hr admin can create a draft announcement', function () {
@@ -130,30 +130,30 @@ test('can publish a draft announcement and dispatch notifications', function () 
     expect($announcement->fresh()->published_at)->not->toBeNull();
 });
 
-test('department head can only publish to their own department', function () {
+test('division head can only publish to their own division', function () {
     $notificationMock = $this->mock(NotificationService::class);
 
     $announcement = Announcement::factory()->create([
-        'posted_by' => $this->deptHead->id,
+        'posted_by' => $this->divisionHead->id,
         'status' => 'draft',
         'target_type' => 'all',
     ]);
 
     // Try to publish targeting 'all' (should fail)
-    $response = $this->actingAs($this->deptHead)
+    $response = $this->actingAs($this->divisionHead)
         ->post("/announcements/{$announcement->id}/publish");
 
     $response->assertStatus(403);
 
-    // Update to correct department and try again
+    // Update to correct division and try again
     $announcement->update([
-        'target_type' => 'department',
-        'target_id' => $this->deptHead->department_id,
+        'target_type' => 'division',
+        'target_id' => $this->divisionHead->division_id,
     ]);
 
-    $notificationMock->shouldReceive('notifyDepartment')->once();
+    $notificationMock->shouldReceive('notifyDivision')->once();
 
-    $response = $this->actingAs($this->deptHead)
+    $response = $this->actingAs($this->divisionHead)
         ->post("/announcements/{$announcement->id}/publish");
 
     $response->assertRedirect();

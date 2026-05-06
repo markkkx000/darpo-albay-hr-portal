@@ -5,22 +5,17 @@ namespace App\Modules\Attendance\Models;
 use App\Models\User;
 use Carbon\Carbon;
 use Database\Factories\AttendanceFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[Fillable(['user_id', 'date', 'clock_in', 'clock_out'])]
 class Attendance extends Model
 {
     use HasFactory, SoftDeletes;
-
-    protected $fillable = [
-        'user_id',
-        'date',
-        'clock_in',
-        'clock_out',
-    ];
 
     protected $casts = [
         'clock_in' => 'datetime',

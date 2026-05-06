@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Modules\Personnel\Models\Department;
+use App\Modules\Personnel\Models\Division;
 use App\Modules\Personnel\Models\Position;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,7 +22,7 @@ class PositionFactory extends Factory
     {
         return [
             'name' => fake()->jobTitle(),
-            'department_id' => Department::factory(),
+            'division_id' => Division::factory(),
             'is_active' => true,
         ];
     }

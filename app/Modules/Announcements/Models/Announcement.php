@@ -4,12 +4,14 @@ namespace App\Modules\Announcements\Models;
 
 use App\Models\User;
 use Database\Factories\AnnouncementFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[Fillable(['title', 'content', 'posted_by', 'status', 'priority', 'published_at', 'target_type', 'target_id'])]
 class Announcement extends Model
 {
     use HasFactory, SoftDeletes;
@@ -21,17 +23,6 @@ class Announcement extends Model
     {
         return AnnouncementFactory::new();
     }
-
-    protected $fillable = [
-        'title',
-        'content',
-        'posted_by',
-        'status',
-        'priority',
-        'published_at',
-        'target_type',
-        'target_id',
-    ];
 
     protected $casts = [
         'published_at' => 'datetime',
@@ -69,8 +60,8 @@ class Announcement extends Model
         $query->published()->where(function ($q) use ($user) {
             $q->where('target_type', 'all')
                 ->orWhere(function ($q) use ($user) {
-                    $q->where('target_type', 'department')
-                        ->where('target_id', $user->department_id);
+                    $q->where('target_type', 'division')
+                        ->where('target_id', $user->division_id);
                 })
                 ->orWhere(function ($q) use ($user) {
                     $q->where('target_type', 'position')

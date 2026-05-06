@@ -4,10 +4,12 @@ namespace App\Modules\Personnel\Models;
 
 use App\Models\User;
 use Database\Factories\EmploymentStatusFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+#[Fillable(['name', 'is_active'])]
 class EmploymentStatus extends Model
 {
     use HasFactory;
@@ -16,8 +18,6 @@ class EmploymentStatus extends Model
     {
         return EmploymentStatusFactory::new();
     }
-
-    protected $fillable = ['name', 'is_active'];
 
     protected $casts = [
         'is_active' => 'boolean',

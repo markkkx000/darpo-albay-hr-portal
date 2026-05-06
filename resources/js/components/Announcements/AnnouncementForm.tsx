@@ -8,7 +8,7 @@ import { TargetSelector } from './TargetSelector';
 
 interface Props {
     announcement?: any;
-    departments: any[];
+    divisions: any[];
     positions: any[];
     users: any[];
     submitUrl: string;
@@ -17,7 +17,7 @@ interface Props {
 
 export function AnnouncementForm({
     announcement,
-    departments,
+    divisions,
     positions,
     users,
     submitUrl,
@@ -88,7 +88,7 @@ export function AnnouncementForm({
                     setData(d => ({ ...d, target_type: v, target_id: null }));
                 }}
                 onTargetIdChange={v => setData('target_id', v)}
-                departments={departments}
+                divisions={divisions}
                 positions={positions}
                 users={users}
                 error={errors.target_type}

@@ -99,13 +99,13 @@ routes/
 ## Implemented Modules
 
 ### Announcements Module (`app/Modules/Announcements/`)
-- **Viewing**: All authenticated users with `announcements.view` see published announcements targeted to them (by department, position, individual, or "all") via `Index.tsx`.
+- **Viewing**: All authenticated users with `announcements.view` see published announcements targeted to them (by division, position, individual, or "all") via `Index.tsx`.
 - **Detail View**: `Show.tsx` renders a single announcement with rich HTML content (sanitized via DOMPurify). Unpublished announcements are only visible to users with `announcements.manage`.
 - **Management**: Users with `announcements.manage` access the management dashboard (`Manage.tsx`) via an in-module button (top-right of the index page, not via the sidebar). Supports draft/publish workflow.
-- **CRUD**: Full create, edit, publish, and soft delete. Rich text editor (Tiptap) with image and link support. Target audience selection (all, department, position, individual user).
+- **CRUD**: Full create, edit, publish, and soft delete. Rich text editor (Tiptap) with image and link support. Target audience selection (all, division, position, individual user).
 - **Form Requests**: `AnnouncementCreateRequest`, `AnnouncementUpdateRequest`, `AnnouncementPublishRequest` for validation.
 - **Service Layer**: `AnnouncementService` handles business logic: `getPublishedForUser()`, `getAllForHR()`, `create()`, `update()`, `publish()`, `delete()`.
-- **Permissions**: `announcements.view` (all roles except employee via sidebar; employee sees it too), `announcements.manage` (hr_staff, hr_admin, super_admin, department_head).
+- **Permissions**: `announcements.view` (all roles except employee via sidebar; employee sees it too), `announcements.manage` (hr_staff, hr_admin, super_admin, division_head).
 
 ### Attendance Module (`app/Modules/Attendance/`)
 - **Clock In/Out**: Server-side timestamp recording via `ClockInOut.tsx`. Three states: not clocked in, clocked in, completed.
@@ -113,7 +113,7 @@ routes/
 - **Record Management**: HR roles with `attendance.manage` can manually add missing records and edit clock-in/out timestamps via `ManageRecords.tsx` and `AttendanceRecordModal.tsx`. Management button is rendered in-module (top-right of ClockInOut page), not in the sidebar.
 - **Soft Delete**: HR admins and super admins with `attendance.delete` can soft delete records.
 - **Filtering & Search**: Server-side filtering by status (Working/Incomplete/Completed), date range, and full-text employee name search. 500ms debounce with instant Enter key trigger. Paginated via `paginate(15)`.
-- **Permissions**: `attendance.clock` (employee, hr_staff, hr_admin), `attendance.manage` (hr_staff, hr_admin, super_admin), `attendance.delete` (hr_admin, super_admin), `attendance.view_own` (employee, department_head) — allows viewing one's own attendance records only.
+- **Permissions**: `attendance.clock` (employee, hr_staff, hr_admin), `attendance.manage` (hr_staff, hr_admin, super_admin), `attendance.delete` (hr_admin, super_admin), `attendance.view_own` (employee, division_head) — allows viewing one's own attendance records only.
 
 ### Leave Tracking Module (`app/Modules/Leave/`)
 - **Dashboard** (`Index.tsx`): Paginated table of all leave requests with employee search (via `EmployeeSearch` component). Shows employee, leave type (with color dot), dates (specific or range), days requested, status badge, and who encoded it. "Encode" button to create new leave requests.
@@ -165,7 +165,7 @@ This is **infrastructure, not a feature module**. It is a hybrid: the dispatch/m
 | `super_admin` | Full system access, all modules, system settings, all permissions |
 | `hr_admin` | All HR modules, leave settings, attendance delete, personnel create/update/restore, announcements manage |
 | `hr_staff` | Read + limited write on HR modules (attendance manage, leave encode/credits/tardiness, personnel view, announcements manage) |
-| `department_head` | Clock in/out, view own attendance, announcements view/manage, travel order file |
+| `division_head` | Clock in/out, view own attendance, announcements view/manage, travel order file |
 | `employee` | Own records, clock in/out, announcements view, travel order file |
 
 ---

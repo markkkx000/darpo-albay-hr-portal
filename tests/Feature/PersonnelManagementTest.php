@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\User;
-use App\Modules\Personnel\Models\Department;
+use App\Modules\Personnel\Models\Division;
 use App\Modules\Personnel\Models\EmploymentStatus;
 use App\Modules\Personnel\Models\Position;
 use Database\Seeders\RoleAndPermissionSeeder;
@@ -16,8 +16,8 @@ beforeEach(function () {
     $this->admin = User::factory()->create();
     $this->admin->assignRole('hr_admin');
 
-    $this->department = Department::factory()->create();
-    $this->position = Position::factory()->create(['department_id' => $this->department->id]);
+    $this->division = Division::factory()->create();
+    $this->position = Position::factory()->create(['division_id' => $this->division->id]);
     $this->status = EmploymentStatus::factory()->create();
 });
 
@@ -40,7 +40,7 @@ test('can create a new employee record', function () {
         'first_name' => 'John',
         'last_name' => 'Doe',
         'email' => 'john.doe@example.com',
-        'department_id' => $this->department->id,
+        'division_id' => $this->division->id,
         'position_id' => $this->position->id,
         'employment_status_id' => $this->status->id,
         'hire_date' => now()->format('Y-m-d'),
@@ -102,7 +102,7 @@ test('validates unique employee number', function () {
         'employee_number' => 'DUPLICATE',
         'first_name' => 'Test',
         'last_name' => 'User',
-        'department_id' => $this->department->id,
+        'division_id' => $this->division->id,
         'position_id' => $this->position->id,
         'employment_status_id' => $this->status->id,
         'hire_date' => now()->format('Y-m-d'),
@@ -117,7 +117,7 @@ test('can update an employee record', function () {
         'employee_number' => 'ORIGINAL-001',
         'first_name' => 'Original',
         'last_name' => 'Name',
-        'department_id' => $this->department->id,
+        'division_id' => $this->division->id,
         'position_id' => $this->position->id,
         'employment_status_id' => $this->status->id,
         'hire_date' => '2020-01-01',
@@ -127,7 +127,7 @@ test('can update an employee record', function () {
         'employee_number' => 'ORIGINAL-001', // Keeping the same ID to test unique ignore
         'first_name' => 'Updated',
         'last_name' => 'Name',
-        'department_id' => $this->department->id,
+        'division_id' => $this->division->id,
         'position_id' => $this->position->id,
         'employment_status_id' => $this->status->id,
         'hire_date' => '2020-01-01',

@@ -29,7 +29,7 @@ interface Props {
     permissions: Permission[];
 }
 
-const PROTECTED_ROLES = ['super_admin', 'hr_admin', 'hr_staff', 'department_head', 'employee'];
+const PROTECTED_ROLES = ['super_admin', 'hr_admin', 'hr_staff', 'division_head', 'employee'];
 
 interface RoleFormData {
     name: string;

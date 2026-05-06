@@ -2,15 +2,15 @@
 
 namespace Database\Factories;
 
-use App\Modules\Personnel\Models\Department;
+use App\Modules\Personnel\Models\Division;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Department>
+ * @extends Factory<Division>
  */
-class DepartmentFactory extends Factory
+class DivisionFactory extends Factory
 {
-    protected $model = Department::class;
+    protected $model = Division::class;
 
     /**
      * Define the model's default state.
@@ -21,6 +21,7 @@ class DepartmentFactory extends Factory
     {
         return [
             'name' => fake()->unique()->company(),
+            'code' => fake()->unique()->lexify('???'),
             'is_active' => true,
         ];
     }

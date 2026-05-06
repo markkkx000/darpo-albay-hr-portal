@@ -14,9 +14,32 @@ class RoleService
         'super_admin',
         'hr_admin',
         'hr_staff',
-        'department_head',
+        'division_head',
         'employee',
     ];
+
+    /**
+     * Get paginated users with their roles and optional search filters.
+     */
+    public function getPaginatedUsersWithRoles(?string $search = null)
+    {
+        return User::with('roles')
+            ->when($search, function ($query, $search) {
+                $keywords = explode(' ', $search);
+                foreach ($keywords as $keyword) {
+                    if (empty($keyword)) {
+                        continue;
+                    }
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('first_name', 'like', "%{$keyword}%")
+                            ->orWhere('last_name', 'like', "%{$keyword}%")
+                            ->orWhere('employee_number', 'like', "%{$keyword}%");
+                    });
+                }
+            })
+            ->paginate(15)
+            ->withQueryString();
+    }
 
     /**
      * Get all roles except super_admin for assignment.

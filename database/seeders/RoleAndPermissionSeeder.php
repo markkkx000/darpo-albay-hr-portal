@@ -89,9 +89,9 @@ class RoleAndPermissionSeeder extends Seeder
             'travel_order.approve',
         ]);
 
-        // Department Head
-        $deptHead = Role::firstOrCreate(['name' => 'department_head']);
-        $deptHead->syncPermissions([
+        // Division Head
+        $divisionHead = Role::firstOrCreate(['name' => 'division_head']);
+        $divisionHead->syncPermissions([
             'attendance.clock',
             'attendance.view_own',
             'leave.view_own',

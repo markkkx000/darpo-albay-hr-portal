@@ -64,7 +64,7 @@ export default function RolesIndex({ roles, permissions }: Props) {
     };
 
     const isProtected = (roleName: string) =>
-        ['super_admin', 'hr_admin', 'hr_staff', 'department_head', 'employee'].includes(roleName);
+        ['super_admin', 'hr_admin', 'hr_staff', 'division_head', 'employee'].includes(roleName);
 
     return (
         <>

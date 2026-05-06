@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\User;
-use App\Modules\Personnel\Models\Department;
+use App\Modules\Personnel\Models\Division;
 use App\Modules\Personnel\Models\EmploymentStatus;
 use App\Modules\Personnel\Models\Position;
 use Database\Seeders\RoleAndPermissionSeeder;
@@ -17,14 +17,14 @@ beforeEach(function () {
 
     // Admin with NULL organization fields (like in current seeders)
     $this->hrAdmin = User::factory()->create([
-        'department_id' => null,
+        'division_id' => null,
         'position_id' => null,
         'employment_status_id' => null,
     ]);
     $this->hrAdmin->assignRole('hr_admin');
 
-    $this->department = Department::factory()->create();
-    $this->position = Position::factory()->create(['department_id' => $this->department->id]);
+    $this->division = Division::factory()->create();
+    $this->position = Position::factory()->create(['division_id' => $this->division->id]);
     $this->status = EmploymentStatus::factory()->create();
 });
 
@@ -33,7 +33,7 @@ test('editing admin with null fields succeeds when fields are left empty', funct
         'employee_number' => 'HR-TEST',
         'first_name' => 'Updated',
         'last_name' => 'Name',
-        'department_id' => null,
+        'division_id' => null,
         'position_id' => null,
         'employment_status_id' => null,
         'hire_date' => null,

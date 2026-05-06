@@ -50,10 +50,10 @@ class AnnouncementService
             throw new DomainException('Only draft announcements can be published.');
         }
 
-        // Department head restriction
-        if ($actor->hasRole('department_head')) {
-            if ($announcement->target_type !== 'department' || (int) $announcement->target_id !== (int) $actor->department_id) {
-                throw new HttpException(403, 'Department heads can only publish announcements to their own department.');
+        // Division head restriction
+        if ($actor->hasRole('division_head')) {
+            if ($announcement->target_type !== 'division' || (int) $announcement->target_id !== (int) $actor->division_id) {
+                throw new HttpException(403, 'Division heads can only publish announcements to their own division.');
             }
         }
 
@@ -113,7 +113,7 @@ class AnnouncementService
 
         match ($announcement->target_type) {
             'all' => $this->notificationService->notifyAll($notificationData),
-            'department' => $this->notificationService->notifyDepartment((int) $announcement->target_id, $notificationData),
+            'division' => $this->notificationService->notifyDivision((int) $announcement->target_id, $notificationData),
             'position' => $this->notificationService->notifyPosition((int) $announcement->target_id, $notificationData),
             'user' => $this->notificationService->notifyUser(User::findOrFail($announcement->target_id), $notificationData),
             default => null,
