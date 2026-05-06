@@ -12,7 +12,6 @@ Route::middleware(['web', 'auth', 'permission:leave.access_module|leave.view_own
 
     // Dashboard (Index) - Accessible to both employees and HR
     Route::get('/', [LeaveController::class, 'index'])->name('index');
-    Route::get('/{leaveRequest}', [LeaveController::class, 'show'])->name('show');
 
     // Credits (restricted to manage_credits)
     Route::middleware('permission:leave.manage_credits')->group(function () {
@@ -58,4 +57,6 @@ Route::middleware(['web', 'auth', 'permission:leave.access_module|leave.view_own
         Route::delete('/{leaveRequest}', [LeaveController::class, 'destroy'])->name('destroy');
     });
 
+    // Parameterized routes last to avoid capturing static routes
+    Route::get('/{leaveRequest}', [LeaveController::class, 'show'])->name('show');
 });

@@ -1,7 +1,8 @@
-import { Link, router } from '@inertiajs/react';
-import { Edit, Eye, RotateCcw, Trash2, User as UserIcon } from 'lucide-react';
+import { router } from '@inertiajs/react';
+import { User as UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { ViewActionButton, EditActionButton, DeleteActionButton, RestoreActionButton } from '@/components/ActionButtons';
 import { Pagination } from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -160,59 +161,31 @@ return 'N/A';
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-end gap-2 sm:opacity-60 group-hover:opacity-100 transition-all duration-300">
                                                 {!isArchivedView && (
-                                                    <Button 
-                                                        size="sm" 
-                                                        asChild 
-                                                        className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
-                                                    >
-                                                        <Link
-                                                            href={showRoute({ user: employee.id }).url}
-                                                            title="View Profile"
-                                                            aria-label={`View profile for ${fullName(employee)}`}
-                                                        >
-                                                            <Eye className="h-4 w-4" />
-                                                        </Link>
-                                                    </Button>
+                                                    <ViewActionButton 
+                                                        href={showRoute({ user: employee.id }).url} 
+                                                        title={`View profile for ${fullName(employee)}`} 
+                                                    />
                                                 )}
                                                 
                                                 {canEdit && !isArchivedView && (
-                                                    <Button 
-                                                        size="sm" 
-                                                        asChild
-                                                        className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
-                                                    >
-                                                        <Link
-                                                            href={editRoute({ user: employee.id }).url}
-                                                            title="Edit Record"
-                                                            aria-label={`Edit record for ${fullName(employee)}`}
-                                                        >
-                                                            <Edit className="h-4 w-4" />
-                                                        </Link>
-                                                    </Button>
+                                                    <EditActionButton 
+                                                        href={editRoute({ user: employee.id }).url} 
+                                                        title={`Edit record for ${fullName(employee)}`} 
+                                                    />
                                                 )}
  
                                                 {canDelete && !isArchivedView && (
-                                                    <Button 
-                                                        size="sm" 
-                                                        onClick={() => setEmployeeToDelete(employee)}
-                                                        className="btn-ghost-danger-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
-                                                        title="Archive Record"
-                                                        aria-label={`Archive ${fullName(employee)}`}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
+                                                    <DeleteActionButton 
+                                                        onClick={() => setEmployeeToDelete(employee)} 
+                                                        title={`Archive ${fullName(employee)}`} 
+                                                    />
                                                 )}
  
                                                 {canRestore && isArchivedView && (
-                                                    <Button 
-                                                        size="sm" 
-                                                        onClick={() => setEmployeeToRestore(employee)}
-                                                        className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
-                                                        title="Restore Record"
-                                                        aria-label={`Restore ${fullName(employee)}`}
-                                                    >
-                                                        <RotateCcw className="h-4 w-4" />
-                                                    </Button>
+                                                    <RestoreActionButton 
+                                                        onClick={() => setEmployeeToRestore(employee)} 
+                                                        title={`Restore ${fullName(employee)}`} 
+                                                    />
                                                 )}
                                             </div>
                                         </td>

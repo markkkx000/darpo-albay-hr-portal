@@ -1,6 +1,7 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { ViewActionButton, EditActionButton } from '@/components/ActionButtons';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
@@ -198,7 +199,7 @@ return '';
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Date Approved</th>
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Approver / Encoder</th>
-                                        {canEncode && <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</th>}
+                                        <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="[&_tr:last-child]:border-0">
@@ -250,21 +251,25 @@ return '';
                                                     <span className="font-semibold text-xs uppercase tracking-wider text-muted-foreground/70">Enc:</span> {leave.created_by?.first_name} {leave.created_by?.last_name}
                                                 </div>
                                             </td>
-                                            <td className="p-4 align-middle text-right flex justify-end gap-2">
-                                                <Button variant="outline" size="sm" asChild>
-                                                    <Link href={LeaveRoutes.show({ leaveRequest: leave.id }).url}>View</Link>
-                                                </Button>
-                                                {canEncode && (
-                                                    <Button variant="ghost" size="sm" asChild>
-                                                        <Link href={LeaveRoutes.edit({ leaveRequest: leave.id }).url}>Edit</Link>
-                                                    </Button>
-                                                )}
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex justify-end gap-2 sm:opacity-60 group-hover:opacity-100 transition-all duration-300">
+                                                    <ViewActionButton 
+                                                        href={LeaveRoutes.show({ leaveRequest: leave.id }).url} 
+                                                        title="View Details" 
+                                                    />
+                                                    {canEncode && (
+                                                        <EditActionButton 
+                                                            href={LeaveRoutes.edit({ leaveRequest: leave.id }).url} 
+                                                            title="Edit Request" 
+                                                        />
+                                                    )}
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
                                     {leaves.data.length === 0 && (
                                         <tr>
-                                            <td colSpan={canEncode ? 8 : 7} className="p-4 text-center text-muted-foreground">
+                                            <td colSpan={8} className="p-4 text-center text-muted-foreground">
                                                 No leave requests found.
                                             </td>
                                         </tr>
