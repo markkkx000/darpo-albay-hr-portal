@@ -129,11 +129,12 @@ routes/
 - **Permissions**: `leave.access_module` (hr_staff, hr_admin, super_admin), `leave.encode` (hr_staff, hr_admin, super_admin), `leave.manage_tardiness` (hr_staff, hr_admin, super_admin), `leave.manage_credits` (hr_staff, hr_admin, super_admin), `leave.manage_settings` (hr_admin, super_admin).
 
 ### Personnel Directory Module (`app/Modules/Personnel/`)
-- **Employee CRUD**: Full create, read, update, soft delete, and restore via `EmployeeService`.
-- **Lookup Tables**: `departments`, `positions`, `employment_statuses` — all use `is_active` flag, never hard deleted.
-- **Dynamic Position Filtering**: Position dropdown filters by selected department in create/edit forms.
+- **Employee CRUD**: Full create, read, update, soft delete, and restore via `EmployeeService`. Extensive profile fields including Personal Information, Employment Details, Contact Information, and Government IDs/Credentials. Auto-calculates `age` based on birthdate.
+- **Lookup Tables**: `divisions`, `units`, `positions`, `employment_statuses` — all use `is_active` flag, never hard deleted. `units` and `positions` are hierarchically nested under a `division`.
+- **Organization Management**: Dedicated management dashboard for Divisions, Units, and Positions (`Organization/Index.tsx`).
+- **Dynamic Field Logic**: Position and Unit dropdowns filter by selected Division in create/edit forms. PRC Expiration is automatically enabled/disabled based on validation of a 7-digit PRC ID number.
 - **Soft Delete & Restoration**: Archived employees viewable by `hr_staff` (read-only). Restore restricted to `hr_admin` and `super_admin` via `/personnel/archived`.
-- **Search & Filtering**: By name, employee number, department, employment status. 500ms debounce with Enter key trigger.
+- **Search & Filtering**: By name, employee number, division, employment status. 500ms debounce with Enter key trigger.
 - **Permissions**: `personnel.view` (hr_staff, hr_admin, super_admin), `personnel.create`/`personnel.update` (hr_admin, super_admin), `personnel.delete` (super_admin only), `personnel.restore` (hr_admin, super_admin).
 - **Integration**: On employee creation, `EmployeeService` dispatches a high-priority non-dismissible "change default password" notification via `NotificationService`.
 
