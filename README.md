@@ -4,7 +4,7 @@ A modern, containerized Human Resource Management System built for the Departmen
 
 ---
 
-## 🚀 Quick Start (WSL2 / Linux / macOS)
+## Quick Start (WSL2 / Linux / macOS)
 
 For the best performance and zero permission issues, this project is designed to run in a **Linux environment** (Native Linux, macOS, or Windows WSL2).
 
@@ -16,6 +16,27 @@ For the best performance and zero permission issues, this project is designed to
 | **Windows** | [Ubuntu on WSL2](https://aka.ms/wslinstall) | Code **MUST** be stored in the Linux filesystem (e.g., `~/projects/...`). |
 | **Linux** | [Docker Engine](https://docs.docker.com/engine/install/) | Ensure the docker service is running (`sudo systemctl start docker`). |
 | **macOS** | [Docker Desktop](https://www.docker.com/products/docker-desktop/) | Ensure the Docker app is running. |
+
+### Windows: Detailed WSL2 Ubuntu Setup
+
+If you are on Windows, you must use WSL2 to run this project. Follow these steps to set it up:
+
+1.  **Install WSL2**: Open PowerShell as Administrator and run:
+    ```powershell
+    wsl --install
+    ```
+2.  **Restart**: Restart your computer if prompted.
+3.  **Install Ubuntu 24.04**: Once rebooted, open PowerShell and run:
+    ```powershell
+    wsl --install -d Ubuntu
+    ```
+    Alternatively, install "Ubuntu 24.04 LTS" from the Microsoft Store.
+4.  **Initialize Ubuntu**: Launch "Ubuntu 24.04 LTS" from the Start menu. Set your username and password when prompted.
+5.  **Enable Docker Integration**:
+    - Open Docker Desktop.
+    - Go to **Settings > Resources > WSL Integration**.
+    - Toggle on **Ubuntu-24.04** and click **Apply & Restart**.
+6.  **Verify WSL Version**: In PowerShell, run `wsl --list --verbose`. Ensure Ubuntu-24.04 is using version 2.
 
 ### 2. Setup
 
@@ -40,7 +61,7 @@ The script will automatically:
 
 ---
 
-## 🚢 Development Workflow (Sail)
+## Development Workflow (Sail)
 
 Manage your environment using **Laravel Sail** from your terminal:
 
@@ -59,7 +80,7 @@ Manage your environment using **Laravel Sail** from your terminal:
 
 ---
 
-## 🧪 Common Commands
+## Common Commands
 
 | Action | Command |
 | :--- | :--- |
@@ -70,7 +91,7 @@ Manage your environment using **Laravel Sail** from your terminal:
 
 ---
 
-## 🔑 Environment Access
+## Environment Access
 
 | Service | URL / Port |
 | :--- | :--- |
@@ -80,7 +101,7 @@ Manage your environment using **Laravel Sail** from your terminal:
 
 ---
 
-## 👥 Default Test Accounts
+## Default Test Accounts
 
 | Role | Email | Password |
 | :--- | :--- | :--- |
