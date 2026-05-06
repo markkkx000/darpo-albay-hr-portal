@@ -8,30 +8,7 @@ export default function Welcome() {
 
     return (
         <div className="relative min-h-screen">
-            <Head title="DARPO Albay HR Portal — Smarter Workforce Management">
-                <style>{`
-                    .mesh-bg {
-                        position: fixed;
-                        inset: 0;
-                        z-index: 0;
-                        background: var(--background);
-                        overflow: hidden;
-                    }
-
-                    @media (prefers-reduced-motion: no-preference) {
-                        @keyframes fade-up {
-                            from { opacity: 0; transform: translateY(30px); }
-                            to   { opacity: 1; transform: translateY(0); }
-                        }
-                        .animate-fade-up {
-                            animation: fade-up 0.8s var(--spring) forwards;
-                        }
-                        .animate-fade-up-delay-1 { opacity: 0; animation: fade-up 0.8s var(--spring) 0.15s forwards; }
-                        .animate-fade-up-delay-2 { opacity: 0; animation: fade-up 0.8s var(--spring) 0.3s forwards; }
-                        .animate-fade-up-delay-3 { opacity: 0; animation: fade-up 0.8s var(--spring) 0.45s forwards; }
-                    }
-                `}</style>
-            </Head>
+            <Head title="DARPO Albay HR Portal — Smarter Workforce Management" />
 
             {/* ── Cinematic Background ── */}
             <div className="mesh-bg" aria-hidden="true">
@@ -104,10 +81,10 @@ export default function Welcome() {
                     </div>
 
                     {/* ── Bento Box Feature Grid ── */}
-                    <div className="animate-fade-up-delay-3 mt-24 md:mt-32 grid w-full max-w-6xl grid-cols-1 md:grid-cols-3 gap-6" role="list" aria-label="Portal features">
+                    <div className="animate-fade-up-delay-3 mt-24 md:mt-32 grid w-full max-w-6xl grid-cols-1 md:grid-cols-12 gap-6" role="list" aria-label="Portal features">
                         
                         {/* Primary Feature (Spans 2 columns on desktop) */}
-                        <article className="matte-card elev-2 md:col-span-2 flex flex-col md:flex-row items-center gap-8 p-8 md:p-10 text-left spring-hover" role="listitem">
+                        <article className="matte-card elev-2 md:col-span-12 lg:col-span-8 flex flex-col md:flex-row items-center gap-8 p-8 md:p-10 text-left spring-hover" role="listitem">
                             <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-green-500/10 shrink-0" aria-hidden="true">
                                 <Clock className="h-8 w-8 text-green-500" strokeWidth={1.5} />
                             </div>
@@ -120,7 +97,7 @@ export default function Welcome() {
                         </article>
 
                         {/* Standard Feature */}
-                        <article className="matte-card elev-2 flex flex-col items-start gap-5 p-8 text-left spring-hover" role="listitem">
+                        <article className="matte-card elev-2 md:col-span-6 lg:col-span-4 flex flex-col items-start gap-5 p-8 text-left spring-hover" role="listitem">
                             <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-yellow-500/10" aria-hidden="true">
                                 <CalendarCheck className="h-6 w-6 text-yellow-500" strokeWidth={1.5} />
                             </div>
@@ -133,7 +110,7 @@ export default function Welcome() {
                         </article>
 
                         {/* Standard Feature */}
-                        <article className="matte-card elev-2 flex flex-col items-start gap-5 p-8 text-left spring-hover" role="listitem">
+                        <article className="matte-card elev-2 md:col-span-6 lg:col-span-4 flex flex-col items-start gap-5 p-8 text-left spring-hover" role="listitem">
                             <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-green-500/10" aria-hidden="true">
                                 <Users2 className="h-6 w-6 text-green-500" strokeWidth={1.5} />
                             </div>
@@ -146,7 +123,7 @@ export default function Welcome() {
                         </article>
 
                         {/* Primary/Wide Feature (Spans 2 columns) */}
-                        <article className="matte-card elev-2 md:col-span-2 flex flex-col md:flex-row items-center gap-8 p-8 md:p-10 text-left spring-hover" role="listitem">
+                        <article className="matte-card elev-2 md:col-span-12 lg:col-span-8 flex flex-col md:flex-row items-center gap-8 p-8 md:p-10 text-left spring-hover" role="listitem">
                             <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-yellow-500/10 shrink-0" aria-hidden="true">
                                 <ShieldCheck className="h-8 w-8 text-yellow-500" strokeWidth={1.5} />
                             </div>

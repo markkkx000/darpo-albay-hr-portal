@@ -217,7 +217,7 @@ return 'N/A';
                                                     <Button 
                                                         size="sm" 
                                                         onClick={() => setEmployeeToRestore(employee)}
-                                                        className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
+                                                        className="btn-warning-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
                                                         title="Restore Record"
                                                         aria-label={`Restore ${fullName(employee)}`}
                                                     >

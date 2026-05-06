@@ -1,10 +1,13 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Plus } from 'lucide-react';
+import { Plus, CalendarX } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import Heading from '@/components/heading';
+import { cn } from '@/lib/utils';
 import { useDebounce } from '@/hooks/use-debounce';
 import LeaveRoutes from '@/routes/leave';
 import LeaveNavigation from './Components/LeaveNavigation';
@@ -77,15 +80,14 @@ return '';
     return (
         <>
             <Head title="Leave Tracking Dashboard" />
-            <div className="container mx-auto py-6 max-w-7xl">
-                <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div>
-                        <h1 className="t-title">Leave Tracking</h1>
-                        <p className="text-muted-foreground">Manage and track employee leave requests.</p>
+            <div className="p-4 w-full">
+                <div className="matte-card elev-2 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 rounded-2xl">
+                    <div className="flex items-center gap-3">
+                        <Heading title="Leave Tracking" description="Manage and track employee leave requests." as="h1" variant="small" />
                     </div>
                     <div className="flex items-center gap-2 w-full sm:w-auto">
                         {canEncode && (
-                            <Button asChild>
+                            <Button asChild className="btn-ghost-specular border-none px-6">
                                 <Link href={LeaveRoutes.create().url}>
                                     <Plus className="mr-2 h-4 w-4" />
                                     Encode
@@ -106,13 +108,19 @@ return '';
                                 <div className="flex items-center space-x-1 rounded-full border border-border-1 bg-surface-2 p-1">
                                     <button
                                         onClick={() => setViewMode('all')}
-                                        className={`px-4 py-1.5 text-sm font-bold rounded-full transition-all ${viewMode === 'all' ? 'btn-specular' : 'text-muted-foreground hover:text-foreground'}`}
+                                        className={cn(
+                                            "px-4 py-1.5 text-sm font-bold rounded-full transition-all",
+                                            viewMode === 'all' ? 'btn-specular' : 'text-muted-foreground hover:text-foreground'
+                                        )}
                                     >
                                         All Leaves
                                     </button>
                                     <button
                                         onClick={() => setViewMode('mine')}
-                                        className={`px-4 py-1.5 text-sm font-bold rounded-full transition-all ${viewMode === 'mine' ? 'btn-specular' : 'text-muted-foreground hover:text-foreground'}`}
+                                        className={cn(
+                                            "px-4 py-1.5 text-sm font-bold rounded-full transition-all",
+                                            viewMode === 'mine' ? 'btn-specular' : 'text-muted-foreground hover:text-foreground'
+                                        )}
                                     >
                                         My Leave History
                                     </button>
@@ -227,9 +235,9 @@ return '';
                                             </td>
                                             <td className="p-4 align-middle">{leave.days_requested}</td>
                                             <td className="p-4 align-middle">
-                                                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
+                                                <Badge variant="secondary">
                                                     {leave.leave_status?.name}
-                                                </span>
+                                                </Badge>
                                             </td>
                                             <td className="p-4 align-middle text-sm">
                                                 {leave.date_approved ? formatDate(leave.date_approved) : <span className="text-muted-foreground italic">Pending</span>}
@@ -253,8 +261,11 @@ return '';
                                     ))}
                                     {leaves.data.length === 0 && (
                                         <tr>
-                                            <td colSpan={canEncode ? 8 : 7} className="p-4 text-center text-muted-foreground">
-                                                No leave requests found.
+                                            <td colSpan={canEncode ? 8 : 7} className="p-12 text-center">
+                                                <div className="flex flex-col items-center justify-center space-y-3">
+                                                    <CalendarX className="h-10 w-10 text-muted-foreground/30" />
+                                                    <span className="text-muted-foreground font-medium">No leave requests found.</span>
+                                                </div>
                                             </td>
                                         </tr>
                                     )}

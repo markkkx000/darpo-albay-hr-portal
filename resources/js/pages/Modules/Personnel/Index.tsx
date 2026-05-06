@@ -5,6 +5,7 @@ import { EmployeeTable } from '@/components/Personnel/EmployeeTable';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import * as PersonnelRoutes from '@/routes/personnel';
 
 const createRoute = () => PersonnelRoutes.create();
@@ -72,7 +73,16 @@ export default function Index({ employees, filters, departments = [], employment
 
     if (!employees) {
         return (
-            <div className="p-8 text-center">Loading employee data...</div>
+            <div className="p-4 w-full space-y-6">
+                <div className="matte-card elev-2 p-6 rounded-2xl">
+                    <Skeleton className="h-8 w-1/3 mb-2" />
+                    <Skeleton className="h-4 w-1/4" />
+                </div>
+                <div className="matte-card elev-2 p-4 rounded-2xl space-y-4">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-[400px] w-full" />
+                </div>
+            </div>
         );
     }
 

@@ -36,7 +36,7 @@ export default function LeaveNavigation() {
     }
 
     return (
-        <div className="mb-6 flex space-x-4 border-b border-gray-200 dark:border-gray-800">
+        <div className="mb-6 flex space-x-4 border-b border-border-1">
             {tabs.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = tab.href === index().url 
@@ -51,7 +51,7 @@ export default function LeaveNavigation() {
                             'relative flex items-center space-x-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors',
                             isActive
                                 ? 'border-transparent font-semibold'
-                                : 'border-transparent text-muted-foreground hover:border-gray-300 hover:text-gray-700 dark:hover:border-gray-700 dark:hover:text-gray-300'
+                                : 'border-transparent text-muted-foreground hover:border-border-2 hover:text-foreground'
                         )}
                     >
                         {isActive && (

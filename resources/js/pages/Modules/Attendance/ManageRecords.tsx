@@ -118,7 +118,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
         <>
             <Head title="Manage Attendance Records" />
 
-            <div className="relative z-10 p-6 lg:p-10 w-full animate-fade-up space-y-8">
+            <div className="relative z-10 p-4 w-full animate-fade-up space-y-8">
                 <div className="matte-card elev-2 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 mb-6">
                     <div>
                         <h1 className="t-title">Attendance Management</h1>
@@ -138,19 +138,19 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                         routeName={manageRecordsIndexRoute().url}
                     />
 
-                    <Card className="overflow-hidden border-none shadow-xl">
-                    <CardHeader className="bg-surface-2 pb-4 border-b border-border-1">
+                    <div className="matte-card elev-2 overflow-hidden border-none shadow-xl">
+                    <div className="bg-surface-2 pb-4 border-b border-border-1 p-6">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <CardTitle className="flex items-center gap-2 t-headline">
+                                <h3 className="flex items-center gap-2 t-headline">
                                     <Clock className="h-5 w-5 text-primary" />
                                     Attendance Logs
-                                </CardTitle>
-                                <CardDescription>View and manage historical attendance logs for all staff.</CardDescription>
+                                </h3>
+                                <p className="text-sm text-muted-foreground">View and manage historical attendance logs for all staff.</p>
                             </div>
                         </div>
-                    </CardHeader>
-                    <CardContent className="p-0">
+                    </div>
+                    <div className="p-0">
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm text-left">
                                 <thead className="text-xs text-muted-foreground uppercase font-bold bg-surface-1">
@@ -260,8 +260,8 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                         <div className="px-6 border-t border-border-1">
                             <Pagination links={records.links} meta={records} />
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
                 </div>
             </div>
 
@@ -282,8 +282,8 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setRecordToDelete(null)}>Cancel</Button>
-                        <Button variant="destructive" onClick={handleDelete}>
+                        <Button variant="ghost" onClick={() => setRecordToDelete(null)} className="btn-ghost-specular px-6 border-none">Cancel</Button>
+                        <Button onClick={handleDelete} className="btn-ghost-danger-specular px-6 border-none">
                             Delete Record
                         </Button>
                     </DialogFooter>

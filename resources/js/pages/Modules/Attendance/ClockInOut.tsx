@@ -87,7 +87,7 @@ return;
                 <div className="w-full flex justify-end max-w-5xl">
                     {canManage && (
                         <Link href={records_index().url}>
-                            <Button variant="default">
+                            <Button variant="ghost" className="btn-ghost-specular border-none px-5">
                                 <Settings className="mr-2 h-4 w-4" />
                                 Attendance Management
                             </Button>
@@ -95,13 +95,13 @@ return;
                     )}
                 </div>
 
-                <Card className="w-full max-w-xl elev-3">
-                    <CardHeader className="text-center">
-                        <CardTitle className="t-title">Attendance Registry</CardTitle>
-                        <CardDescription className="text-muted-foreground font-medium">Keep track of your daily work hours with precision.</CardDescription>
-                    </CardHeader>
+                <div className="matte-card elev-3 w-full max-w-xl">
+                    <div className="flex flex-col space-y-1.5 p-6 text-center">
+                        <h3 className="t-title leading-none tracking-tight">Attendance Registry</h3>
+                        <p className="text-sm text-muted-foreground font-medium">Keep track of your daily work hours with precision.</p>
+                    </div>
                     
-                    <CardContent className="flex flex-col md:flex-row gap-6 p-6">
+                    <div className="p-6 pt-0 flex flex-col md:flex-row gap-6">
                         {/* Left Pane: Date Card — Premium Matte Surface */}
                         <div
                             className="w-full md:w-52 rounded-[2rem] p-6 flex flex-col justify-between shrink-0 overflow-hidden matte-card elev-1"
@@ -152,8 +152,9 @@ return;
                                 )}
                             </div>
                         </div>
-                    </CardContent>
-                </Card>
+                        </div>
+                    </div>
+                </div>
 
                 {/* Clock Action Button — full-width, below the card */}
                 <div className="w-full max-w-xl flex flex-col items-stretch gap-3">
