@@ -70,18 +70,23 @@ export default function NotificationBell() {
     return (
         <DropdownMenu onOpenChange={(open) => open && fetchRecent()}>
             <DropdownMenuTrigger asChild>
-                <Button
-                    size="icon"
-                    className="btn-ghost-specular relative !overflow-visible group h-10 w-10 p-0 flex items-center justify-center gap-0 transition-all spring-press"
-                    aria-label="Notifications"
-                >
-                    <Bell className="h-5 w-5 transition-colors duration-200 group-hover:text-black" />
+                <div className="relative inline-flex transition-transform hover:scale-110">
+                    <Button
+                        size="icon"
+                        className="btn-ghost-specular relative h-9 w-9 border-none shadow-none"
+                        aria-label="Notifications"
+                    >
+                        <Bell className="h-5 w-5" />
+                    </Button>
                     {unreadCount > 0 && (
-                        <div className="absolute -top-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full px-1 text-[10px] font-bold btn-specular border-none ring-[3px] ring-background shadow-lg pointer-events-none animate-in zoom-in group-hover:scale-110">
+                        <Badge
+                            variant="destructive"
+                            className="absolute -right-1 -top-1 z-10 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] animate-in zoom-in pointer-events-none"
+                        >
                             {unreadCount > 99 ? '99+' : unreadCount}
-                        </div>
+                        </Badge>
                     )}
-                </Button>
+                </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-80 p-0 matte-card elev-3 border-none shadow-2xl" sideOffset={8}>
                 <DropdownMenuLabel className="flex items-center justify-between p-4 bg-muted/30">
