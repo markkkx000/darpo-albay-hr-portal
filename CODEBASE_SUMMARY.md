@@ -9,6 +9,7 @@ This application is a **Laravel 13** backend with an **Inertia.js React** fronte
 
 ### Backend
 - `routes/web.php` — defines core auth routes and the dashboard route only. Module routes are never registered here.
+- `routes/settings.php` — handles user profile and security settings. Self-service account deletion is intentionally disabled to preserve historical HR data integrity.
 - `app/Core/Auth/Controllers/AuthController.php` — handles login/logout and role-based redirects.
 - `app/Core/Services/ModuleRegistry.php` — singleton that aggregates navigation items and module metadata from all active modules.
 - `app/Core/Services/NotificationService.php` — cross-cutting notification infrastructure. Any module can import this service to dispatch notifications. See Notifications Infrastructure below.
@@ -55,6 +56,7 @@ app/
     Leave/
     Notifications/               # Hybrid: UI module for core notification infrastructure
     Personnel/
+    Roles/                       # Role and permission management
   Notifications/                 # Laravel notification class
     GenericDatabaseNotification.php
   Observers/
@@ -73,6 +75,7 @@ resources/js/
       Leave/
       Notifications/             # Full paginated notification list
       Personnel/
+      Roles/                     # Role management pages
   components/
     dashboard/                   # AdminOverview, HROverview, EmployeeOverview, StatCard
     notifications/               # NotificationBell (global header bell icon + dropdown)
@@ -133,6 +136,13 @@ routes/
 - **Search & Filtering**: By name, employee number, department, employment status. 500ms debounce with Enter key trigger.
 - **Permissions**: `personnel.view` (hr_staff, hr_admin, super_admin), `personnel.create`/`personnel.update` (hr_admin, super_admin), `personnel.delete` (super_admin only), `personnel.restore` (hr_admin, super_admin).
 - **Integration**: On employee creation, `EmployeeService` dispatches a high-priority non-dismissible "change default password" notification via `NotificationService`.
+
+### Roles & Permissions Module (`app/Modules/Roles/`)
+- **Role Management** (`RolesIndex.tsx`): Dashboard to view, create, update, and delete roles. Uses a paginated table.
+- **User Role Assignment** (`UserRolesIndex.tsx`): Dashboard to view users and assign them specific roles. Includes employee search and role assignment modal.
+- **Components**: `RoleModal.tsx` for creating/editing roles, `RoleAssignmentModal.tsx` for assigning roles to users, `RolesNavigation.tsx` for in-module tabs.
+- **Controllers**: `RoleController`, `UserRoleController`.
+- **Permissions**: Requires `roles.manage` (assigned to `super_admin`).
 
 ### Notifications Infrastructure (Hybrid: `app/Core/Services/` + `app/Modules/Notifications/`)
 This is **infrastructure, not a feature module**. It is a hybrid: the dispatch/management service lives in `app/Core/Services/NotificationService.php` (consumed by all modules), while the UI routes and pages live in `app/Modules/Notifications/` (auto-registered by `ModuleServiceProvider`). It has **no sidebar link** — no `navigation.php` file exists.
