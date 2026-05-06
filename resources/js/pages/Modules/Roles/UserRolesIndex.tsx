@@ -1,6 +1,7 @@
 import { Head, router } from '@inertiajs/react';
 import { UserCog, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import Heading from '@/components/heading';
 import { Pagination } from '@/components/Pagination';
@@ -113,7 +114,13 @@ export default function UserRolesIndex({ users, allUsers, roles, filters }: Prop
                                             </td>
                                             <td className="px-6 py-4">
                                                 {user.roles && user.roles.length > 0 ? (
-                                                    <Badge variant={user.roles[0].name === 'super_admin' ? 'default' : 'secondary'} className="capitalize gap-1 px-2 text-[10px]">
+                                                    <Badge 
+                                                        variant={user.roles[0].name === 'super_admin' ? 'default' : 'secondary'} 
+                                                        className={cn(
+                                                            "capitalize gap-1 px-3 py-1 text-[10px] rounded-full border-none shadow-sm",
+                                                            user.roles[0].name === 'super_admin' ? "badge-super-admin" : "font-bold"
+                                                        )}
+                                                    >
                                                         <ShieldCheck className="h-3 w-3" />
                                                         {user.roles[0].name.replaceAll('_', ' ')}
                                                     </Badge>

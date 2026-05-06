@@ -2,6 +2,7 @@ import { Link, router } from '@inertiajs/react';
 import { Edit, Eye, RotateCcw, Trash2, User as UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import { Pagination } from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -144,9 +145,19 @@ return 'N/A';
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <Badge variant="outline" className="bg-muted/40 border-border/50 text-[10px] font-bold uppercase px-2 py-0">
+                                            <span className={cn(
+                                                'inline-flex items-center rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wide shadow-sm',
+                                                (() => {
+                                                    const name = (employee.employment_status?.name || '').toLowerCase();
+                                                    if (name.includes('permanent')) return 'status-badge-permanent';
+                                                    if (name.includes('co-terminous') || name.includes('coterminous') || name.includes('co terminous')) return 'status-badge-coterminous';
+                                                    if (name.includes('contractual')) return 'status-badge-contractual';
+                                                    if (name.includes('casual')) return 'status-badge-casual';
+                                                    return 'bg-muted/40 border border-border/50 text-foreground';
+                                                })()
+                                            )}>
                                                 {employee.employment_status?.name || 'Unknown'}
-                                            </Badge>
+                                            </span>
                                         </td>
                                         <td className="px-6 py-4 text-xs font-medium text-muted-foreground">
                                             {formatDate(employee.hire_date)}

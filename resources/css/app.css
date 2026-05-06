@@ -574,4 +574,53 @@
             animation: fade-up 0.5s var(--ease-out) forwards;
         }
     }
+    /* ── Employment Status Gradient Badges v2 ──
+       Cohesive Green-Yellow variations for a premium, unified look.
+       Enforces black text for maximum legibility on bright gradients. */
+
+    .status-badge-permanent {
+        background: linear-gradient(135deg, #22c55e 0%, #eab308 100%);
+        color: #000;
+        border: none;
+        font-weight: 800;
+    }
+
+    .status-badge-coterminous {
+        background: linear-gradient(135deg, #065f46 0%, #10b981 100%);
+        color: #fff;
+        border: none;
+        font-weight: 800;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .status-badge-contractual {
+        background: linear-gradient(135deg, #ca8a04 0%, #facc15 100%);
+        color: #000;
+        border: none;
+        font-weight: 800;
+    }
+
+    .status-badge-casual {
+        background: linear-gradient(135deg, #16a34a 0%, #38e54d 100%);
+        color: #000;
+        border: none;
+        font-weight: 800;
+    }
+
+    /* Super Admin — Premium Dark Emerald to Midnight */
+    .badge-super-admin {
+        background: linear-gradient(135deg, #0a0a0a 0%, #065f46 100%);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.1);
+        font-weight: 800;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    }
+
+    /* Snackbar — Brand Gradient */
+    .toast-brand {
+        background: var(--grad-primary) !important;
+        color: #000 !important;
+        border: none !important;
+        font-weight: 600;
+    }
 }

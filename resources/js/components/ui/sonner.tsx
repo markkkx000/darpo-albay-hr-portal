@@ -12,6 +12,9 @@ function Toaster({ ...props }: ToasterProps) {
             theme={appearance}
             className="toaster group"
             position="bottom-right"
+            toastOptions={{
+                className: 'toast-brand',
+            }}
             style={
                 {
                     '--normal-bg': 'var(--popover)',

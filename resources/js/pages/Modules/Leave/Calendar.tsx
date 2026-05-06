@@ -274,7 +274,7 @@ return 'All Employees';
                                             return (
                                                 <div 
                                                     key={leave.id} 
-                                                    className="text-[10px] leading-tight p-1 rounded-md text-white truncate"
+                                                    className="text-[10px] leading-tight px-2 py-0.5 rounded-full text-white truncate font-medium shadow-sm"
                                                     style={{ 
                                                         backgroundColor: leave.leave_type?.color_code,
                                                         opacity: isHalfDay ? 0.7 : 1,
@@ -291,7 +291,7 @@ return 'All Employees';
                                         {isOverflow && (
                                             <Dialog>
                                                 <DialogTrigger asChild>
-                                                    <button className="w-full text-left text-[10px] leading-tight p-1 rounded bg-muted text-muted-foreground hover:bg-muted/80 transition-colors font-medium">
+                                                    <button className="w-full text-left text-[10px] leading-tight px-2 py-1 rounded-full bg-muted text-muted-foreground hover:bg-muted/80 transition-colors font-medium">
                                                         +{hiddenCount} more
                                                     </button>
                                                 </DialogTrigger>
