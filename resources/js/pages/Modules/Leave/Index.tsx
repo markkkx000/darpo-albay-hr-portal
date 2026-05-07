@@ -26,33 +26,33 @@ export default function LeaveDashboard({ leaves, allEmployees, leaveTypes, leave
     useEffect(() => {
         // Prevent initial mount request if params match
         const params: any = {};
-        
+
         if (debouncedSearch) {
-params.search = debouncedSearch;
-}
+            params.search = debouncedSearch;
+        }
 
         if (viewMode !== 'mine') {
-params.view = viewMode;
-}
+            params.view = viewMode;
+        }
 
         if (sort !== 'desc') {
-params.sort = sort;
-}
+            params.sort = sort;
+        }
 
         if (leaveType !== 'all') {
-params.leave_type_id = leaveType;
-}
+            params.leave_type_id = leaveType;
+        }
 
         if (status !== 'all') {
-params.status_id = status;
-}
+            params.status_id = status;
+        }
 
         if (approvedBy) {
-params.approved_by_id = approvedBy;
-}
+            params.approved_by_id = approvedBy;
+        }
 
         // Check if anything actually changed from current filters
-        const hasChanged = 
+        const hasChanged =
             params.search !== filters?.search ||
             (params.view || 'mine') !== (filters?.view || 'mine') ||
             (params.sort || 'desc') !== (filters?.sort || 'desc') ||
@@ -67,8 +67,8 @@ params.approved_by_id = approvedBy;
 
     const formatDate = (dateString: string) => {
         if (!dateString) {
-return '';
-}
+            return '';
+        }
 
         const date = new Date(dateString);
 
@@ -101,7 +101,7 @@ return '';
                 <div className="matte-card elev-2 mb-6">
                     <div className="p-4 border-b bg-muted/20">
                         <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-                            
+
                             {/* View Toggle (Only for Encoders) */}
                             {canEncode ? (
                                 <div className="flex items-center space-x-1 rounded-full border border-border-1 bg-surface-2 p-1">
@@ -124,13 +124,13 @@ return '';
 
                             {/* Filters Container */}
                             <div className="flex flex-wrap items-center gap-2 flex-1 md:justify-end w-full">
-                                
+
                                 {viewMode === 'all' && (
                                     <>
                                         <div className="w-full md:w-64">
-                                            <EmployeeSearch 
-                                                users={allEmployees} 
-                                                selectedId={search} 
+                                            <EmployeeSearch
+                                                users={allEmployees}
+                                                selectedId={search}
                                                 onSelect={(val) => setSearch(val === 'all' ? '' : val)}
                                                 placeholder="Search Employee..."
                                                 returnValue="name"
@@ -139,9 +139,9 @@ return '';
                                         </div>
 
                                         <div className="w-full md:w-56">
-                                            <EmployeeSearch 
-                                                users={allEmployees} 
-                                                selectedId={approvedBy} 
+                                            <EmployeeSearch
+                                                users={allEmployees}
+                                                selectedId={approvedBy}
                                                 onSelect={(val) => setApprovedBy(val === 'all' ? '' : val)}
                                                 placeholder="Filter by Approver..."
                                                 returnValue="id"
@@ -204,7 +204,7 @@ return '';
                                 </thead>
                                 <tbody className="[&_tr:last-child]:border-0">
                                     {leaves.data.map((leave: any) => (
-                                        <tr key={leave.id} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                        <tr key={leave.id} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted group">
                                             <td className="p-4 align-middle font-medium">
                                                 {leave.user?.first_name} {leave.user?.last_name}
                                                 <div className="text-xs text-muted-foreground">{leave.user?.employee_number}</div>
@@ -228,8 +228,8 @@ return '';
                                                     )
                                                 ) : (
                                                     <span>
-                                                        {leave.start_date === leave.end_date 
-                                                            ? formatDate(leave.start_date) 
+                                                        {leave.start_date === leave.end_date
+                                                            ? formatDate(leave.start_date)
                                                             : `${formatDate(leave.start_date)} to ${formatDate(leave.end_date)}`}
                                                     </span>
                                                 )}
@@ -253,14 +253,14 @@ return '';
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex justify-end gap-2 sm:opacity-60 group-hover:opacity-100 transition-all duration-300">
-                                                    <ViewActionButton 
-                                                        href={LeaveRoutes.show({ leaveRequest: leave.id }).url} 
-                                                        title="View Details" 
+                                                    <ViewActionButton
+                                                        href={LeaveRoutes.show({ leaveRequest: leave.id }).url}
+                                                        title="View Details"
                                                     />
                                                     {canEncode && (
-                                                        <EditActionButton 
-                                                            href={LeaveRoutes.edit({ leaveRequest: leave.id }).url} 
-                                                            title="Edit Request" 
+                                                        <EditActionButton
+                                                            href={LeaveRoutes.edit({ leaveRequest: leave.id }).url}
+                                                            title="Edit Request"
                                                         />
                                                     )}
                                                 </div>
