@@ -51,44 +51,48 @@ export function StatCard({
 
     return (
         <div
-            className="group relative aspect-video overflow-hidden rounded-2xl border border-border-1 transition-all duration-300 hover:-translate-y-1 shadow-sm"
+            className="group relative min-h-[220px] md:min-h-[260px] overflow-hidden rounded-3xl border border-border-1 transition-all duration-300 hover:-translate-y-1 shadow-sm text-left"
             style={cardStyle}
         >
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <div className="text-center w-full px-4">
+            <div className="pointer-events-none absolute inset-0 flex flex-col justify-between p-6 md:p-8">
+                <div>
                     <div
                         className={cn(
-                            "text-lg font-semibold tracking-tight transition-transform duration-300 group-hover:scale-105 dark:!text-[var(--title-color)]",
+                            "text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground/70 mb-2 transition-transform duration-300 group-hover:translate-x-1",
                             titleClasses
                         )}
-                        style={{ 
-                            color: accentColor,
-                            '--title-color': accentColor 
-                        } as any}
                     >
                         {title}
                     </div>
-                    <div className={cn("mt-2 flex justify-center", valueClasses)}>
+                    <div className={cn("mt-1", valueClasses)}>
                         {isLoading ? (
                             <div
-                                className="h-10 w-24 animate-pulse rounded-xl"
+                                className="h-14 w-28 animate-pulse rounded-2xl"
                                 style={{ background: hexToRgba(accentColor, 0.15) }}
                                 aria-hidden="true"
                             />
                         ) : (
-                            <div className="text-4xl font-extrabold tracking-tight text-foreground dark:text-white drop-shadow-sm">
+                            <div className="text-5xl md:text-6xl font-extrabold tracking-tighter text-foreground dark:text-white drop-shadow-sm">
                                 {value}
                             </div>
                         )}
                     </div>
-                    {subtitle && (
-                        <div className={cn("text-sm font-medium mt-3 opacity-80", subtitleClasses)}
-                            style={{ color: accentColor }}>
-                            {subtitle}
-                        </div>
-                    )}
-                    {children}
                 </div>
+                
+                {(subtitle || children) && (
+                    <div className="mt-auto">
+                        {subtitle && (
+                            <div className={cn("text-xl md:text-2xl font-bold tracking-tight text-foreground dark:text-white mb-1", subtitleClasses)}>
+                                {subtitle}
+                            </div>
+                        )}
+                        {children && (
+                            <div className="text-sm md:text-base font-semibold tracking-wide opacity-90" style={{ color: accentColor }}>
+                                {children}
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
