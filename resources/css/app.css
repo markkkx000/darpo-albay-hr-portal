@@ -659,26 +659,26 @@
         font-weight: 800;
     }
 
-    /* Super Admin — Premium Dark Emerald to Midnight */
+    /* Super Admin */
     .badge-super-admin {
-        background: linear-gradient(135deg, #0a0a0a 0%, #065f46 100%);
-        color: #fff;
-        border: 1px solid rgba(255,255,255,0.1);
+        background: linear-gradient(135deg, #fbbf24 0%, #4ade80 100%);
+        color: #000;
+        border: none;
         font-weight: 800;
-        text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+        box-shadow: 0 2px 8px rgba(250, 204, 21, 0.3);
     }
 
     /* HR Admin */
     .badge-hr-admin {
-        background: linear-gradient(135deg, #166534 0%, #059669 100%);
-        color: #fff;
+        background: linear-gradient(135deg, #22c55e 0%, #facc15 100%);
+        color: #000;
         border: none;
         font-weight: 800;
     }
 
     /* HR Staff */
     .badge-hr-staff {
-        background: linear-gradient(135deg, #059669 0%, #34d399 100%);
+        background: linear-gradient(135deg, #4ade80 0%, #fef08a 100%);
         color: #000;
         border: none;
         font-weight: 800;
@@ -686,7 +686,7 @@
 
     /* Department Head */
     .badge-department-head {
-        background: linear-gradient(135deg, #ca8a04 0%, #facc15 100%);
+        background: linear-gradient(135deg, #facc15 0%, #86efac 100%);
         color: #000;
         border: none;
         font-weight: 800;
@@ -694,11 +694,13 @@
 
     /* Employee */
     .badge-employee {
-        background: linear-gradient(135deg, #52525b 0%, #a1a1aa 100%);
-        color: #fff;
+        background: linear-gradient(135deg, #a3e635 0%, #eab308 100%);
+        color: #000;
         border: none;
         font-weight: 800;
     }
+
+
 
     /* Snackbar — Brand Gradient */
     .toast-brand {
@@ -706,5 +708,8 @@
         color: #000 !important;
         border: none !important;
         font-weight: 600;
+        border-radius: 9999px !important;
+        padding: 18px 24px !important;
+        box-shadow: 0 12px 32px rgba(34, 197, 94, 0.3), 0 4px 12px rgba(250, 204, 21, 0.2) !important;
     }
 }

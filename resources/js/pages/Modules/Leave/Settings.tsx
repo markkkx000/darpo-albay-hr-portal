@@ -147,7 +147,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                     onChange={(e) => setYear(Number(e.target.value))} 
                                     className="w-32"
                                 />
-                                <Button variant="outline" onClick={() => router.get(settings().url, { year })}>
+                                <Button variant="ghost" className="btn-ghost-specular" onClick={() => router.get(settings().url, { year })}>
                                     Filter Year
                                 </Button>
                             </div>

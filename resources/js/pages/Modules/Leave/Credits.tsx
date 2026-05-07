@@ -49,7 +49,7 @@ export default function LeaveCredits({ users, leaveTypes, currentYear, allEmploy
                                 onChange={(e) => setYear(Number(e.target.value))} 
                                 className="w-24"
                             />
-                            <Button variant="outline" onClick={() => router.get(LeaveRoutes.credits.index().url, { year, search: filters?.search })}>
+                            <Button variant="ghost" className="btn-ghost-specular" onClick={() => router.get(LeaveRoutes.credits.index().url, { year, search: filters?.search })}>
                                 Filter Year
                             </Button>
                         </div>
