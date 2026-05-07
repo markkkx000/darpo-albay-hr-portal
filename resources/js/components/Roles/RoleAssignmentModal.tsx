@@ -125,8 +125,8 @@ export function RoleAssignmentModal({ open, onOpenChange, user, roles, onSuccess
                         </Alert>
                     </div>
 
-                    <DialogFooter>
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+                    <DialogFooter className="pb-4">
+                        <Button type="button" variant="ghost" className="btn-ghost-specular px-6" onClick={() => onOpenChange(false)}>Cancel</Button>
                         <Button type="submit" disabled={processing || !data.role || data.role === currentRole} className="btn-specular border-none px-6">
                             Update Role
                         </Button>

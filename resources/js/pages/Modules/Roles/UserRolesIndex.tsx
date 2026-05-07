@@ -115,10 +115,10 @@ export default function UserRolesIndex({ users, allUsers, roles, filters }: Prop
                                             <td className="px-6 py-4">
                                                 {user.roles && user.roles.length > 0 ? (
                                                     <Badge 
-                                                        variant={user.roles[0].name === 'super_admin' ? 'default' : 'secondary'} 
+                                                        variant="secondary" 
                                                         className={cn(
                                                             "capitalize gap-1 px-3 py-1 text-[10px] rounded-full border-none shadow-sm",
-                                                            user.roles[0].name === 'super_admin' ? "badge-super-admin" : "font-bold"
+                                                            `badge-${user.roles[0].name.replaceAll('_', '-')}`
                                                         )}
                                                     >
                                                         <ShieldCheck className="h-3 w-3" />
@@ -134,7 +134,7 @@ export default function UserRolesIndex({ users, allUsers, roles, filters }: Prop
                                                     size="sm"
                                                     onClick={() => openAssignment(user)}
                                                     disabled={user.roles?.some((r) => r.name === 'super_admin')}
-                                                    className="gap-2 h-8 px-2 sm:opacity-0 group-hover:opacity-100 transition-opacity hover:bg-primary/10 hover:text-primary border border-transparent hover:border-primary/20"
+                                                    className="gap-2 h-8 px-3 sm:opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-[image:var(--grad-primary)] hover:text-black hover:shadow-[var(--grad-shadow)] border border-transparent hover:border-transparent rounded-full"
                                                 >
                                                     <UserCog className="h-4 w-4" />
                                                     <span className="hidden sm:inline">Edit Role</span>

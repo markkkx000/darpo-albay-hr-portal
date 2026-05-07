@@ -668,6 +668,38 @@
         text-shadow: 0 1px 4px rgba(0,0,0,0.5);
     }
 
+    /* HR Admin */
+    .badge-hr-admin {
+        background: linear-gradient(135deg, #166534 0%, #059669 100%);
+        color: #fff;
+        border: none;
+        font-weight: 800;
+    }
+
+    /* HR Staff */
+    .badge-hr-staff {
+        background: linear-gradient(135deg, #059669 0%, #34d399 100%);
+        color: #000;
+        border: none;
+        font-weight: 800;
+    }
+
+    /* Department Head */
+    .badge-department-head {
+        background: linear-gradient(135deg, #ca8a04 0%, #facc15 100%);
+        color: #000;
+        border: none;
+        font-weight: 800;
+    }
+
+    /* Employee */
+    .badge-employee {
+        background: linear-gradient(135deg, #52525b 0%, #a1a1aa 100%);
+        color: #fff;
+        border: none;
+        font-weight: 800;
+    }
+
     /* Snackbar — Brand Gradient */
     .toast-brand {
         background: var(--grad-primary) !important;

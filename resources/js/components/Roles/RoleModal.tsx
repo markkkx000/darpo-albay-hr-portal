@@ -95,7 +95,7 @@ export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col matte-card !fixed elev-3">
-                <form onSubmit={handleSubmit} className="flex flex-col h-full overflow-hidden">
+                <form onSubmit={handleSubmit} className="flex flex-col h-full">
                     <DialogHeader>
                         <DialogTitle>{isEdit ? 'Edit Role' : 'Create New Role'}</DialogTitle>
                         <DialogDescription>
@@ -150,8 +150,8 @@ export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
                         </div>
                     </div>
 
-                    <DialogFooter className="pt-4 border-t mt-auto">
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+                    <DialogFooter className="pt-4 pb-4 border-t mt-auto">
+                        <Button type="button" variant="ghost" className="btn-ghost-specular px-6" onClick={() => onOpenChange(false)}>Cancel</Button>
                         <Button type="submit" disabled={processing} className="btn-specular border-none px-6">
                             {isEdit ? 'Update Role' : 'Create Role'}
                         </Button>
