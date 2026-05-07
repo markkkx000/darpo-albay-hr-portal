@@ -87,7 +87,7 @@ export function RoleAssignmentModal({ open, onOpenChange, user, roles, onSuccess
                     )}
 
                     <div className="space-y-4 py-4">
-                        <div className="bg-muted/50 p-4 rounded-lg border border-border/50 flex items-start gap-3">
+                        <div className="bg-muted/50 p-4 rounded-xl border border-border/50 flex items-start gap-3">
                             <ShieldAlert className="h-5 w-5 text-warning mt-0.5" />
                             <div className="space-y-1">
                                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Current Role</p>
