@@ -1,4 +1,4 @@
-# Implementation Plan: CS Form 6 Digitizer Enhancements
+# Implementation Plan: CS Form 6 Digitizer Enhancements: GOOD TO GO
 
 This plan outlines the enhancements required for the `Leave` module to support high-fidelity digitization of **CS Form 6** paper records. The goal is to accurately archive historical records while maintaining automatic credit deduction integrity.
 
@@ -63,6 +63,9 @@ Add the following columns to the `leave_requests` table:
     - **Study/Rehabilitation**: Ensure "Contract" or "Incident/Police Report" is selected as appropriate.
     - **30+ Days**: If `days_requested >= 30`, ensure "Clearance Form (CS Form 7)" is selected.
 
+#### [MODIFY] UpdateLeaveRequest.php (app/Modules/Leave/Requests/UpdateLeaveRequest.php)
+- Replicate all validation logic from `StoreLeaveRequest` for new digitization fields to ensure consistency during edits.
+
 ---
 
 ### 3. Frontend (UI/UX)
@@ -92,6 +95,7 @@ Add the following columns to the `leave_requests` table:
     - If "Notice of Allocation (CS Form 6a)" is checked in `supporting_documents`, show an input for `maternity_allocation_details` (Name of spouse/beneficiary).
 - **[DONE] Manual Override**: Ensure the `days_requested` input remains editable and doesn't get immediately overwritten by the `useEffect` if the user manually adjusts it. (Implemented using `useRef` and `transform`).
 - **[DONE] Same-day Range Conversion**: If a user selects a range where `start_date === end_date`, automatically convert it to a `specific_date` entry before submission.
+- **Success Feedback**: Ensure all form submissions (Create/Edit) include a `toast.success()` call and `router.clearHistory()` in the `onSuccess` callback to maintain UI state integrity.
 
 #### [MODIFY] Tardiness.tsx (resources/js/pages/Modules/Leave/Tardiness.tsx)
 - **Remove Columns**: Delete the "Minutes" columns for both Tardiness and Undertime sections in the table.
@@ -101,6 +105,7 @@ Add the following columns to the `leave_requests` table:
     - The central value remains a typeable `Input` for manual entry.
     - The UI should use consistent styling with the project's "Dual-Mode" design.
 - **Payload**: Update `handleUpdate` to omit or zero out `tardiness_minutes` and `undertime_minutes`.
+- **Success Feedback**: Include `toast.success('Tardiness record updated')` in the `onSuccess` callback.
 
 #### [DONE] Date Handling & Standardization
 - **Standard Format**: Use `mm/dd/yyyy` (`en-US`) for all date displays across the Dashboard and Form.
@@ -112,6 +117,7 @@ Add the following columns to the `leave_requests` table:
 - **Controller**: Add `show(LeaveRequest $leaveRequest)` method.
 - **Frontend**: Create `Show.tsx` with a premium card layout displaying all metadata.
 - **Dashboard**: Add a "View" button next to "Edit".
+- **Permissions**: Access is controlled by the existing `leave.view_own` permission (for own records) and `leave.access_module` (for HR staff viewing all records).
 
 ---
 
@@ -119,6 +125,9 @@ Add the following columns to the `leave_requests` table:
 
 #### [Artisan] `php artisan wayfinder:generate`
 Run this after migrations and controller updates to ensure TypeScript types are synchronized.
+
+#### [Pint] `vendor/bin/pint --dirty --format agent`
+Run this on modified PHP files before final verification.
 
 ## Verification Plan
 
