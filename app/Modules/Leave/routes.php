@@ -8,25 +8,30 @@ use App\Modules\Leave\Controllers\LeaveTypeController;
 use App\Modules\Leave\Controllers\TardinessController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['web', 'auth', 'permission:leave.access_module|leave.view_own'])->group(function () {
+Route::middleware(['web', 'auth', 'permission:leave.view'])->group(function () {
 
     // Dashboard (Index) - Accessible to both employees and HR
     Route::get('/', [LeaveController::class, 'index'])->name('index');
 
-    // Credits (restricted to manage_credits)
-    Route::middleware('permission:leave.manage_credits')->group(function () {
-        Route::get('/credits', [LeaveCreditController::class, 'index'])->name('credits.index');
+    // Credits routes
+    Route::get('/credits', [LeaveCreditController::class, 'index'])->name('credits.index')->middleware('permission:leave.credits.view|leave.credits.manage');
+    
+    // Credits show route - Accessible to any user (controller handles self-view logic)
+    Route::get('/credits/{user}', [LeaveCreditController::class, 'show'])->name('credits.show');
+
+    // HR-only Credit routes
+    Route::middleware('permission:leave.credits.manage|leave.manage')->group(function () {
         Route::put('/credits', [LeaveCreditController::class, 'update'])->name('credits.update');
     });
 
     // Tardiness (restricted to manage_tardiness)
-    Route::middleware('permission:leave.manage_tardiness')->group(function () {
+    Route::middleware('permission:leave.tardiness.manage')->group(function () {
         Route::get('/tardiness', [TardinessController::class, 'index'])->name('tardiness.index');
         Route::put('/tardiness/{user_id}', [TardinessController::class, 'update'])->name('tardiness.update');
     });
 
     // Settings (restricted to manage_settings)
-    Route::middleware('permission:leave.manage_settings')->group(function () {
+    Route::middleware('permission:leave.settings.manage')->group(function () {
         Route::get('/settings', [LeaveController::class, 'settings'])->name('settings');
 
         // Holidays
@@ -46,7 +51,7 @@ Route::middleware(['web', 'auth', 'permission:leave.access_module|leave.view_own
     });
 
     // Routes restricted to users who can encode leaves (HR/Admin)
-    Route::middleware('permission:leave.encode')->group(function () {
+    Route::middleware('permission:leave.manage')->group(function () {
         Route::get('/create', [LeaveController::class, 'create'])->name('create');
         Route::post('/', [LeaveController::class, 'store'])->name('store');
         Route::get('/calendar', [LeaveController::class, 'calendar'])->name('calendar');
