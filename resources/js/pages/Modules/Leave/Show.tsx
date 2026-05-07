@@ -1,18 +1,25 @@
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, Calendar, User, FileText, CheckCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import LeaveRoutes from '@/routes/leave';
 import LeaveNavigation from './Components/LeaveNavigation';
 
 export default function LeaveShow({ leaveRequest }: any) {
     const formatDate = (dateString: string) => {
         if (!dateString) {
-return 'N/A';
+return '';
 }
 
-        const date = new Date(dateString);
+        return new Date(dateString).toLocaleDateString('en-US', { timeZone: 'Asia/Manila' });
+    };
 
-        return date.toLocaleDateString('en-US', { timeZone: 'Asia/Manila' });
+    const formatCurrency = (amount: number | string | null) => {
+        if (!amount) {
+return '';
+}
+
+        return new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(Number(amount));
     };
 
     const isHalfDay = leaveRequest.days_requested < 1.0 && leaveRequest.start_date === leaveRequest.end_date;
@@ -42,10 +49,10 @@ return 'N/A';
                         <div className="matte-card elev-2 p-6">
                             <h2 className="text-lg font-bold mb-4 flex items-center">
                                 <FileText className="mr-2 h-5 w-5 text-primary" />
-                                Leave Information
+                                Leave Information (Section 6)
                             </h2>
-                            <div className="grid grid-cols-2 gap-6">
-                                <div className="space-y-1">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                <div className="space-y-1 col-span-2">
                                     <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Type of Leave</p>
                                     <div className="flex items-center space-x-2">
                                         <div className="h-3 w-3 rounded-full" style={{ backgroundColor: leaveRequest.leave_type?.color_code }}></div>
@@ -58,10 +65,48 @@ return 'N/A';
                                         {leaveRequest.leave_status?.name}
                                     </span>
                                 </div>
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Pay Status</p>
+                                    <span className={cn(
+                                        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold",
+                                        leaveRequest.pay_status === 'with_pay' ? 'bg-green-500/10 text-green-600 border-green-500/20' : 'bg-red-500/10 text-red-600 border-red-500/20'
+                                    )}>
+                                        {leaveRequest.pay_status === 'with_pay' ? 'With Pay' : 'Without Pay'}
+                                    </span>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Properly Filed</p>
+                                    <span className={cn(
+                                        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold",
+                                        leaveRequest.is_filed ? 'bg-blue-500/10 text-blue-600 border-blue-500/20' : 'bg-amber-500/10 text-amber-600 border-amber-500/20'
+                                    )}>
+                                        {leaveRequest.is_filed ? 'Verified' : 'Pending Verification'}
+                                    </span>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Salary</p>
+                                    <p className="font-medium">{formatCurrency(leaveRequest.salary)}</p>
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Date Filed</p>
+                                    <p className="font-medium">{formatDate(leaveRequest.date_filed)}</p>
+                                </div>
                                 <div className="space-y-1 col-span-2">
-                                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Details / Remarks</p>
+                                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Details Type</p>
+                                    <p className="font-medium">{leaveRequest.leave_detail_type || ''}</p>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Commutation</p>
+                                    <p className="font-medium">{leaveRequest.commutation_requested ? 'Requested' : 'Not Requested'}</p>
+                                </div>
+
+                                <div className="space-y-1 col-span-4">
+                                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Remarks / Specifics</p>
                                     <p className="p-3 bg-muted/30 rounded-xl text-sm italic">
-                                        {leaveRequest.leave_details || 'No specific details provided.'}
+                                        {leaveRequest.leave_detail_remarks || leaveRequest.leave_details || ''}
                                     </p>
                                 </div>
                             </div>
@@ -94,6 +139,25 @@ return 'N/A';
                                         )}
                                     </div>
                                 </div>
+                                <div className="space-y-1 col-span-2 border-t pt-4 mt-2">
+                                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Pay Status Breakdown</p>
+                                    <div className="flex flex-wrap gap-6 mt-1">
+                                        <div className="flex items-center gap-2 text-sm">
+                                            <span className="font-black text-green-600">{leaveRequest.days_with_pay}</span>
+                                            <span className="text-muted-foreground font-medium">Days with pay</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-sm">
+                                            <span className="font-black text-amber-600">{leaveRequest.days_without_pay}</span>
+                                            <span className="text-muted-foreground font-medium">Days without pay</span>
+                                        </div>
+                                        {leaveRequest.others_pay_remarks && (
+                                            <div className="flex items-center gap-2 text-sm">
+                                                <span className="font-medium text-muted-foreground">Others:</span>
+                                                <span className="italic">{leaveRequest.others_pay_remarks}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -108,6 +172,35 @@ return 'N/A';
                                 </p>
                             </div>
                         )}
+
+                        {leaveRequest.maternity_allocation_details && (
+                            <div className="matte-card elev-2 p-6 border-l-4 border-l-pink-500/50">
+                                <h2 className="text-lg font-bold mb-2 flex items-center">
+                                    <CheckCircle className="mr-2 h-5 w-5 text-pink-500" />
+                                    Maternity Allocation (CS Form 6a)
+                                </h2>
+                                <p className="text-sm text-muted-foreground italic">
+                                    {leaveRequest.maternity_allocation_details}
+                                </p>
+                            </div>
+                        )}
+
+                        <div className="matte-card elev-2 p-6">
+                            <h2 className="text-lg font-bold mb-4 flex items-center">
+                                <Clock className="mr-2 h-5 w-5 text-primary" />
+                                Credit Balances at Filing
+                            </h2>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-primary/5 p-4 rounded-xl border border-primary/10">
+                                    <p className="text-[10px] font-bold uppercase text-primary/70 mb-1">Vacation Leave Balance</p>
+                                    <p className="text-2xl font-black">{parseFloat(leaveRequest.vl_balance_at_filing || 0).toFixed(3)}</p>
+                                </div>
+                                <div className="bg-primary/5 p-4 rounded-xl border border-primary/10">
+                                    <p className="text-[10px] font-bold uppercase text-primary/70 mb-1">Sick Leave Balance</p>
+                                    <p className="text-2xl font-black">{parseFloat(leaveRequest.sl_balance_at_filing || 0).toFixed(3)}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Sidebar */}
@@ -140,7 +233,7 @@ return 'N/A';
                                 </div>
                                 <div className="space-y-1">
                                     <p className="text-[10px] font-bold uppercase text-muted-foreground">Received On</p>
-                                    <p className="text-xs font-medium">{formatDate(leaveRequest.date_received) || 'N/A'}</p>
+                                    <p className="text-xs font-medium">{formatDate(leaveRequest.date_received) || ''}</p>
                                 </div>
                                 <div className="space-y-1">
                                     <p className="text-[10px] font-bold uppercase text-muted-foreground">Approved On</p>
@@ -161,10 +254,46 @@ return 'N/A';
                                 </div>
                                 <div className="space-y-1">
                                     <p className="text-[10px] font-bold uppercase text-muted-foreground">Approved By</p>
-                                    <p className="text-xs font-medium">{leaveRequest.approved_by ? `${leaveRequest.approved_by.first_name} ${leaveRequest.approved_by.last_name}` : 'Pending'}</p>
+                                    <p className="text-xs font-medium">{leaveRequest.approved_by ? `${leaveRequest.approved_by.first_name} ${leaveRequest.approved_by.last_name}` : (leaveRequest.approved_by_official || 'Pending')}</p>
                                 </div>
                             </div>
                         </div>
+
+                        {leaveRequest.attachment_urls && leaveRequest.attachment_urls.length > 0 && leaveRequest.attachment_urls.some((url: string) => !!url) && (
+                            <div className="matte-card elev-2 p-6">
+                                <h2 className="text-sm font-bold mb-4 flex items-center uppercase tracking-widest text-muted-foreground">
+                                    <FileText className="mr-2 h-4 w-4" />
+                                    Attachment/s
+                                </h2>
+                                <div className="space-y-2">
+                                    {leaveRequest.attachment_urls.map((url: string, i: number) => url && (
+                                        <Button key={i} variant="secondary" className="w-full justify-start overflow-hidden text-ellipsis whitespace-nowrap" asChild title={url}>
+                                            <a href={url} target="_blank" rel="noreferrer">
+                                                <FileText className="mr-2 h-4 w-4 shrink-0" />
+                                                <span className="truncate">View Link {leaveRequest.attachment_urls.length > 1 ? i + 1 : ''}</span>
+                                            </a>
+                                        </Button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {leaveRequest.has_attachments && leaveRequest.supporting_documents?.length > 0 && (
+                            <div className="matte-card elev-2 p-6">
+                                <h2 className="text-sm font-bold mb-4 flex items-center uppercase tracking-widest text-muted-foreground">
+                                    <CheckCircle className="mr-2 h-4 w-4" />
+                                    Supporting Docs
+                                </h2>
+                                <ul className="space-y-2">
+                                    {leaveRequest.supporting_documents.map((doc: string) => (
+                                        <li key={doc} className="text-xs flex items-center">
+                                            <CheckCircle className="h-3 w-3 mr-2 text-green-500" />
+                                            {doc}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

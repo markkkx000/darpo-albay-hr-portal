@@ -97,6 +97,19 @@ class LeaveService
 
         $data['created_by'] = $createdBy;
 
+        // Fetch current VL/SL balances for snapshots (Historical Digitization)
+        $year = Carbon::parse($data['start_date'])->year;
+
+        $data['vl_balance_at_filing'] = LeaveCredit::where('user_id', $data['user_id'])
+            ->where('year', $year)
+            ->whereHas('leaveType', fn ($q) => $q->where('name', 'Vacation Leave'))
+            ->value('balance') ?? 0;
+
+        $data['sl_balance_at_filing'] = LeaveCredit::where('user_id', $data['user_id'])
+            ->where('year', $year)
+            ->whereHas('leaveType', fn ($q) => $q->where('name', 'Sick Leave'))
+            ->value('balance') ?? 0;
+
         return DB::transaction(function () use ($data) {
             $leaveRequest = LeaveRequest::create($data);
 
@@ -249,6 +262,7 @@ class LeaveService
      */
     protected function handleCreditDeduction(LeaveRequest $leaveRequest)
     {
+
         if ($leaveRequest->leaveStatus && $leaveRequest->leaveStatus->name === 'Approved') {
             $year = Carbon::parse($leaveRequest->start_date)->year;
 
@@ -265,7 +279,7 @@ class LeaveService
                 ]
             );
 
-            $credit->used += $leaveRequest->days_requested;
+            $credit->used += $leaveRequest->days_with_pay;
             $credit->balance = $credit->earned - $credit->used;
             $credit->save();
         }
@@ -276,6 +290,7 @@ class LeaveService
      */
     protected function handleCreditRestoration(LeaveRequest $leaveRequest)
     {
+
         $originalStatus = $leaveRequest->leaveStatus;
         if ($originalStatus && $originalStatus->name === 'Approved') {
             $year = Carbon::parse($leaveRequest->getOriginal('start_date'))->year;
@@ -285,7 +300,7 @@ class LeaveService
                 ->first();
 
             if ($credit) {
-                $credit->used -= $leaveRequest->getOriginal('days_requested');
+                $credit->used -= $leaveRequest->getOriginal('days_with_pay');
                 $credit->balance = $credit->earned - $credit->used;
                 $credit->save();
             }

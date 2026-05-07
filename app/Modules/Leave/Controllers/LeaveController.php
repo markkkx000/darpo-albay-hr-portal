@@ -12,7 +12,6 @@ use App\Modules\Leave\Requests\StoreLeaveRequest;
 use App\Modules\Leave\Requests\UpdateLeaveRequest;
 use App\Modules\Leave\Services\LeaveService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class LeaveController extends Controller
@@ -21,7 +20,7 @@ class LeaveController extends Controller
 
     public function index(Request $request)
     {
-        $canEncode = $request->user()->can('leave.encode');
+        $canEncode = $request->user()->can('leave.manage');
         $viewMode = $request->input('view', 'mine');
 
         // Force 'mine' view if user cannot encode
@@ -77,10 +76,6 @@ class LeaveController extends Controller
     {
         $data = $request->validated();
 
-        if ($request->hasFile('attachment')) {
-            $data['attachment_path'] = $request->file('attachment')->store('leave_attachments', 'public');
-        }
-
         $this->leaveService->storeLeaveRequest($data, $request->user()->id);
 
         return redirect()->route('leave.index')->with('success', 'Leave request logged successfully.');
@@ -105,13 +100,6 @@ class LeaveController extends Controller
     public function update(UpdateLeaveRequest $request, LeaveRequest $leaveRequest)
     {
         $data = $request->validated();
-
-        if ($request->hasFile('attachment')) {
-            if ($leaveRequest->attachment_path) {
-                Storage::disk('public')->delete($leaveRequest->attachment_path);
-            }
-            $data['attachment_path'] = $request->file('attachment')->store('leave_attachments', 'public');
-        }
 
         $this->leaveService->updateLeaveRequest($leaveRequest, $data);
 

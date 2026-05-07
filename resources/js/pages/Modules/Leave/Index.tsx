@@ -12,7 +12,7 @@ import LeaveNavigation from './Components/LeaveNavigation';
 
 export default function LeaveDashboard({ leaves, allEmployees, leaveTypes, leaveStatuses, filters }: any) {
     const { auth } = usePage<any>().props;
-    const canEncode = auth.permissions.includes('leave.encode');
+    const canEncode = auth.permissions.includes('leave.manage');
 
     const [search, setSearch] = useState(filters?.search || '');
     const [viewMode, setViewMode] = useState(filters?.view || 'mine');
