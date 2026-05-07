@@ -10,10 +10,10 @@ export default function LeaveNavigation() {
     const { auth } = usePage().props;
 
     const permissions = (auth.permissions || auth.user?.permissions || []) as string[];
-    const canManageSettings = permissions.includes('leave.manage_settings');
-    const canEncode = permissions.includes('leave.encode');
-    const canManageCredits = permissions.includes('leave.manage_credits');
-    const canManageTardiness = permissions.includes('leave.manage_tardiness');
+    const canManageSettings = permissions.includes('leave.settings.manage');
+    const canEncode = permissions.includes('leave.manage');
+    const canViewCredits = permissions.includes('leave.credits.view') || permissions.includes('leave.credits.manage');
+    const canManageTardiness = permissions.includes('leave.tardiness.manage');
 
     const tabs = [
         { name: 'Dashboard', href: index().url, icon: CalendarClock },
@@ -23,7 +23,7 @@ export default function LeaveNavigation() {
         tabs.push({ name: 'Calendar', href: calendar().url, icon: Calendar });
     }
 
-    if (canManageCredits) {
+    if (canViewCredits) {
         tabs.push({ name: 'Leave Credits', href: credits_index().url, icon: UserMinus });
     }
 
