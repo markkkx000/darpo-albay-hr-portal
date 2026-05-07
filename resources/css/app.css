@@ -632,11 +632,10 @@
     }
 
     .status-badge-coterminous {
-        background: linear-gradient(135deg, #065f46 0%, #10b981 100%);
-        color: #fff;
+        background: linear-gradient(135deg, #059669 0%, #34d399 100%);
+        color: #000;
         border: none;
         font-weight: 800;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
 
     .status-badge-contractual {
@@ -648,6 +647,13 @@
 
     .status-badge-casual {
         background: linear-gradient(135deg, #16a34a 0%, #38e54d 100%);
+        color: #000;
+        border: none;
+        font-weight: 800;
+    }
+
+    .status-badge-unknown {
+        background: linear-gradient(135deg, #d4d4d8 0%, #a1a1aa 100%);
         color: #000;
         border: none;
         font-weight: 800;

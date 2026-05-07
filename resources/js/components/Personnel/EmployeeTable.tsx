@@ -153,7 +153,7 @@ return 'N/A';
                                                     if (name.includes('co-terminous') || name.includes('coterminous') || name.includes('co terminous')) return 'status-badge-coterminous';
                                                     if (name.includes('contractual')) return 'status-badge-contractual';
                                                     if (name.includes('casual')) return 'status-badge-casual';
-                                                    return 'bg-muted/40 border border-border/50 text-foreground';
+                                                    return 'status-badge-unknown';
                                                 })()
                                             )}>
                                                 {employee.employment_status?.name || 'Unknown'}

@@ -94,8 +94,8 @@ return '';
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-center mb-6">
                         {/* 25% - Navigation */}
                         <div className="col-span-1 flex items-center justify-start space-x-2">
-                            <Button variant="outline" size="icon" onClick={() => changeMonth(-1)}>
-                                <ChevronLeft className="h-4 w-4" />
+                            <Button variant="ghost" size="icon" className="btn-ghost-specular border-none rounded-full h-12 w-12" onClick={() => changeMonth(-1)}>
+                                <ChevronLeft className="h-5 w-5" />
                             </Button>
                             
                             <div className="flex items-center justify-center space-x-1">
@@ -126,8 +126,8 @@ return '';
                                 </Select>
                             </div>
 
-                            <Button variant="outline" size="icon" onClick={() => changeMonth(1)}>
-                                <ChevronRight className="h-4 w-4" />
+                            <Button variant="ghost" size="icon" className="btn-ghost-specular border-none rounded-full h-12 w-12" onClick={() => changeMonth(1)}>
+                                <ChevronRight className="h-5 w-5" />
                             </Button>
                         </div>
                         

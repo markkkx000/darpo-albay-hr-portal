@@ -154,7 +154,6 @@ return;
                         </div>
                         </div>
                     </div>
-                </div>
 
                 {/* Clock Action Button — full-width, below the card */}
                 <div className="w-full max-w-xl flex flex-col items-stretch gap-3">
