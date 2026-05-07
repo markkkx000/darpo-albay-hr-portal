@@ -44,7 +44,7 @@ class PersonnelController extends Controller
      */
     public function create(): Response
     {
-        $this->authorize('personnel.create');
+        $this->authorize('personnel.manage');
 
         return Inertia::render('Modules/Personnel/Create', [
             'divisions' => Division::where('is_active', true)->get(),
@@ -82,7 +82,7 @@ class PersonnelController extends Controller
      */
     public function edit(User $user): Response
     {
-        $this->authorize('personnel.update');
+        $this->authorize('personnel.manage');
 
         return Inertia::render('Modules/Personnel/Edit', [
             'employee' => $user,
@@ -98,7 +98,7 @@ class PersonnelController extends Controller
      */
     public function update(EmployeeUpdateRequest $request, User $user): RedirectResponse
     {
-        $this->authorize('personnel.update');
+        $this->authorize('personnel.manage');
 
         $this->employeeService->updateEmployee($user, $request->validated());
 
@@ -111,7 +111,7 @@ class PersonnelController extends Controller
      */
     public function destroy(User $user): RedirectResponse
     {
-        $this->authorize('personnel.delete');
+        $this->authorize('personnel.manage');
 
         $this->employeeService->deleteEmployee($user);
 

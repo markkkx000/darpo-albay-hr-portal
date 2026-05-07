@@ -29,7 +29,7 @@ export default function Index({ employees, filters, divisions = [], employmentSt
     const [divisionId, setDivisionId] = useState(filters?.division_id || 'all');
     const [statusId, setStatusId] = useState(filters?.employment_status_id || 'all');
 
-    const canCreate = auth?.permissions?.includes('personnel.create');
+    const canCreate = auth?.permissions?.includes('personnel.manage');
 
     const handleFilter = useCallback(() => {
         router.get(indexRoute().url, {
@@ -163,8 +163,8 @@ export default function Index({ employees, filters, divisions = [], employmentSt
 
                 <EmployeeTable
                     employees={employees}
-                    canEdit={auth?.permissions?.includes('personnel.update')}
-                    canDelete={auth?.permissions?.includes('personnel.delete')}
+                    canEdit={auth?.permissions?.includes('personnel.manage')}
+                    canDelete={auth?.permissions?.includes('personnel.manage')}
                 />
             </div>
         </>

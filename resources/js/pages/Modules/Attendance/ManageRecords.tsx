@@ -60,7 +60,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState<AttendanceRecord | null>(null);
     const [recordToDelete, setRecordToDelete] = useState<AttendanceRecord | null>(null);
-    const canDelete = auth.permissions?.includes('attendance.delete');
+    const canDelete = auth.permissions?.includes('attendance.logs.manage');
 
     const handleEdit = (record: AttendanceRecord) => {
         setSelectedRecord(record);

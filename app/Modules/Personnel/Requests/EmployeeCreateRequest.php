@@ -8,7 +8,7 @@ class EmployeeCreateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('personnel.create');
+        return $this->user()->can('personnel.manage');
     }
 
     public function rules(): array

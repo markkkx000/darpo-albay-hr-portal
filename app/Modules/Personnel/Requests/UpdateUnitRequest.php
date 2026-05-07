@@ -8,7 +8,7 @@ class UpdateUnitRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('personnel.update');
+        return $this->user()->can('personnel.manage');
     }
 
     public function rules(): array

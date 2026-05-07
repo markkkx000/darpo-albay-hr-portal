@@ -78,7 +78,7 @@ export default function Archived({ employees, filters }: Props) {
                 <EmployeeTable
                     employees={employees}
                     isArchivedView={true}
-                    canRestore={auth.permissions?.includes('personnel.restore')}
+                    canRestore={auth.permissions?.includes('personnel.manage')}
                 />
             </div>
         </>

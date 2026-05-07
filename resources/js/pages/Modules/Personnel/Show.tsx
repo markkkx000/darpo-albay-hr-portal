@@ -10,7 +10,7 @@ interface Props {
 
 export default function Show({ employee }: Props) {
     const { auth } = usePage().props as any;
-    const canEdit = auth.permissions?.includes('personnel.update');
+    const canEdit = auth.permissions?.includes('personnel.manage');
 
     return (
         <>

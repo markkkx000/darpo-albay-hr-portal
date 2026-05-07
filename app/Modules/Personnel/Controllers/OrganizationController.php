@@ -25,7 +25,7 @@ class OrganizationController extends Controller
 
     public function index(): Response
     {
-        $this->authorize('personnel.update');
+        $this->authorize('personnel.manage');
 
         return Inertia::render('Modules/Personnel/Organization/Index', [
             'divisions' => $this->organizationService->getOrganizationData(),

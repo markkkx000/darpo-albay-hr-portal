@@ -127,24 +127,44 @@ export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
 
                         <div className="space-y-3">
                             <Label>Permissions</Label>
-                            <div className="h-[300px] overflow-y-auto border rounded-md p-4 bg-muted/5">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {permissions.map((permission) => (
-                                        <div key={permission.id} className="flex items-center space-x-2">
-                                            <Checkbox
-                                                id={`perm-${permission.id}`}
-                                                checked={data.permissions.includes(permission.name)}
-                                                onCheckedChange={() => togglePermission(permission.name)}
-                                            />
-                                            <label
-                                                htmlFor={`perm-${permission.id}`}
-                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                                            >
-                                                {permission.name}
-                                            </label>
+                            <div className="h-[300px] overflow-y-auto border rounded-md p-4 bg-muted/5 space-y-6">
+                                {Object.entries(
+                                    permissions.reduce((acc, permission) => {
+                                        const [module] = permission.name.split('.');
+
+                                        if (!acc[module]) {
+acc[module] = [];
+}
+
+                                        acc[module].push(permission);
+
+                                        return acc;
+                                    }, {} as Record<string, Permission[]>)
+                                ).map(([module, perms]) => (
+                                    <div key={module} className="space-y-3">
+                                        <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground border-b pb-1">
+                                            {module.replace('_', ' ')}
+                                        </h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            {perms.map((permission) => (
+                                                <div key={permission.id} className="flex items-center space-x-2">
+                                                    <Checkbox
+                                                        id={`perm-${permission.id}`}
+                                                        checked={data.permissions.includes(permission.name)}
+                                                        onCheckedChange={() => togglePermission(permission.name)}
+                                                    />
+                                                    <label
+                                                        htmlFor={`perm-${permission.id}`}
+                                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                                        title={permission.name}
+                                                    >
+                                                        {permission.name.split('.').slice(1).join(' ')}
+                                                    </label>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
-                                </div>
+                                    </div>
+                                ))}
                             </div>
                             <InputError message={errors.permissions} />
                         </div>

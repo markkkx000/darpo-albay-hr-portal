@@ -122,7 +122,7 @@ test('permissions are correctly shared to the frontend', function () {
     $this->actingAs($this->hrStaff)->get(route('dashboard'))
         ->assertInertia(fn (Assert $page) => $page
             ->where('auth.permissions', function ($perms) {
-                return is_array($perms) ? in_array('attendance.manage', $perms) : collect($perms)->contains('attendance.manage');
+                return is_array($perms) ? in_array('attendance.logs.view', $perms) : collect($perms)->contains('attendance.logs.view');
             })
         );
 
@@ -130,7 +130,7 @@ test('permissions are correctly shared to the frontend', function () {
     $this->actingAs($this->employee)->get(route('dashboard'))
         ->assertInertia(fn (Assert $page) => $page
             ->where('auth.permissions', function ($perms) {
-                return is_array($perms) ? ! in_array('attendance.manage', $perms) : ! collect($perms)->contains('attendance.manage');
+                return is_array($perms) ? ! in_array('attendance.logs.view', $perms) : ! collect($perms)->contains('attendance.logs.view');
             })
         );
 });
