@@ -390,6 +390,13 @@
   - Shadows in light mode must translate to subtle borders or inner glows in dark mode to maintain elevation.
   - Colors should automatically map to their mode-specific semantic tokens without requiring explicit overriding classes whenever possible.
 
+### Interactive Elements & Branding
+- **Rule:** Enforce the "Premium UI" brand identity across all interactive components to ensure a cohesive and high-end agency experience.
+- **Apply:**
+  - **Dropdowns & Lists:** All dropdown menus, select items, and interactive lists must utilize the `item-hover-gradient` utility. Hover states must feature the "floating bubble" effect with precisely centered text and indicators.
+  - **Buttons:** Primary call-to-action buttons should have the iconic fully rounded shape (`rounded-full`) and the signature green-yellow gradient (`btn-specular`).
+  - **High-Contrast Gradient:** All brand-gradient elements must use black text (`text-black`) to ensure optimal high-contrast accessibility and premium aesthetic.
+
 ---
 
 ## ✅ Quick-Reference Checklist

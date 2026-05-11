@@ -114,7 +114,7 @@ export default function NotificationBell() {
                                                 {notification.data.title}
                                             </span>
                                             {notification.data.priority === 'high' && (
-                                                <Badge variant="outline" className="h-3 px-1 border-destructive text-destructive text-[9px] uppercase tracking-wider font-bold group-hover:border-black group-hover:text-black">High</Badge>
+                                                <Badge variant="outline" className="flex h-[15px] items-center justify-center border-destructive px-1.5 py-0 text-[9px] font-bold uppercase tracking-wider text-destructive group-hover:border-black group-hover:text-black">High</Badge>
                                             )}
                                             {!notification.read_at && (
                                                 <span className="flex h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_8px_var(--green-glow)] group-hover:bg-white group-hover:shadow-none" />
@@ -181,15 +181,15 @@ export default function NotificationBell() {
                         ))
                     )}
                 </div>
-                <DropdownMenuSeparator className="m-0" />
-                <DropdownMenuItem asChild className="p-0 focus:bg-transparent hover:bg-transparent">
+                <DropdownMenuSeparator className="m-0 opacity-50" />
+                <div className="p-2">
                     <Link
                         href={NotificationActions.index.url()}
-                        className="flex w-full items-center justify-center py-3 text-xs font-semibold text-primary transition-colors"
+                        className="btn-specular flex w-full items-center justify-center py-2.5 text-sm font-bold shadow-lg"
                     >
                         View All Notifications
                     </Link>
-                </DropdownMenuItem>
+                </div>
             </DropdownMenuContent>
         </DropdownMenu>
     );
