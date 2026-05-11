@@ -163,7 +163,7 @@ return 'All Employees';
                                         leaveTo="opacity-0"
                                         afterLeave={() => setQuery('')}
                                     >
-                                        <ComboboxOptions className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-popover py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm border">
+                                        <ComboboxOptions className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-popover py-1 px-1.5 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm border">
                                             {filteredUsers.length === 0 && query !== '' ? (
                                                 <div className="relative cursor-default select-none py-2 px-4 text-muted-foreground">
                                                     Nothing found.
@@ -174,7 +174,7 @@ return 'All Employees';
                                                         className={({ focus }) =>
                                                             cn(
                                                                 "relative cursor-default select-none py-2 pl-10 pr-4",
-                                                                focus ? "bg-accent text-accent-foreground" : "text-popover-foreground"
+                                                                focus ? "item-hover-gradient mx-1.5 my-0.5 rounded-[16px]" : "text-popover-foreground mx-1.5 my-0.5"
                                                             )
                                                         }
                                                         value="all"
@@ -198,7 +198,7 @@ return 'All Employees';
                                                             className={({ focus }) =>
                                                                 cn(
                                                                     "relative cursor-default select-none py-2 pl-10 pr-4",
-                                                                    focus ? "bg-accent text-accent-foreground" : "text-popover-foreground"
+                                                                    focus ? "item-hover-gradient mx-1.5 my-0.5 rounded-[16px]" : "text-popover-foreground mx-1.5 my-0.5"
                                                                 )
                                                             }
                                                             value={person.id.toString()}
