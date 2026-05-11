@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, Menu, Search } from 'lucide-react';
+import { LayoutGrid, Menu } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import AppLogoIcon from '@/components/app-logo-icon';
 import { Breadcrumbs } from '@/components/breadcrumbs';
@@ -201,10 +201,10 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                     <Avatar className="size-8 overflow-hidden rounded-full border border-primary/10">
                                         <AvatarImage
                                             src={auth.user?.avatar}
-                                            alt={auth.user?.name}
+                                            alt={auth.user ? `${auth.user.first_name} ${auth.user.last_name}` : ''}
                                         />
                                         <AvatarFallback className="rounded-full bg-primary/10 text-primary font-bold">
-                                            {getInitials(auth.user?.name ?? '')}
+                                            {getInitials(auth.user ? `${auth.user.first_name} ${auth.user.last_name}` : '')}
                                         </AvatarFallback>
                                     </Avatar>
                                 </Button>

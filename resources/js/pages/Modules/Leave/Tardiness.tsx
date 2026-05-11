@@ -34,7 +34,7 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
     return (
         <>
             <Head title="Tardiness Records" />
-            <div className="container mx-auto py-6 max-w-7xl">
+            <div className="w-full p-4 md:p-6">
                 <div className="mb-6">
                     <h1 className="t-title">Tardiness & Undertime</h1>
                     <p className="text-muted-foreground">Manage tardiness and undertime records per month.</p>

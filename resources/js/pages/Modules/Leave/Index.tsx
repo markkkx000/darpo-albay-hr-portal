@@ -2,13 +2,13 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Plus, CalendarX } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
+import Heading from '@/components/heading';
 import { Pagination } from '@/components/Pagination';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import Heading from '@/components/heading';
-import { cn } from '@/lib/utils';
 import { useDebounce } from '@/hooks/use-debounce';
+import { cn } from '@/lib/utils';
 import LeaveRoutes from '@/routes/leave';
 import LeaveNavigation from './Components/LeaveNavigation';
 

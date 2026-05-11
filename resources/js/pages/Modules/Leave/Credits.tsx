@@ -32,7 +32,7 @@ export default function LeaveCredits({ users, leaveTypes, currentYear, allEmploy
     return (
         <>
             <Head title="Leave Credits" />
-            <div className="container mx-auto py-6 max-w-7xl">
+            <div className="w-full p-4 md:p-6">
                 <div className="mb-6">
                     <h1 className="t-title">Leave Credits</h1>
                     <p className="text-muted-foreground">Manage leave credits balances.</p>

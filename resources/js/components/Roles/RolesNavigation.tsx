@@ -27,7 +27,7 @@ export function RolesNavigation() {
                 <Link
                     key={tab.title}
                     href={tab.href}
-                    className={`flex items-center gap-2 px-4 py-1.5 text-sm font-bold rounded-full transition-all ${tab.active ? 'btn-specular' : 'text-muted-foreground hover:text-foreground'}`}
+                    className={cn('flex items-center gap-2 px-4 py-1.5 text-sm font-bold rounded-full transition-all', tab.active ? 'btn-specular' : 'text-muted-foreground hover:text-foreground')}
                 >
                     <tab.icon className="h-4 w-4" />
                     {tab.title}

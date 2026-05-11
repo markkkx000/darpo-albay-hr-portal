@@ -69,6 +69,10 @@ class TardinessController extends Controller
             ]
         );
 
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Tardiness record updated.']);
+        }
+
         return redirect()->back()->with('success', 'Tardiness record updated.');
     }
 }

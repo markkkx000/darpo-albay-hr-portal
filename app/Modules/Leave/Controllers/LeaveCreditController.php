@@ -68,6 +68,10 @@ class LeaveCreditController extends Controller
             ]
         );
 
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Leave credits updated.']);
+        }
+
         return redirect()->back()->with('success', 'Leave credits updated.');
     }
 }

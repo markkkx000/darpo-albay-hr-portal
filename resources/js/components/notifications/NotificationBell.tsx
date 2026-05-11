@@ -8,7 +8,6 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -43,14 +42,7 @@ export default function NotificationBell() {
     };
 
 
-    const markAllAsRead = () => {
-        httpPost(NotificationActions.readAll.url(), {
-            onSuccess: () => {
-                setNotifications(prev => prev.map(n => (n.data.dismissible ?? true) ? { ...n, read_at: new Date().toISOString() } : n));
-                router.reload({ only: ['appNotifications', 'notifications'] });
-            }
-        });
-    };
+
 
     const toggleExpand = (id: string, e: React.MouseEvent) => {
         e.stopPropagation();

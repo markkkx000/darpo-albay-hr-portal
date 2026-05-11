@@ -2,9 +2,8 @@ import { Link, router } from '@inertiajs/react';
 import { Edit, Eye, RotateCcw, Trash2, User as UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
 import { Pagination } from '@/components/Pagination';
-import { Badge } from '@/components/ui/badge';
+
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -14,6 +13,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 import { show as showRoute, edit as editRoute, destroy as destroyRoute, restore as restoreRoute } from '@/routes/personnel';
 
 interface User {
@@ -149,10 +149,23 @@ return 'N/A';
                                                 'inline-flex items-center rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wide shadow-sm',
                                                 (() => {
                                                     const name = (employee.employment_status?.name || '').toLowerCase();
-                                                    if (name.includes('permanent')) return 'status-badge-permanent';
-                                                    if (name.includes('co-terminous') || name.includes('coterminous') || name.includes('co terminous')) return 'status-badge-coterminous';
-                                                    if (name.includes('contractual')) return 'status-badge-contractual';
-                                                    if (name.includes('casual')) return 'status-badge-casual';
+
+                                                    if (name.includes('permanent')) {
+return 'status-badge-permanent';
+}
+
+                                                    if (name.includes('co-terminous') || name.includes('coterminous') || name.includes('co terminous')) {
+return 'status-badge-coterminous';
+}
+
+                                                    if (name.includes('contractual')) {
+return 'status-badge-contractual';
+}
+
+                                                    if (name.includes('casual')) {
+return 'status-badge-casual';
+}
+
                                                     return 'status-badge-unknown';
                                                 })()
                                             )}>

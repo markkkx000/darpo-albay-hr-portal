@@ -17,6 +17,8 @@ import {
 import { useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 
+import { cn } from '@/lib/utils';
+
 interface Props {
     content: string;
     onChange: (content: string) => void;
@@ -227,7 +229,7 @@ export function RichTextEditor({ content, onChange, error }: Props) {
     }, [content, editor]);
 
     return (
-        <div className={`border rounded-xl overflow-hidden ${error ? 'border-destructive' : 'border-input'}`}>
+        <div className={cn('border rounded-xl overflow-hidden', error ? 'border-destructive' : 'border-input')}>
             <MenuBar editor={editor} />
             <EditorContent editor={editor} />
             {error && <p className="text-xs text-destructive p-2">{error}</p>}

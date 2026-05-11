@@ -1,7 +1,6 @@
 import { Head, router } from '@inertiajs/react';
 import { UserCog, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
-import { cn } from '@/lib/utils';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import Heading from '@/components/heading';
 import { Pagination } from '@/components/Pagination';
@@ -10,6 +9,7 @@ import { RolesNavigation } from '@/components/Roles/RolesNavigation';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 import RolesRoutes from '@/routes/roles';
 
 /** Minimal shape for EmployeeSearch autocomplete — loaded eagerly from the controller. */

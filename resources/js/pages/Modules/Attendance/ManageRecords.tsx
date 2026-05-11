@@ -7,7 +7,7 @@ import { AttendanceRecordModal } from '@/components/Attendance/AttendanceRecordM
 import { Pagination } from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
 import {
     Dialog,
     DialogContent,

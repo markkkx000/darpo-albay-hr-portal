@@ -81,7 +81,7 @@ return '';
     return (
         <>
             <Head title="Leave Calendar" />
-            <div className="container mx-auto py-6 max-w-7xl">
+            <div className="w-full p-4 md:p-6">
                 <div className="mb-6">
                     <h1 className="t-title">Leave Calendar</h1>
                     <p className="text-muted-foreground">Visual overview of employee leaves.</p>

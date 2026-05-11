@@ -347,10 +347,10 @@ return { category: '', specify: '' };
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {data.specific_dates.map((d: string) => (
-                                            <div key={d} className="flex items-center space-x-1 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                                                <span className="font-medium">{new Date(d).toLocaleDateString('en-GB', { timeZone: 'Asia/Manila' })}</span>
-                                                <button type="button" onClick={() => removeSpecificDate(d)} className="text-primary hover:text-primary/70">
-                                                    <X className="h-3 w-3 ml-1" />
+                                            <div key={d} className="badge-premium group">
+                                                <span>{new Date(d).toLocaleDateString('en-GB', { timeZone: 'Asia/Manila' })}</span>
+                                                <button type="button" onClick={() => removeSpecificDate(d)} className="text-black/50 hover:text-black transition-colors">
+                                                    <X className="h-3.5 w-3.5" />
                                                 </button>
                                             </div>
                                         ))}
