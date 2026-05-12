@@ -73,13 +73,13 @@ export function EmployeeForm({
         ? units.filter(u => u.division_id === parseInt(data.division_id))
         : [];
 
-    const isPrcValid = /^\d{7}$/.test(data.prc_id_no || '');
+    const isPrcNotEmpty = !!data.prc_id_no;
 
     const handlePrcChange = (val: string) => {
         setData('prc_id_no', val);
 
-        if (!/^\d{7}$/.test(val)) {
-            setData('prc_expiration', ''); // Clear expiration if invalid
+        if (!val) {
+            setData('prc_expiration', ''); // Clear expiration if empty
         }
     };
 
@@ -401,7 +401,7 @@ export function EmployeeForm({
                                 id="prc_id_no"
                                 value={data.prc_id_no}
                                 onChange={e => handlePrcChange(e.target.value)}
-                                placeholder="7-digit number"
+                                placeholder="Enter PRC ID Number"
                                 aria-invalid={!!errors.prc_id_no}
                                 className={cn(errors.prc_id_no && "border-destructive focus-visible:ring-destructive")}
                             />
@@ -414,10 +414,10 @@ export function EmployeeForm({
                                 type="date"
                                 value={data.prc_expiration}
                                 onChange={e => setData('prc_expiration', e.target.value)}
-                                disabled={!isPrcValid}
+                                disabled={!isPrcNotEmpty}
                                 aria-invalid={!!errors.prc_expiration}
                                 className={cn(
-                                    !isPrcValid && "opacity-50 cursor-not-allowed",
+                                    !isPrcNotEmpty && "opacity-50 cursor-not-allowed",
                                     errors.prc_expiration && "border-destructive focus-visible:ring-destructive"
                                 )}
                             />
