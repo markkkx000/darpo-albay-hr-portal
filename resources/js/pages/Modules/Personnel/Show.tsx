@@ -1,5 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Edit, User as UserIcon } from 'lucide-react';
+import { Edit, User as UserIcon, ChevronLeft } from 'lucide-react';
 import { EmployeeCard } from '@/components/Personnel/EmployeeCard';
 import { Button } from '@/components/ui/button';
 import { index as indexRoute, edit as editRoute } from '@/routes/personnel';
@@ -19,6 +19,11 @@ export default function Show({ employee }: Props) {
             <div className="space-y-6 p-4 max-w-5xl mx-auto">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
+                        <Link href={indexRoute().url} className="mr-2">
+                            <Button variant="ghost" size="icon" className="rounded-full hover:bg-primary/10 hover:text-primary transition-all">
+                                <ChevronLeft className="h-5 w-5" />
+                            </Button>
+                        </Link>
                         <div className="p-2 rounded-full bg-primary/10">
                             <UserIcon className="h-6 w-6 text-primary" />
                         </div>

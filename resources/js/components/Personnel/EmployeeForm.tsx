@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react';
+import { useForm, Link } from '@inertiajs/react';
 import { Loader2, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,6 +35,7 @@ interface Props {
     positions: Position[];
     employmentStatuses: EmploymentStatus[];
     onSubmit: (data: any) => void;
+    cancelUrl?: string;
 }
 
 export function EmployeeForm({ 
@@ -43,7 +44,8 @@ export function EmployeeForm({
     units,
     positions, 
     employmentStatuses, 
-    onSubmit 
+    onSubmit,
+    cancelUrl = '#'
 }: Props) {
     const { data, setData, processing, errors } = useForm({
         employee_number: employee?.employee_number || '',
@@ -431,7 +433,12 @@ export function EmployeeForm({
                 </div>
             </div>
 
-            <div className="flex justify-end pt-6 border-t border-border/50">
+            <div className="flex items-center justify-end gap-3 pt-6 border-t border-border/50">
+                {cancelUrl && (
+                    <Button asChild variant="ghost" className="btn-ghost-specular px-8 py-6 rounded-xl border-none">
+                        <Link href={cancelUrl}>Cancel</Link>
+                    </Button>
+                )}
                 <Button type="submit" disabled={processing} className="btn-specular w-full md:w-auto gap-2 px-8 py-6 rounded-xl border-none shadow-lg">
                     {processing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                     {employee ? 'Update Employee Record' : 'Create Employee Record'}

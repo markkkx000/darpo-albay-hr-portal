@@ -44,6 +44,7 @@ export default function Create({ divisions, units, positions, employmentStatuses
                             positions={positions}
                             employmentStatuses={employmentStatuses}
                             onSubmit={handleSubmit}
+                            cancelUrl={indexRoute().url}
                         />
                     </CardContent>
                 </Card>

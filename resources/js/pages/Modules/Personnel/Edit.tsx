@@ -45,6 +45,7 @@ export default function Edit({ employee, divisions, units, positions, employment
                             positions={positions}
                             employmentStatuses={employmentStatuses}
                             onSubmit={handleSubmit}
+                            cancelUrl={indexRoute().url}
                         />
                     </CardContent>
                 </Card>
