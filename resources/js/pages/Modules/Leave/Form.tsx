@@ -441,7 +441,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                                     onSelect={(val) => setData('user_id', val === 'all' ? '' : val)}
                                     placeholder="Search Employee..."
                                     returnValue="id"
-                                    error={!!errors.user_id}
+                                    aria-invalid={!!errors.user_id}
                                 />
                                 {errors.user_id && <p className="text-sm text-destructive">{errors.user_id}</p>}
                             </div>
@@ -476,7 +476,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                             <div className="space-y-2">
                                 <Label>Leave Type <Required /></Label>
                                 <Select value={data.leave_type_id} onValueChange={handleLeaveTypeChange}>
-                                    <SelectTrigger className={errors.leave_type_id ? "border-destructive" : ""}>
+                                    <SelectTrigger aria-invalid={!!errors.leave_type_id}>
                                         <div className="truncate text-left flex-1">
                                             <SelectValue placeholder="Select Leave Type" />
                                         </div>
@@ -594,7 +594,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                                                 type="date" 
                                                 value={data.start_date} 
                                                 onChange={e => setData('start_date', e.target.value)} 
-                                                className={errors.start_date ? "border-destructive" : ""}
+                                               aria-invalid={!!errors.start_date}
                                              />
                                              {errors.start_date && <p className="text-sm text-destructive">{errors.start_date}</p>}
                                              {errors.dates && <p className="text-sm text-destructive">{errors.dates}</p>}
@@ -605,7 +605,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                                                 type="date" 
                                                 value={data.end_date} 
                                                 onChange={e => setData('end_date', e.target.value)} 
-                                                className={errors.end_date ? "border-destructive" : ""}
+                                               aria-invalid={!!errors.end_date}
                                              />
                                              {errors.end_date && <p className="text-sm text-destructive">{errors.end_date}</p>}
                                          </div>
@@ -617,7 +617,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                                                 min="0" 
                                                 value={data.days_requested} 
                                                 onChange={e => setData('days_requested', e.target.value)} 
-                                                className={errors.days_requested ? "border-destructive" : ""}
+                                                aria-invalid={!!errors.days_requested}
                                              />
                                              {errors.days_requested && <p className="text-sm text-destructive">{errors.days_requested}</p>}
                                          </div>
@@ -642,7 +642,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                                                 min="0" 
                                                 value={data.days_requested} 
                                                 onChange={e => setData('days_requested', e.target.value)} 
-                                                className={errors.days_requested ? "border-destructive" : ""}
+                                                aria-invalid={!!errors.days_requested}
                                              />
                                              {errors.days_requested && <p className="text-sm text-destructive">{errors.days_requested}</p>}
                                          </div>
@@ -681,7 +681,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                                     onSelect={(val) => setData('approved_by_id', val === 'all' ? '' : val)}
                                     placeholder="Search Approver..."
                                     returnValue="id"
-                                    error={!!errors.approved_by_id}
+                                    aria-invalid={!!errors.approved_by_id}
                                 />
                                 {errors.approved_by_id && <p className="text-sm text-destructive">{errors.approved_by_id}</p>}
                             </div>
@@ -691,7 +691,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                             <div className="space-y-2">
                                 <Label>Status <Required /></Label>
                                 <Select value={data.leave_status_id} onValueChange={(v) => setData('leave_status_id', v)}>
-                                    <SelectTrigger className={errors.leave_status_id ? "border-destructive focus:ring-destructive" : ""}>
+                                    <SelectTrigger aria-invalid={!!errors.leave_status_id}>
                                         <div className="truncate text-left flex-1">
                                             <SelectValue placeholder="Select Status" />
                                         </div>

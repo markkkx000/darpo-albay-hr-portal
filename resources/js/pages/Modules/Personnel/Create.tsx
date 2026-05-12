@@ -1,5 +1,4 @@
-import { Head } from '@inertiajs/react';
-import { router } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { toast } from 'sonner';
 import { EmployeeForm } from '@/components/Personnel/EmployeeForm';
 import { Card, CardContent } from '@/components/ui/card';
@@ -13,11 +12,48 @@ interface Props {
 }
 
 export default function Create({ divisions, units, positions, employmentStatuses }: Props) {
-    const handleSubmit = (data: any) => {
-        router.post(storeRoute().url, data, {
+    const { data, setData, post, processing, errors } = useForm({
+        employee_number: '',
+        first_name: '',
+        last_name: '',
+        email: '',
+        sex: '',
+        date_of_birth: '',
+        
+        position_id: '',
+        division_id: '',
+        unit_id: '',
+        employment_status_id: '',
+        hire_date: '',
+        years_in_service: '',
+        plantilla_number: '',
+        orig_date_of_appointment: '',
+        date_of_latest_appointment: '',
+        date_of_assumption: '',
+        
+        contact_number: '',
+        address: '',
+        
+        gsis_bp_number: '',
+        philhealth: '',
+        hdmf_pagibig_no: '',
+        tin_number: '',
+        prc_id_no: '',
+        prc_expiration: '',
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        const payload = { ...data };
+
+        if (payload.unit_id === 'none') {
+            payload.unit_id = '';
+        }
+
+        post(storeRoute().url, {
             onSuccess: () => {
                 toast.success('Employee created successfully');
-                router.clearHistory();
             },
         });
     };
@@ -39,6 +75,10 @@ export default function Create({ divisions, units, positions, employmentStatuses
                 <Card className="matte-card elev-2 border-none">
                     <CardContent className="pt-6">
                         <EmployeeForm 
+                            data={data}
+                            setData={setData}
+                            errors={errors}
+                            processing={processing}
                             divisions={divisions}
                             units={units}
                             positions={positions}
