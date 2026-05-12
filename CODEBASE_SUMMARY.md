@@ -34,7 +34,7 @@ This application is a **Laravel 13** backend with an **Inertia.js React** fronte
   - **Persistence**: Sidebar open/close state is persisted via a `sidebar_state` cookie managed by `SidebarProvider`.
 - `resources/js/components/dynamic-icon.tsx` — renders Lucide icons from string names with a `LayoutDashboard` fallback.
 - `resources/js/components/Pagination.tsx` — reusable pagination component. **Use this for all paginated views. Do not create module-specific pagination components.**
-- `resources/js/components/EmployeeSearch.tsx` — reusable Headless UI Combobox-based employee search with autocomplete filtering by name and employee number.
+- `resources/js/components/EmployeeSearch.tsx` — reusable Headless UI Combobox-based employee search with autocomplete filtering by name and employee number. Supports an optional `error` prop for visual validation feedback.
 - **Inertia v3 Features**:
   - **Standalone HTTP**: `useHttp` hook used for background requests that don't trigger full page navigation (e.g., marking notifications as read).
   - **Strict Mode**: Enabled via `strictMode: true` in `app.tsx`.
@@ -117,10 +117,10 @@ routes/
 
 ### Leave Tracking Module (`app/Modules/Leave/`)
 - **Dashboard** (`Index.tsx`): Paginated table of all leave requests with employee search (via `EmployeeSearch` component). Shows employee, leave type (with color dot), dates (specific or range), days requested, status badge, and who encoded it. "Encode" button to create new leave requests.
-- **Leave Form** (`Form.tsx`): Shared create/edit form. Supports date range or specific date picking, half-day logic, automatic working-day calculation (excludes weekends and holidays), and overlap validation.
+- **Leave Form** (`Form.tsx`): Shared create/edit form. Supports date range or specific date picking, half-day logic, and automatic working-day calculation. Features reactive validation feedback with per-field error messages and red borders. Mandatory fields are marked with red asterisks (*). Attachment URLs are automatically prefixed with `https://` if a protocol is missing but a domain structure is detected. Data is transformed before submission using `useForm`'s `transform` method.
 - **Calendar** (`Calendar.tsx`): Visual monthly calendar showing leave requests per day. Employee filter via Headless UI Combobox. Color-coded by leave type. Click on a day to see details in a dialog.
-- **Leave Credits** (`Credits.tsx`): Paginated table of employees with inline-editable earned/used credits per tracked leave type (Vacation, Sick, Special Privilege). Year filter and employee search. Credit deduction/restoration is handled automatically by `LeaveService` when leaves are approved/modified/deleted.
-- **Tardiness & Undertime** (`Tardiness.tsx`): Paginated table of employees with inline-editable tardiness/undertime counts and minutes per month. Year and month filters with employee search.
+- **Leave Credits** (`Credits.tsx`): Paginated table of employees with inline-editable earned/used credits. Features a "Display Leave Types" toggle to choose which credits are visible in the table. This visibility state is persisted via `localStorage` and defaults to VL and SL.
+- **Tardiness & Undertime** (`Tardiness.tsx`): Paginated table of employees with inline-editable tardiness/undertime counts per month. Features a custom counter UI with `+`/`-` buttons and a 500ms debounce for database updates to prevent rapid redundant requests.
 - **Settings** (`Settings.tsx`): Admin-only tab (requires `leave.manage_settings`). CRUD for holidays (add/delete by year), leave types (add with name/color/description, toggle active/inactive), and leave statuses (add, toggle active/inactive). Deactivation pattern preferred over hard deletion to preserve historical integrity.
 - **Navigation**: `LeaveNavigation.tsx` provides in-module tab navigation (Dashboard, Calendar, Credits, Tardiness, Settings). Settings tab is hidden from users without `leave.manage_settings`.
 - **Service Layer**: `LeaveService` handles overlap validation, half-day validation, working-day calculation, and automatic credit deduction/restoration on approved leave changes.
@@ -180,3 +180,6 @@ This is **infrastructure, not a feature module**. It is a hybrid: the dispatch/m
 - **Management buttons**: Module management actions (e.g., "Manage Announcements", "Attendance Management") are rendered as in-module buttons (top-right of the module page), not as sidebar entries. They are gated by appropriate permissions (e.g., `announcements.manage`, `attendance.manage`).
 - **Inertia History Management**: For subpage forms (like `Create`/`Edit` pages), append `router.clearHistory()` to the `onSuccess` callback of mutations. This ensures that when a user navigates back to the main list via the browser's "Back" button, Inertia forces a fresh data fetch rather than loading a stale cache. This eliminates the need for manual page refreshes while preserving the expected redirection flows.
 - **Toast Notifications**: Use `sonner` for immediate visual feedback after successful data-modifying operations (POST, PUT, DELETE). Use `toast.success('Message')` within the `onSuccess` callback.
+- **Required Fields**: Visually highlight mandatory inputs with a red asterisk (*) beside the label.
+- **Interactive Counters**: For simple numeric increments, use `+` and `-` button pairs with a **500ms debounce** to batch updates and prevent server-side race conditions or excessive load.
+- **UI State Persistence**: Use `localStorage` to persist non-critical UI preferences, such as table column visibility, across browser reloads.
