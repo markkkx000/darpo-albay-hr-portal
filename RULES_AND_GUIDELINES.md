@@ -36,6 +36,7 @@
     - When using `EmployeeSearch.tsx` for searching users in the backend, always implement **keyword-splitting logic** in the controller.
     - Instead of a single `where like` query, split the search string by spaces and iterate through the keywords.
     - Each keyword must be checked against `first_name`, `last_name`, and `employee_number` using a nested `where` closure.
+    - Use `ilike` (PostgreSQL case-insensitive) instead of `like` for search queries.
     - This ensures that searching for a full name (e.g., "John Doe") correctly finds users whose names are split across columns.
     - Example implementation can be found in `UserRoleController@index` or `LeaveController@index`.
 
@@ -54,14 +55,15 @@
 ---
 
 ## Migration Guidelines
-- **SQLite for local development. PostgreSQL (Supabase) for production.** All migrations must be compatible with both.
-- Never use SQLite-only column types. Use standard Laravel migration methods only.
-- Safe column types for both databases: `string()`, `text()`, `boolean()`, `date()`, `timestamp()`, `json()`, `unsignedBigInteger()`.
+- **PostgreSQL for all environments.** Local development uses PostgreSQL via Docker Compose (Laravel Sail). Production uses PostgreSQL via Supabase. Tests run against PostgreSQL (`phpunit.xml` sets `DB_CONNECTION=pgsql`).
+- All migrations must be PostgreSQL-compatible. Never use SQLite-only column types or syntax.
+- Safe column types: `string()`, `text()`, `boolean()`, `date()`, `timestamp()`, `json()`, `unsignedBigInteger()`.
 - Always define foreign key constraints explicitly — do not rely on naming conventions.
 - Use `softDeletes()` on tables representing real-world entities (employees, leave requests, attendance records, etc.).
-- Lookup tables (`leave_types`, `departments`, `positions`, `employment_statuses`, etc.) must never be hard deleted — use `is_active = false` to deactivate.
+- Lookup tables (`leave_types`, `divisions`, `positions`, `employment_statuses`, etc.) must never be hard deleted — use `is_active = false` to deactivate.
 - Never store structured data as a plain string column if it will be referenced by other tables or used in reports — use a lookup table.
 - Always add `unique()` constraints at the database level for fields that must be unique (e.g. `employee_number`, `email`) — do not rely on validation alone.
+- Use `ilike` for case-insensitive search queries — never rely on SQLite `like` behavior.
 
 ---
 
@@ -75,10 +77,19 @@
 ---
 
 ## Permission Naming Convention
-- Use dot notation: `module.action` (e.g. `attendance.clock`, `personnel.view`, `leave.approve`).
+- Use dot notation: `module.action` (e.g. `attendance.clock`, `personnel.view`, `leave.manage`).
 - Always seed permissions in `RoleAndPermissionSeeder` — never hardcode role checks in controllers.
 - Use route middleware (`permission:module.action`) for route-level protection.
 - Use `authorize()` in Form Requests for request-level permission checks.
+
+---
+
+## Testing Guidelines
+- All tests run against **PostgreSQL** (configured in `phpunit.xml`). Never assume SQLite behavior.
+- Feature tests use `RefreshDatabase` (configured globally in `tests/Pest.php`).
+- Module-specific tests go in `tests/Feature/Modules/` subdirectories.
+- Use `ilike` instead of `like` in test assertions and search queries for PostgreSQL compatibility.
+- CI runs via GitHub Actions (`tests.yml`) against a PostgreSQL service container.
 
 ---
 
