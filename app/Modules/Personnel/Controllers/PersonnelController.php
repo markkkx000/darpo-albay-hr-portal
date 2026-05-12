@@ -102,7 +102,7 @@ class PersonnelController extends Controller
 
         $this->employeeService->updateEmployee($user, $request->validated());
 
-        return redirect()->route('personnel.show', $user->id)
+        return redirect()->route('personnel.show', $user)
             ->with('success', 'Employee record updated successfully.');
     }
 
@@ -139,7 +139,7 @@ class PersonnelController extends Controller
     {
         $this->employeeService->restoreEmployee($id);
 
-        return redirect()->route('personnel.index')
+        return redirect()->route('personnel.archived')
             ->with('success', 'Employee record restored successfully.');
     }
 }
