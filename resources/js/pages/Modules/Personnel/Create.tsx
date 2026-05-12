@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, router } from '@inertiajs/react';
 import { toast } from 'sonner';
 import { EmployeeForm } from '@/components/Personnel/EmployeeForm';
 import { Card, CardContent } from '@/components/ui/card';
@@ -54,6 +54,7 @@ export default function Create({ divisions, units, positions, employmentStatuses
         post(storeRoute().url, {
             onSuccess: () => {
                 toast.success('Employee created successfully');
+                router.clearHistory();
             },
         });
     };

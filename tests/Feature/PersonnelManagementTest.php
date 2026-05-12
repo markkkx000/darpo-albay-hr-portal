@@ -88,7 +88,7 @@ test('can restore an archived employee record', function () {
 
     $response = $this->actingAs($this->admin)->post(route('personnel.restore', $employee->id));
 
-    $response->assertRedirect(route('personnel.index'));
+    $response->assertRedirect(route('personnel.archived'));
     $this->assertDatabaseHas('users', [
         'id' => $employee->id,
         'deleted_at' => null,

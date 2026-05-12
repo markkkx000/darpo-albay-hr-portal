@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, router } from '@inertiajs/react';
 import { toast } from 'sonner';
 import { EmployeeForm } from '@/components/Personnel/EmployeeForm';
 import { Card, CardContent } from '@/components/ui/card';
@@ -55,6 +55,7 @@ export default function Edit({ employee, divisions, units, positions, employment
         put(updateRoute({ user: employee.id }).url, {
             onSuccess: () => {
                 toast.success('Employee record updated successfully');
+                router.clearHistory();
             },
         });
     };
