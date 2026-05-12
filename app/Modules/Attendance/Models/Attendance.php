@@ -24,12 +24,14 @@ class Attendance extends Model
 
     public function scopeFilter(Builder $query, array $filters): void
     {
-        $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->whereHas('user', function ($query) use ($search) {
-                $query->where('first_name', 'like', '%'.$search.'%')
-                    ->orWhere('last_name', 'like', '%'.$search.'%');
+        if ($search = $filters['search'] ?? null) {
+            $query->whereHas('user', function (Builder $q) use ($search) {
+                $q->where('first_name', 'ilike', '%'.$search.'%')
+                    ->orWhere('last_name', 'ilike', '%'.$search.'%');
             });
-        })->when($filters['status'] ?? null, function ($query, $status) {
+        }
+
+        if ($status = $filters['status'] ?? null) {
             if ($status === 'working') {
                 $query->whereNull('clock_out')
                     ->whereDate('date', Carbon::today());
@@ -39,13 +41,19 @@ class Attendance extends Model
             } elseif ($status === 'completed') {
                 $query->whereNotNull('clock_out');
             }
-        })->when($filters['from_date'] ?? null, function ($query, $fromDate) {
+        }
+
+        if ($fromDate = $filters['from_date'] ?? null) {
             $query->whereDate('date', '>=', $fromDate);
-        })->when($filters['to_date'] ?? null, function ($query, $toDate) {
+        }
+
+        if ($toDate = $filters['to_date'] ?? null) {
             $query->whereDate('date', '<=', $toDate);
-        })->when($filters['user_id'] ?? null, function ($query, $userId) {
+        }
+
+        if ($userId = $filters['user_id'] ?? null) {
             $query->where('user_id', $userId);
-        });
+        }
     }
 
     public function user(): BelongsTo

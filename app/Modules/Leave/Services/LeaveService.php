@@ -2,10 +2,13 @@
 
 namespace App\Modules\Leave\Services;
 
+use App\Models\User;
 use App\Modules\Leave\Models\Holiday;
 use App\Modules\Leave\Models\LeaveCredit;
 use App\Modules\Leave\Models\LeaveRequest;
 use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -14,7 +17,7 @@ class LeaveService
     /**
      * Get paginated leave requests with filters
      */
-    public function getPaginatedLeaves(array $filters, $user = null)
+    public function getPaginatedLeaves(array $filters, ?User $user = null): LengthAwarePaginator
     {
         $viewMode = $filters['view'] ?? 'mine';
         $search = $filters['search'] ?? null;
@@ -37,9 +40,9 @@ class LeaveService
                         continue;
                     }
                     $uq->where(function ($inner) use ($keyword) {
-                        $inner->where('first_name', 'like', "%{$keyword}%")
-                            ->orWhere('last_name', 'like', "%{$keyword}%")
-                            ->orWhere('employee_number', 'like', "%{$keyword}%");
+                        $inner->where('first_name', 'ilike', "%{$keyword}%")
+                            ->orWhere('last_name', 'ilike', "%{$keyword}%")
+                            ->orWhere('employee_number', 'ilike', "%{$keyword}%");
                     });
                 }
             });
@@ -69,7 +72,7 @@ class LeaveService
     /**
      * Get leaves for calendar view
      */
-    public function getCalendarLeaves(int $year, int $month, ?int $userId = null)
+    public function getCalendarLeaves(int $year, int $month, ?int $userId = null): Collection
     {
         $query = LeaveRequest::with(['user', 'leaveType'])
             ->where(function ($q) use ($year, $month) {
@@ -90,7 +93,7 @@ class LeaveService
     /**
      * Store a new leave request
      */
-    public function storeLeaveRequest(array $data, int $createdBy)
+    public function storeLeaveRequest(array $data, int $createdBy): LeaveRequest
     {
         $this->validateOverlap($data);
         $this->validateHalfDay($data['start_date'], $data['end_date'], $data['days_requested']);
@@ -122,7 +125,7 @@ class LeaveService
     /**
      * Update an existing leave request
      */
-    public function updateLeaveRequest(LeaveRequest $leaveRequest, array $data)
+    public function updateLeaveRequest(LeaveRequest $leaveRequest, array $data): LeaveRequest
     {
         $this->validateOverlap($data, $leaveRequest->id);
         $this->validateHalfDay($data['start_date'], $data['end_date'], $data['days_requested']);
@@ -143,9 +146,9 @@ class LeaveService
     /**
      * Delete a leave request
      */
-    public function deleteLeaveRequest(LeaveRequest $leaveRequest)
+    public function deleteLeaveRequest(LeaveRequest $leaveRequest): void
     {
-        return DB::transaction(function () use ($leaveRequest) {
+        DB::transaction(function () use ($leaveRequest) {
             $this->handleCreditRestoration($leaveRequest);
             $leaveRequest->delete();
         });
@@ -154,7 +157,7 @@ class LeaveService
     /**
      * Validate overlapping leave requests
      */
-    public function validateOverlap(array $data, $ignoreId = null)
+    public function validateOverlap(array $data, ?int $ignoreId = null): void
     {
         $userId = $data['user_id'];
 
@@ -218,7 +221,7 @@ class LeaveService
     /**
      * Validate half-day logic
      */
-    public function validateHalfDay($startDate, $endDate, $daysRequested)
+    public function validateHalfDay(string $startDate, string $endDate, float|int $daysRequested): void
     {
         $start = Carbon::parse($startDate);
         $end = Carbon::parse($endDate);
@@ -235,7 +238,7 @@ class LeaveService
     /**
      * Calculate working days automatically (excluding weekends and holidays)
      */
-    public function calculateWorkingDays($startDate, $endDate)
+    public function calculateWorkingDays(string $startDate, string $endDate): int
     {
         $start = Carbon::parse($startDate);
         $end = Carbon::parse($endDate);
@@ -260,7 +263,7 @@ class LeaveService
     /**
      * Deduct credits if approved
      */
-    protected function handleCreditDeduction(LeaveRequest $leaveRequest)
+    protected function handleCreditDeduction(LeaveRequest $leaveRequest): void
     {
 
         if ($leaveRequest->leaveStatus && $leaveRequest->leaveStatus->name === 'Approved') {
@@ -288,12 +291,13 @@ class LeaveService
     /**
      * Restore credits if updating/deleting an approved leave
      */
-    protected function handleCreditRestoration(LeaveRequest $leaveRequest)
+    protected function handleCreditRestoration(LeaveRequest $leaveRequest): void
     {
 
         $originalStatus = $leaveRequest->leaveStatus;
         if ($originalStatus && $originalStatus->name === 'Approved') {
             $year = Carbon::parse($leaveRequest->getOriginal('start_date'))->year;
+            /** @var LeaveCredit|null $credit */
             $credit = LeaveCredit::where('user_id', $leaveRequest->user_id)
                 ->where('leave_type_id', $leaveRequest->getOriginal('leave_type_id'))
                 ->where('year', $year)
