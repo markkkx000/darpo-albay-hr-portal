@@ -20,6 +20,7 @@ interface EmployeeSearchProps {
     params?: Record<string, any>;
     returnValue?: 'id' | 'name';
     withAllEmployees?: boolean;
+    error?: boolean;
 }
 
 export function EmployeeSearch({ 
@@ -31,6 +32,7 @@ export function EmployeeSearch({
     params = {},
     returnValue = 'name',
     withAllEmployees = false,
+    error = false,
 }: EmployeeSearchProps) {
     const [query, setQuery] = useState('');
 
@@ -81,7 +83,10 @@ export function EmployeeSearch({
                 immediate
             >
                 <div className="relative w-full z-10">
-                    <div className="relative w-full cursor-default overflow-hidden rounded-2xl border border-input bg-background text-left shadow-sm focus-within:ring-1 focus-within:ring-ring">
+                    <div className={cn(
+                        "relative w-full cursor-default overflow-hidden rounded-2xl border border-input bg-background text-left shadow-sm focus-within:ring-1 focus-within:ring-ring",
+                        error && "border-destructive focus-within:ring-destructive ring-destructive"
+                    )}>
                         <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
                             <Search className="h-4 w-4 text-muted-foreground/60" />
                         </div>

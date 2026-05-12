@@ -1,10 +1,11 @@
 import { Head, router, useForm, useHttp } from '@inertiajs/react';
-import { X, Plus, Trash2 } from 'lucide-react';
+import { X, Plus, Trash2, AlertCircle } from 'lucide-react';
 import { useState, useEffect, useRef, useMemo, useSyncExternalStore } from 'react';
 import type { FormEvent } from 'react';
 import { toast } from 'sonner';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { CreditPreview } from '@/components/Leave/CreditPreview';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -13,6 +14,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import LeaveRoutes from '@/routes/leave';
 import LeaveNavigation from './Components/LeaveNavigation';
+
+const Required = () => <span className="text-destructive ml-1">*</span>;
 
 const formatDateForInput = (dateString: string | null | undefined) => {
     if (!dateString) {
@@ -28,7 +31,7 @@ const formatDateForInput = (dateString: string | null | undefined) => {
 export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatuses }: any) {
     const isEdit = !!leaveRequest;
 
-    const { data, setData, processing, errors } = useForm({
+    const { data, setData, processing, errors, post, put, transform } = useForm({
         user_id: leaveRequest?.user_id?.toString() || '',
         leave_type_id: leaveRequest?.leave_type_id?.toString() || '',
         leave_status_id: leaveRequest?.leave_status_id?.toString() || '',
@@ -359,23 +362,37 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
     const submit = (e: FormEvent) => {
         e.preventDefault();
 
-        // Apply transformations before submit
-        let finalData = { ...data };
+        transform((data) => {
+            let transformed = { 
+                ...data,
+                attachment_urls: data.attachment_urls
+                    .filter((url: string) => url.trim() !== '')
+                    .map((url: string) => {
+                        const trimmed = url.trim();
 
-        if (dateMode === 'range' && data.start_date === data.end_date && data.start_date) {
-            finalData = {
-                ...finalData,
-                specific_dates: [data.start_date],
-                start_date: '',
-                end_date: '',
+                        // If it doesn't start with a protocol but contains a dot (likely a domain)
+                        if (trimmed && !/^https?:\/\//i.test(trimmed) && trimmed.includes('.')) {
+                            return `https://${trimmed}`;
+                        }
+
+                        return trimmed;
+                    })
             };
-        }
+
+            if (dateMode === 'range' && data.start_date === data.end_date && data.start_date) {
+                transformed = {
+                    ...transformed,
+                    specific_dates: [data.start_date],
+                    start_date: '',
+                    end_date: '',
+                };
+            }
+
+            return transformed;
+        });
 
         if (isEdit) {
-            router.post(LeaveRoutes.update({ leaveRequest: leaveRequest.id }).url, {
-                _method: 'put',
-                ...finalData,
-            }, {
+            put(LeaveRoutes.update({ leaveRequest: leaveRequest.id }).url, {
                 preserveScroll: true,
                 onSuccess: () => {
                     toast.success('Leave request updated successfully');
@@ -383,7 +400,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                 }
             });
         } else {
-            router.post(LeaveRoutes.store().url, finalData, {
+            post(LeaveRoutes.store().url, {
                 onSuccess: () => {
                     toast.success('Leave request created successfully');
                     router.clearHistory();
@@ -405,16 +422,26 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
 
                 <div className="matte-card elev-2">
                     <form onSubmit={submit} className="p-6 space-y-6" noValidate>
+                        {Object.keys(errors).length > 0 && (
+                            <Alert variant="destructive" className="animate-in fade-in slide-in-from-top-2 duration-300">
+                                <AlertCircle className="h-4 w-4" />
+                                <AlertTitle>Validation Error</AlertTitle>
+                                <AlertDescription>
+                                    Please check the form for missing or invalid fields (e.g. invalid URLs or mandatory documents).
+                                </AlertDescription>
+                            </Alert>
+                        )}
 
                         <div className="grid grid-cols-3 gap-4">
                             <div className="space-y-2">
-                                <Label>Employee</Label>
+                                <Label>Employee <Required /></Label>
                                 <EmployeeSearch
                                     users={users}
                                     selectedId={data.user_id}
                                     onSelect={(val) => setData('user_id', val === 'all' ? '' : val)}
                                     placeholder="Search Employee..."
                                     returnValue="id"
+                                    error={!!errors.user_id}
                                 />
                                 {errors.user_id && <p className="text-sm text-destructive">{errors.user_id}</p>}
                             </div>
@@ -447,9 +474,9 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
 
                         <div className="grid grid-cols-2 gap-4 border-t pt-6">
                             <div className="space-y-2">
-                                <Label>Leave Type</Label>
+                                <Label>Leave Type <Required /></Label>
                                 <Select value={data.leave_type_id} onValueChange={handleLeaveTypeChange}>
-                                    <SelectTrigger>
+                                    <SelectTrigger className={errors.leave_type_id ? "border-destructive" : ""}>
                                         <div className="truncate text-left flex-1">
                                             <SelectValue placeholder="Select Leave Type" />
                                         </div>
@@ -465,7 +492,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                                 {errors.leave_type_id && <p className="text-sm text-destructive">{errors.leave_type_id}</p>}
                             </div>
                             <div className="space-y-4">
-                                <Label>Approved For</Label>
+                                <Label>Approved For (Credits) <Required /></Label>
                                 <div className="grid grid-cols-2 gap-y-4 gap-x-6">
                                     <div className="flex items-center gap-3">
                                         <Input
@@ -505,7 +532,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                             </div>
                         </div>
 
-                        {data.user_id && data.leave_type_id && (
+                        {!isEdit && data.user_id && data.leave_type_id && (
                             <div className="bg-muted/30 p-4 rounded-xl border border-border/50">
                                 <CreditPreview
                                     available={available}
@@ -519,7 +546,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label>Leave Details (Section 6.B)</Label>
+                                <Label>Leave Details (Section 6.B) <Required /></Label>
                                 <Select
                                     value={category}
                                     onValueChange={(val) => updateDetails(val, specify)}
@@ -561,22 +588,39 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
 
                             {dateMode === 'range' ? (
                                 <div className="grid grid-cols-3 gap-4">
-                                    <div className="space-y-2">
-                                        <Label>Start Date</Label>
-                                        <Input type="date" value={data.start_date} onChange={e => setData('start_date', e.target.value)} />
-                                        {errors.start_date && <p className="text-sm text-destructive">{errors.start_date}</p>}
-                                        {errors.dates && <p className="text-sm text-destructive">{errors.dates}</p>}
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>End Date</Label>
-                                        <Input type="date" value={data.end_date} onChange={e => setData('end_date', e.target.value)} />
-                                        {errors.end_date && <p className="text-sm text-destructive">{errors.end_date}</p>}
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>Days Requested</Label>
-                                        <Input type="number" step="any" min="0" value={data.days_requested} onChange={e => setData('days_requested', e.target.value)} />
-                                        {errors.days_requested && <p className="text-sm text-destructive">{errors.days_requested}</p>}
-                                    </div>
+                                         <div className="space-y-2">
+                                             <Label>Start Date <Required /></Label>
+                                             <Input 
+                                                type="date" 
+                                                value={data.start_date} 
+                                                onChange={e => setData('start_date', e.target.value)} 
+                                                className={errors.start_date ? "border-destructive" : ""}
+                                             />
+                                             {errors.start_date && <p className="text-sm text-destructive">{errors.start_date}</p>}
+                                             {errors.dates && <p className="text-sm text-destructive">{errors.dates}</p>}
+                                         </div>
+                                         <div className="space-y-2">
+                                             <Label>End Date <Required /></Label>
+                                             <Input 
+                                                type="date" 
+                                                value={data.end_date} 
+                                                onChange={e => setData('end_date', e.target.value)} 
+                                                className={errors.end_date ? "border-destructive" : ""}
+                                             />
+                                             {errors.end_date && <p className="text-sm text-destructive">{errors.end_date}</p>}
+                                         </div>
+                                         <div className="space-y-2">
+                                             <Label>Days Requested <Required /></Label>
+                                             <Input 
+                                                type="number" 
+                                                step="any" 
+                                                min="0" 
+                                                value={data.days_requested} 
+                                                onChange={e => setData('days_requested', e.target.value)} 
+                                                className={errors.days_requested ? "border-destructive" : ""}
+                                             />
+                                             {errors.days_requested && <p className="text-sm text-destructive">{errors.days_requested}</p>}
+                                         </div>
                                 </div>
                             ) : (
                                 <div className="space-y-4">
@@ -590,11 +634,18 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                                             {errors.specific_dates && <p className="text-sm text-destructive">{errors.specific_dates}</p>}
                                             {errors.dates && <p className="text-sm text-destructive">{errors.dates}</p>}
                                         </div>
-                                        <div className="space-y-2">
-                                            <Label>Days Requested</Label>
-                                            <Input type="number" step="any" min="0" value={data.days_requested} onChange={e => setData('days_requested', e.target.value)} />
-                                            {errors.days_requested && <p className="text-sm text-destructive">{errors.days_requested}</p>}
-                                        </div>
+                                         <div className="space-y-2">
+                                             <Label>Days Requested <Required /></Label>
+                                             <Input 
+                                                type="number" 
+                                                step="any" 
+                                                min="0" 
+                                                value={data.days_requested} 
+                                                onChange={e => setData('days_requested', e.target.value)} 
+                                                className={errors.days_requested ? "border-destructive" : ""}
+                                             />
+                                             {errors.days_requested && <p className="text-sm text-destructive">{errors.days_requested}</p>}
+                                         </div>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {data.specific_dates.map((d: string) => (
@@ -630,15 +681,17 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                                     onSelect={(val) => setData('approved_by_id', val === 'all' ? '' : val)}
                                     placeholder="Search Approver..."
                                     returnValue="id"
+                                    error={!!errors.approved_by_id}
                                 />
+                                {errors.approved_by_id && <p className="text-sm text-destructive">{errors.approved_by_id}</p>}
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label>Status</Label>
+                                <Label>Status <Required /></Label>
                                 <Select value={data.leave_status_id} onValueChange={(v) => setData('leave_status_id', v)}>
-                                    <SelectTrigger>
+                                    <SelectTrigger className={errors.leave_status_id ? "border-destructive focus:ring-destructive" : ""}>
                                         <div className="truncate text-left flex-1">
                                             <SelectValue placeholder="Select Status" />
                                         </div>
@@ -651,22 +704,31 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                                         ))}
                                     </SelectContent>
                                 </Select>
+                                {errors.leave_status_id && <p className="text-sm text-destructive">{errors.leave_status_id}</p>}
                             </div>
                             <div className="space-y-3">
                                 <Label>Attachment/s URL</Label>
                                 <div className="space-y-2">
                                     {data.attachment_urls.map((url: string, idx: number) => (
-                                        <div key={idx} className="flex space-x-2">
-                                            <Input
-                                                type="url"
-                                                placeholder="https://drive.google.com/..."
-                                                value={url}
-                                                onChange={e => updateAttachmentUrl(idx, e.target.value)}
-                                            />
-                                            {data.attachment_urls.length > 1 && (
-                                                <Button type="button" variant="ghost" size="icon" onClick={() => removeAttachmentUrl(idx)}>
-                                                    <Trash2 className="h-4 w-4 text-destructive" />
-                                                </Button>
+                                        <div key={idx} className="space-y-1">
+                                            <div className="flex space-x-2">
+                                                <Input
+                                                    type="url"
+                                                    placeholder="https://drive.google.com/..."
+                                                    value={url}
+                                                    onChange={e => updateAttachmentUrl(idx, e.target.value)}
+                                                    className={(errors as any)[`attachment_urls.${idx}`] ? "border-destructive" : ""}
+                                                />
+                                                {data.attachment_urls.length > 1 && (
+                                                    <Button type="button" variant="ghost" size="icon" onClick={() => removeAttachmentUrl(idx)}>
+                                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                                    </Button>
+                                                )}
+                                            </div>
+                                            {(errors as any)[`attachment_urls.${idx}`] && (
+                                                <p className="text-[10px] font-bold text-destructive uppercase tracking-tight animate-in fade-in slide-in-from-left-1">
+                                                    {(errors as any)[`attachment_urls.${idx}`]}
+                                                </p>
                                             )}
                                         </div>
                                     ))}
