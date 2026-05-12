@@ -226,11 +226,11 @@ return 'All Employees';
                         </div>
 
                         {/* 50% - Legends */}
-                        <div className="col-span-1 lg:col-span-2 flex items-center justify-center lg:justify-start space-x-4 flex-wrap">
-                            {leaveTypes.slice(0, 5).map((t: any) => (
-                                <div key={t.id} className="flex items-center space-x-1 text-xs">
+                        <div className="col-span-1 lg:col-span-2 flex items-center justify-center lg:justify-start gap-4 flex-wrap">
+                            {leaveTypes.map((t: any) => (
+                                <div key={t.id} className="flex items-center space-x-1 text-xs shrink-0">
                                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: t.color_code }}></div>
-                                    <span className="text-muted-foreground">{t.name}</span>
+                                    <span className="text-muted-foreground whitespace-nowrap">{t.name}</span>
                                 </div>
                             ))}
                         </div>
