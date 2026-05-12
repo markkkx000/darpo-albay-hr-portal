@@ -446,7 +446,9 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                                 <Label>Leave Type</Label>
                                 <Select value={data.leave_type_id} onValueChange={handleLeaveTypeChange}>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select Leave Type" />
+                                        <div className="truncate text-left flex-1">
+                                            <SelectValue placeholder="Select Leave Type" />
+                                        </div>
                                     </SelectTrigger>
                                     <SelectContent>
                                         {leaveTypes.map((type: any) => (
@@ -520,7 +522,9 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                                     disabled={!mounted || !typeName}
                                 >
                                     <SelectTrigger className={(!mounted || !typeName) ? "opacity-50" : ""}>
-                                        <SelectValue placeholder={!typeName ? "Select Leave Type first" : "Select details..."} />
+                                        <div className="truncate text-left flex-1">
+                                            <SelectValue placeholder={!typeName ? "Select Leave Type first" : "Select details..."} />
+                                        </div>
                                     </SelectTrigger>
                                     <SelectContent>
                                         {detailsOptions.map(opt => (
@@ -631,7 +635,9 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                                 <Label>Status</Label>
                                 <Select value={data.leave_status_id} onValueChange={(v) => setData('leave_status_id', v)}>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select Status" />
+                                        <div className="truncate text-left flex-1">
+                                            <SelectValue placeholder="Select Status" />
+                                        </div>
                                     </SelectTrigger>
                                     <SelectContent>
                                         {leaveStatuses.map((s: any) => (

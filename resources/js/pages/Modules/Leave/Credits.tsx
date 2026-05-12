@@ -40,8 +40,8 @@ export default function LeaveCredits({
     return (
         <>
             <Head title="Leave Credits" />
-            <div className="container mx-auto py-6 max-w-7xl">
-                <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="w-full p-4 md:p-6">
+                <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <h1 className="t-title">Leave Credits</h1>
                         <p className="text-muted-foreground">

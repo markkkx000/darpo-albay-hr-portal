@@ -160,7 +160,9 @@ export default function LeaveDashboard({ leaves, allEmployees, leaveTypes, leave
 
                                 <Select value={leaveType} onValueChange={setLeaveType}>
                                     <SelectTrigger className="w-[140px]">
-                                        <SelectValue placeholder="Leave Type" />
+                                        <div className="truncate text-left flex-1">
+                                            <SelectValue placeholder="Leave Type" />
+                                        </div>
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="all">All Types</SelectItem>
@@ -172,7 +174,9 @@ export default function LeaveDashboard({ leaves, allEmployees, leaveTypes, leave
 
                                 <Select value={status} onValueChange={setStatus}>
                                     <SelectTrigger className="w-[140px]">
-                                        <SelectValue placeholder="Status" />
+                                        <div className="truncate text-left flex-1">
+                                            <SelectValue placeholder="Status" />
+                                        </div>
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="all">All Statuses</SelectItem>
@@ -184,7 +188,9 @@ export default function LeaveDashboard({ leaves, allEmployees, leaveTypes, leave
 
                                 <Select value={sort} onValueChange={setSort}>
                                     <SelectTrigger className="w-[140px]">
-                                        <SelectValue placeholder="Sort" />
+                                        <div className="truncate text-left flex-1">
+                                            <SelectValue placeholder="Sort" />
+                                        </div>
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="desc">Most Recent</SelectItem>

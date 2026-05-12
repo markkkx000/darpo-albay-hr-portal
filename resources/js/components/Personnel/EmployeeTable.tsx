@@ -206,22 +206,10 @@ return 'status-badge-casual';
                                                 )}
  
                                                 {canRestore && isArchivedView && (
-<<<<<<< HEAD
-                                                    <Button 
-                                                        size="sm" 
-                                                        onClick={() => setEmployeeToRestore(employee)}
-                                                        className="btn-warning-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
-                                                        title="Restore Record"
-                                                        aria-label={`Restore ${fullName(employee)}`}
-                                                    >
-                                                        <RotateCcw className="h-4 w-4" />
-                                                    </Button>
-=======
                                                     <RestoreActionButton 
                                                         onClick={() => setEmployeeToRestore(employee)} 
                                                         title={`Restore ${fullName(employee)}`} 
                                                     />
->>>>>>> main
                                                 )}
                                             </div>
                                         </td>

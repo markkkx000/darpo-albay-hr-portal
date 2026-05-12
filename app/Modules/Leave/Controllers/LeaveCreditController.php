@@ -63,14 +63,10 @@ class LeaveCreditController extends Controller
     {
         $this->creditService->updateCredit($request->validated());
 
-<<<<<<< HEAD
         if ($request->wantsJson()) {
-            return response()->json(['message' => 'Leave credits updated.']);
+            return response()->json(['message' => 'Leave credits updated successfully.']);
         }
 
-        return redirect()->back()->with('success', 'Leave credits updated.');
-=======
-        return redirect()->back()->with('success', 'Leave credits updated successfully');
->>>>>>> main
+        return redirect()->back()->with('success', 'Leave credits updated successfully.');
     }
 }
