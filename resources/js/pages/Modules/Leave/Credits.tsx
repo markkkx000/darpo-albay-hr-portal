@@ -1,6 +1,6 @@
 import { Head, router } from '@inertiajs/react';
 import { ChevronRight, Filter, Settings2 } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Pagination } from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';
@@ -31,12 +31,29 @@ export default function LeaveCredits({
     const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-    // Default to VL, SL, SPL
-    const [selectedTypeIds, setSelectedTypeIds] = useState<number[]>(() =>
-        leaveTypes
-            .filter((t: any) => ['Vacation Leave', 'Sick Leave', 'Special Privilege Leave'].includes(t.name))
-            .map((t: any) => t.id)
-    );
+    // Visibility state with persistence
+    const [selectedTypeIds, setSelectedTypeIds] = useState<number[]>(() => {
+        if (typeof window === 'undefined') return [];
+        
+        const stored = localStorage.getItem('leave_credits_visible_types');
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch (e) {
+                // Reset on error
+            }
+        }
+        
+        // Default to VL and SL only
+        return leaveTypes
+            .filter((t: any) => ['Vacation Leave', 'Sick Leave'].includes(t.name))
+            .map((t: any) => t.id);
+    });
+
+    // Persist changes
+    useEffect(() => {
+        localStorage.setItem('leave_credits_visible_types', JSON.stringify(selectedTypeIds));
+    }, [selectedTypeIds]);
 
     const handleYearChange = (newYear: number) => {
         setYear(newYear);
