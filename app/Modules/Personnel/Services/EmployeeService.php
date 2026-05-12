@@ -22,10 +22,18 @@ class EmployeeService
         $query = User::query()
             ->with(['division', 'unit', 'position', 'employmentStatus'])
             ->when($filters['search'] ?? null, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('first_name', 'ilike', "%{$search}%")
-                        ->orWhere('last_name', 'ilike', "%{$search}%")
-                        ->orWhere('employee_number', 'ilike', "%{$search}%");
+                $keywords = explode(' ', $search);
+                $query->where(function ($q) use ($keywords) {
+                    foreach ($keywords as $keyword) {
+                        if (empty($keyword)) {
+                            continue;
+                        }
+                        $q->where(function ($inner) use ($keyword) {
+                            $inner->where('first_name', 'ilike', "%{$keyword}%")
+                                ->orWhere('last_name', 'ilike', "%{$keyword}%")
+                                ->orWhere('employee_number', 'ilike', "%{$keyword}%");
+                        });
+                    }
                 });
             })
             ->when($filters['division_id'] ?? null, function ($query, $divisionId) {
@@ -48,10 +56,18 @@ class EmployeeService
         $query = User::onlyTrashed()
             ->with(['division', 'unit', 'position', 'employmentStatus'])
             ->when($filters['search'] ?? null, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('first_name', 'ilike', "%{$search}%")
-                        ->orWhere('last_name', 'ilike', "%{$search}%")
-                        ->orWhere('employee_number', 'ilike', "%{$search}%");
+                $keywords = explode(' ', $search);
+                $query->where(function ($q) use ($keywords) {
+                    foreach ($keywords as $keyword) {
+                        if (empty($keyword)) {
+                            continue;
+                        }
+                        $q->where(function ($inner) use ($keyword) {
+                            $inner->where('first_name', 'ilike', "%{$keyword}%")
+                                ->orWhere('last_name', 'ilike', "%{$keyword}%")
+                                ->orWhere('employee_number', 'ilike', "%{$keyword}%");
+                        });
+                    }
                 });
             })
             ->orderByDesc('deleted_at');

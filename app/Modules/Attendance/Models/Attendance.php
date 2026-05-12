@@ -25,9 +25,18 @@ class Attendance extends Model
     public function scopeFilter(Builder $query, array $filters): void
     {
         if ($search = $filters['search'] ?? null) {
-            $query->whereHas('user', function (Builder $q) use ($search) {
-                $q->where('first_name', 'ilike', '%'.$search.'%')
-                    ->orWhere('last_name', 'ilike', '%'.$search.'%');
+            $keywords = explode(' ', $search);
+            $query->whereHas('user', function (Builder $q) use ($keywords) {
+                foreach ($keywords as $keyword) {
+                    if (empty($keyword)) {
+                        continue;
+                    }
+                    $q->where(function ($inner) use ($keyword) {
+                        $inner->where('first_name', 'ilike', '%'.$keyword.'%')
+                            ->orWhere('last_name', 'ilike', '%'.$keyword.'%')
+                            ->orWhere('employee_number', 'ilike', '%'.$keyword.'%');
+                    });
+                }
             });
         }
 
