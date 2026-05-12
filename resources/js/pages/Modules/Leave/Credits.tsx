@@ -1,27 +1,42 @@
 import { Head, router } from '@inertiajs/react';
-import { ChevronRight, Filter } from 'lucide-react';
-import { useState } from 'react';
+import { ChevronRight, Filter, Settings2 } from 'lucide-react';
+import { useState, useMemo } from 'react';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Pagination } from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from '@/components/ui/input';
 import LeaveRoutes from '@/routes/leave';
 import CreditDetailSheet from './Components/CreditDetailSheet';
 import LeaveNavigation from './Components/LeaveNavigation';
 
-export default function LeaveCredits({ 
-    users, 
-    personalCredits, 
-    leaveTypes, 
-    currentYear, 
-    allEmployees, 
+export default function LeaveCredits({
+    users,
+    personalCredits,
+    leaveTypes,
+    currentYear,
+    allEmployees,
     filters,
-    canManageCredits 
+    canManageCredits
 }: any) {
     const [year, setYear] = useState(currentYear);
-    const [selectedUser, setSelectedUser] = useState<any>(null);
+    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+    // Default to VL, SL, SPL
+    const [selectedTypeIds, setSelectedTypeIds] = useState<number[]>(() =>
+        leaveTypes
+            .filter((t: any) => ['Vacation Leave', 'Sick Leave', 'Special Privilege Leave'].includes(t.name))
+            .map((t: any) => t.id)
+    );
 
     const handleYearChange = (newYear: number) => {
         setYear(newYear);
@@ -29,13 +44,24 @@ export default function LeaveCredits({
     };
 
     const handleViewDetails = (user: any) => {
-        setSelectedUser(user);
+        setSelectedUserId(user.id);
         setIsSheetOpen(true);
     };
 
-    const trackedTypes = leaveTypes.filter((t: any) => 
-        ['Vacation Leave', 'Sick Leave', 'Special Privilege Leave'].includes(t.name)
+    const selectedUser = useMemo(() =>
+        users?.data?.find((u: any) => u.id === selectedUserId),
+        [users, selectedUserId]
     );
+
+    const trackedTypes = leaveTypes.filter((t: any) =>
+        selectedTypeIds.includes(t.id)
+    );
+
+    const toggleType = (id: number) => {
+        setSelectedTypeIds(prev =>
+            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+        );
+    };
 
     return (
         <>
@@ -45,8 +71,8 @@ export default function LeaveCredits({
                     <div>
                         <h1 className="t-title">Leave Credits</h1>
                         <p className="text-muted-foreground">
-                            {canManageCredits 
-                                ? 'Manage leave credits balances for all employees.' 
+                            {canManageCredits
+                                ? 'Manage leave credits balances for all employees.'
                                 : 'View your available, used, and total leave credits.'
                             }
                         </p>
@@ -61,10 +87,10 @@ export default function LeaveCredits({
                         <div className="p-4 border-b bg-muted/20 flex flex-col md:flex-row justify-between gap-4">
                             <div className="flex items-center space-x-2">
                                 <div className="relative">
-                                    <Input 
-                                        type="number" 
-                                        value={year} 
-                                        onChange={(e) => handleYearChange(Number(e.target.value))} 
+                                    <Input
+                                        type="number"
+                                        value={year}
+                                        onChange={(e) => handleYearChange(Number(e.target.value))}
                                         className="w-24 pl-8"
                                     />
                                     <Filter className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -72,9 +98,9 @@ export default function LeaveCredits({
                                 <span className="text-sm font-medium text-muted-foreground">Fiscal Year</span>
                             </div>
                             <div className="w-full md:w-96">
-                                <EmployeeSearch 
-                                    users={allEmployees} 
-                                    selectedId={filters?.search} 
+                                <EmployeeSearch
+                                    users={allEmployees}
+                                    selectedId={filters?.search}
                                     route={LeaveRoutes.credits.index().url}
                                     params={{ year }}
                                     placeholder="Search Employee..."
@@ -90,7 +116,31 @@ export default function LeaveCredits({
                                     <thead>
                                         <tr className="border-b bg-muted/30">
                                             <th className="h-12 px-6 text-left font-bold text-muted-foreground uppercase tracking-wider text-[11px]">Employee</th>
-                                            <th className="h-12 px-6 text-left font-bold text-muted-foreground uppercase tracking-wider text-[11px]">Core Balances (Available)</th>
+                                            <th className="h-12 px-6 text-left font-bold text-muted-foreground uppercase tracking-wider text-[11px]">
+                                                <div className="flex items-center gap-2">
+                                                    <span>Available Balances</span>
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full hover:bg-muted">
+                                                                <Settings2 className="h-3.5 w-3.5 text-muted-foreground" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="start" className="w-56">
+                                                            <DropdownMenuLabel>Display Leave Types</DropdownMenuLabel>
+                                                            <DropdownMenuSeparator />
+                                                            {leaveTypes.map((type: any) => (
+                                                                <DropdownMenuCheckboxItem
+                                                                    key={type.id}
+                                                                    checked={selectedTypeIds.includes(type.id)}
+                                                                    onCheckedChange={() => toggleType(type.id)}
+                                                                >
+                                                                    {type.name}
+                                                                </DropdownMenuCheckboxItem>
+                                                            ))}
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </div>
+                                            </th>
                                             <th className="h-12 px-6 text-right font-bold text-muted-foreground uppercase tracking-wider text-[11px]">Actions</th>
                                         </tr>
                                     </thead>
@@ -107,16 +157,16 @@ export default function LeaveCredits({
                                                             const credit = user.leave_credits?.find((c: any) => c.leave_type_id === type.id);
                                                             const balance = parseFloat(credit?.balance || '0');
                                                             const shortName = type.name.split(' ').map((w: string) => w[0]).join('');
-                                                            
+
                                                             return (
-                                                                <Badge 
-                                                                    key={type.id} 
-                                                                    variant="outline" 
+                                                                <Badge
+                                                                    key={type.id}
+                                                                    variant="outline"
                                                                     className="px-2 py-1 bg-surface-2 border-border/50 font-bold"
                                                                 >
-                                                                    <span 
-                                                                        className="mr-1.5 h-1.5 w-1.5 rounded-full inline-block" 
-                                                                        style={{ backgroundColor: type.color_code }} 
+                                                                    <span
+                                                                        className="mr-1.5 h-1.5 w-1.5 rounded-full inline-block"
+                                                                        style={{ backgroundColor: type.color_code }}
                                                                     />
                                                                     <span className="text-muted-foreground mr-1 uppercase text-[10px]">{shortName}:</span>
                                                                     <span className="text-foreground">{balance.toFixed(2)}</span>
@@ -126,14 +176,14 @@ export default function LeaveCredits({
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
-                                                    <Button 
-                                                        variant="ghost" 
-                                                        size="sm" 
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
                                                         onClick={() => handleViewDetails(user)}
-                                                        className="rounded-full hover:bg-primary/10 hover:text-primary font-bold group/btn"
+                                                        className="rounded-full hover:bg-primary/10 hover:text-primary font-bold group/btn text-xs"
                                                     >
-                                                        View Details
-                                                        <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                                                        View All
+                                                        <ChevronRight className="ml-1 h-3 w-3 transition-transform group-hover/btn:translate-x-1" />
                                                     </Button>
                                                 </td>
                                             </tr>
@@ -160,11 +210,11 @@ export default function LeaveCredits({
                     /* EMPLOYEE VIEW: Simple Read-Only Table */
                     <div className="space-y-6">
                         <div className="flex items-center space-x-3 mb-2">
-                             <div className="relative">
-                                <Input 
-                                    type="number" 
-                                    value={year} 
-                                    onChange={(e) => handleYearChange(Number(e.target.value))} 
+                            <div className="relative">
+                                <Input
+                                    type="number"
+                                    value={year}
+                                    onChange={(e) => handleYearChange(Number(e.target.value))}
                                     className="w-28 pl-8"
                                 />
                                 <Filter className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -193,9 +243,9 @@ export default function LeaveCredits({
                                             <tr key={type.id} className="hover:bg-muted/10 transition-colors">
                                                 <td className="px-6 py-5">
                                                     <div className="flex items-center gap-3">
-                                                        <div 
-                                                            className="h-3 w-3 rounded-full shadow-sm" 
-                                                            style={{ backgroundColor: type.color_code || '#cbd5e1' }} 
+                                                        <div
+                                                            className="h-3 w-3 rounded-full shadow-sm"
+                                                            style={{ backgroundColor: type.color_code || '#cbd5e1' }}
                                                         />
                                                         <span className="font-bold text-base">{type.name}</span>
                                                     </div>
@@ -227,7 +277,7 @@ export default function LeaveCredits({
             </div>
 
             {/* HR Management Sheet */}
-            <CreditDetailSheet 
+            <CreditDetailSheet
                 user={selectedUser}
                 leaveTypes={leaveTypes}
                 year={year}
