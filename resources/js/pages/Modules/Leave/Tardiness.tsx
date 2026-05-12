@@ -32,34 +32,57 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
 
     const Counter = ({ value, onChange }: { value: number, onChange: (val: number) => void }) => {
         const [localValue, setLocalValue] = useState(value);
+        const [isDirty, setIsDirty] = useState(false);
 
+        // Sync with external value only if we are not currently typing/clicking
         useEffect(() => {
-            setLocalValue(value);
-        }, [value]);
+            if (!isDirty) {
+                setLocalValue(value);
+            }
+        }, [value, isDirty]);
+
+        // Debounce update
+        useEffect(() => {
+            if (!isDirty) {
+                return;
+            }
+
+            const timer = setTimeout(() => {
+                onChange(localValue);
+                setIsDirty(false);
+            }, 500);
+
+            return () => clearTimeout(timer);
+        }, [localValue, isDirty, onChange]);
+
+        const updateValue = (val: number) => {
+            const next = Math.max(0, val);
+
+            if (next !== localValue) {
+                setLocalValue(next);
+                setIsDirty(true);
+            }
+        };
 
         return (
             <div className="flex items-center justify-center space-x-3">
                 <button
                     type="button"
-                    onClick={() => onChange(localValue - 1)}
+                    onClick={() => updateValue(localValue - 1)}
                     className="w-9 h-9 flex items-center justify-center rounded-full bg-secondary hover:bg-secondary/80 border border-border transition-all active:scale-95 shadow-sm"
                 >
                     <Minus className="h-4 w-4" />
                 </button>
                 <Input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     className="w-16 text-center h-9 font-mono font-bold rounded-full border-2 border-muted-foreground/20 focus:border-primary/50"
                     value={localValue}
-                    onChange={(e) => setLocalValue(parseInt(e.target.value) || 0)}
-                    onBlur={() => {
-                        if (localValue !== value) {
-                            onChange(localValue);
-                        }
-                    }}
+                    onChange={(e) => updateValue(parseInt(e.target.value.replace(/\D/g, '')) || 0)}
                 />
                 <button
                     type="button"
-                    onClick={() => onChange(localValue + 1)}
+                    onClick={() => updateValue(localValue + 1)}
                     className="w-9 h-9 flex items-center justify-center rounded-full bg-secondary hover:bg-secondary/80 border border-border transition-all active:scale-95 shadow-sm"
                 >
                     <Plus className="h-4 w-4" />

@@ -33,13 +33,16 @@ export default function LeaveCredits({
 
     // Visibility state with persistence
     const [selectedTypeIds, setSelectedTypeIds] = useState<number[]>(() => {
-        if (typeof window === 'undefined') return [];
+        if (typeof window === 'undefined') {
+return [];
+}
         
         const stored = localStorage.getItem('leave_credits_visible_types');
+
         if (stored) {
             try {
                 return JSON.parse(stored);
-            } catch (e) {
+            } catch {
                 // Reset on error
             }
         }
