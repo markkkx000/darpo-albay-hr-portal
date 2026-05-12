@@ -23,9 +23,9 @@ class EmployeeService
             ->with(['division', 'unit', 'position', 'employmentStatus'])
             ->when($filters['search'] ?? null, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('first_name', 'like', "%{$search}%")
-                        ->orWhere('last_name', 'like', "%{$search}%")
-                        ->orWhere('employee_number', 'like', "%{$search}%");
+                    $q->where('first_name', 'ilike', "%{$search}%")
+                        ->orWhere('last_name', 'ilike', "%{$search}%")
+                        ->orWhere('employee_number', 'ilike', "%{$search}%");
                 });
             })
             ->when($filters['division_id'] ?? null, function ($query, $divisionId) {
@@ -49,9 +49,9 @@ class EmployeeService
             ->with(['division', 'unit', 'position', 'employmentStatus'])
             ->when($filters['search'] ?? null, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('first_name', 'like', "%{$search}%")
-                        ->orWhere('last_name', 'like', "%{$search}%")
-                        ->orWhere('employee_number', 'like', "%{$search}%");
+                    $q->where('first_name', 'ilike', "%{$search}%")
+                        ->orWhere('last_name', 'ilike', "%{$search}%")
+                        ->orWhere('employee_number', 'ilike', "%{$search}%");
                 });
             })
             ->orderByDesc('deleted_at');

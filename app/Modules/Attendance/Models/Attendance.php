@@ -26,8 +26,8 @@ class Attendance extends Model
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->whereHas('user', function ($query) use ($search) {
-                $query->where('first_name', 'like', '%'.$search.'%')
-                    ->orWhere('last_name', 'like', '%'.$search.'%');
+                $query->where('first_name', 'ilike', '%'.$search.'%')
+                    ->orWhere('last_name', 'ilike', '%'.$search.'%');
             });
         })->when($filters['status'] ?? null, function ($query, $status) {
             if ($status === 'working') {
