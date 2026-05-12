@@ -15,7 +15,7 @@ Route::middleware(['web', 'auth', 'permission:leave.view'])->group(function () {
 
     // Credits routes
     Route::get('/credits', [LeaveCreditController::class, 'index'])->name('credits.index')->middleware('permission:leave.credits.view|leave.credits.manage');
-    
+
     // Credits show route - Accessible to any user (controller handles self-view logic)
     Route::get('/credits/{user}', [LeaveCreditController::class, 'show'])->name('credits.show');
 

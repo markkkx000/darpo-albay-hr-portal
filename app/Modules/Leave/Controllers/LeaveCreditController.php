@@ -46,9 +46,9 @@ class LeaveCreditController extends Controller
     public function show(Request $request, User $user)
     {
         $currentUser = $request->user();
-        
+
         // Allow if user can manage credits OR is viewing their own credits
-        if (!$currentUser->can('leave.credits.manage') && !$currentUser->can('leave.manage') && $currentUser->id !== $user->id) {
+        if (! $currentUser->can('leave.credits.manage') && ! $currentUser->can('leave.manage') && $currentUser->id !== $user->id) {
             abort(403, 'Unauthorized access to leave credits.');
         }
 

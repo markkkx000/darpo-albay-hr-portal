@@ -10,13 +10,13 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->seed(RoleAndPermissionSeeder::class);
-    
+
     $this->admin = User::factory()->create();
     $this->admin->assignRole('hr_admin');
-    
+
     $this->employee = User::factory()->create();
     $this->employee->assignRole('employee');
-    
+
     $this->leaveType = LeaveType::create([
         'name' => 'Vacation Leave',
         'code' => 'VL',
@@ -86,7 +86,7 @@ test('credits.show returns JSON credits for a user', function () {
     ]);
 
     $this->actingAs($this->admin)
-        ->get(route('leave.credits.show', ['user' => $this->employee->id]) . '?year=2026')
+        ->get(route('leave.credits.show', ['user' => $this->employee->id]).'?year=2026')
         ->assertStatus(200)
         ->assertJsonFragment([
             'balance' => '15.000', // Cast to string because of decimal cast in model
@@ -105,7 +105,7 @@ test('employee can fetch their own credits via credits.show', function () {
     ]);
 
     $this->actingAs($this->employee)
-        ->get(route('leave.credits.show', ['user' => $this->employee->id]) . '?year=2026')
+        ->get(route('leave.credits.show', ['user' => $this->employee->id]).'?year=2026')
         ->assertStatus(200)
         ->assertJsonFragment([
             'balance' => '10.000',

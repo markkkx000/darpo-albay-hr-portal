@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class LeaveRequest extends Model
 {
     use HasFactory, SoftDeletes;
-    
+
     protected $appends = ['pay_status'];
 
     protected $casts = [
