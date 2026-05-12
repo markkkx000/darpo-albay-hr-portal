@@ -1,9 +1,17 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { AlertCircle, CheckCircle2, LogIn, LogOut, Settings } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 
 import { cn } from '@/lib/utils';
 import { clockIn, clockOut, index as attendanceIndexRoute } from '@/routes/attendance/index';
@@ -28,25 +36,14 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
     const canManage = permissions.includes('attendance.logs.view');
 
     const { post, processing, errors } = useForm<{ attendance?: string }>();
-    const [cooldown, setCooldown] = useState(0);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-    useEffect(() => {
-        if (cooldown <= 0) {
-return;
-}
 
-        const timer = setInterval(() => setCooldown((prev) => prev - 1), 1000);
-
-        return () => clearInterval(timer);
-    }, [cooldown]);
-
-    const startCooldown = () => setCooldown(30);
 
     const handleClockIn = () => {
         post(clockIn().url, {
             onSuccess: () => {
                 toast.success('Successfully clocked in for today!');
-                startCooldown();
                 router.reload({ only: ['attendance', 'history'] });
             },
             onError: () => toast.error('Failed to clock in. Please try again.'),
@@ -57,16 +54,19 @@ return;
         post(clockOut().url, {
             onSuccess: () => {
                 toast.success('Successfully clocked out. Have a great day!');
-                startCooldown();
+                setShowConfirmModal(false);
                 router.reload({ only: ['attendance', 'history'] });
             },
-            onError: () => toast.error('Failed to clock out. Please try again.'),
+            onError: () => {
+                toast.error('Failed to clock out. Please try again.');
+                setShowConfirmModal(false);
+            },
         });
     };
 
     const isClockedIn = !!attendance;
     const isClockedOut = !!attendance?.clock_out;
-    const isButtonDisabled = processing || cooldown > 0;
+    const isButtonDisabled = processing;
 
     const todayDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     const todayDay = new Date().toLocaleDateString('en-US', { weekday: 'long' });
@@ -82,7 +82,7 @@ return;
     return (
         <>
             <Head title="Attendance Registry" />
-            
+
             <div className="relative z-10 flex min-h-[calc(100vh-12rem)] flex-col items-center justify-start p-4 pt-4 gap-4 animate-fade-up">
                 <div className="w-full flex justify-end max-w-5xl">
                     {canManage && (
@@ -100,12 +100,12 @@ return;
                         <h3 className="t-title leading-none tracking-tight">Attendance Registry</h3>
                         <p className="text-sm text-muted-foreground font-medium">Keep track of your daily work hours with precision.</p>
                     </div>
-                    
+
                     <div className="p-6 pt-0 flex flex-col md:flex-row gap-6">
                         {/* Left Pane: Date Card — Premium Matte Surface */}
                         <div
                             className="w-full md:w-52 rounded-[2rem] p-6 flex flex-col justify-between shrink-0 overflow-hidden matte-card elev-1"
-                            style={{ 
+                            style={{
                                 minHeight: '180px',
                                 boxShadow: `
                                     inset 0 -80px 60px -30px rgba(21, 128, 61, 1),
@@ -152,8 +152,8 @@ return;
                                 )}
                             </div>
                         </div>
-                        </div>
                     </div>
+                </div>
 
                 {/* Clock Action Button — full-width, below the card */}
                 <div className="w-full max-w-xl flex flex-col items-stretch gap-3">
@@ -165,18 +165,18 @@ return;
                             className="w-full h-14 rounded-full text-base font-bold tracking-wide"
                         >
                             <LogIn className="mr-2 h-5 w-5" />
-                            {processing ? 'Processing...' : cooldown > 0 ? `Locked (${cooldown}s)` : 'Clock In'}
+                            {processing ? 'Processing...' : 'Clock In'}
                         </Button>
                     ) : !isClockedOut ? (
                         <Button
-                            onClick={handleClockOut}
+                            onClick={() => setShowConfirmModal(true)}
                             disabled={isButtonDisabled}
                             variant="warning"
                             size="lg"
                             className="w-full h-14 rounded-full text-base font-bold tracking-wide relative overflow-hidden"
                         >
                             <LogOut className="mr-2 h-5 w-5 relative z-10" />
-                            <span className="relative z-10">{processing ? 'Processing...' : cooldown > 0 ? `Locked (${cooldown}s)` : 'Clock Out'}</span>
+                            <span className="relative z-10">{processing ? 'Processing...' : 'Clock Out'}</span>
                         </Button>
                     ) : (
                         <div className="w-full h-14 rounded-full flex items-center justify-center gap-2 border border-border bg-muted/20 text-muted-foreground text-sm font-semibold tracking-wide">
@@ -196,6 +196,23 @@ return;
                         Timestamps are server-recorded and tamper-proof.
                     </p>
                 </div>
+
+                <Dialog open={showConfirmModal} onOpenChange={setShowConfirmModal}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Clock Out?</DialogTitle>
+                            <DialogDescription>
+                                Are you sure you want to clock out for today? This will record your finish time and you won't be able to clock back in until tomorrow.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button variant="ghost" onClick={() => setShowConfirmModal(false)} className="btn-ghost-specular px-6 border-none">Cancel</Button>
+                            <Button onClick={handleClockOut} disabled={processing} className="btn-ghost-danger-specular px-6 border-none">
+                                {processing ? 'Processing...' : 'Confirm Clock Out'}
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </>
     );
