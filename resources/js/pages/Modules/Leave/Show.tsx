@@ -67,12 +67,32 @@ return '';
                                 </div>
                                 <div className="space-y-1">
                                     <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Pay Status</p>
-                                    <span className={cn(
-                                        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold",
-                                        leaveRequest.pay_status === 'with_pay' ? 'bg-green-500/10 text-green-600 border-green-500/20' : 'bg-red-500/10 text-red-600 border-red-500/20'
-                                    )}>
-                                        {leaveRequest.pay_status === 'with_pay' ? 'With Pay' : 'Without Pay'}
-                                    </span>
+                                    <div className="flex flex-col gap-1.5">
+                                        <span className={cn(
+                                            "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold w-fit",
+                                            leaveRequest.pay_status === 'with_pay' ? 'bg-green-500/10 text-green-600 border-green-500/20' : 
+                                            leaveRequest.pay_status === 'partial' ? 'bg-blue-500/10 text-blue-600 border-blue-500/20' :
+                                            'bg-red-500/10 text-red-600 border-red-500/20'
+                                        )}>
+                                            {leaveRequest.pay_status === 'with_pay' ? 'Full Pay' : 
+                                             leaveRequest.pay_status === 'partial' ? 'Partial Pay' : 
+                                             'Without Pay'}
+                                        </span>
+                                        {(parseFloat(leaveRequest.days_with_pay) > 0 || parseFloat(leaveRequest.days_without_pay) > 0) && (
+                                            <div className="text-[10px] text-muted-foreground flex gap-2 font-medium">
+                                                {parseFloat(leaveRequest.days_with_pay) > 0 && (
+                                                    <span className="flex items-center text-green-600/80">
+                                                        {leaveRequest.days_with_pay} days paid
+                                                    </span>
+                                                )}
+                                                {parseFloat(leaveRequest.days_without_pay) > 0 && (
+                                                    <span className="flex items-center text-red-600/80">
+                                                        {leaveRequest.days_without_pay} days unpaid
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className="space-y-1">

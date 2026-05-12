@@ -186,16 +186,20 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
     const lastAutoCalc = useRef(calculatedDays);
 
     useEffect(() => {
-        if (calculatedDays !== '' && calculatedDays !== lastAutoCalc.current) {
+        if (calculatedDays !== '' && (calculatedDays !== lastAutoCalc.current || available !== undefined)) {
+            const requestedNum = parseFloat(calculatedDays) || 0;
+            const withPay = Math.min(requestedNum, available);
+            const withoutPay = Math.max(0, requestedNum - withPay);
+
             setData((prev: any) => ({
                 ...prev,
                 days_requested: calculatedDays,
-                days_with_pay: calculatedDays,
-                days_without_pay: '0'
+                days_with_pay: withPay > 0 ? withPay.toString() : '0',
+                days_without_pay: withoutPay > 0 ? withoutPay.toString() : '0'
             }));
             lastAutoCalc.current = calculatedDays;
         }
-    }, [calculatedDays, setData]);
+    }, [calculatedDays, available, setData]);
 
     const addSpecificDate = () => {
         if (specificDateInput && !data.specific_dates.includes(specificDateInput)) {

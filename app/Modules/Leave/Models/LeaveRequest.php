@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class LeaveRequest extends Model
 {
     use HasFactory, SoftDeletes;
+    
+    protected $appends = ['pay_status'];
 
     protected $casts = [
         'start_date' => 'date',
@@ -57,5 +59,25 @@ class LeaveRequest extends Model
     public function approvedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by_id');
+    }
+
+    public function getPayStatusAttribute(): string
+    {
+        $withPay = (float) $this->days_with_pay;
+        $withoutPay = (float) $this->days_without_pay;
+
+        if ($withPay > 0 && $withoutPay == 0) {
+            return 'with_pay';
+        }
+
+        if ($withPay == 0 && $withoutPay > 0) {
+            return 'without_pay';
+        }
+
+        if ($withPay > 0 && $withoutPay > 0) {
+            return 'partial';
+        }
+
+        return 'without_pay'; // Default or if both are 0
     }
 }
