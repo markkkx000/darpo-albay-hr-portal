@@ -1,5 +1,6 @@
 import { Head, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { Plus, Minus } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
 import { EmployeeSearch } from '@/components/EmployeeSearch';
@@ -14,21 +15,57 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
     const [year, setYear] = useState(currentYear);
     const [month, setMonth] = useState(new Date().getMonth() + 1);
 
-    const handleUpdate = (userId: number, field: string, value: string, record: any) => {
+    const handleUpdate = (userId: number, field: string, value: number, record: any) => {
         const payload = {
             year,
             month,
             tardiness_count: record?.tardiness_count || 0,
-            tardiness_minutes: record?.tardiness_minutes || 0,
             undertime_count: record?.undertime_count || 0,
-            undertime_minutes: record?.undertime_minutes || 0,
-            [field]: parseInt(value) || 0,
+            [field]: value,
         };
 
-        router.put(LeaveRoutes.tardiness.update({ user_id: userId }).url, payload, { 
+        router.put(LeaveRoutes.tardiness.update({ user_id: userId }).url, payload, {
             preserveScroll: true,
-            onSuccess: () => toast.success('Tardiness record updated successfully')
+            onSuccess: () => toast.success('Record updated successfully')
         });
+    };
+
+    const Counter = ({ value, onChange }: { value: number, onChange: (val: number) => void }) => {
+        const [localValue, setLocalValue] = useState(value);
+
+        useEffect(() => {
+            setLocalValue(value);
+        }, [value]);
+
+        return (
+            <div className="flex items-center justify-center space-x-3">
+                <button
+                    type="button"
+                    onClick={() => onChange(localValue - 1)}
+                    className="w-9 h-9 flex items-center justify-center rounded-full bg-secondary hover:bg-secondary/80 border border-border transition-all active:scale-95 shadow-sm"
+                >
+                    <Minus className="h-4 w-4" />
+                </button>
+                <Input
+                    type="number"
+                    className="w-16 text-center h-9 font-mono font-bold rounded-full border-2 border-muted-foreground/20 focus:border-primary/50"
+                    value={localValue}
+                    onChange={(e) => setLocalValue(parseInt(e.target.value) || 0)}
+                    onBlur={() => {
+                        if (localValue !== value) {
+                            onChange(localValue);
+                        }
+                    }}
+                />
+                <button
+                    type="button"
+                    onClick={() => onChange(localValue + 1)}
+                    className="w-9 h-9 flex items-center justify-center rounded-full bg-secondary hover:bg-secondary/80 border border-border transition-all active:scale-95 shadow-sm"
+                >
+                    <Plus className="h-4 w-4" />
+                </button>
+            </div>
+        );
     };
 
     return (
@@ -46,10 +83,10 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
                     <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6">
                         <div className="flex items-center space-x-4">
                             <div className="w-24">
-                                <Input 
-                                    type="number" 
-                                    value={year} 
-                                    onChange={(e) => setYear(Number(e.target.value))} 
+                                <Input
+                                    type="number"
+                                    value={year}
+                                    onChange={(e) => setYear(Number(e.target.value))}
                                     placeholder="Year"
                                 />
                             </div>
@@ -71,9 +108,9 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
                                 </Select>
                             </div>
                         </div>
-                        <EmployeeSearch 
-                            users={allEmployees} 
-                            selectedId={filters?.search} 
+                        <EmployeeSearch
+                            users={allEmployees}
+                            selectedId={filters?.search}
                             route={LeaveRoutes.tardiness.index().url}
                             params={{ year, month }}
                             withAllEmployees
@@ -85,57 +122,30 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
                             <thead className="[&_tr]:border-b">
                                 <tr className="border-b transition-colors hover:bg-muted/50 bg-muted/20">
                                     <th className="h-12 px-4 text-left font-medium text-muted-foreground">Employee</th>
-                                    <th className="h-12 px-4 text-center font-medium text-muted-foreground" colSpan={2}>Tardiness</th>
-                                    <th className="h-12 px-4 text-center font-medium text-muted-foreground" colSpan={2}>Undertime</th>
-                                </tr>
-                                <tr className="border-b transition-colors hover:bg-muted/50">
-                                    <th className="h-10 px-4 text-left font-medium text-muted-foreground border-r"></th>
-                                    <th className="h-10 px-4 text-center font-medium text-muted-foreground">Count</th>
-                                    <th className="h-10 px-4 text-center font-medium text-muted-foreground border-r">Minutes</th>
-                                    <th className="h-10 px-4 text-center font-medium text-muted-foreground">Count</th>
-                                    <th className="h-10 px-4 text-center font-medium text-muted-foreground">Minutes</th>
+                                    <th className="h-12 px-4 text-center font-medium text-muted-foreground border-x">Tardiness (Occurrences)</th>
+                                    <th className="h-12 px-4 text-center font-medium text-muted-foreground">Undertime (Occurrences)</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {users.data.map((user: any) => {
                                     const record = user.tardiness_records?.find((r: any) => r.month === month);
-                                    
+
                                     return (
                                         <tr key={user.id} className="border-b transition-colors hover:bg-muted/50">
                                             <td className="p-4 font-medium border-r">
                                                 {user.first_name} {user.last_name}
                                                 <div className="text-xs text-muted-foreground">{user.employee_number}</div>
                                             </td>
-                                            <td className="p-4 text-center">
-                                                <Input 
-                                                    type="number" 
-                                                    className="w-20 mx-auto" 
-                                                    defaultValue={record?.tardiness_count || 0}
-                                                    onBlur={(e) => handleUpdate(user.id, 'tardiness_count', e.target.value, record)}
-                                                />
-                                            </td>
                                             <td className="p-4 text-center border-r">
-                                                <Input 
-                                                    type="number" 
-                                                    className="w-20 mx-auto" 
-                                                    defaultValue={record?.tardiness_minutes || 0}
-                                                    onBlur={(e) => handleUpdate(user.id, 'tardiness_minutes', e.target.value, record)}
+                                                <Counter
+                                                    value={record?.tardiness_count || 0}
+                                                    onChange={(val) => handleUpdate(user.id, 'tardiness_count', val, record)}
                                                 />
                                             </td>
                                             <td className="p-4 text-center">
-                                                <Input 
-                                                    type="number" 
-                                                    className="w-20 mx-auto" 
-                                                    defaultValue={record?.undertime_count || 0}
-                                                    onBlur={(e) => handleUpdate(user.id, 'undertime_count', e.target.value, record)}
-                                                />
-                                            </td>
-                                            <td className="p-4 text-center">
-                                                <Input 
-                                                    type="number" 
-                                                    className="w-20 mx-auto" 
-                                                    defaultValue={record?.undertime_minutes || 0}
-                                                    onBlur={(e) => handleUpdate(user.id, 'undertime_minutes', e.target.value, record)}
+                                                <Counter
+                                                    value={record?.undertime_count || 0}
+                                                    onChange={(val) => handleUpdate(user.id, 'undertime_count', val, record)}
                                                 />
                                             </td>
                                         </tr>

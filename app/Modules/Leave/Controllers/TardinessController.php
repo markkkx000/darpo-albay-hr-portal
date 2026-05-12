@@ -49,9 +49,7 @@ class TardinessController extends Controller
             'year' => ['required', 'integer'],
             'month' => ['required', 'integer', 'between:1,12'],
             'tardiness_count' => ['required', 'integer', 'min:0'],
-            'tardiness_minutes' => ['required', 'integer', 'min:0'],
             'undertime_count' => ['required', 'integer', 'min:0'],
-            'undertime_minutes' => ['required', 'integer', 'min:0'],
         ]);
 
         TardinessRecord::updateOrCreate(
@@ -62,9 +60,7 @@ class TardinessController extends Controller
             ],
             [
                 'tardiness_count' => $request->tardiness_count,
-                'tardiness_minutes' => $request->tardiness_minutes,
                 'undertime_count' => $request->undertime_count,
-                'undertime_minutes' => $request->undertime_minutes,
                 'created_by' => $request->user()->id,
             ]
         );
