@@ -45,9 +45,9 @@ interface AttendanceRecordModalProps {
     employees: User[];
 }
 
-function extractTime(dateTimeString: string) {
+function extractTime(dateTimeString: string | null) {
     if (!dateTimeString) {
-        return '08:00:00';
+        return '';
     }
 
     try {
@@ -63,7 +63,7 @@ function extractTime(dateTimeString: string) {
 
         return `${hours}:${minutes}:${seconds}`;
     } catch {
-        return '08:00:00';
+        return '';
     }
 }
 
@@ -75,7 +75,7 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
         user_id: record?.user_id?.toString() || '',
         date: record?.date || new Date().toISOString().split('T')[0],
         clock_in: record?.clock_in ? extractTime(record.clock_in) : '08:00:00',
-        clock_out: record?.clock_out ? extractTime(record.clock_out) : '17:00:00',
+        clock_out: record?.clock_out ? extractTime(record.clock_out) : '',
     });
 
     const filteredEmployees = useMemo(() => {
@@ -99,14 +99,14 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
                     user_id: record.user_id.toString(),
                     date: record.date,
                     clock_in: extractTime(record.clock_in),
-                    clock_out: record.clock_out ? extractTime(record.clock_out) : '17:00:00',
+                    clock_out: record.clock_out ? extractTime(record.clock_out) : '',
                 });
             } else {
                 setData({
                     user_id: '',
                     date: new Date().toISOString().split('T')[0],
                     clock_in: '08:00:00',
-                    clock_out: '17:00:00',
+                    clock_out: '',
                 });
             }
 
