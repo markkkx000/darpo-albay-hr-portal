@@ -4,9 +4,10 @@ namespace App\Modules\Personnel\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Modules\Personnel\Models\Department;
+use App\Modules\Personnel\Models\Division;
 use App\Modules\Personnel\Models\EmploymentStatus;
 use App\Modules\Personnel\Models\Position;
+use App\Modules\Personnel\Models\Unit;
 use App\Modules\Personnel\Requests\EmployeeCreateRequest;
 use App\Modules\Personnel\Requests\EmployeeRestoreRequest;
 use App\Modules\Personnel\Requests\EmployeeUpdateRequest;
@@ -31,8 +32,9 @@ class PersonnelController extends Controller
 
         return Inertia::render('Modules/Personnel/Index', [
             'employees' => $this->employeeService->getEmployees($request->all()),
-            'filters' => $request->only(['search', 'department_id', 'employment_status_id']),
-            'departments' => Department::where('is_active', true)->get(),
+            'filters' => $request->only(['search', 'division_id', 'employment_status_id']),
+            'divisions' => Division::where('is_active', true)->get(),
+            'units' => Unit::where('is_active', true)->get(),
             'employmentStatuses' => EmploymentStatus::where('is_active', true)->get(),
         ]);
     }
@@ -42,10 +44,11 @@ class PersonnelController extends Controller
      */
     public function create(): Response
     {
-        $this->authorize('personnel.create');
+        $this->authorize('personnel.manage');
 
         return Inertia::render('Modules/Personnel/Create', [
-            'departments' => Department::where('is_active', true)->get(),
+            'divisions' => Division::where('is_active', true)->get(),
+            'units' => Unit::where('is_active', true)->get(),
             'positions' => Position::where('is_active', true)->get(),
             'employmentStatuses' => EmploymentStatus::where('is_active', true)->get(),
         ]);
@@ -70,7 +73,7 @@ class PersonnelController extends Controller
         $this->authorize('personnel.view');
 
         return Inertia::render('Modules/Personnel/Show', [
-            'employee' => $user->load(['department', 'position', 'employmentStatus']),
+            'employee' => $user->load(['division', 'unit', 'position', 'employmentStatus']),
         ]);
     }
 
@@ -79,11 +82,12 @@ class PersonnelController extends Controller
      */
     public function edit(User $user): Response
     {
-        $this->authorize('personnel.update');
+        $this->authorize('personnel.manage');
 
         return Inertia::render('Modules/Personnel/Edit', [
             'employee' => $user,
-            'departments' => Department::where('is_active', true)->get(),
+            'divisions' => Division::where('is_active', true)->get(),
+            'units' => Unit::where('is_active', true)->get(),
             'positions' => Position::where('is_active', true)->get(),
             'employmentStatuses' => EmploymentStatus::where('is_active', true)->get(),
         ]);
@@ -94,7 +98,7 @@ class PersonnelController extends Controller
      */
     public function update(EmployeeUpdateRequest $request, User $user): RedirectResponse
     {
-        $this->authorize('personnel.update');
+        $this->authorize('personnel.manage');
 
         $this->employeeService->updateEmployee($user, $request->validated());
 
@@ -107,7 +111,7 @@ class PersonnelController extends Controller
      */
     public function destroy(User $user): RedirectResponse
     {
-        $this->authorize('personnel.delete');
+        $this->authorize('personnel.manage');
 
         $this->employeeService->deleteEmployee($user);
 

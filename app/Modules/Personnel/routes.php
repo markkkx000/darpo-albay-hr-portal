@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Personnel\Controllers\OrganizationController;
 use App\Modules\Personnel\Controllers\PersonnelController;
 use Illuminate\Support\Facades\Route;
 
@@ -7,6 +8,15 @@ Route::get('/', [PersonnelController::class, 'index'])->name('index');
 Route::get('/create', [PersonnelController::class, 'create'])->name('create');
 Route::post('/', [PersonnelController::class, 'store'])->name('store');
 Route::get('/archived', [PersonnelController::class, 'archived'])->name('archived');
+
+Route::get('/organization', [OrganizationController::class, 'index'])->name('organization.index');
+Route::post('/organization/divisions', [OrganizationController::class, 'storeDivision'])->name('organization.divisions.store');
+Route::put('/organization/divisions/{division}', [OrganizationController::class, 'updateDivision'])->name('organization.divisions.update');
+Route::post('/organization/units', [OrganizationController::class, 'storeUnit'])->name('organization.units.store');
+Route::put('/organization/units/{unit}', [OrganizationController::class, 'updateUnit'])->name('organization.units.update');
+Route::post('/organization/positions', [OrganizationController::class, 'storePosition'])->name('organization.positions.store');
+Route::put('/organization/positions/{position}', [OrganizationController::class, 'updatePosition'])->name('organization.positions.update');
+
 Route::get('/{user}', [PersonnelController::class, 'show'])->name('show');
 Route::get('/{user}/edit', [PersonnelController::class, 'edit'])->name('edit');
 Route::put('/{user}', [PersonnelController::class, 'update'])->name('update');

@@ -5,12 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { index, manage, store } from '@/routes/announcements';
 
 interface Props {
-    departments: any[];
+    divisions: any[];
     positions: any[];
     users: any[];
 }
 
-export default function Create({ departments, positions, users }: Props) {
+export default function Create({ divisions, positions, users }: Props) {
     return (
         <>
             <Head title="Create Announcement" />
@@ -30,7 +30,7 @@ export default function Create({ departments, positions, users }: Props) {
                             <AnnouncementForm 
                                 submitUrl={store().url}
                                 method="post"
-                                departments={departments}
+                                divisions={divisions}
                                 positions={positions}
                                 users={users}
                             />

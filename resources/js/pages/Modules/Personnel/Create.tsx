@@ -6,12 +6,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { store as storeRoute, index as indexRoute } from '@/routes/personnel';
 
 interface Props {
-    departments: any[];
+    divisions: any[];
+    units: any[];
     positions: any[];
     employmentStatuses: any[];
 }
 
-export default function Create({ departments, positions, employmentStatuses }: Props) {
+export default function Create({ divisions, units, positions, employmentStatuses }: Props) {
     const handleSubmit = (data: any) => {
         router.post(storeRoute().url, data, {
             onSuccess: () => {
@@ -38,7 +39,8 @@ export default function Create({ departments, positions, employmentStatuses }: P
                 <Card className="matte-card elev-2 border-none">
                     <CardContent className="pt-6">
                         <EmployeeForm 
-                            departments={departments}
+                            divisions={divisions}
+                            units={units}
                             positions={positions}
                             employmentStatuses={employmentStatuses}
                             onSubmit={handleSubmit}

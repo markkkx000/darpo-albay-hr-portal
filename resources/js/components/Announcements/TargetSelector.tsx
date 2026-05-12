@@ -6,7 +6,7 @@ interface Props {
     targetId: string | number | null;
     onTargetTypeChange: (value: string) => void;
     onTargetIdChange: (value: string) => void;
-    departments: { id: number; name: string }[];
+    divisions: { id: number; name: string }[];
     positions: { id: number; name: string }[];
     users: { id: number; name: string }[];
     error?: string;
@@ -18,7 +18,7 @@ export function TargetSelector({
     targetId,
     onTargetTypeChange,
     onTargetIdChange,
-    departments,
+    divisions,
     positions,
     users,
     error,
@@ -34,7 +34,7 @@ export function TargetSelector({
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">Everyone</SelectItem>
-                        <SelectItem value="department">Specific Department</SelectItem>
+                        <SelectItem value="division">Specific Division</SelectItem>
                         <SelectItem value="position">Specific Position</SelectItem>
                         <SelectItem value="user">Specific Employee</SelectItem>
                     </SelectContent>
@@ -45,7 +45,7 @@ export function TargetSelector({
             {targetType !== 'all' && (
                 <div className="space-y-2">
                     <label className="text-sm font-medium">
-                        {targetType === 'department' && 'Select Department'}
+                        {targetType === 'division' && 'Select Division'}
                         {targetType === 'position' && 'Select Position'}
                         {targetType === 'user' && 'Select Employee'}
                     </label>
@@ -57,9 +57,9 @@ export function TargetSelector({
                             <SelectValue placeholder={`Select ${targetType}`} />
                         </SelectTrigger>
                         <SelectContent>
-                            {targetType === 'department' && departments.map((dept) => (
-                                <SelectItem key={dept.id} value={dept.id.toString()}>
-                                    {dept.name}
+                            {targetType === 'division' && divisions.map((div) => (
+                                <SelectItem key={div.id} value={div.id.toString()}>
+                                    {div.name}
                                 </SelectItem>
                             ))}
                             {targetType === 'position' && positions.map((pos) => (

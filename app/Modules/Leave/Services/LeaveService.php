@@ -12,6 +12,82 @@ use Illuminate\Validation\ValidationException;
 class LeaveService
 {
     /**
+     * Get paginated leave requests with filters
+     */
+    public function getPaginatedLeaves(array $filters, $user = null)
+    {
+        $viewMode = $filters['view'] ?? 'mine';
+        $search = $filters['search'] ?? null;
+        $sort = $filters['sort'] ?? 'desc';
+        $leaveTypeId = $filters['leave_type_id'] ?? null;
+        $statusId = $filters['status_id'] ?? null;
+        $approvedById = $filters['approved_by_id'] ?? null;
+
+        $query = LeaveRequest::with(['user', 'leaveType', 'leaveStatus', 'createdBy', 'approvedBy']);
+
+        if ($viewMode === 'mine' && $user) {
+            $query->where('user_id', $user->id);
+        }
+
+        $query->when($search, function ($q) use ($search) {
+            $keywords = explode(' ', $search);
+            $q->whereHas('user', function ($uq) use ($keywords) {
+                foreach ($keywords as $keyword) {
+                    if (empty($keyword)) {
+                        continue;
+                    }
+                    $uq->where(function ($inner) use ($keyword) {
+                        $inner->where('first_name', 'like', "%{$keyword}%")
+                            ->orWhere('last_name', 'like', "%{$keyword}%")
+                            ->orWhere('employee_number', 'like', "%{$keyword}%");
+                    });
+                }
+            });
+        });
+
+        $query->when($leaveTypeId, function ($q) use ($leaveTypeId) {
+            $q->where('leave_type_id', $leaveTypeId);
+        });
+
+        $query->when($statusId, function ($q) use ($statusId) {
+            $q->where('leave_status_id', $statusId);
+        });
+
+        $query->when($approvedById, function ($q) use ($approvedById) {
+            $q->where('approved_by_id', $approvedById);
+        });
+
+        if ($sort === 'asc') {
+            $query->oldest('start_date');
+        } else {
+            $query->latest('start_date');
+        }
+
+        return $query->paginate(15)->withQueryString();
+    }
+
+    /**
+     * Get leaves for calendar view
+     */
+    public function getCalendarLeaves(int $year, int $month, ?int $userId = null)
+    {
+        $query = LeaveRequest::with(['user', 'leaveType'])
+            ->where(function ($q) use ($year, $month) {
+                $q->where(function ($q1) use ($year, $month) {
+                    $q1->whereYear('start_date', $year)->whereMonth('start_date', $month);
+                })->orWhere(function ($q2) use ($year, $month) {
+                    $q2->whereYear('end_date', $year)->whereMonth('end_date', $month);
+                });
+            });
+
+        if ($userId) {
+            $query->where('user_id', $userId);
+        }
+
+        return $query->get();
+    }
+
+    /**
      * Store a new leave request
      */
     public function storeLeaveRequest(array $data, int $createdBy)
@@ -20,6 +96,19 @@ class LeaveService
         $this->validateHalfDay($data['start_date'], $data['end_date'], $data['days_requested']);
 
         $data['created_by'] = $createdBy;
+
+        // Fetch current VL/SL balances for snapshots (Historical Digitization)
+        $year = Carbon::parse($data['start_date'])->year;
+
+        $data['vl_balance_at_filing'] = LeaveCredit::where('user_id', $data['user_id'])
+            ->where('year', $year)
+            ->whereHas('leaveType', fn ($q) => $q->where('name', 'Vacation Leave'))
+            ->value('balance') ?? 0;
+
+        $data['sl_balance_at_filing'] = LeaveCredit::where('user_id', $data['user_id'])
+            ->where('year', $year)
+            ->whereHas('leaveType', fn ($q) => $q->where('name', 'Sick Leave'))
+            ->value('balance') ?? 0;
 
         return DB::transaction(function () use ($data) {
             $leaveRequest = LeaveRequest::create($data);
@@ -173,6 +262,7 @@ class LeaveService
      */
     protected function handleCreditDeduction(LeaveRequest $leaveRequest)
     {
+
         if ($leaveRequest->leaveStatus && $leaveRequest->leaveStatus->name === 'Approved') {
             $year = Carbon::parse($leaveRequest->start_date)->year;
 
@@ -189,7 +279,7 @@ class LeaveService
                 ]
             );
 
-            $credit->used += $leaveRequest->days_requested;
+            $credit->used += $leaveRequest->days_with_pay;
             $credit->balance = $credit->earned - $credit->used;
             $credit->save();
         }
@@ -200,6 +290,7 @@ class LeaveService
      */
     protected function handleCreditRestoration(LeaveRequest $leaveRequest)
     {
+
         $originalStatus = $leaveRequest->leaveStatus;
         if ($originalStatus && $originalStatus->name === 'Approved') {
             $year = Carbon::parse($leaveRequest->getOriginal('start_date'))->year;
@@ -209,7 +300,7 @@ class LeaveService
                 ->first();
 
             if ($credit) {
-                $credit->used -= $leaveRequest->getOriginal('days_requested');
+                $credit->used -= $leaveRequest->getOriginal('days_with_pay');
                 $credit->balance = $credit->earned - $credit->used;
                 $credit->save();
             }

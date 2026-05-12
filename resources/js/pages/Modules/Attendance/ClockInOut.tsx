@@ -25,7 +25,7 @@ interface Props {
 export default function ClockInOut({ attendance, history = [] }: Props) {
     const { auth } = usePage().props as any;
     const permissions = (auth.permissions || auth.user?.permissions || []) as string[];
-    const canManage = permissions.includes('attendance.manage');
+    const canManage = permissions.includes('attendance.logs.view');
 
     const { post, processing, errors } = useForm<{ attendance?: string }>();
     const [cooldown, setCooldown] = useState(0);

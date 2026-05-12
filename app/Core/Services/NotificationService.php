@@ -19,11 +19,11 @@ class NotificationService
     }
 
     /**
-     * Send notification to all active users in a department.
+     * Send notification to all active users in a division.
      */
-    public function notifyDepartment(int $departmentId, array $data): void
+    public function notifyDivision(int $divisionId, array $data): void
     {
-        $users = User::where('department_id', $departmentId)->where('is_active', true)->get();
+        $users = User::where('division_id', $divisionId)->where('is_active', true)->get();
         Notification::send($users, new GenericDatabaseNotification($data));
     }
 

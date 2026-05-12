@@ -12,7 +12,6 @@ use App\Modules\Leave\Requests\StoreLeaveRequest;
 use App\Modules\Leave\Requests\UpdateLeaveRequest;
 use App\Modules\Leave\Services\LeaveService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class LeaveController extends Controller
@@ -21,7 +20,7 @@ class LeaveController extends Controller
 
     public function index(Request $request)
     {
-        $canEncode = $request->user()->can('leave.encode');
+        $canEncode = $request->user()->can('leave.manage');
         $viewMode = $request->input('view', 'mine');
 
         // Force 'mine' view if user cannot encode
@@ -29,67 +28,32 @@ class LeaveController extends Controller
             $viewMode = 'mine';
         }
 
-        $search = $request->input('search');
-        $sort = $request->input('sort', 'desc');
-        $leaveTypeId = $request->input('leave_type_id');
-        $statusId = $request->input('status_id');
-        $approvedById = $request->input('approved_by_id');
+        $filters = [
+            'search' => $request->input('search'),
+            'view' => $viewMode,
+            'sort' => $request->input('sort', 'desc'),
+            'leave_type_id' => $request->input('leave_type_id'),
+            'status_id' => $request->input('status_id'),
+            'approved_by_id' => $request->input('approved_by_id'),
+        ];
 
-        $query = LeaveRequest::with(['user', 'leaveType', 'leaveStatus', 'createdBy', 'approvedBy']);
-
-        if ($viewMode === 'mine') {
-            $query->where('user_id', $request->user()->id);
-        }
-
-        $query->when($search, function ($q) use ($search) {
-            $keywords = explode(' ', $search);
-            $q->whereHas('user', function ($uq) use ($keywords) {
-                foreach ($keywords as $keyword) {
-                    if (empty($keyword)) {
-                        continue;
-                    }
-                    $uq->where(function ($inner) use ($keyword) {
-                        $inner->where('first_name', 'like', "%{$keyword}%")
-                            ->orWhere('last_name', 'like', "%{$keyword}%")
-                            ->orWhere('employee_number', 'like', "%{$keyword}%");
-                    });
-                }
-            });
-        });
-
-        $query->when($leaveTypeId, function ($q) use ($leaveTypeId) {
-            $q->where('leave_type_id', $leaveTypeId);
-        });
-
-        $query->when($statusId, function ($q) use ($statusId) {
-            $q->where('leave_status_id', $statusId);
-        });
-
-        $query->when($approvedById, function ($q) use ($approvedById) {
-            $q->where('approved_by_id', $approvedById);
-        });
-
-        if ($sort === 'asc') {
-            $query->oldest('start_date');
-        } else {
-            $query->latest('start_date');
-        }
-
-        $leaves = $query->paginate(15)->withQueryString();
+        $leaves = $this->leaveService->getPaginatedLeaves($filters, $request->user());
 
         return Inertia::render('Modules/Leave/Index', [
             'leaves' => $leaves,
-            'filters' => [
-                'search' => $search,
-                'view' => $viewMode,
-                'sort' => $sort,
-                'leave_type_id' => $leaveTypeId,
-                'status_id' => $statusId,
-                'approved_by_id' => $approvedById,
-            ],
+            'filters' => $filters,
             'allEmployees' => User::select('id', 'first_name', 'last_name', 'employee_number')->orderBy('last_name')->get(),
             'leaveTypes' => LeaveType::all(),
             'leaveStatuses' => LeaveStatus::all(),
+        ]);
+    }
+
+    public function show(LeaveRequest $leaveRequest)
+    {
+        $leaveRequest->load(['user', 'leaveType', 'leaveStatus', 'createdBy', 'approvedBy']);
+
+        return Inertia::render('Modules/Leave/Show', [
+            'leaveRequest' => $leaveRequest,
         ]);
     }
 
@@ -111,10 +75,6 @@ class LeaveController extends Controller
     public function store(StoreLeaveRequest $request)
     {
         $data = $request->validated();
-
-        if ($request->hasFile('attachment')) {
-            $data['attachment_path'] = $request->file('attachment')->store('leave_attachments', 'public');
-        }
 
         $this->leaveService->storeLeaveRequest($data, $request->user()->id);
 
@@ -141,13 +101,6 @@ class LeaveController extends Controller
     {
         $data = $request->validated();
 
-        if ($request->hasFile('attachment')) {
-            if ($leaveRequest->attachment_path) {
-                Storage::disk('public')->delete($leaveRequest->attachment_path);
-            }
-            $data['attachment_path'] = $request->file('attachment')->store('leave_attachments', 'public');
-        }
-
         $this->leaveService->updateLeaveRequest($leaveRequest, $data);
 
         return redirect()->route('leave.index')->with('success', 'Leave request updated successfully.');
@@ -162,25 +115,12 @@ class LeaveController extends Controller
 
     public function calendar(Request $request)
     {
-        $year = $request->input('year', now()->year);
-        $month = $request->input('month', now()->month);
-        $userId = $request->input('user_id');
-
-        $query = LeaveRequest::with(['user', 'leaveType'])
-            ->where(function ($q) use ($year, $month) {
-                $q->where(function ($q1) use ($year, $month) {
-                    $q1->whereYear('start_date', $year)->whereMonth('start_date', $month);
-                })->orWhere(function ($q2) use ($year, $month) {
-                    $q2->whereYear('end_date', $year)->whereMonth('end_date', $month);
-                });
-            });
-
-        if ($userId) {
-            $query->where('user_id', $userId);
-        }
+        $year = (int) $request->input('year', now()->year);
+        $month = (int) $request->input('month', now()->month);
+        $userId = $request->input('user_id') ? (int) $request->input('user_id') : null;
 
         return Inertia::render('Modules/Leave/Calendar', [
-            'leaves' => $query->get(),
+            'leaves' => $this->leaveService->getCalendarLeaves($year, $month, $userId),
             'leaveTypes' => LeaveType::all(),
             'users' => User::select('id', 'first_name', 'last_name', 'employee_number')->orderBy('last_name')->get(),
             'currentYear' => $year,

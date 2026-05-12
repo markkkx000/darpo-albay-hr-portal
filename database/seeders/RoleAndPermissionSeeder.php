@@ -17,25 +17,22 @@ class RoleAndPermissionSeeder extends Seeder
         // Create Permissions
         $permissions = [
             'attendance.clock',
-            'attendance.view_own',
-            'attendance.manage',
-            'attendance.delete',
-            'leave.access_module',
-            'leave.view_own',
-            'leave.encode',
-            'leave.manage_tardiness',
-            'leave.manage_credits',
-            'leave.manage_settings',
+            'attendance.view',
+            'attendance.logs.view',
+            'attendance.logs.manage',
+            'leave.view',
+            'leave.manage',
+            'leave.tardiness.manage',
+            'leave.credits.view',
+            'leave.credits.manage',
+            'leave.settings.manage',
             'personnel.view',
-            'personnel.create',
-            'personnel.update',
-            'personnel.delete',
-            'personnel.restore',
+            'personnel.manage',
             'announcements.manage',
             'announcements.view',
-            'dtr.export',
-            'travel_order.file',
-            'travel_order.approve',
+            'dtr.manage',
+            'travel_order.create',
+            'travel_order.manage',
             'roles.manage',
         ];
 
@@ -53,61 +50,61 @@ class RoleAndPermissionSeeder extends Seeder
         $hrAdmin = Role::firstOrCreate(['name' => 'hr_admin']);
         $hrAdmin->syncPermissions([
             'attendance.clock',
-            'attendance.view_own',
-            'attendance.manage',
-            'attendance.delete',
-            'leave.access_module',
-            'leave.view_own',
-            'leave.encode',
-            'leave.manage_tardiness',
-            'leave.manage_credits',
-            'leave.manage_settings',
+            'attendance.view',
+            'attendance.logs.view',
+            'attendance.logs.manage',
+            'leave.view',
+            'leave.manage',
+            'leave.tardiness.manage',
+            'leave.credits.view',
+            'leave.credits.manage',
+            'leave.settings.manage',
             'personnel.view',
-            'personnel.create',
-            'personnel.update',
-            'personnel.restore',
+            'personnel.manage',
             'announcements.manage',
             'announcements.view',
-            'dtr.export',
-            'travel_order.approve',
+            'dtr.manage',
+            'travel_order.manage',
         ]);
 
         // HR Staff
         $hrStaff = Role::firstOrCreate(['name' => 'hr_staff']);
         $hrStaff->syncPermissions([
             'attendance.clock',
-            'attendance.view_own',
-            'attendance.manage',
-            'leave.access_module',
-            'leave.view_own',
-            'leave.encode',
-            'leave.manage_tardiness',
-            'leave.manage_credits',
+            'attendance.view',
+            'attendance.logs.view',
+            'leave.view',
+            'leave.manage',
+            'leave.tardiness.manage',
+            'leave.credits.view',
+            'leave.credits.manage',
             'personnel.view',
             'announcements.view',
             'announcements.manage',
-            'travel_order.approve',
+            'travel_order.manage',
         ]);
 
-        // Department Head
-        $deptHead = Role::firstOrCreate(['name' => 'department_head']);
-        $deptHead->syncPermissions([
+        // Division Head
+        $divisionHead = Role::firstOrCreate(['name' => 'division_head']);
+        $divisionHead->syncPermissions([
             'attendance.clock',
-            'attendance.view_own',
-            'leave.view_own',
+            'attendance.view',
+            'leave.view',
+            'leave.credits.view',
             'announcements.view',
             'announcements.manage',
-            'travel_order.file',
+            'travel_order.create',
         ]);
 
         // Employee
         $employee = Role::firstOrCreate(['name' => 'employee']);
         $employee->syncPermissions([
             'attendance.clock',
-            'attendance.view_own',
-            'leave.view_own',
+            'attendance.view',
+            'leave.view',
+            'leave.credits.view',
             'announcements.view',
-            'travel_order.file',
+            'travel_order.create',
         ]);
     }
 }

@@ -12,7 +12,7 @@ beforeEach(function () {
     $this->seed(RoleAndPermissionSeeder::class);
 
     $this->admin = User::factory()->create();
-    $this->admin->givePermissionTo('attendance.manage');
+    $this->admin->givePermissionTo('attendance.logs.view');
     $this->actingAs($this->admin);
 
     // Create a few users

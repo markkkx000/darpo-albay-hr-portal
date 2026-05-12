@@ -1,6 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
 import { Shield, Users } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import RolesRoutes from '@/routes/roles';
 
 export function RolesNavigation() {

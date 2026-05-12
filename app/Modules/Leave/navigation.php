@@ -7,6 +7,6 @@ return function (ModuleRegistry $registry) {
         'title' => 'Leave Tracking',
         'href' => '/leave',
         'icon' => 'CalendarClock',
-        'permission' => ['leave.access_module', 'leave.view_own'],
+        'permission' => ['leave.view'],
     ]);
 };

@@ -17,25 +17,8 @@ class UserRoleController extends Controller
 
     public function index(Request $request): Response
     {
-        $users = User::with('roles')
-            ->when($request->search, function ($query, $search) {
-                $keywords = explode(' ', $search);
-                foreach ($keywords as $keyword) {
-                    if (empty($keyword)) {
-                        continue;
-                    }
-                    $query->where(function ($q) use ($keyword) {
-                        $q->where('first_name', 'like', "%{$keyword}%")
-                            ->orWhere('last_name', 'like', "%{$keyword}%")
-                            ->orWhere('employee_number', 'like', "%{$keyword}%");
-                    });
-                }
-            })
-            ->paginate(15)
-            ->withQueryString();
-
         return Inertia::render('Modules/Roles/UserRolesIndex', [
-            'users' => $users,
+            'users' => $this->service->getPaginatedUsersWithRoles($request->search),
             'allUsers' => User::select(['id', 'first_name', 'last_name', 'employee_number'])->get(),
             'roles' => $this->service->getAssignableRoles(),
             'filters' => $request->only(['search']),

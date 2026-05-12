@@ -1,6 +1,7 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Plus, CalendarX } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { ViewActionButton, EditActionButton } from '@/components/ActionButtons';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import Heading from '@/components/heading';
 import { Pagination } from '@/components/Pagination';
@@ -14,7 +15,7 @@ import LeaveNavigation from './Components/LeaveNavigation';
 
 export default function LeaveDashboard({ leaves, allEmployees, leaveTypes, leaveStatuses, filters }: any) {
     const { auth } = usePage<any>().props;
-    const canEncode = auth.permissions.includes('leave.encode');
+    const canEncode = auth.permissions.includes('leave.manage');
 
     const [search, setSearch] = useState(filters?.search || '');
     const [viewMode, setViewMode] = useState(filters?.view || 'mine');
@@ -28,33 +29,33 @@ export default function LeaveDashboard({ leaves, allEmployees, leaveTypes, leave
     useEffect(() => {
         // Prevent initial mount request if params match
         const params: any = {};
-        
+
         if (debouncedSearch) {
-params.search = debouncedSearch;
-}
+            params.search = debouncedSearch;
+        }
 
         if (viewMode !== 'mine') {
-params.view = viewMode;
-}
+            params.view = viewMode;
+        }
 
         if (sort !== 'desc') {
-params.sort = sort;
-}
+            params.sort = sort;
+        }
 
         if (leaveType !== 'all') {
-params.leave_type_id = leaveType;
-}
+            params.leave_type_id = leaveType;
+        }
 
         if (status !== 'all') {
-params.status_id = status;
-}
+            params.status_id = status;
+        }
 
         if (approvedBy) {
-params.approved_by_id = approvedBy;
-}
+            params.approved_by_id = approvedBy;
+        }
 
         // Check if anything actually changed from current filters
-        const hasChanged = 
+        const hasChanged =
             params.search !== filters?.search ||
             (params.view || 'mine') !== (filters?.view || 'mine') ||
             (params.sort || 'desc') !== (filters?.sort || 'desc') ||
@@ -69,12 +70,12 @@ params.approved_by_id = approvedBy;
 
     const formatDate = (dateString: string) => {
         if (!dateString) {
-return '';
-}
+            return '';
+        }
 
         const date = new Date(dateString);
 
-        return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Manila' });
+        return date.toLocaleDateString('en-US', { timeZone: 'Asia/Manila' });
     };
 
     return (
@@ -102,7 +103,7 @@ return '';
                 <div className="matte-card elev-2 mb-6">
                     <div className="p-4 border-b bg-muted/20">
                         <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-                            
+
                             {/* View Toggle (Only for Encoders) */}
                             {canEncode ? (
                                 <div className="flex items-center space-x-1 rounded-full border border-border-1 bg-surface-2 p-1">
@@ -131,13 +132,13 @@ return '';
 
                             {/* Filters Container */}
                             <div className="flex flex-wrap items-center gap-2 flex-1 md:justify-end w-full">
-                                
+
                                 {viewMode === 'all' && (
                                     <>
                                         <div className="w-full md:w-64">
-                                            <EmployeeSearch 
-                                                users={allEmployees} 
-                                                selectedId={search} 
+                                            <EmployeeSearch
+                                                users={allEmployees}
+                                                selectedId={search}
                                                 onSelect={(val) => setSearch(val === 'all' ? '' : val)}
                                                 placeholder="Search Employee..."
                                                 returnValue="name"
@@ -146,9 +147,9 @@ return '';
                                         </div>
 
                                         <div className="w-full md:w-56">
-                                            <EmployeeSearch 
-                                                users={allEmployees} 
-                                                selectedId={approvedBy} 
+                                            <EmployeeSearch
+                                                users={allEmployees}
+                                                selectedId={approvedBy}
                                                 onSelect={(val) => setApprovedBy(val === 'all' ? '' : val)}
                                                 placeholder="Filter by Approver..."
                                                 returnValue="id"
@@ -201,17 +202,17 @@ return '';
                                     <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Employee</th>
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Leave Type</th>
-                                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Dates</th>
+                                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Dates (mm/dd/yyyy)</th>
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Days</th>
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Date Approved</th>
                                         <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Approver / Encoder</th>
-                                        {canEncode && <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</th>}
+                                        <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="[&_tr:last-child]:border-0">
                                     {leaves.data.map((leave: any) => (
-                                        <tr key={leave.id} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                        <tr key={leave.id} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted group">
                                             <td className="p-4 align-middle font-medium">
                                                 {leave.user?.first_name} {leave.user?.last_name}
                                                 <div className="text-xs text-muted-foreground">{leave.user?.employee_number}</div>
@@ -224,13 +225,21 @@ return '';
                                             </td>
                                             <td className="p-4 align-middle">
                                                 {leave.specific_dates && leave.specific_dates.length > 0 ? (
-                                                    <ul className="list-disc list-inside text-sm">
-                                                        {leave.specific_dates.map((d: string, i: number) => (
-                                                            <li key={i}>{formatDate(d)}</li>
-                                                        ))}
-                                                    </ul>
+                                                    leave.specific_dates.length === 1 ? (
+                                                        <span>{formatDate(leave.specific_dates[0])}</span>
+                                                    ) : (
+                                                        <ul className="list-disc list-inside text-sm">
+                                                            {leave.specific_dates.map((d: string, i: number) => (
+                                                                <li key={i}>{formatDate(d)}</li>
+                                                            ))}
+                                                        </ul>
+                                                    )
                                                 ) : (
-                                                    <span>{formatDate(leave.start_date)} to {formatDate(leave.end_date)}</span>
+                                                    <span>
+                                                        {leave.start_date === leave.end_date
+                                                            ? formatDate(leave.start_date)
+                                                            : `${formatDate(leave.start_date)} to ${formatDate(leave.end_date)}`}
+                                                    </span>
                                                 )}
                                             </td>
                                             <td className="p-4 align-middle">{leave.days_requested}</td>
@@ -250,13 +259,20 @@ return '';
                                                     <span className="font-semibold text-xs uppercase tracking-wider text-muted-foreground/70">Enc:</span> {leave.created_by?.first_name} {leave.created_by?.last_name}
                                                 </div>
                                             </td>
-                                            {canEncode && (
-                                                <td className="p-4 align-middle text-right">
-                                                    <Button variant="ghost" size="sm" asChild>
-                                                        <Link href={LeaveRoutes.edit({ leaveRequest: leave.id }).url}>Edit</Link>
-                                                    </Button>
-                                                </td>
-                                            )}
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex justify-end gap-2 sm:opacity-60 group-hover:opacity-100 transition-all duration-300">
+                                                    <ViewActionButton
+                                                        href={LeaveRoutes.show({ leaveRequest: leave.id }).url}
+                                                        title="View Details"
+                                                    />
+                                                    {canEncode && (
+                                                        <EditActionButton
+                                                            href={LeaveRoutes.edit({ leaveRequest: leave.id }).url}
+                                                            title="Edit Request"
+                                                        />
+                                                    )}
+                                                </div>
+                                            </td>
                                         </tr>
                                     ))}
                                     {leaves.data.length === 0 && (

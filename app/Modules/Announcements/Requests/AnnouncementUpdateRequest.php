@@ -20,11 +20,11 @@ class AnnouncementUpdateRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
             'priority' => ['required', Rule::in(['low', 'normal', 'high'])],
-            'target_type' => ['required', Rule::in(['all', 'department', 'position', 'user'])],
+            'target_type' => ['required', Rule::in(['all', 'division', 'position', 'user'])],
             'target_id' => [
                 'required_unless:target_type,all',
                 'nullable',
-                Rule::when($this->target_type === 'department', 'exists:departments,id'),
+                Rule::when($this->target_type === 'division', 'exists:divisions,id'),
                 Rule::when($this->target_type === 'position', 'exists:positions,id'),
                 Rule::when($this->target_type === 'user', 'exists:users,id'),
             ],

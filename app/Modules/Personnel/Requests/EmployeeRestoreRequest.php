@@ -8,7 +8,7 @@ class EmployeeRestoreRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('personnel.restore');
+        return $this->user()->can('personnel.manage');
     }
 
     public function rules(): array

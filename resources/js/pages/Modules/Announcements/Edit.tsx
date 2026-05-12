@@ -5,12 +5,12 @@ import { index, manage, update } from '@/routes/announcements';
 
 interface Props {
     announcement: any;
-    departments: any[];
+    divisions: any[];
     positions: any[];
     users: any[];
 }
 
-export default function Edit({ announcement, departments, positions, users }: Props) {
+export default function Edit({ announcement, divisions, positions, users }: Props) {
     return (
         <>
             <Head title={`Edit: ${announcement.title}`} />
@@ -34,7 +34,7 @@ export default function Edit({ announcement, departments, positions, users }: Pr
                             announcement={announcement}
                             submitUrl={update(announcement.id).url}
                             method="put"
-                            departments={departments}
+                            divisions={divisions}
                             positions={positions}
                             users={users}
                         />

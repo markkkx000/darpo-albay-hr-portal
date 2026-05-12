@@ -169,4 +169,8 @@ else
     echo -e "  Start App:      ${CYAN}composer run dev${NC}"
 fi
 
-echo -e "\n  Access the site at: ${BLUE}http://localhost${NC}\n"
+# Get APP_URL from .env
+APP_URL=$(grep '^APP_URL=' .env | cut -d '=' -f2- | sed -e 's/^"//' -e 's/"$//' | tr -d '\r')
+APP_URL=${APP_URL:-http://localhost}
+
+echo -e "\n  Access the site at: ${BLUE}${APP_URL}${NC}\n"

@@ -1,7 +1,8 @@
-import { Link, router } from '@inertiajs/react';
-import { Edit, Eye, RotateCcw, Trash2, User as UserIcon } from 'lucide-react';
+import { router } from '@inertiajs/react';
+import { User as UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { ViewActionButton, EditActionButton, DeleteActionButton, RestoreActionButton } from '@/components/ActionButtons';
 import { Pagination } from '@/components/Pagination';
 
 import { Button } from '@/components/ui/button';
@@ -22,7 +23,8 @@ interface User {
     first_name: string;
     last_name: string;
     email: string | null;
-    department?: { name: string };
+    division?: { name: string };
+    unit?: { name: string };
     position?: { name: string };
     employment_status?: { name: string };
     hire_date: string | null;
@@ -103,7 +105,7 @@ return 'N/A';
                         <thead className="text-[10px] text-muted-foreground uppercase bg-muted/40 font-bold tracking-widest border-b border-border/50">
                             <tr>
                                 <th className="px-6 py-4">Employee</th>
-                                <th className="px-6 py-4">Dept / Position</th>
+                                <th className="px-6 py-4">Div / Unit / Position</th>
                                 <th className="px-6 py-4">Status</th>
                                 <th className="px-6 py-4">Hire Date</th>
                                 {isArchivedView && <th className="px-6 py-4">Deleted At</th>}
@@ -140,8 +142,8 @@ return 'N/A';
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex flex-col">
-                                                <span className="font-semibold text-sm">{employee.department?.name || 'No Department'}</span>
-                                                <span className="text-[11px] text-muted-foreground">{employee.position?.name || 'No Position'}</span>
+                                                <span className="font-semibold text-sm">{employee.division?.name || 'No Division'}</span>
+                                                <span className="text-[11px] text-muted-foreground">{employee.unit?.name || 'No Unit'} &bull; {employee.position?.name || 'No Position'}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
@@ -183,50 +185,28 @@ return 'status-badge-casual';
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-end gap-2 sm:opacity-60 group-hover:opacity-100 transition-all duration-300">
                                                 {!isArchivedView && (
-                                                    <Button 
-                                                        size="sm" 
-                                                        asChild 
-                                                        className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
-                                                    >
-                                                        <Link
-                                                            href={showRoute({ user: employee.id }).url}
-                                                            title="View Profile"
-                                                            aria-label={`View profile for ${fullName(employee)}`}
-                                                        >
-                                                            <Eye className="h-4 w-4" />
-                                                        </Link>
-                                                    </Button>
+                                                    <ViewActionButton 
+                                                        href={showRoute({ user: employee.id }).url} 
+                                                        title={`View profile for ${fullName(employee)}`} 
+                                                    />
                                                 )}
                                                 
                                                 {canEdit && !isArchivedView && (
-                                                    <Button 
-                                                        size="sm" 
-                                                        asChild
-                                                        className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
-                                                    >
-                                                        <Link
-                                                            href={editRoute({ user: employee.id }).url}
-                                                            title="Edit Record"
-                                                            aria-label={`Edit record for ${fullName(employee)}`}
-                                                        >
-                                                            <Edit className="h-4 w-4" />
-                                                        </Link>
-                                                    </Button>
+                                                    <EditActionButton 
+                                                        href={editRoute({ user: employee.id }).url} 
+                                                        title={`Edit record for ${fullName(employee)}`} 
+                                                    />
                                                 )}
  
                                                 {canDelete && !isArchivedView && (
-                                                    <Button 
-                                                        size="sm" 
-                                                        onClick={() => setEmployeeToDelete(employee)}
-                                                        className="btn-ghost-danger-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
-                                                        title="Archive Record"
-                                                        aria-label={`Archive ${fullName(employee)}`}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
+                                                    <DeleteActionButton 
+                                                        onClick={() => setEmployeeToDelete(employee)} 
+                                                        title={`Archive ${fullName(employee)}`} 
+                                                    />
                                                 )}
  
                                                 {canRestore && isArchivedView && (
+<<<<<<< HEAD
                                                     <Button 
                                                         size="sm" 
                                                         onClick={() => setEmployeeToRestore(employee)}
@@ -236,6 +216,12 @@ return 'status-badge-casual';
                                                     >
                                                         <RotateCcw className="h-4 w-4" />
                                                     </Button>
+=======
+                                                    <RestoreActionButton 
+                                                        onClick={() => setEmployeeToRestore(employee)} 
+                                                        title={`Restore ${fullName(employee)}`} 
+                                                    />
+>>>>>>> main
                                                 )}
                                             </div>
                                         </td>

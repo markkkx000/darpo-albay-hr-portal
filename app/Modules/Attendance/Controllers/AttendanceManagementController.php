@@ -20,7 +20,7 @@ class AttendanceManagementController extends Controller
 
     public function index(Request $request)
     {
-        Gate::authorize('attendance.manage');
+        Gate::authorize('attendance.logs.view');
 
         return Inertia::render('Modules/Attendance/ManageRecords', [
             'records' => $this->attendanceService->getAllAttendance($request->all()),
@@ -45,7 +45,7 @@ class AttendanceManagementController extends Controller
 
     public function destroy(Attendance $attendance)
     {
-        Gate::authorize('attendance.delete');
+        Gate::authorize('attendance.logs.manage');
 
         $this->attendanceService->deleteRecord($attendance);
 

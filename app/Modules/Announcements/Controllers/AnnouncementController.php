@@ -9,7 +9,7 @@ use App\Modules\Announcements\Requests\AnnouncementCreateRequest;
 use App\Modules\Announcements\Requests\AnnouncementPublishRequest;
 use App\Modules\Announcements\Requests\AnnouncementUpdateRequest;
 use App\Modules\Announcements\Services\AnnouncementService;
-use App\Modules\Personnel\Models\Department;
+use App\Modules\Personnel\Models\Division;
 use App\Modules\Personnel\Models\Position;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -72,7 +72,7 @@ class AnnouncementController extends Controller
         abort_unless($request->user()->can('announcements.manage'), 403);
 
         return Inertia::render('Modules/Announcements/Create', [
-            'departments' => Department::all(['id', 'name']),
+            'divisions' => Division::all(['id', 'name']),
             'positions' => Position::all(['id', 'name']),
             'users' => User::select(['id', 'first_name', 'last_name'])->get()->map(fn ($u) => ['id' => $u->id, 'name' => $u->name]),
         ]);
@@ -99,7 +99,7 @@ class AnnouncementController extends Controller
 
         return Inertia::render('Modules/Announcements/Edit', [
             'announcement' => $announcement,
-            'departments' => Department::all(['id', 'name']),
+            'divisions' => Division::all(['id', 'name']),
             'positions' => Position::all(['id', 'name']),
             'users' => User::select(['id', 'first_name', 'last_name'])->get()->map(fn ($u) => ['id' => $u->id, 'name' => $u->name]),
         ]);
@@ -147,8 +147,8 @@ class AnnouncementController extends Controller
             return true;
         }
 
-        if ($announcement->target_type === 'department') {
-            return (int) $announcement->target_id === (int) $user->department_id;
+        if ($announcement->target_type === 'division') {
+            return (int) $announcement->target_id === (int) $user->division_id;
         }
 
         if ($announcement->target_type === 'position') {

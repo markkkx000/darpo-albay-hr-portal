@@ -5,12 +5,12 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
-    Permission::firstOrCreate(['name' => 'leave.access_module']);
-    Permission::firstOrCreate(['name' => 'leave.manage_settings']);
+    Permission::firstOrCreate(['name' => 'leave.view']);
+    Permission::firstOrCreate(['name' => 'leave.settings.manage']);
 
     $this->superAdmin = User::factory()->create();
     $superRole = Role::firstOrCreate(['name' => 'super_admin']);
-    $superRole->syncPermissions(['leave.access_module', 'leave.manage_settings']);
+    $superRole->syncPermissions(['leave.view', 'leave.settings.manage']);
     $this->superAdmin->assignRole($superRole);
 
     $this->employee = User::factory()->create();

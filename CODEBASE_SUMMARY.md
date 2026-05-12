@@ -9,6 +9,7 @@ This application is a **Laravel 13** backend with an **Inertia.js React** fronte
 
 ### Backend
 - `routes/web.php` — defines core auth routes and the dashboard route only. Module routes are never registered here.
+- `routes/settings.php` — handles user profile and security settings. Self-service account deletion is intentionally disabled to preserve historical HR data integrity.
 - `app/Core/Auth/Controllers/AuthController.php` — handles login/logout and role-based redirects.
 - `app/Core/Services/ModuleRegistry.php` — singleton that aggregates navigation items and module metadata from all active modules.
 - `app/Core/Services/NotificationService.php` — cross-cutting notification infrastructure. Any module can import this service to dispatch notifications. See Notifications Infrastructure below.
@@ -55,6 +56,7 @@ app/
     Leave/
     Notifications/               # Hybrid: UI module for core notification infrastructure
     Personnel/
+    Roles/                       # Role and permission management
   Notifications/                 # Laravel notification class
     GenericDatabaseNotification.php
   Observers/
@@ -73,6 +75,7 @@ resources/js/
       Leave/
       Notifications/             # Full paginated notification list
       Personnel/
+      Roles/                     # Role management pages
   components/
     dashboard/                   # AdminOverview, HROverview, EmployeeOverview, StatCard
     notifications/               # NotificationBell (global header bell icon + dropdown)
@@ -96,13 +99,13 @@ routes/
 ## Implemented Modules
 
 ### Announcements Module (`app/Modules/Announcements/`)
-- **Viewing**: All authenticated users with `announcements.view` see published announcements targeted to them (by department, position, individual, or "all") via `Index.tsx`.
+- **Viewing**: All authenticated users with `announcements.view` see published announcements targeted to them (by division, position, individual, or "all") via `Index.tsx`.
 - **Detail View**: `Show.tsx` renders a single announcement with rich HTML content (sanitized via DOMPurify). Unpublished announcements are only visible to users with `announcements.manage`.
 - **Management**: Users with `announcements.manage` access the management dashboard (`Manage.tsx`) via an in-module button (top-right of the index page, not via the sidebar). Supports draft/publish workflow.
-- **CRUD**: Full create, edit, publish, and soft delete. Rich text editor (Tiptap) with image and link support. Target audience selection (all, department, position, individual user).
+- **CRUD**: Full create, edit, publish, and soft delete. Rich text editor (Tiptap) with image and link support. Target audience selection (all, division, position, individual user).
 - **Form Requests**: `AnnouncementCreateRequest`, `AnnouncementUpdateRequest`, `AnnouncementPublishRequest` for validation.
 - **Service Layer**: `AnnouncementService` handles business logic: `getPublishedForUser()`, `getAllForHR()`, `create()`, `update()`, `publish()`, `delete()`.
-- **Permissions**: `announcements.view` (all roles except employee via sidebar; employee sees it too), `announcements.manage` (hr_staff, hr_admin, super_admin, department_head).
+- **Permissions**: `announcements.view` (all roles except employee via sidebar; employee sees it too), `announcements.manage` (hr_staff, hr_admin, super_admin, division_head).
 
 ### Attendance Module (`app/Modules/Attendance/`)
 - **Clock In/Out**: Server-side timestamp recording via `ClockInOut.tsx`. Three states: not clocked in, clocked in, completed.
@@ -110,7 +113,7 @@ routes/
 - **Record Management**: HR roles with `attendance.manage` can manually add missing records and edit clock-in/out timestamps via `ManageRecords.tsx` and `AttendanceRecordModal.tsx`. Management button is rendered in-module (top-right of ClockInOut page), not in the sidebar.
 - **Soft Delete**: HR admins and super admins with `attendance.delete` can soft delete records.
 - **Filtering & Search**: Server-side filtering by status (Working/Incomplete/Completed), date range, and full-text employee name search. 500ms debounce with instant Enter key trigger. Paginated via `paginate(15)`.
-- **Permissions**: `attendance.clock` (employee, hr_staff, hr_admin), `attendance.manage` (hr_staff, hr_admin, super_admin), `attendance.delete` (hr_admin, super_admin), `attendance.view_own` (employee, department_head) — allows viewing one's own attendance records only.
+- **Permissions**: `attendance.clock` (employee, hr_staff, hr_admin), `attendance.manage` (hr_staff, hr_admin, super_admin), `attendance.delete` (hr_admin, super_admin), `attendance.view_own` (employee, division_head) — allows viewing one's own attendance records only.
 
 ### Leave Tracking Module (`app/Modules/Leave/`)
 - **Dashboard** (`Index.tsx`): Paginated table of all leave requests with employee search (via `EmployeeSearch` component). Shows employee, leave type (with color dot), dates (specific or range), days requested, status badge, and who encoded it. "Encode" button to create new leave requests.
@@ -126,13 +129,21 @@ routes/
 - **Permissions**: `leave.access_module` (hr_staff, hr_admin, super_admin), `leave.encode` (hr_staff, hr_admin, super_admin), `leave.manage_tardiness` (hr_staff, hr_admin, super_admin), `leave.manage_credits` (hr_staff, hr_admin, super_admin), `leave.manage_settings` (hr_admin, super_admin).
 
 ### Personnel Directory Module (`app/Modules/Personnel/`)
-- **Employee CRUD**: Full create, read, update, soft delete, and restore via `EmployeeService`.
-- **Lookup Tables**: `departments`, `positions`, `employment_statuses` — all use `is_active` flag, never hard deleted.
-- **Dynamic Position Filtering**: Position dropdown filters by selected department in create/edit forms.
+- **Employee CRUD**: Full create, read, update, soft delete, and restore via `EmployeeService`. Extensive profile fields including Personal Information, Employment Details, Contact Information, and Government IDs/Credentials. Auto-calculates `age` based on birthdate.
+- **Lookup Tables**: `divisions`, `units`, `positions`, `employment_statuses` — all use `is_active` flag, never hard deleted. `units` and `positions` are hierarchically nested under a `division`.
+- **Organization Management**: Dedicated management dashboard for Divisions, Units, and Positions (`Organization/Index.tsx`).
+- **Dynamic Field Logic**: Position and Unit dropdowns filter by selected Division in create/edit forms. PRC Expiration is automatically enabled/disabled based on validation of a 7-digit PRC ID number.
 - **Soft Delete & Restoration**: Archived employees viewable by `hr_staff` (read-only). Restore restricted to `hr_admin` and `super_admin` via `/personnel/archived`.
-- **Search & Filtering**: By name, employee number, department, employment status. 500ms debounce with Enter key trigger.
+- **Search & Filtering**: By name, employee number, division, employment status. 500ms debounce with Enter key trigger.
 - **Permissions**: `personnel.view` (hr_staff, hr_admin, super_admin), `personnel.create`/`personnel.update` (hr_admin, super_admin), `personnel.delete` (super_admin only), `personnel.restore` (hr_admin, super_admin).
 - **Integration**: On employee creation, `EmployeeService` dispatches a high-priority non-dismissible "change default password" notification via `NotificationService`.
+
+### Roles & Permissions Module (`app/Modules/Roles/`)
+- **Role Management** (`RolesIndex.tsx`): Dashboard to view, create, update, and delete roles. Uses a paginated table.
+- **User Role Assignment** (`UserRolesIndex.tsx`): Dashboard to view users and assign them specific roles. Includes employee search and role assignment modal.
+- **Components**: `RoleModal.tsx` for creating/editing roles, `RoleAssignmentModal.tsx` for assigning roles to users, `RolesNavigation.tsx` for in-module tabs.
+- **Controllers**: `RoleController`, `UserRoleController`.
+- **Permissions**: Requires `roles.manage` (assigned to `super_admin`).
 
 ### Notifications Infrastructure (Hybrid: `app/Core/Services/` + `app/Modules/Notifications/`)
 This is **infrastructure, not a feature module**. It is a hybrid: the dispatch/management service lives in `app/Core/Services/NotificationService.php` (consumed by all modules), while the UI routes and pages live in `app/Modules/Notifications/` (auto-registered by `ModuleServiceProvider`). It has **no sidebar link** — no `navigation.php` file exists.
@@ -154,7 +165,7 @@ This is **infrastructure, not a feature module**. It is a hybrid: the dispatch/m
 | `super_admin` | Full system access, all modules, system settings, all permissions |
 | `hr_admin` | All HR modules, leave settings, attendance delete, personnel create/update/restore, announcements manage |
 | `hr_staff` | Read + limited write on HR modules (attendance manage, leave encode/credits/tardiness, personnel view, announcements manage) |
-| `department_head` | Clock in/out, view own attendance, announcements view/manage, travel order file |
+| `division_head` | Clock in/out, view own attendance, announcements view/manage, travel order file |
 | `employee` | Own records, clock in/out, announcements view, travel order file |
 
 ---
