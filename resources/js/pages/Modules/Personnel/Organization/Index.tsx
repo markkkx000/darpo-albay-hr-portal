@@ -163,13 +163,13 @@ export default function Index({ divisions }: Props) {
 
                 <Tabs defaultValue="divisions" className="w-full">
                     <TabsList className="grid w-full grid-cols-3 mb-6 bg-muted/40 p-1 rounded-xl">
-                        <TabsTrigger value="divisions" className="rounded-lg data-[state=active]:sidebar-active-gradient data-[state=active]:sidebar-active-text font-bold uppercase text-[10px] tracking-widest gap-2 py-2.5">
+                        <TabsTrigger value="divisions" className="rounded-lg data-[state=active]:item-hover-gradient font-bold uppercase text-[10px] tracking-widest gap-2 py-2.5 transition-all">
                             <Building2 className="h-4 w-4" /> Divisions
                         </TabsTrigger>
-                        <TabsTrigger value="units" className="rounded-lg data-[state=active]:sidebar-active-gradient data-[state=active]:sidebar-active-text font-bold uppercase text-[10px] tracking-widest gap-2 py-2.5">
+                        <TabsTrigger value="units" className="rounded-lg data-[state=active]:item-hover-gradient font-bold uppercase text-[10px] tracking-widest gap-2 py-2.5 transition-all">
                             <Building className="h-4 w-4" /> Units
                         </TabsTrigger>
-                        <TabsTrigger value="positions" className="rounded-lg data-[state=active]:sidebar-active-gradient data-[state=active]:sidebar-active-text font-bold uppercase text-[10px] tracking-widest gap-2 py-2.5">
+                        <TabsTrigger value="positions" className="rounded-lg data-[state=active]:item-hover-gradient font-bold uppercase text-[10px] tracking-widest gap-2 py-2.5 transition-all">
                             <Briefcase className="h-4 w-4" /> Positions
                         </TabsTrigger>
                     </TabsList>

@@ -56,22 +56,13 @@ export default function LeaveNavigation() {
                     >
                         {isActive && (
                             <span
-                                className="pointer-events-none absolute bottom-0 left-0 right-0 h-0.5 rounded-full"
-                                style={{ background: 'var(--grad-primary)' }}
+                                className="pointer-events-none absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-primary shadow-[0_0_8px_var(--green-glow)]"
                             />
                         )}
                         <Icon
-                            className="h-4 w-4"
-                            style={isActive ? { color: 'var(--color-primary)' } : {}}
+                            className={cn("h-4 w-4", isActive && "text-primary")}
                         />
-                        <span
-                            style={isActive ? {
-                                background: 'var(--grad-primary)',
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                                backgroundClip: 'text',
-                            } : {}}
-                        >
+                        <span className={cn(isActive && "tab-active-gradient-text")}>
                             {tab.name}
                         </span>
                     </Link>

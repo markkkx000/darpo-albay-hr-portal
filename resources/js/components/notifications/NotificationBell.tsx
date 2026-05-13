@@ -97,8 +97,8 @@ export default function NotificationBell() {
                             <div
                                 key={notification.id}
                                 className={cn(
-                                    "flex flex-col border-b border-sidebar-border/30 p-4 transition-all duration-200 cursor-pointer mx-1.5 my-1 rounded-xl group",
-                                    !notification.read_at ? "bg-primary/[0.03] hover:item-hover-gradient" : "hover:item-hover-gradient"
+                                    "flex flex-col border-b border-sidebar-border/30 p-4 transition-all duration-200 cursor-pointer mx-1.5 my-1 rounded-xl group hover:bg-black/5 dark:hover:bg-white/5 active:scale-[0.99]",
+                                    !notification.read_at ? "bg-primary/[0.05]" : ""
                                 )}
                                 onClick={(e) => toggleExpand(notification.id, e)}
                             >
@@ -106,33 +106,33 @@ export default function NotificationBell() {
                                     <div className="flex-1 space-y-1">
                                         <div className="flex items-center gap-2">
                                             <span className={cn(
-                                                "text-sm font-medium leading-tight group-hover:text-black",
+                                                "text-sm font-medium leading-tight",
                                                 notification.data.priority === 'high' ? "text-destructive" : "text-foreground",
                                                 !notification.read_at && "font-bold"
                                             )}>
                                                 {notification.data.title}
                                             </span>
                                             {notification.data.priority === 'high' && (
-                                                <Badge variant="outline" className="flex h-[15px] items-center justify-center border-destructive px-1.5 py-0 text-[9px] font-bold uppercase tracking-wider text-destructive group-hover:border-black group-hover:text-black">High</Badge>
+                                                <Badge variant="outline" className="flex h-[15px] items-center justify-center border-destructive px-1.5 py-0 text-[9px] font-bold uppercase tracking-wider text-destructive">High</Badge>
                                             )}
                                             {!notification.read_at && (
-                                                <span className="flex h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_8px_var(--green-glow)] group-hover:bg-white group-hover:shadow-none" />
+                                                <span className="flex h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_8px_var(--green-glow)]" />
                                             )}
                                         </div>
-                                        <div className="text-[11px] text-muted-foreground flex items-center gap-1.5 group-hover:text-black/70">
-                                            <span className="font-medium text-foreground/70 group-hover:text-black/90">{notification.data.from}</span>
+                                        <div className="text-[11px] text-muted-foreground flex items-center gap-1.5">
+                                            <span className="font-medium text-foreground/70">{notification.data.from}</span>
                                             <span>•</span>
                                             <span>{new Date(notification.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                                         </div>
                                     </div>
                                     <div className="flex items-center">
-                                        <div className="flex h-7 w-7 items-center justify-center text-muted-foreground/50 group-hover:text-black/60">
+                                        <div className="flex h-7 w-7 items-center justify-center text-muted-foreground/50">
                                             {expandedIds.has(notification.id) ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                                         </div>
                                     </div>
                                 </div>
                                 {expandedIds.has(notification.id) && (
-                                    <div className="mt-3 text-xs text-foreground/80 leading-relaxed animate-in slide-in-from-top-1 duration-200 group-hover:text-black/90">
+                                    <div className="mt-3 text-xs text-foreground/80 leading-relaxed animate-in slide-in-from-top-1 duration-200">
                                         {(() => {
                                             const body = notification.data.body ?? notification.data.message ?? '';
                                             const isHtml = /<[a-z][\s\S]*>/i.test(body);
@@ -143,7 +143,7 @@ export default function NotificationBell() {
                                                 >
                                                     {isHtml ? (
                                                         <div
-                                                            className="prose prose-xs dark:prose-invert max-w-none [&_p]:my-0.5 [&_li]:my-0 [&_ul]:my-1 [&_ol]:my-1 [&_blockquote]:my-1 [&_img]:hidden group-hover:[&_a]:text-black"
+                                                            className="prose prose-xs dark:prose-invert max-w-none [&_p]:my-0.5 [&_li]:my-0 [&_ul]:my-1 [&_ol]:my-1 [&_blockquote]:my-1 [&_img]:hidden"
                                                             dangerouslySetInnerHTML={{ __html: body }}
                                                         />
                                                     ) : (
@@ -156,7 +156,7 @@ export default function NotificationBell() {
                                             <div className="mt-3">
                                                 <Link
                                                     href={notification.data.url}
-                                                    className="inline-flex items-center text-[11px] font-semibold text-primary hover:underline gap-1 group/link group-hover:text-white"
+                                                    className="inline-flex items-center text-[11px] font-semibold text-primary hover:underline gap-1 group/link"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
 
