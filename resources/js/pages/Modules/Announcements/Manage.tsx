@@ -1,10 +1,10 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { 
-    Plus, 
-    Edit2, 
-    Trash2, 
-    Send, 
-    Eye, 
+import {
+    Plus,
+    Edit2,
+    Trash2,
+    Send,
+    Eye,
     MoreHorizontal,
     Megaphone,
     Calendar,
@@ -13,7 +13,6 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Pagination } from '@/components/Pagination';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -24,18 +23,18 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { 
-    DropdownMenu, 
-    DropdownMenuContent, 
-    DropdownMenuItem, 
-    DropdownMenuTrigger 
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { cn, formatDate } from '@/lib/utils';
-import { 
-    create, 
-    edit, 
-    show, 
-    publish, 
+import {
+    create,
+    edit,
+    show,
+    publish,
     destroy,
     index,
 } from '@/routes/announcements';
@@ -160,25 +159,25 @@ export default function Manage({ announcements }: Props) {
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
-                                                    <span 
+                                                    <span
                                                         className={cn(
                                                             "capitalize font-bold text-[10px] px-3 py-1 rounded-full tracking-wider",
-                                                            announcement.status === 'published' 
-                                                                ? "status-badge-permanent shadow-[0_0_15px_rgba(34,197,94,0.3)] animate-pulse" 
+                                                            announcement.status === 'published'
+                                                                ? "status-badge-permanent shadow-[0_0_15px_rgba(34,197,94,0.3)] animate-pulse"
                                                                 : "status-badge-unknown opacity-80"
                                                         )}
                                                     >
                                                         {announcement.status}
                                                     </span>
                                                 </td>
-                                                 <td className="px-6 py-4 text-center">
+                                                <td className="px-6 py-4 text-center">
                                                     <span className={cn(
                                                         "uppercase font-bold text-[10px] px-3 py-0.5 rounded-full tracking-wider",
                                                         announcement.priority === 'high'
                                                             ? 'status-badge-danger animate-pulse'
                                                             : announcement.priority === 'low'
-                                                            ? 'status-badge-unknown'
-                                                            : 'status-badge-permanent'
+                                                                ? 'status-badge-unknown'
+                                                                : 'status-badge-permanent'
                                                     )}>
                                                         {announcement.priority}
                                                     </span>
@@ -199,7 +198,7 @@ export default function Manage({ announcements }: Props) {
                                                                     <Eye className="h-4 w-4" /> View
                                                                 </Link>
                                                             </DropdownMenuItem>
-                                                            
+
                                                             {announcement.status === 'draft' && (
                                                                 <>
                                                                     <DropdownMenuItem asChild>
@@ -212,7 +211,7 @@ export default function Manage({ announcements }: Props) {
                                                                     </DropdownMenuItem>
                                                                 </>
                                                             )}
-                                                            
+
                                                             <DropdownMenuItem onClick={() => setAnnouncementToDelete(announcement)} className="gap-2 text-destructive">
                                                                 <Trash2 className="h-4 w-4" /> Delete
                                                             </DropdownMenuItem>

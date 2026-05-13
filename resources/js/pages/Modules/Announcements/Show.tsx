@@ -1,7 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import DOMPurify from 'dompurify';
 import { ArrowLeft, Calendar, User, Megaphone } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn, formatDate } from '@/lib/utils';
@@ -40,7 +39,7 @@ export default function Show({ announcement }: Props) {
                                 </div>
                                 <span className="text-primary font-bold uppercase tracking-widest text-xs">Announcement</span>
                             </div>
-                            
+
                             <CardTitle className="text-3xl font-bold tracking-tight">
                                 {announcement.title}
                             </CardTitle>
@@ -73,8 +72,8 @@ export default function Show({ announcement }: Props) {
                                     announcement.priority === 'high'
                                         ? 'status-badge-danger animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.3)]'
                                         : announcement.priority === 'low'
-                                        ? 'status-badge-unknown'
-                                        : 'status-badge-permanent'
+                                            ? 'status-badge-unknown'
+                                            : 'status-badge-permanent'
                                 )}>
                                     {announcement.priority}
                                 </span>

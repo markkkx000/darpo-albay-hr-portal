@@ -2,7 +2,6 @@ import { Head, router } from '@inertiajs/react';
 import { Plus, Edit, Building2, Building, Briefcase } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -16,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 import { index as personnelIndexRoute } from '@/routes/personnel';
 import organizationRoutes from '@/routes/personnel/organization';
 

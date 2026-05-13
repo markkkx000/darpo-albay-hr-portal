@@ -1,8 +1,8 @@
 import { Head, Link, usePage, router } from '@inertiajs/react';
 import { Plus, Search, Archive } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
-import { EmployeeTable } from '@/components/Personnel/EmployeeTable';
 import Heading from '@/components/heading';
+import { EmployeeTable } from '@/components/Personnel/EmployeeTable';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
