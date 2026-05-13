@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder
 
         $stod = Division::where('name', 'Support To Operations Division (STOD)')->first();
         $permanent = EmploymentStatus::where('name', 'Permanent')->first();
-        $adminPosition = Position::where('name', 'PCAO / Administrative Officer')->where('division_id', $stod->id)->first();
-        $staffPosition = Position::where('name', 'Admin staff')->where('division_id', $stod->id)->first();
+        $adminPosition = Position::where('name', 'Provincial Chief Administrative Officer')->where('division_id', $stod->id)->first();
+        $staffPosition = Position::where('name', 'HR Staff')->where('division_id', $stod->id)->first();
 
         // Create a Super Admin (no employee number, uses email login)
         $superAdmin = User::updateOrCreate(
@@ -92,7 +92,7 @@ class DatabaseSeeder extends Seeder
             $divisions = Division::all();
             $employmentStatuses = EmploymentStatus::all();
 
-            User::factory()->count(30)->create()->each(function ($u) use ($divisions, $employmentStatuses) {
+            User::factory()->count(30)->create()->each(function (User $u) use ($divisions, $employmentStatuses) {
                 $div = $divisions->random();
                 $pos = Position::where('division_id', $div->id)->first();
 
