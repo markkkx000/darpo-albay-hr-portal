@@ -2,6 +2,7 @@ import { Head, Link, usePage, router } from '@inertiajs/react';
 import { Plus, Search, Archive } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { EmployeeTable } from '@/components/Personnel/EmployeeTable';
+import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -92,12 +93,12 @@ export default function Index({ employees, filters, divisions = [], employmentSt
 
             <div className="p-4 w-full">
                 <div className="matte-card elev-2 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 rounded-2xl">
-                    <div className="flex items-center gap-3">
-                        <h1 className="t-headline">Personnel Directory</h1>
-                        <p className="text-muted-foreground text-sm mt-2">
-                            Manage and view all employee records across the agency.
-                        </p>
-                    </div>
+                    <Heading
+                        title="Personnel Directory"
+                        description="Manage and view all employee records across the agency."
+                        as="h1"
+                        variant="small"
+                    />
                     <div className="flex items-center gap-3">
                         <Button asChild className="btn-ghost-specular gap-2 border-none">
                             <Link href={archivedRoute().url}>

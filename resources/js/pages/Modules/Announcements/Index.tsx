@@ -30,19 +30,19 @@ export default function Index({ announcements }: Props) {
                         description="Stay updated with the latest news and information from the HR and management."
                     />
                     {canManage && (
-                        <Link href={manage().url}>
-                            <Button>
+                        <Button asChild className="btn-ghost-specular border-none px-6">
+                            <Link href={manage().url}>
                                 <Settings className="mr-2 h-4 w-4" />
                                 Manage Announcements
-                            </Button>
-                        </Link>
+                            </Link>
+                        </Button>
                     )}
                 </div>
 
                 {announcements.data.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
-                        <div className="p-4 rounded-full bg-muted">
-                            <Megaphone className="h-12 w-12 text-muted-foreground" />
+                        <div className="sqicon sqicon-green h-16 w-16 mx-auto">
+                            <Megaphone className="h-7 w-7" />
                         </div>
                         <div className="space-y-1">
                             <h3 className="t-headline">No announcements yet</h3>

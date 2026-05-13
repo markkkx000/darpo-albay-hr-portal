@@ -129,12 +129,12 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                     {/* Holidays */}
                     <div className="matte-card elev-2">
                         <div className="p-6">
-                            <h2 className="text-xl font-semibold mb-4">Holidays ({year})</h2>
+                            <h2 className="t-headline mb-4">Holidays ({year})</h2>
                             
-                            <div className="mb-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-4 rounded-xl">
-                                <p className="text-sm text-amber-800 dark:text-amber-200">
-                                    <strong>Official Reference:</strong> Please verify dates with the 
-                                    <a href="https://www.officialgazette.gov.ph/nationwide-holidays/" target="_blank" rel="noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline ml-1">
+                            <div className="mb-4 matte-card elev-1 border border-border-2 p-4 rounded-xl">
+                                <p className="text-sm text-muted-foreground">
+                                    <strong className="text-foreground">Official Reference:</strong> Please verify dates with the
+                                    <a href="https://www.officialgazette.gov.ph/nationwide-holidays/" target="_blank" rel="noreferrer" className="text-primary hover:underline ml-1">
                                         Official List of Regular Holidays and Special Non-Working Days
                                     </a>.
                                 </p>
@@ -147,7 +147,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                     onChange={(e) => setYear(Number(e.target.value))} 
                                     className="w-32"
                                 />
-                                <Button variant="ghost" className="btn-ghost-specular" onClick={() => router.get(settings().url, { year })}>
+                                <Button variant="ghost" className="btn-ghost-specular border-none" onClick={() => router.get(settings().url, { year })}>
                                     Filter Year
                                 </Button>
                             </div>
@@ -161,7 +161,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                     <Label>Name</Label>
                                     <Input type="text" value={holidayName} onChange={e => setHolidayName(e.target.value)} required />
                                 </div>
-                                <Button type="submit">Add</Button>
+                                <Button type="submit" className="btn-specular px-5">Add</Button>
                             </form>
 
                             <div className="space-y-2">
@@ -171,7 +171,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                             <span className="font-medium block">{h.name}</span>
                                             <span className="text-sm text-muted-foreground">{h.date}</span>
                                         </div>
-                                        <Button variant="destructive" size="sm" onClick={() => handleDeleteHoliday(h.id)}>
+                                        <Button className="btn-ghost-danger-specular border-none px-4" size="sm" onClick={() => handleDeleteHoliday(h.id)}>
                                             Delete
                                         </Button>
                                     </div>
@@ -186,7 +186,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                     <div className="space-y-6">
                         <div className="matte-card elev-2">
                             <div className="p-6">
-                                <h2 className="text-xl font-semibold mb-4">Leave Types</h2>
+                                <h2 className="t-headline mb-4">Leave Types</h2>
                                 
                                 <form onSubmit={handleAddType} className="space-y-3 mb-6 p-4 matte-card elev-1 bg-muted/30">
                                     <div className="grid grid-cols-2 gap-3">
@@ -206,7 +206,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                         <Label>Description (Optional)</Label>
                                         <Input value={typeDescription} onChange={e => setTypeDescription(e.target.value)} placeholder="Short description..." />
                                     </div>
-                                    <Button type="submit" className="w-full">
+                                    <Button type="submit" className="btn-specular w-full">
                                         <Plus className="mr-2 h-4 w-4" /> Add Leave Type
                                     </Button>
                                 </form>
@@ -221,11 +221,11 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                                     {t.description && <span className="text-xs text-muted-foreground">{t.description}</span>}
                                                 </div>
                                             </div>
-                                            <Button 
-                                                variant="ghost" 
-                                                size="sm" 
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
                                                 onClick={() => handleToggleType(t)}
-                                                className={t.is_active ? "text-red-500 hover:text-red-600 hover:bg-red-50" : "text-green-500 hover:text-green-600 hover:bg-green-50"}
+                                                className={t.is_active ? 'btn-ghost-danger-specular border-none' : 'btn-ghost-specular border-none'}
                                             >
                                                 {t.is_active ? <PowerOff className="h-4 w-4" /> : <Power className="h-4 w-4" />}
                                             </Button>
@@ -237,14 +237,14 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
 
                         <div className="matte-card elev-2">
                             <div className="p-6">
-                                <h2 className="text-xl font-semibold mb-4">Leave Statuses</h2>
+                                <h2 className="t-headline mb-4">Leave Statuses</h2>
                                 
                                 <form onSubmit={handleAddStatus} className="flex space-x-2 mb-6 items-end">
                                     <div className="space-y-1 flex-1">
                                         <Label>Status Name</Label>
                                         <Input value={statusName} onChange={e => setStatusName(e.target.value)} placeholder="e.g. Approved" required />
                                     </div>
-                                    <Button type="submit">
+                                    <Button type="submit" className="btn-specular px-5">
                                         <Plus className="h-4 w-4" />
                                     </Button>
                                 </form>
@@ -253,11 +253,11 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                     {leaveStatuses.map((s: any) => (
                                         <div key={s.id} className={cn("flex items-center justify-between p-3 matte-card elev-1", !s.is_active && "opacity-50 grayscale bg-muted")}>
                                             <span className="font-medium">{s.name}</span>
-                                            <Button 
-                                                variant="ghost" 
-                                                size="sm" 
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
                                                 onClick={() => handleToggleStatus(s)}
-                                                className={s.is_active ? "text-red-500 hover:text-red-600 hover:bg-red-50" : "text-green-500 hover:text-green-600 hover:bg-green-50"}
+                                                className={s.is_active ? 'btn-ghost-danger-specular border-none' : 'btn-ghost-specular border-none'}
                                             >
                                                 {s.is_active ? <PowerOff className="h-4 w-4" /> : <Power className="h-4 w-4" />}
                                             </Button>

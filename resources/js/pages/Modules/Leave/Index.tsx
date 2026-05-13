@@ -5,7 +5,6 @@ import { ViewActionButton, EditActionButton } from '@/components/ActionButtons';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import Heading from '@/components/heading';
 import { Pagination } from '@/components/Pagination';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useDebounce } from '@/hooks/use-debounce';
@@ -158,45 +157,51 @@ export default function LeaveDashboard({ leaves, allEmployees, leaveTypes, leave
                                     </>
                                 )}
 
-                                <Select value={leaveType} onValueChange={setLeaveType}>
-                                    <SelectTrigger className="w-[140px]">
-                                        <div className="truncate text-left flex-1">
-                                            <SelectValue placeholder="Leave Type" />
-                                        </div>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Types</SelectItem>
-                                        {leaveTypes?.map((t: any) => (
-                                            <SelectItem key={t.id} value={t.id.toString()}>{t.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <div className="w-[140px]">
+                                    <Select value={leaveType} onValueChange={setLeaveType}>
+                                        <SelectTrigger className="w-full">
+                                            <div className="truncate text-left flex-1">
+                                                <SelectValue placeholder="Leave Type" />
+                                            </div>
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">All Types</SelectItem>
+                                            {leaveTypes?.map((t: any) => (
+                                                <SelectItem key={t.id} value={t.id.toString()}>{t.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
 
-                                <Select value={status} onValueChange={setStatus}>
-                                    <SelectTrigger className="w-[140px]">
-                                        <div className="truncate text-left flex-1">
-                                            <SelectValue placeholder="Status" />
-                                        </div>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Statuses</SelectItem>
-                                        {leaveStatuses?.map((s: any) => (
-                                            <SelectItem key={s.id} value={s.id.toString()}>{s.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <div className="w-[140px]">
+                                    <Select value={status} onValueChange={setStatus}>
+                                        <SelectTrigger className="w-full">
+                                            <div className="truncate text-left flex-1">
+                                                <SelectValue placeholder="Status" />
+                                            </div>
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">All Statuses</SelectItem>
+                                            {leaveStatuses?.map((s: any) => (
+                                                <SelectItem key={s.id} value={s.id.toString()}>{s.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
 
-                                <Select value={sort} onValueChange={setSort}>
-                                    <SelectTrigger className="w-[140px]">
-                                        <div className="truncate text-left flex-1">
-                                            <SelectValue placeholder="Sort" />
-                                        </div>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="desc">Most Recent</SelectItem>
-                                        <SelectItem value="asc">Oldest</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <div className="w-[140px]">
+                                    <Select value={sort} onValueChange={setSort}>
+                                        <SelectTrigger className="w-full">
+                                            <div className="truncate text-left flex-1">
+                                                <SelectValue placeholder="Sort" />
+                                            </div>
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="desc">Most Recent</SelectItem>
+                                            <SelectItem value="asc">Oldest</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
 
                         </div>
@@ -204,16 +209,16 @@ export default function LeaveDashboard({ leaves, allEmployees, leaveTypes, leave
                     <div className="p-0">
                         <div className="relative w-full overflow-auto">
                             <table className="w-full caption-bottom text-sm">
-                                <thead className="[&_tr]:border-b">
-                                    <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Employee</th>
-                                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Leave Type</th>
-                                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Dates (mm/dd/yyyy)</th>
-                                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Days</th>
-                                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
-                                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Date Approved</th>
-                                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Approver / Encoder</th>
-                                        <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</th>
+                                <thead className="text-[10px] text-muted-foreground uppercase bg-muted/40 font-bold tracking-widest border-b border-border/50">
+                                    <tr>
+                                        <th className="px-4 py-4 text-left">Employee</th>
+                                        <th className="px-4 py-4 text-left">Leave Type</th>
+                                        <th className="px-4 py-4 text-left">Dates (mm/dd/yyyy)</th>
+                                        <th className="px-4 py-4 text-left">Days</th>
+                                        <th className="px-4 py-4 text-left">Status</th>
+                                        <th className="px-4 py-4 text-left">Date Approved</th>
+                                        <th className="px-4 py-4 text-left">Approver / Encoder</th>
+                                        <th className="px-4 py-4 text-right">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="[&_tr:last-child]:border-0">
@@ -250,9 +255,28 @@ export default function LeaveDashboard({ leaves, allEmployees, leaveTypes, leave
                                             </td>
                                             <td className="p-4 align-middle">{leave.days_requested}</td>
                                             <td className="p-4 align-middle">
-                                                <Badge variant="secondary">
+                                                <span className={cn(
+                                                    'inline-flex items-center rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wide shadow-sm',
+                                                    (() => {
+                                                        const name = (leave.leave_status?.name || '').toLowerCase();
+
+                                                        if (name.includes('approv')) {
+                                                            return 'status-badge-permanent';
+                                                        }
+
+                                                        if (name.includes('pend') || name.includes('review') || name.includes('process')) {
+                                                            return 'status-badge-contractual';
+                                                        }
+
+                                                        if (name.includes('reject') || name.includes('disapprov') || name.includes('cancel') || name.includes('denied')) {
+                                                            return 'bg-destructive text-destructive-foreground';
+                                                        }
+
+                                                        return 'badge-premium';
+                                                    })()
+                                                )}>
                                                     {leave.leave_status?.name}
-                                                </Badge>
+                                                </span>
                                             </td>
                                             <td className="p-4 align-middle text-sm">
                                                 {leave.date_approved ? formatDate(leave.date_approved) : <span className="text-muted-foreground italic">Pending</span>}
@@ -295,7 +319,7 @@ export default function LeaveDashboard({ leaves, allEmployees, leaveTypes, leave
                             </table>
                         </div>
                         {leaves.data.length > 0 && (
-                            <div className="p-4 border-t">
+                            <div className="p-4 border-t border-border/40">
                                 <Pagination links={leaves.links} meta={leaves} />
                             </div>
                         )}
