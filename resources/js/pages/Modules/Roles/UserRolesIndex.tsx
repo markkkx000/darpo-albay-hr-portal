@@ -75,7 +75,7 @@ export default function UserRolesIndex({ users, allUsers, roles, filters }: Prop
 
             <div className="p-4 w-full">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                    <Heading 
+                    <Heading
                         title="User Role Assignments"
                         description="Assign primary roles to individual user accounts."
                     />
@@ -114,8 +114,8 @@ export default function UserRolesIndex({ users, allUsers, roles, filters }: Prop
                                             </td>
                                             <td className="px-6 py-4">
                                                 {user.roles && user.roles.length > 0 ? (
-                                                    <Badge 
-                                                        variant="secondary" 
+                                                    <Badge
+                                                        variant="secondary"
                                                         className={cn(
                                                             "capitalize gap-1 px-3 py-1 text-[10px] rounded-full border-none shadow-sm",
                                                             `badge-${user.roles[0].name.replaceAll('_', '-')}`

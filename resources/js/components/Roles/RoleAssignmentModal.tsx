@@ -131,9 +131,7 @@ export function RoleAssignmentModal({ open, onOpenChange, user, roles, onSuccess
                             <Alert className="border-border/50 bg-muted/50">
                                 <AlertCircle className="h-4 w-4 text-muted-foreground" />
                                 <AlertDescription className="text-muted-foreground text-xs">
-                                    <strong>Reassignment Confirmation:</strong> This will replace the user's current role of{' '}
-                                    <span className="font-bold capitalize">{currentRole.replaceAll('_', ' ')}</span> with{' '}
-                                    <span className="font-bold capitalize">{data.role ? data.role.replaceAll('_', ' ') : '...'}</span>.
+                                    <p><strong>Reassignment Confirmation:</strong> This will replace the user's current role of <span className="font-bold capitalize">{currentRole.replaceAll('_', ' ')}</span> with <span className="font-bold capitalize">{data.role ? data.role.replaceAll('_', ' ') : '...'}</span>.</p>
                                 </AlertDescription>
                             </Alert>
                         </div>
