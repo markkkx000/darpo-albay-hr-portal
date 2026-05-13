@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Pagination } from '@/components/Pagination';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import LeaveRoutes from '@/routes/leave';
@@ -66,13 +67,14 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
 
         return (
             <div className="flex items-center justify-center space-x-3">
-                <button
-                    type="button"
+                <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => updateValue(localValue - 1)}
-                    className="w-9 h-9 flex items-center justify-center rounded-full bg-secondary hover:bg-secondary/80 border border-border transition-all active:scale-95 shadow-sm"
+                    className="btn-ghost-specular h-9 w-9 rounded-full border-none shadow-sm"
                 >
                     <Minus className="h-4 w-4" />
-                </button>
+                </Button>
                 <Input
                     type="text"
                     inputMode="numeric"
@@ -80,13 +82,14 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
                     value={localValue}
                     onChange={(e) => updateValue(parseInt(e.target.value.replace(/\D/g, '')) || 0)}
                 />
-                <button
-                    type="button"
+                <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => updateValue(localValue + 1)}
-                    className="w-9 h-9 flex items-center justify-center rounded-full bg-secondary hover:bg-secondary/80 border border-border transition-all active:scale-95 shadow-sm"
+                    className="btn-ghost-specular h-9 w-9 rounded-full border-none shadow-sm"
                 >
                     <Plus className="h-4 w-4" />
-                </button>
+                </Button>
             </div>
         );
     };
