@@ -200,7 +200,7 @@ return [];
                                                         variant="ghost"
                                                         size="sm"
                                                         onClick={() => handleViewDetails(user)}
-                                                        className="rounded-full hover:bg-primary/10 hover:text-primary font-bold group/btn text-xs"
+                                                        className="btn-ghost-specular rounded-full font-bold group/btn text-xs border-none"
                                                     >
                                                         View All
                                                         <ChevronRight className="ml-1 h-3 w-3 transition-transform group-hover/btn:translate-x-1" />

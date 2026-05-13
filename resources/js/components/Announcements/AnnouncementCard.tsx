@@ -82,7 +82,7 @@ export function AnnouncementCard({ announcement, defaultExpanded = false }: Prop
                     </div>
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                    <Button variant="ghost" size="icon" className="shrink-0 rounded-full hover:bg-primary/10 hover:text-primary">
+                    <Button variant="ghost" size="icon" className="btn-ghost-specular shrink-0 rounded-full border-none">
                         {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
                     </Button>
                 </div>

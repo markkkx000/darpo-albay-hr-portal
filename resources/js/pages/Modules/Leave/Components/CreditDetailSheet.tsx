@@ -68,26 +68,26 @@ export default function CreditDetailSheet({
                             return (
                                 <div
                                     key={type.id}
-                                    className="p-4 rounded-2xl border border-border/50 bg-surface-1 shadow-sm transition-all hover:shadow-md"
+                                    className="matte-card elev-2 p-5 rounded-2xl border-none space-y-4"
                                 >
-                                    <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                             <div
-                                                className="h-3 w-3 rounded-full shadow-sm"
+                                                className="h-3 w-3 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.2)]"
                                                 style={{ backgroundColor: type.color_code || '#cbd5e1' }}
                                             />
-                                            <span className="font-bold text-base">{type.name}</span>
+                                            <span className="font-bold text-lg tracking-tight">{type.name}</span>
                                         </div>
                                         <Button
                                             variant="ghost"
                                             size="sm"
                                             onClick={() => setEditingTypeId(isEditing ? null : type.id)}
-                                            className="h-8 w-8 p-0 rounded-full hover:bg-muted"
+                                            className="h-8 w-8 p-0 rounded-full btn-ghost-specular border-none"
                                         >
                                             {isEditing ? (
                                                 <X className="h-4 w-4" />
                                             ) : (
-                                                <Edit2 className="h-4 w-4 text-muted-foreground" />
+                                                <Edit2 className="h-4 w-4" />
                                             )}
                                         </Button>
                                     </div>
@@ -102,18 +102,24 @@ export default function CreditDetailSheet({
                                             onSuccess={() => setEditingTypeId(null)}
                                         />
                                     ) : (
-                                        <div className="grid grid-cols-3 gap-2">
-                                            <div className="flex flex-col items-center p-2 rounded-xl bg-primary/5 border border-primary/10">
-                                                <span className="text-[10px] uppercase font-bold text-primary/70 tracking-tighter">Available</span>
-                                                <span className="text-lg font-black text-primary">{balance.toFixed(3)}</span>
+                                        <div className="grid grid-cols-3 gap-3">
+                                            <div className="flex flex-col items-center gap-1 p-3 rounded-2xl bg-muted/20 border border-muted/10">
+                                                <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Available</span>
+                                                <span className="status-badge-casual px-3 py-1 rounded-full text-sm shadow-lg">
+                                                    {balance.toFixed(3)}
+                                                </span>
                                             </div>
-                                            <div className="flex flex-col items-center p-2 rounded-xl bg-orange-500/5 border border-orange-500/10">
-                                                <span className="text-[10px] uppercase font-bold text-orange-600/70 tracking-tighter">Used</span>
-                                                <span className="text-lg font-black text-orange-600">{used.toFixed(3)}</span>
+                                            <div className="flex flex-col items-center gap-1 p-3 rounded-2xl bg-muted/20 border border-muted/10">
+                                                <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Used</span>
+                                                <span className="status-badge-warning px-3 py-1 rounded-full text-sm shadow-lg">
+                                                    {used.toFixed(3)}
+                                                </span>
                                             </div>
-                                            <div className="flex flex-col items-center p-2 rounded-xl bg-muted/30 border border-border/50">
-                                                <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-tighter">Total</span>
-                                                <span className="text-lg font-black">{total.toFixed(3)}</span>
+                                            <div className="flex flex-col items-center gap-1 p-3 rounded-2xl bg-muted/20 border border-muted/10">
+                                                <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Total</span>
+                                                <span className="status-badge-unknown px-3 py-1 rounded-full text-sm shadow-lg">
+                                                    {total.toFixed(3)}
+                                                </span>
                                             </div>
                                         </div>
                                     )}
