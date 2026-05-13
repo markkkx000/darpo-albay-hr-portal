@@ -106,7 +106,7 @@ it('allows super admin to assign a role to a user', function () {
     expect($user->fresh()->hasRole('employee'))->toBeFalse(); // Single role enforcement
 });
 
-it('prevents assigning super_admin role via UI', function () {
+it('allows super admin to assign super_admin role via UI', function () {
     $user = User::factory()->create();
     $user->assignRole('employee');
 
@@ -114,8 +114,10 @@ it('prevents assigning super_admin role via UI', function () {
         ->putJson("/roles/users/{$user->id}/assign", [
             'role' => 'super_admin',
         ])
-        ->assertStatus(302)
-        ->assertSessionHasErrors(['error']);
+        ->assertValid(['role'])
+        ->assertStatus(302);
+
+    expect($user->fresh()->hasRole('super_admin'))->toBeTrue();
 });
 
 it('service syncs user role correctly', function () {

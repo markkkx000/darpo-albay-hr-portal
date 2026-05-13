@@ -5,6 +5,7 @@ namespace App\Modules\Roles\Services;
 use App\Models\User;
 use DomainException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -42,10 +43,17 @@ class RoleService
     }
 
     /**
-     * Get all roles except super_admin for assignment.
+     * Get all roles for assignment.
+     * super_admin can only be assigned by other super_admins.
      */
     public function getAssignableRoles(): Collection
     {
+        $user = Auth::user();
+
+        if ($user instanceof User && $user->hasRole('super_admin')) {
+            return Role::all();
+        }
+
         return Role::where('name', '!=', 'super_admin')->get();
     }
 
@@ -101,7 +109,9 @@ class RoleService
      */
     public function syncUserRole(User $user, string $roleName): void
     {
-        if ($roleName === 'super_admin') {
+        $currentUser = Auth::user();
+
+        if ($roleName === 'super_admin' && (! $currentUser instanceof User || ! $currentUser->hasRole('super_admin'))) {
             throw new DomainException('The super_admin role cannot be assigned via the UI.');
         }
 

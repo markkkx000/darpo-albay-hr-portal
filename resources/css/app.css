@@ -762,4 +762,40 @@
             0 4px 12px rgba(34, 197, 94, 0.25);
         border: none;
     }
+
+    /* ── Tiptap Editor Spacing Fixes ── */
+    .tiptap.prose {
+        @apply text-foreground;
+    }
+
+    .tiptap.prose p {
+        @apply my-1 leading-relaxed;
+    }
+
+    .tiptap.prose ul, 
+    .tiptap.prose ol {
+        @apply my-2;
+    }
+
+    .tiptap.prose li p {
+        @apply my-0;
+    }
+
+    .tiptap.prose blockquote {
+        @apply my-4 border-l-4 border-primary/30 pl-4 py-1 bg-muted/30 rounded-r-lg italic text-muted-foreground;
+    }
+
+    .tiptap.prose blockquote p {
+        @apply my-1;
+    }
+
+    .tiptap.prose h1, .tiptap.prose h2, .tiptap.prose h3 {
+        @apply mt-6 mb-2 font-bold tracking-tight;
+    }
+
+    /* ── Notification Rich Body Fade ── */
+    .notification-body-fade {
+        mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    }
 }

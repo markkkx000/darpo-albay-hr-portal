@@ -14,8 +14,11 @@ import {
     ImagePlus,
     Unlink,
 } from 'lucide-react';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 import { cn } from '@/lib/utils';
 
@@ -26,38 +29,43 @@ interface Props {
 }
 
 const MenuBar = ({ editor }: { editor: any }) => {
-    const setLink = useCallback(() => {
-        if (!editor) {
-return;
-}
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogType, setDialogType] = useState<'link' | 'image'>('link');
+    const [url, setUrl] = useState('');
 
+    const openLinkDialog = useCallback(() => {
         const previousUrl = editor.getAttributes('link').href;
-        const url = window.prompt('Enter URL', previousUrl || 'https://');
-
-        if (url === null) {
-            return;
-        }
-
-        if (url === '') {
-            editor.chain().focus().extendMarkRange('link').unsetLink().run();
-
-            return;
-        }
-
-        editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+        setUrl(previousUrl || 'https://');
+        setDialogType('link');
+        setDialogOpen(true);
     }, [editor]);
 
-    const addImage = useCallback(() => {
-        if (!editor) {
-return;
-}
+    const openImageDialog = useCallback(() => {
+        setUrl('https://');
+        setDialogType('image');
+        setDialogOpen(true);
+    }, []);
 
-        const url = window.prompt('Enter image URL', 'https://');
-
-        if (url) {
-            editor.chain().focus().setImage({ src: url }).run();
+    const handleConfirm = (e?: React.FormEvent) => {
+        if (e) {
+            e.preventDefault();
         }
-    }, [editor]);
+        
+        if (dialogType === 'link') {
+            if (url === '') {
+                editor.chain().focus().extendMarkRange('link').unsetLink().run();
+            } else {
+                editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+            }
+        } else {
+            if (url) {
+                editor.chain().focus().setImage({ src: url }).run();
+            }
+        }
+        
+        setDialogOpen(false);
+        setUrl('');
+    };
 
     if (!editor) {
         return null;
@@ -125,7 +133,7 @@ return;
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={setLink}
+                onClick={openLinkDialog}
                 className={editor.isActive('link') ? 'bg-muted-foreground/20' : ''}
                 title="Insert Link"
             >
@@ -146,7 +154,7 @@ return;
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={addImage}
+                onClick={openImageDialog}
                 title="Insert Image"
             >
                 <ImagePlus className="h-4 w-4" />
@@ -174,6 +182,47 @@ return;
             >
                 <Redo className="h-4 w-4" />
             </Button>
+
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogContent className="sm:max-w-[425px] matte-card !fixed elev-4">
+                    <DialogHeader>
+                        <DialogTitle>{dialogType === 'link' ? 'Insert Link' : 'Insert Image'}</DialogTitle>
+                        <DialogDescription>
+                            {dialogType === 'link' 
+                                ? 'Enter the URL for this link.' 
+                                : 'Enter the URL for the image you want to embed.'}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="url">URL</Label>
+                            <Input
+                                id="url"
+                                value={url}
+                                onChange={(e) => setUrl(e.target.value)}
+                                placeholder="https://example.com"
+                                autoFocus
+                                className="input-etched"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        handleConfirm();
+                                    }
+                                }}
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button type="button" variant="ghost" onClick={() => setDialogOpen(false)} className="btn-ghost-specular px-6">
+                            Cancel
+                        </Button>
+                        <Button type="button" onClick={handleConfirm} className="btn-specular px-8">
+                            {dialogType === 'link' ? 'Set Link' : 'Insert Image'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };
@@ -195,11 +244,13 @@ export function RichTextEditor({ content, onChange, error }: Props) {
                 },
                 blockquote: {
                     HTMLAttributes: {
-                        class: 'border-l-4 border-muted-foreground/30 pl-4 italic',
+                        class: 'italic',
                     },
                 },
             }),
-            Link.configure({
+            Link.extend({
+                inclusive: false,
+            }).configure({
                 openOnClick: false,
                 HTMLAttributes: {
                     class: 'text-primary underline cursor-pointer',
@@ -207,7 +258,7 @@ export function RichTextEditor({ content, onChange, error }: Props) {
             }),
             Image.configure({
                 HTMLAttributes: {
-                    class: 'max-w-full h-auto rounded-xl my-2',
+                    class: 'max-w-full h-auto rounded-xl my-2 border border-border/50',
                 },
             }),
         ],
@@ -217,7 +268,7 @@ export function RichTextEditor({ content, onChange, error }: Props) {
         },
         editorProps: {
             attributes: {
-                class: 'prose prose-sm dark:prose-invert max-w-none p-4 min-h-[200px] focus:outline-none',
+                class: 'prose prose-sm dark:prose-invert max-w-none p-4 min-h-[200px] focus:outline-none tiptap',
             },
         },
     });
@@ -229,10 +280,10 @@ export function RichTextEditor({ content, onChange, error }: Props) {
     }, [content, editor]);
 
     return (
-        <div className={cn('border rounded-xl overflow-hidden', error ? 'border-destructive' : 'border-input')}>
+        <div className={cn('border rounded-xl overflow-hidden matte-card elev-1 transition-all duration-200 focus-within:ring-2 focus-within:ring-primary/20', error ? 'border-destructive' : 'border-input')}>
             <MenuBar editor={editor} />
             <EditorContent editor={editor} />
-            {error && <p className="text-xs text-destructive p-2">{error}</p>}
+            {error && <p className="text-xs text-destructive p-2 font-medium bg-destructive/5 border-t border-destructive/10">{error}</p>}
         </div>
     );
 }
