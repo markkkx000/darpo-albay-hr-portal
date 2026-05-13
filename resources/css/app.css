@@ -766,4 +766,10 @@
     .tiptap.prose h1, .tiptap.prose h2, .tiptap.prose h3 {
         @apply mt-6 mb-2 font-bold tracking-tight;
     }
+
+    /* ── Notification Rich Body Fade ── */
+    .notification-body-fade {
+        mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    }
 }

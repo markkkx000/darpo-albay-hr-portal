@@ -99,12 +99,12 @@ class AnnouncementService
      */
     protected function dispatchNotifications(Announcement $announcement): void
     {
-        $plainContent = strip_tags($announcement->content);
+        $plainExcerpt = mb_substr(strip_tags($announcement->content), 0, 200);
 
         $notificationData = [
             'title' => $announcement->title,
-            'message' => 'A new announcement has been posted.',
-            'body' => mb_substr($plainContent, 0, 500),
+            'message' => $plainExcerpt ?: 'A new announcement has been posted.',
+            'body' => $announcement->content,
             'url' => route('announcements.show', $announcement->id, false),
             'type' => 'announcement',
             'subtype' => 'new_announcement',

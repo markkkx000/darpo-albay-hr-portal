@@ -147,18 +147,19 @@ export default function Index({ notifications }: Props) {
                                             <div className="mt-4 animate-in slide-in-from-top-1 duration-200">
                                                 <div className="rounded-xl bg-muted/30 p-4 text-sm leading-relaxed text-foreground/90 border border-sidebar-border/20">
                                                     {(() => {
-                                                        const snippet = notification.data.body ?? notification.data.message ?? '';
-                                                        const isLong = snippet.length > 200;
+                                                        const body = notification.data.body ?? notification.data.message ?? '';
+                                                        const isHtml = /<[a-z][\s\S]*>/i.test(body);
 
                                                         return (
-                                                            <div
-                                                                className="overflow-hidden max-h-[7.5rem]"
-                                                                style={isLong ? {
-                                                                    maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
-                                                                    WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
-                                                                } : undefined}
-                                                            >
-                                                                <p className="whitespace-pre-wrap">{snippet}{isLong ? '...' : ''}</p>
+                                                            <div className="overflow-hidden max-h-[12rem] notification-body-fade">
+                                                                {isHtml ? (
+                                                                    <div
+                                                                        className="prose prose-sm dark:prose-invert max-w-none [&_p]:my-1 [&_li]:my-0.5 [&_ul]:my-2 [&_ol]:my-2 [&_blockquote]:my-2 [&_img]:max-w-full [&_img]:rounded-lg"
+                                                                        dangerouslySetInnerHTML={{ __html: body }}
+                                                                    />
+                                                                ) : (
+                                                                    <p className="whitespace-pre-wrap">{body}</p>
+                                                                )}
                                                             </div>
                                                         );
                                                     })()}

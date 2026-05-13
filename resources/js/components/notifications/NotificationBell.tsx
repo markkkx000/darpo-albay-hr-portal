@@ -134,18 +134,21 @@ export default function NotificationBell() {
                                 {expandedIds.has(notification.id) && (
                                     <div className="mt-3 text-xs text-foreground/80 leading-relaxed animate-in slide-in-from-top-1 duration-200 group-hover:text-black/90">
                                         {(() => {
-                                            const snippet = notification.data.body ?? notification.data.message ?? '';
-                                            const isLong = snippet.length > 150;
+                                            const body = notification.data.body ?? notification.data.message ?? '';
+                                            const isHtml = /<[a-z][\s\S]*>/i.test(body);
 
                                             return (
                                                 <div
-                                                    className="overflow-hidden max-h-[6rem]"
-                                                    style={isLong ? {
-                                                        maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
-                                                        WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
-                                                    } : undefined}
+                                                    className="overflow-hidden max-h-[6rem] notification-body-fade"
                                                 >
-                                                    <p className="whitespace-pre-wrap">{snippet}{isLong ? '...' : ''}</p>
+                                                    {isHtml ? (
+                                                        <div
+                                                            className="prose prose-xs dark:prose-invert max-w-none [&_p]:my-0.5 [&_li]:my-0 [&_ul]:my-1 [&_ol]:my-1 [&_blockquote]:my-1 [&_img]:hidden group-hover:[&_a]:text-black"
+                                                            dangerouslySetInnerHTML={{ __html: body }}
+                                                        />
+                                                    ) : (
+                                                        <p className="whitespace-pre-wrap">{body}</p>
+                                                    )}
                                                 </div>
                                             );
                                         })()}
