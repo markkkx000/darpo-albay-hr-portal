@@ -623,6 +623,18 @@
         color: white;
     }
 
+    .sqicon-red {
+        background: var(--grad-danger);
+        box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2);
+        color: white;
+    }
+
+    .sqicon-grey {
+        background: linear-gradient(145deg, #d4d4d8, #a1a1aa);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        color: #1a1a1a;
+    }
+
     /* Animation Utilities */
     @media (prefers-reduced-motion: no-preference) {
         @keyframes fade-up {
@@ -668,6 +680,13 @@
     .status-badge-unknown {
         background: linear-gradient(135deg, #d4d4d8 0%, #a1a1aa 100%);
         color: #000;
+        border: none;
+        font-weight: 800;
+    }
+
+    .status-badge-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+        color: #fff;
         border: none;
         font-weight: 800;
     }

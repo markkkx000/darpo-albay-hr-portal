@@ -2,6 +2,7 @@ import { Head, router } from '@inertiajs/react';
 import { Plus, Edit, Building2, Building, Briefcase } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -162,13 +163,13 @@ export default function Index({ divisions }: Props) {
 
                 <Tabs defaultValue="divisions" className="w-full">
                     <TabsList className="grid w-full grid-cols-3 mb-6 bg-muted/40 p-1 rounded-xl">
-                        <TabsTrigger value="divisions" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-bold uppercase text-[10px] tracking-widest gap-2 py-2.5">
+                        <TabsTrigger value="divisions" className="rounded-lg data-[state=active]:sidebar-active-gradient data-[state=active]:sidebar-active-text font-bold uppercase text-[10px] tracking-widest gap-2 py-2.5">
                             <Building2 className="h-4 w-4" /> Divisions
                         </TabsTrigger>
-                        <TabsTrigger value="units" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-bold uppercase text-[10px] tracking-widest gap-2 py-2.5">
+                        <TabsTrigger value="units" className="rounded-lg data-[state=active]:sidebar-active-gradient data-[state=active]:sidebar-active-text font-bold uppercase text-[10px] tracking-widest gap-2 py-2.5">
                             <Building className="h-4 w-4" /> Units
                         </TabsTrigger>
-                        <TabsTrigger value="positions" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-bold uppercase text-[10px] tracking-widest gap-2 py-2.5">
+                        <TabsTrigger value="positions" className="rounded-lg data-[state=active]:sidebar-active-gradient data-[state=active]:sidebar-active-text font-bold uppercase text-[10px] tracking-widest gap-2 py-2.5">
                             <Briefcase className="h-4 w-4" /> Positions
                         </TabsTrigger>
                     </TabsList>
@@ -195,8 +196,11 @@ export default function Index({ divisions }: Props) {
                                         {divisions.map(div => (
                                             <tr key={div.id} className="hover:bg-muted/40 transition-colors">
                                                 <td className="px-6 py-4 font-bold">{div.name}</td>
-                                                <td className="px-6 py-4">
-                                                    <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase ${div.is_active ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'}`}>
+                                                <td className="px-6 py-4 text-xs font-bold uppercase">
+                                                    <span className={cn(
+                                                        "inline-flex items-center rounded-full px-2.5 py-0.5 tracking-wide shadow-sm",
+                                                        div.is_active ? 'status-badge-permanent' : 'status-badge-unknown'
+                                                    )}>
                                                         {div.is_active ? 'Active' : 'Inactive'}
                                                     </span>
                                                 </td>
@@ -242,8 +246,11 @@ export default function Index({ divisions }: Props) {
                                             <tr key={unit.id} className="hover:bg-muted/40 transition-colors">
                                                 <td className="px-6 py-4 font-bold">{unit.name}</td>
                                                 <td className="px-6 py-4 text-muted-foreground">{divisions.find(d => d.id === unit.division_id)?.name}</td>
-                                                <td className="px-6 py-4">
-                                                    <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase ${unit.is_active ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'}`}>
+                                                <td className="px-6 py-4 text-xs font-bold uppercase">
+                                                    <span className={cn(
+                                                        "inline-flex items-center rounded-full px-2.5 py-0.5 tracking-wide shadow-sm",
+                                                        unit.is_active ? 'status-badge-permanent' : 'status-badge-unknown'
+                                                    )}>
                                                         {unit.is_active ? 'Active' : 'Inactive'}
                                                     </span>
                                                 </td>
@@ -289,8 +296,11 @@ export default function Index({ divisions }: Props) {
                                             <tr key={pos.id} className="hover:bg-muted/40 transition-colors">
                                                 <td className="px-6 py-4 font-bold">{pos.name}</td>
                                                 <td className="px-6 py-4 text-muted-foreground">{divisions.find(d => d.id === pos.division_id)?.name}</td>
-                                                <td className="px-6 py-4">
-                                                    <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase ${pos.is_active ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'}`}>
+                                                <td className="px-6 py-4 text-xs font-bold uppercase">
+                                                    <span className={cn(
+                                                        "inline-flex items-center rounded-full px-2.5 py-0.5 tracking-wide shadow-sm",
+                                                        pos.is_active ? 'status-badge-permanent' : 'status-badge-unknown'
+                                                    )}>
                                                         {pos.is_active ? 'Active' : 'Inactive'}
                                                     </span>
                                                 </td>

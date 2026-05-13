@@ -31,9 +31,14 @@ export default function Show({ announcement }: Props) {
                 <Card className="matte-card elev-2 border-none overflow-hidden">
                     <CardHeader className="border-b border-muted/20 pb-6">
                         <div className="space-y-4">
-                            <div className="flex items-center gap-2 text-primary font-medium">
-                                <Megaphone className="h-5 w-5" />
-                                <span>Announcement</span>
+                            <div className="flex items-center gap-3">
+                                <div className={cn(
+                                    "sqicon p-2 rounded-xl",
+                                    announcement.priority === 'high' ? "sqicon-red shadow-[0_0_15px_rgba(239,68,68,0.4)]" : "sqicon-green"
+                                )}>
+                                    <Megaphone className="h-4 w-4" />
+                                </div>
+                                <span className="text-primary font-bold uppercase tracking-widest text-xs">Announcement</span>
                             </div>
                             
                             <CardTitle className="text-3xl font-bold tracking-tight">
@@ -51,23 +56,28 @@ export default function Show({ announcement }: Props) {
                                     <div className="p-1.5 rounded-full bg-primary/10 text-primary">
                                         <Calendar className="h-4 w-4" />
                                     </div>
-                                    <span>
-                                        {announcement.published_at 
-                                            ? formatDate(announcement.published_at, { dateStyle: 'long', timeStyle: 'short' }) 
-                                            : 'Draft - Created on ' + formatDate(announcement.created_at, { dateStyle: 'long' })
-                                        }
+                                    <span className={cn(
+                                        "px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider",
+                                        announcement.published_at ? "status-badge-permanent" : "status-badge-unknown"
+                                    )}>
+                                        {announcement.published_at ? 'Published' : 'Draft'}
                                     </span>
+                                    {announcement.published_at && (
+                                        <span className="opacity-70">
+                                            {formatDate(announcement.published_at, { dateStyle: 'long' })}
+                                        </span>
+                                    )}
                                 </div>
-                                <Badge variant="outline" className={cn(
-                                    "uppercase font-bold text-[10px] px-3 py-1 rounded-full border tracking-wider transition-all",
+                                <span className={cn(
+                                    "uppercase font-bold text-[10px] px-3 py-1 rounded-full tracking-wider transition-all shadow-sm",
                                     announcement.priority === 'high'
-                                        ? 'bg-red-500/10 text-red-500 border-red-500/50 dark:text-red-400 dark:border-red-500/30 animate-pulse ring-1 ring-red-500/20'
+                                        ? 'status-badge-danger animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.3)]'
                                         : announcement.priority === 'low'
-                                        ? 'bg-green-500/10 text-green-600 border-green-500/30 dark:text-green-400 dark:border-green-500/20'
-                                        : 'bg-muted text-muted-foreground border-border dark:bg-muted/50 dark:text-muted-foreground dark:border-border/50'
+                                        ? 'status-badge-unknown'
+                                        : 'status-badge-permanent'
                                 )}>
                                     {announcement.priority}
-                                </Badge>
+                                </span>
                             </div>
                         </div>
                     </CardHeader>
