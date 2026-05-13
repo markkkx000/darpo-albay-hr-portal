@@ -1,7 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import DOMPurify from 'dompurify';
 import { ArrowLeft, Calendar, User, Megaphone } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn, formatDate } from '@/lib/utils';

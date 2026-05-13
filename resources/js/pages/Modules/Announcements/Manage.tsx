@@ -13,7 +13,6 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Pagination } from '@/components/Pagination';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
