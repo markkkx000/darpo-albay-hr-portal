@@ -138,7 +138,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                         routeName={manageRecordsIndexRoute().url}
                     />
 
-                    <div className="matte-card elev-2 overflow-hidden border-none shadow-xl">
+                    <div className="matte-card elev-2 overflow-hidden border-none">
                     <div className="bg-surface-2 pb-4 border-b border-border-1 p-6">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
@@ -234,6 +234,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                                 size="sm"
                                                                 onClick={() => handleEdit(record)}
                                                                 className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full"
+                                                                aria-label={`Edit record for ${record.user?.first_name} ${record.user?.last_name}`}
                                                                 title="Edit Record"
                                                             >
                                                                 <Edit className="h-3.5 w-3.5" />
@@ -243,6 +244,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                                     size="sm"
                                                                     onClick={() => confirmDelete(record)}
                                                                     className="btn-ghost-danger-specular border-none h-8 w-8 p-0 rounded-full"
+                                                                    aria-label={`Delete record for ${record.user?.first_name} ${record.user?.last_name}`}
                                                                     title="Delete Record"
                                                                 >
                                                                     <Trash2 className="h-3.5 w-3.5" />

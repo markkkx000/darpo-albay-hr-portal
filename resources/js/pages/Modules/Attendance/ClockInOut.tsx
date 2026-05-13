@@ -140,11 +140,11 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                                         return (
                                             <div key={item.id} className="group flex items-center gap-3 px-2 py-2.5 rounded-xl hover:bg-surface-2 transition-colors">
                                                 <div
-                                                    className={cn("w-[3px] h-10 rounded-full shrink-0", item.status === 'active' ? 'bg-primary animate-pulse shadow-[0_0_8px_var(--green-glow)]' : 'bg-muted')}
+                                                    className={cn("w-[3px] h-10 rounded-full shrink-0 spring-physics", item.status === 'active' ? 'bg-primary animate-pulse shadow-[0_0_8px_var(--green-glow)]' : 'bg-muted')}
                                                 />
                                                 <div className="flex flex-col min-w-0">
                                                     <p className="text-[13px] font-semibold text-foreground/90 truncate">{item.date}</p>
-                                                    <p className="text-[11px] text-muted-foreground mt-0.5 font-mono tracking-wide">{item.timeStr}</p>
+                                                    <p className="text-[11px] text-muted-foreground mt-0.5 font-mono tabular-nums tracking-wide">{item.timeStr}</p>
                                                 </div>
                                             </div>
                                         );
