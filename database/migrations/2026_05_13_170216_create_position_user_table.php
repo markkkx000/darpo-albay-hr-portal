@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -20,7 +21,7 @@ return new class extends Migration
         });
 
         // Migrate existing data
-        \Illuminate\Support\Facades\DB::statement('
+        DB::statement('
             INSERT INTO position_user (user_id, position_id, is_primary, created_at, updated_at)
             SELECT id, position_id, true, NOW(), NOW()
             FROM users
@@ -44,7 +45,7 @@ return new class extends Migration
         });
 
         // Migrate data back (only primary positions)
-        \Illuminate\Support\Facades\DB::statement('
+        DB::statement('
             UPDATE users
             SET position_id = (
                 SELECT position_id

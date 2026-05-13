@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -78,7 +79,7 @@ class User extends Authenticatable
         return $this->belongsTo(Unit::class);
     }
 
-    public function positions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function positions(): BelongsToMany
     {
         return $this->belongsToMany(Position::class)->withPivot('is_primary')->withTimestamps();
     }

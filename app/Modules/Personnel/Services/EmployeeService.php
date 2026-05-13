@@ -115,10 +115,10 @@ class EmployeeService
             if (isset($data['positions']) && is_array($data['positions'])) {
                 $positionIdsToSync = [];
                 foreach ($data['positions'] as $posData) {
-                    if (!empty($posData['id']) && is_numeric($posData['id'])) {
+                    if (! empty($posData['id']) && is_numeric($posData['id'])) {
                         $positionId = $posData['id'];
-                    } elseif (!empty($posData['name'])) {
-                        $newPosition = clone \App\Modules\Personnel\Models\Position::create([
+                    } elseif (! empty($posData['name'])) {
+                        $newPosition = clone Position::create([
                             'name' => $posData['name'],
                             'division_id' => $data['division_id'],
                             'is_active' => true,
@@ -158,10 +158,10 @@ class EmployeeService
             if (isset($data['positions']) && is_array($data['positions'])) {
                 $positionIdsToSync = [];
                 foreach ($data['positions'] as $posData) {
-                    if (!empty($posData['id']) && is_numeric($posData['id'])) {
+                    if (! empty($posData['id']) && is_numeric($posData['id'])) {
                         $positionId = $posData['id'];
-                    } elseif (!empty($posData['name'])) {
-                        $newPosition = clone \App\Modules\Personnel\Models\Position::create([
+                    } elseif (! empty($posData['name'])) {
+                        $newPosition = clone Position::create([
                             'name' => $posData['name'],
                             'division_id' => $data['division_id'] ?? $user->division_id,
                             'is_active' => true,
