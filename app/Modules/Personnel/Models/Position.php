@@ -29,8 +29,8 @@ class Position extends Model
         return $this->belongsTo(Division::class);
     }
 
-    public function users(): HasMany
+    public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class)->withPivot('is_primary')->withTimestamps();
     }
 }

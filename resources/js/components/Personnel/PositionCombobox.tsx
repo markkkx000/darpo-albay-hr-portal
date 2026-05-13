@@ -1,0 +1,136 @@
+import { Check, ChevronsUpDown, Plus } from "lucide-react"
+import * as React from "react"
+
+import { Button } from "@/components/ui/button"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
+
+interface Position {
+  id: number;
+  name: string;
+}
+
+interface FormPosition {
+  id?: number | string;
+  name: string;
+}
+
+export interface PositionComboboxProps {
+  positions: Position[];
+  value: FormPosition;
+  onChange: (value: FormPosition) => void;
+  disabled?: boolean;
+  placeholder?: string;
+}
+
+export function PositionCombobox({ positions, value, onChange, disabled, placeholder = "Select position..." }: PositionComboboxProps) {
+  const [open, setOpen] = React.useState(false)
+  const [inputValue, setInputValue] = React.useState("")
+
+  const handleSelect = (currentValue: string) => {
+    const existing = positions.find((p) => p.name.toLowerCase() === currentValue.toLowerCase());
+
+    if (existing) {
+      onChange({ id: existing.id, name: existing.name });
+    } else {
+      // It's a new position
+      onChange({ id: 'new', name: currentValue });
+    }
+
+    setOpen(false)
+    setInputValue("")
+  }
+
+  // Exact match check
+  const hasExactMatch = positions.some(p => p.name.toLowerCase() === inputValue.toLowerCase());
+
+  // Determine display name
+  const displayName = value.id === 'new' ? value.name : positions.find((p) => p.id === value.id)?.name || value.name;
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          disabled={disabled}
+          className={cn(
+            "w-full justify-between font-normal",
+            !displayName && "text-muted-foreground"
+          )}
+        >
+          {displayName || placeholder}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-full p-0" align="start">
+        <Command filter={(value, search) => {
+          if (value.toLowerCase().includes(search.toLowerCase())) {
+return 1;
+}
+
+          return 0;
+        }}>
+          <CommandInput 
+            placeholder="Search or create position..." 
+            value={inputValue}
+            onValueChange={setInputValue}
+          />
+          <CommandList>
+            <CommandEmpty>
+              {inputValue ? (
+                <div 
+                  className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+                  onClick={() => handleSelect(inputValue)}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create "{inputValue}"
+                </div>
+              ) : "No position found."}
+            </CommandEmpty>
+            <CommandGroup>
+              {positions.map((position) => (
+                <CommandItem
+                  key={position.id}
+                  value={position.name}
+                  onSelect={() => handleSelect(position.name)}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      value.id === position.id ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                  {position.name}
+                </CommandItem>
+              ))}
+              
+              {inputValue && !hasExactMatch && (
+                <CommandItem
+                  value={inputValue}
+                  onSelect={() => handleSelect(inputValue)}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create "{inputValue}"
+                </CommandItem>
+              )}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  )
+}

@@ -31,7 +31,7 @@ test('super admin can edit hr admin', function () {
         'first_name' => 'Updated',
         'last_name' => 'Name',
         'division_id' => $this->division->id,
-        'position_id' => $this->position->id,
+        'positions' => [['id' => $this->position->id, 'is_primary' => true]],
         'employment_status_id' => $this->status->id,
         'hire_date' => '2020-01-01',
     ];
@@ -52,7 +52,7 @@ test('super admin can edit themselves', function () {
         'first_name' => 'Super',
         'last_name' => 'Admin-Updated',
         'division_id' => $this->division->id,
-        'position_id' => $this->position->id,
+        'positions' => [['id' => $this->position->id, 'is_primary' => true]],
         'employment_status_id' => $this->status->id,
         'hire_date' => '2020-01-01',
     ];

@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Loader2, Save, AlertCircle } from 'lucide-react';
+import { Loader2, Save, AlertCircle, Plus, Trash2, Star } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
+import { PositionCombobox } from './PositionCombobox';
 
 const Required = () => <span className="text-destructive ml-1">*</span>;
 
@@ -81,6 +82,31 @@ export function EmployeeForm({
         if (!val) {
             setData('prc_expiration', ''); // Clear expiration if empty
         }
+    };
+
+    const handleAddPosition = () => {
+        setData('positions', [...data.positions, { id: '', name: '', is_primary: false }]);
+    };
+
+    const handleUpdatePosition = (index: number, newPosition: { id?: number | string, name: string }) => {
+        const newPositions = [...data.positions];
+        newPositions[index] = { ...newPositions[index], ...newPosition };
+        setData('positions', newPositions);
+    };
+
+    const handleRemovePosition = (index: number) => {
+        const newPositions = data.positions.filter((_: any, i: number) => i !== index);
+
+        if (data.positions[index].is_primary && newPositions.length > 0) {
+            newPositions[0].is_primary = true;
+        }
+
+        setData('positions', newPositions);
+    };
+
+    const handleSetPrimaryPosition = (index: number) => {
+        const newPositions = data.positions.map((p: any, i: number) => ({ ...p, is_primary: i === index }));
+        setData('positions', newPositions);
     };
 
     return (
@@ -181,7 +207,7 @@ export function EmployeeForm({
                             <Select
                                 value={data.division_id}
                                 onValueChange={value => {
-                                    setData(prev => ({ ...prev, division_id: value, unit_id: '', position_id: '' }));
+                                    setData(prev => ({ ...prev, division_id: value, unit_id: '', positions: [{ id: '', name: '', is_primary: true }] }));
                                 }}
                             >
                                 <SelectTrigger 
@@ -222,26 +248,58 @@ export function EmployeeForm({
                             {errors.unit_id && <p className="text-xs text-destructive">{errors.unit_id}</p>}
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="position_id">Position <Required /></Label>
-                            <Select
-                                value={data.position_id}
-                                onValueChange={value => setData('position_id', value)}
-                                disabled={!data.division_id || filteredPositions.length === 0}
-                            >
-                                <SelectTrigger 
-                                    aria-invalid={!!errors.position_id}
-                                    className={cn(errors.position_id && "border-destructive focus:ring-destructive")}
-                                >
-                                    <SelectValue placeholder={!data.division_id ? "Select Division First" : filteredPositions.length === 0 ? "No Positions Available" : "Select Position"} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {filteredPositions.map(pos => (
-                                        <SelectItem key={pos.id} value={pos.id.toString()}>{pos.name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {errors.position_id && <p className="text-xs text-destructive">{errors.position_id}</p>}
+                        <div className="space-y-4 md:col-span-3 border p-4 rounded-xl bg-card">
+                            <div className="flex items-center justify-between">
+                                <Label>Positions <Required /></Label>
+                                <Button type="button" variant="outline" size="sm" onClick={handleAddPosition}>
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Add Position
+                                </Button>
+                            </div>
+                            
+                            <div className="space-y-3">
+                                {data.positions.map((pos: any, index: number) => (
+                                    <div key={index} className="flex items-start gap-2">
+                                        <div className="flex-1">
+                                            <PositionCombobox
+                                                positions={filteredPositions}
+                                                value={{ id: pos.id, name: pos.name }}
+                                                onChange={(val) => handleUpdatePosition(index, val)}
+                                                disabled={!data.division_id}
+                                                placeholder={!data.division_id ? "Select Division First" : "Select or create position"}
+                                            />
+                                            {errors[`positions.${index}.id`] && <p className="text-xs text-destructive mt-1">{errors[`positions.${index}.id`]}</p>}
+                                            {errors[`positions.${index}.name`] && <p className="text-xs text-destructive mt-1">{errors[`positions.${index}.name`]}</p>}
+                                        </div>
+                                        
+                                        <div className="flex items-center gap-1">
+                                            <Button
+                                                type="button"
+                                                variant={pos.is_primary ? "default" : "outline"}
+                                                size="icon"
+                                                title={pos.is_primary ? "Primary Position" : "Set as Primary"}
+                                                onClick={() => handleSetPrimaryPosition(index)}
+                                                className={pos.is_primary ? "bg-amber-500 hover:bg-amber-600 text-white border-none" : ""}
+                                            >
+                                                <Star className={cn("h-4 w-4", pos.is_primary ? "fill-current" : "")} />
+                                            </Button>
+                                            
+                                            {data.positions.length > 1 && (
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="icon"
+                                                    className="text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/20"
+                                                    onClick={() => handleRemovePosition(index)}
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            {errors.positions && typeof errors.positions === 'string' && <p className="text-xs text-destructive">{errors.positions}</p>}
                         </div>
 
                         <div className="space-y-2">

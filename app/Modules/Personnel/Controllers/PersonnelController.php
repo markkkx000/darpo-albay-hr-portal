@@ -73,7 +73,7 @@ class PersonnelController extends Controller
         $this->authorize('personnel.view');
 
         return Inertia::render('Modules/Personnel/Show', [
-            'employee' => $user->load(['division', 'unit', 'position', 'employmentStatus']),
+            'employee' => $user->load(['division', 'unit', 'positions', 'employmentStatus']),
         ]);
     }
 
@@ -85,7 +85,7 @@ class PersonnelController extends Controller
         $this->authorize('personnel.manage');
 
         return Inertia::render('Modules/Personnel/Edit', [
-            'employee' => $user,
+            'employee' => $user->load('positions'),
             'divisions' => Division::where('is_active', true)->get(),
             'units' => Unit::where('is_active', true)->get(),
             'positions' => Position::where('is_active', true)->get(),

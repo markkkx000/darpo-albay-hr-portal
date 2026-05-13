@@ -18,7 +18,6 @@ beforeEach(function () {
     // Admin with NULL organization fields (like in current seeders)
     $this->hrAdmin = User::factory()->create([
         'division_id' => null,
-        'position_id' => null,
         'employment_status_id' => null,
     ]);
     $this->hrAdmin->assignRole('hr_admin');
@@ -34,7 +33,7 @@ test('editing admin with null fields succeeds when fields are left empty', funct
         'first_name' => 'Updated',
         'last_name' => 'Name',
         'division_id' => null,
-        'position_id' => null,
+        'positions' => [],
         'employment_status_id' => null,
         'hire_date' => null,
     ];

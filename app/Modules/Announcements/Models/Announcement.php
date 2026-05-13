@@ -65,7 +65,7 @@ class Announcement extends Model
                 })
                 ->orWhere(function ($q) use ($user) {
                     $q->where('target_type', 'position')
-                        ->where('target_id', $user->position_id);
+                        ->whereIn('target_id', $user->positions->pluck('id'));
                 })
                 ->orWhere(function ($q) use ($user) {
                     $q->where('target_type', 'user')

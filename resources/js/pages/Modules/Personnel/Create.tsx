@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function Create({ divisions, units, positions, employmentStatuses }: Props) {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, transform } = useForm({
         employee_number: '',
         first_name: '',
         last_name: '',
@@ -20,7 +20,7 @@ export default function Create({ divisions, units, positions, employmentStatuses
         sex: '',
         date_of_birth: '',
         
-        position_id: '',
+        positions: [{ id: '', name: '', is_primary: true }],
         division_id: '',
         unit_id: '',
         employment_status_id: '',
@@ -45,11 +45,10 @@ export default function Create({ divisions, units, positions, employmentStatuses
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
-        const payload = { ...data };
-
-        if (payload.unit_id === 'none') {
-            payload.unit_id = '';
-        }
+        transform((data) => ({
+            ...data,
+            unit_id: data.unit_id === 'none' ? '' : data.unit_id,
+        }));
 
         post(storeRoute().url, {
             onSuccess: () => {

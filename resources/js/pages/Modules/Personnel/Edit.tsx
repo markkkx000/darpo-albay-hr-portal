@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function Edit({ employee, divisions, units, positions, employmentStatuses }: Props) {
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, put, processing, errors, transform } = useForm({
         employee_number: employee?.employee_number || '',
         first_name: employee?.first_name || '',
         last_name: employee?.last_name || '',
@@ -21,7 +21,13 @@ export default function Edit({ employee, divisions, units, positions, employment
         sex: employee?.sex || '',
         date_of_birth: employee?.date_of_birth ? String(employee.date_of_birth).split('T')[0] : '',
         
-        position_id: employee?.position_id?.toString() || '',
+        positions: employee?.positions?.length > 0
+            ? employee.positions.map((p: any) => ({
+                id: p.id,
+                name: p.name,
+                is_primary: p.pivot?.is_primary || false
+            }))
+            : [{ id: '', name: '', is_primary: true }],
         division_id: employee?.division_id?.toString() || '',
         unit_id: employee?.unit_id?.toString() || '',
         employment_status_id: employee?.employment_status_id?.toString() || '',
@@ -46,11 +52,10 @@ export default function Edit({ employee, divisions, units, positions, employment
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
-        const payload = { ...data };
-
-        if (payload.unit_id === 'none') {
-            payload.unit_id = '';
-        }
+        transform((data) => ({
+            ...data,
+            unit_id: data.unit_id === 'none' ? '' : data.unit_id,
+        }));
 
         put(updateRoute({ user: employee.id }).url, {
             onSuccess: () => {

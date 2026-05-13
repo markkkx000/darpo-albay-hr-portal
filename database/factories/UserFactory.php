@@ -35,7 +35,6 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'division_id' => null,
             'unit_id' => null,
-            'position_id' => null,
             'employment_status_id' => null,
             'hire_date' => fake()->date(),
             'sex' => fake()->randomElement(['Male', 'Female']),

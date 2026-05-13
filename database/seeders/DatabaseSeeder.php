@@ -49,13 +49,15 @@ class DatabaseSeeder extends Seeder
                 'last_name' => 'Santos',
                 'password' => bcrypt('password'),
                 'division_id' => $stod->id,
-                'position_id' => $adminPosition?->id,
                 'employment_status_id' => $permanent?->id,
                 'hire_date' => '2015-06-16',
                 'is_active' => true,
             ]
         );
         $hrAdmin->assignRole('hr_admin');
+        if ($adminPosition) {
+            $hrAdmin->positions()->sync([$adminPosition->id => ['is_primary' => true]]);
+        }
 
         // Create an HR Staff
         $hrStaff = User::updateOrCreate(
@@ -66,13 +68,15 @@ class DatabaseSeeder extends Seeder
                 'last_name' => 'Dela Cruz',
                 'password' => bcrypt('password'),
                 'division_id' => $stod->id,
-                'position_id' => $staffPosition?->id,
                 'employment_status_id' => $permanent?->id,
                 'hire_date' => '2018-03-20',
                 'is_active' => true,
             ]
         );
         $hrStaff->assignRole('hr_staff');
+        if ($staffPosition) {
+            $hrStaff->positions()->sync([$staffPosition->id => ['is_primary' => true]]);
+        }
 
         // Create a regular Employee (no email, uses employee number login)
         $employee = User::updateOrCreate(
@@ -98,9 +102,12 @@ class DatabaseSeeder extends Seeder
 
                 $u->update([
                     'division_id' => $div->id,
-                    'position_id' => $pos?->id,
                     'employment_status_id' => $employmentStatuses->random()->id,
                 ]);
+
+                if ($pos) {
+                    $u->positions()->sync([$pos->id => ['is_primary' => true]]);
+                }
 
                 $u->assignRole('employee');
             });

@@ -152,7 +152,7 @@ class AnnouncementController extends Controller
         }
 
         if ($announcement->target_type === 'position') {
-            return (int) $announcement->target_id === (int) $user->position_id;
+            return $user->positions->contains('id', (int) $announcement->target_id);
         }
 
         if ($announcement->target_type === 'user') {

@@ -181,9 +181,9 @@ class PersonnelSeeder extends Seeder
                 $position = $allPositions->random();
                 $user->update([
                     'division_id' => $position->division_id,
-                    'position_id' => $position->id,
                     'employment_status_id' => $allStatuses->random()->id,
                 ]);
+                $user->positions()->sync([$position->id => ['is_primary' => true]]);
 
                 // Assign employee role
                 $user->assignRole('employee');

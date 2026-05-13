@@ -41,7 +41,7 @@ test('can create a new employee record', function () {
         'last_name' => 'Doe',
         'email' => 'john.doe@example.com',
         'division_id' => $this->division->id,
-        'position_id' => $this->position->id,
+        'positions' => [['id' => $this->position->id, 'is_primary' => true]],
         'employment_status_id' => $this->status->id,
         'hire_date' => now()->format('Y-m-d'),
     ];
@@ -103,7 +103,7 @@ test('validates unique employee number', function () {
         'first_name' => 'Test',
         'last_name' => 'User',
         'division_id' => $this->division->id,
-        'position_id' => $this->position->id,
+        'positions' => [['id' => $this->position->id, 'is_primary' => true]],
         'employment_status_id' => $this->status->id,
         'hire_date' => now()->format('Y-m-d'),
     ];
@@ -118,7 +118,6 @@ test('can update an employee record', function () {
         'first_name' => 'Original',
         'last_name' => 'Name',
         'division_id' => $this->division->id,
-        'position_id' => $this->position->id,
         'employment_status_id' => $this->status->id,
         'hire_date' => '2020-01-01',
     ]);
@@ -128,7 +127,7 @@ test('can update an employee record', function () {
         'first_name' => 'Updated',
         'last_name' => 'Name',
         'division_id' => $this->division->id,
-        'position_id' => $this->position->id,
+        'positions' => [['id' => $this->position->id, 'is_primary' => true]],
         'employment_status_id' => $this->status->id,
         'hire_date' => '2020-01-01',
     ];

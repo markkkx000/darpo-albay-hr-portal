@@ -21,23 +21,23 @@ beforeEach(function () {
 
     $this->hrAdmin = User::factory()->create([
         'division_id' => $this->division->id,
-        'position_id' => $this->position->id,
         'employment_status_id' => $this->employmentStatus->id,
     ]);
+    $this->hrAdmin->positions()->sync([$this->position->id => ['is_primary' => true]]);
     $this->hrAdmin->assignRole('hr_admin');
 
     $this->employee = User::factory()->create([
         'division_id' => $this->division->id,
-        'position_id' => $this->position->id,
         'employment_status_id' => $this->employmentStatus->id,
     ]);
+    $this->employee->positions()->sync([$this->position->id => ['is_primary' => true]]);
     $this->employee->assignRole('employee');
 
     $this->divisionHead = User::factory()->create([
         'division_id' => $this->division->id,
-        'position_id' => $this->position->id,
         'employment_status_id' => $this->employmentStatus->id,
     ]);
+    $this->divisionHead->positions()->sync([$this->position->id => ['is_primary' => true]]);
     $this->divisionHead->assignRole('division_head');
 });
 

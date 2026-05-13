@@ -32,7 +32,9 @@ class NotificationService
      */
     public function notifyPosition(int $positionId, array $data): void
     {
-        $users = User::where('position_id', $positionId)->where('is_active', true)->get();
+        $users = User::whereHas('positions', function ($query) use ($positionId) {
+            $query->where('positions.id', $positionId);
+        })->where('is_active', true)->get();
         Notification::send($users, new GenericDatabaseNotification($data));
     }
 

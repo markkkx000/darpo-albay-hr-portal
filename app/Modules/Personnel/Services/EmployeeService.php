@@ -4,6 +4,7 @@ namespace App\Modules\Personnel\Services;
 
 use App\Core\Services\NotificationService;
 use App\Models\User;
+use App\Modules\Personnel\Models\Position;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -20,7 +21,7 @@ class EmployeeService
     public function getEmployees(array $filters = []): LengthAwarePaginator
     {
         $query = User::query()
-            ->with(['division', 'unit', 'position', 'employmentStatus'])
+            ->with(['division', 'unit', 'positions', 'employmentStatus'])
             ->when($filters['search'] ?? null, function ($query, $search) {
                 $keywords = explode(' ', $search);
                 $query->where(function ($q) use ($keywords) {
@@ -54,7 +55,7 @@ class EmployeeService
     public function getArchivedEmployees(array $filters = []): LengthAwarePaginator
     {
         $query = User::onlyTrashed()
-            ->with(['division', 'unit', 'position', 'employmentStatus'])
+            ->with(['division', 'unit', 'positions', 'employmentStatus'])
             ->when($filters['search'] ?? null, function ($query, $search) {
                 $keywords = explode(' ', $search);
                 $query->where(function ($q) use ($keywords) {
@@ -88,7 +89,6 @@ class EmployeeService
                 'email' => $data['email'] ?? null,
                 'password' => Hash::make($data['password'] ?? 'password123'), // Default password or from data
                 'is_active' => $data['is_active'] ?? true,
-                'position_id' => $data['position_id'] ?? null,
                 'division_id' => $data['division_id'] ?? null,
                 'unit_id' => $data['unit_id'] ?? null,
                 'employment_status_id' => $data['employment_status_id'] ?? null,
@@ -112,6 +112,26 @@ class EmployeeService
 
             $user->assignRole('employee');
 
+            if (isset($data['positions']) && is_array($data['positions'])) {
+                $positionIdsToSync = [];
+                foreach ($data['positions'] as $posData) {
+                    if (!empty($posData['id']) && is_numeric($posData['id'])) {
+                        $positionId = $posData['id'];
+                    } elseif (!empty($posData['name'])) {
+                        $newPosition = clone \App\Modules\Personnel\Models\Position::create([
+                            'name' => $posData['name'],
+                            'division_id' => $data['division_id'],
+                            'is_active' => true,
+                        ]);
+                        $positionId = $newPosition->id;
+                    } else {
+                        continue;
+                    }
+                    $positionIdsToSync[$positionId] = ['is_primary' => $posData['is_primary'] ?? false];
+                }
+                $user->positions()->sync($positionIdsToSync);
+            }
+
             $this->notificationService->notifyUser($user, [
                 'type' => 'system',
                 'subtype' => 'default_password',
@@ -132,9 +152,31 @@ class EmployeeService
      */
     public function updateEmployee(User $user, array $data): User
     {
-        $user->update($data);
+        return DB::transaction(function () use ($user, $data) {
+            $user->update($data);
 
-        return $user;
+            if (isset($data['positions']) && is_array($data['positions'])) {
+                $positionIdsToSync = [];
+                foreach ($data['positions'] as $posData) {
+                    if (!empty($posData['id']) && is_numeric($posData['id'])) {
+                        $positionId = $posData['id'];
+                    } elseif (!empty($posData['name'])) {
+                        $newPosition = clone \App\Modules\Personnel\Models\Position::create([
+                            'name' => $posData['name'],
+                            'division_id' => $data['division_id'] ?? $user->division_id,
+                            'is_active' => true,
+                        ]);
+                        $positionId = $newPosition->id;
+                    } else {
+                        continue;
+                    }
+                    $positionIdsToSync[$positionId] = ['is_primary' => $posData['is_primary'] ?? false];
+                }
+                $user->positions()->sync($positionIdsToSync);
+            }
+
+            return $user;
+        });
     }
 
     /**
