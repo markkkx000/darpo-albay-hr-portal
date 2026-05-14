@@ -12,6 +12,12 @@ interface Props {
 }
 
 export default function Create({ divisions, units, positions, employmentStatuses }: Props) {
+    const generateRandomPassword = () => {
+        const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+        return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    };
+
     const { data, setData, post, processing, errors, transform } = useForm({
         employee_number: '',
         first_name: '',
@@ -19,6 +25,7 @@ export default function Create({ divisions, units, positions, employmentStatuses
         email: '',
         sex: '',
         date_of_birth: '',
+        password: generateRandomPassword(),
         
         positions: [{ id: '', name: '', is_primary: true }],
         division_id: '',

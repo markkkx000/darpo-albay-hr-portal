@@ -87,7 +87,7 @@ class EmployeeService
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
                 'email' => $data['email'] ?? null,
-                'password' => Hash::make($data['password'] ?? 'password123'), // Default password or from data
+                'password' => Hash::make($data['password']), // Password is now provided from the form
                 'is_active' => $data['is_active'] ?? true,
                 'division_id' => $data['division_id'] ?? null,
                 'unit_id' => $data['unit_id'] ?? null,
@@ -118,7 +118,7 @@ class EmployeeService
                     if (! empty($posData['id']) && is_numeric($posData['id'])) {
                         $positionId = $posData['id'];
                     } elseif (! empty($posData['name'])) {
-                        $newPosition = clone Position::create([
+                        $newPosition = Position::create([
                             'name' => $posData['name'],
                             'division_id' => $data['division_id'],
                             'is_active' => true,
@@ -132,16 +132,7 @@ class EmployeeService
                 $user->positions()->sync($positionIdsToSync);
             }
 
-            $this->notificationService->notifyUser($user, [
-                'type' => 'system',
-                'subtype' => 'default_password',
-                'title' => 'Please change your default password',
-                'body' => 'Your account was created with a default password. Please change it immediately in your profile settings.',
-                'from' => 'System',
-                'priority' => 'high',
-                'dismissible' => false,
-                'url' => '/settings/security',
-            ]);
+            $this->sendDefaultPasswordNotification($user);
 
             return $user;
         });
@@ -161,7 +152,7 @@ class EmployeeService
                     if (! empty($posData['id']) && is_numeric($posData['id'])) {
                         $positionId = $posData['id'];
                     } elseif (! empty($posData['name'])) {
-                        $newPosition = clone Position::create([
+                        $newPosition = Position::create([
                             'name' => $posData['name'],
                             'division_id' => $data['division_id'] ?? $user->division_id,
                             'is_active' => true,
@@ -177,6 +168,39 @@ class EmployeeService
 
             return $user;
         });
+    }
+
+    /**
+     * Reset an employee's password to a random string.
+     */
+    public function resetPassword(User $user): string
+    {
+        $temporaryPassword = str()->random(8);
+
+        $user->update([
+            'password' => Hash::make($temporaryPassword),
+        ]);
+
+        $this->sendDefaultPasswordNotification($user);
+
+        return $temporaryPassword;
+    }
+
+    /**
+     * Send the default password change nudge notification.
+     */
+    protected function sendDefaultPasswordNotification(User $user): void
+    {
+        $this->notificationService->notifyUser($user, [
+            'type' => 'system',
+            'subtype' => 'default_password',
+            'title' => 'Please change your default password',
+            'body' => 'Your account was created or reset with a temporary password. Please change it immediately in your profile settings.',
+            'from' => 'System',
+            'priority' => 'high',
+            'dismissible' => false,
+            'url' => '/settings/security',
+        ]);
     }
 
     /**

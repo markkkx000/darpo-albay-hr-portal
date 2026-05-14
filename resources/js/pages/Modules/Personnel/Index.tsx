@@ -176,6 +176,7 @@ export default function Index({ employees, filters, divisions = [], employmentSt
                     employees={employees}
                     canEdit={auth?.permissions?.includes('personnel.manage')}
                     canDelete={auth?.permissions?.includes('personnel.manage')}
+                    canResetPassword={auth?.roles?.includes('super_admin')}
                 />
             </div>
         </>

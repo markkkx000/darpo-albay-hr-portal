@@ -12,6 +12,7 @@ use App\Modules\Personnel\Requests\EmployeeCreateRequest;
 use App\Modules\Personnel\Requests\EmployeeRestoreRequest;
 use App\Modules\Personnel\Requests\EmployeeUpdateRequest;
 use App\Modules\Personnel\Services\EmployeeService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -141,5 +142,20 @@ class PersonnelController extends Controller
 
         return redirect()->route('personnel.archived')
             ->with('success', 'Employee record restored successfully.');
+    }
+
+    /**
+     * Reset an employee's password.
+     */
+    public function resetPassword(User $user): JsonResponse
+    {
+        $this->authorize('roles.manage');
+
+        $newPassword = $this->employeeService->resetPassword($user);
+
+        return response()->json([
+            'message' => 'Password reset successfully.',
+            'new_password' => $newPassword,
+        ]);
     }
 }

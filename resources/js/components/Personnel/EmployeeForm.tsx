@@ -531,6 +531,48 @@ export function EmployeeForm({
                         </div>
                     </div>
                 </div>
+
+                {/* Account Security (New Employees Only) */}
+                {!employee && (
+                    <div className="space-y-4 md:col-span-2 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                        <div className="flex items-center gap-2 mb-4 border-b pb-2">
+                            <h3 className="text-sm font-black text-muted-foreground uppercase tracking-[0.2em]">Account Security</h3>
+                        </div>
+                        <div className="max-w-md space-y-4 p-4 rounded-xl border bg-muted/30">
+                            <div className="space-y-2">
+                                <Label htmlFor="password">Temporary Password <Required /></Label>
+                                <div className="flex gap-2">
+                                    <Input
+                                        id="password"
+                                        value={data.password || ''}
+                                        onChange={e => setData('password', e.target.value)}
+                                        aria-invalid={!!errors.password}
+                                        className={cn(
+                                            "font-mono tracking-wider",
+                                            errors.password && "border-destructive focus-visible:ring-destructive"
+                                        )}
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="shrink-0"
+                                        onClick={() => {
+                                            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                                            const pass = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+                                            setData('password', pass);
+                                        }}
+                                    >
+                                        Regenerate
+                                    </Button>
+                                </div>
+                                {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
+                                <p className="text-xs text-muted-foreground">
+                                    This temporary password will be used for the first login. The employee will be prompted to change it.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div className="flex items-center justify-end gap-3 pt-6 border-t border-border/50">
