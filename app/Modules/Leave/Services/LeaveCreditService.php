@@ -24,9 +24,9 @@ class LeaveCreditService
                         continue;
                     }
                     $query->where(function ($q) use ($keyword) {
-                        $q->where('first_name', 'like', "%{$keyword}%")
-                            ->orWhere('last_name', 'like', "%{$keyword}%")
-                            ->orWhere('employee_number', 'like', "%{$keyword}%");
+                        $q->where('first_name', 'ilike', "%{$keyword}%")
+                            ->orWhere('last_name', 'ilike', "%{$keyword}%")
+                            ->orWhere('employee_number', 'ilike', "%{$keyword}%");
                     });
                 }
             })
