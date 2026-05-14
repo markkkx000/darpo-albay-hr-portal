@@ -44,6 +44,7 @@ test('can create a new employee record', function () {
         'positions' => [['id' => $this->position->id, 'is_primary' => true]],
         'employment_status_id' => $this->status->id,
         'hire_date' => now()->format('Y-m-d'),
+        'password' => 'password123',
     ];
 
     $response = $this->actingAs($this->admin)->post(route('personnel.store'), $data);
@@ -106,6 +107,7 @@ test('validates unique employee number', function () {
         'positions' => [['id' => $this->position->id, 'is_primary' => true]],
         'employment_status_id' => $this->status->id,
         'hire_date' => now()->format('Y-m-d'),
+        'password' => 'password123',
     ];
 
     $response = $this->actingAs($this->admin)->post(route('personnel.store'), $data);

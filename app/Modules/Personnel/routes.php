@@ -22,3 +22,4 @@ Route::get('/{user}/edit', [PersonnelController::class, 'edit'])->name('edit');
 Route::put('/{user}', [PersonnelController::class, 'update'])->name('update');
 Route::delete('/{user}', [PersonnelController::class, 'destroy'])->name('destroy');
 Route::post('/{id}/restore', [PersonnelController::class, 'restore'])->name('restore');
+Route::post('/{user}/reset-password', [PersonnelController::class, 'resetPassword'])->name('reset-password');

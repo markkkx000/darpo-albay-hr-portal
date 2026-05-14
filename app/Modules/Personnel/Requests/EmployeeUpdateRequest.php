@@ -19,6 +19,7 @@ class EmployeeUpdateRequest extends FormRequest
         return [
             'employee_number' => ['nullable', 'string', Rule::unique('users', 'employee_number')->ignore($userId)],
             'first_name' => ['required', 'string', 'max:255'],
+            'middle_name' => ['nullable', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['nullable', 'email', Rule::unique('users', 'email')->ignore($userId)],
             'positions' => ['nullable', 'array'],

@@ -1,8 +1,8 @@
-import { router } from '@inertiajs/react';
-import { User as UserIcon } from 'lucide-react';
+import { router, useHttp } from '@inertiajs/react';
+import { User as UserIcon, Key, RefreshCcw, Copy, Check } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { ViewActionButton, EditActionButton, DeleteActionButton, RestoreActionButton } from '@/components/ActionButtons';
+import { ViewActionButton, EditActionButton, DeleteActionButton, RestoreActionButton, ActionButton } from '@/components/ActionButtons';
 import { Pagination } from '@/components/Pagination';
 
 import { Button } from '@/components/ui/button';
@@ -15,12 +15,13 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
-import { show as showRoute, edit as editRoute, destroy as destroyRoute, restore as restoreRoute } from '@/routes/personnel';
+import { show as showRoute, edit as editRoute, destroy as destroyRoute, restore as restoreRoute, resetPassword as resetPasswordRoute } from '@/routes/personnel';
 
 interface User {
     id: number;
     employee_number: string | null;
     first_name: string;
+    middle_name: string | null;
     last_name: string;
     email: string | null;
     division?: { name: string };
@@ -44,6 +45,7 @@ interface Props {
     canEdit?: boolean;
     canDelete?: boolean;
     canRestore?: boolean;
+    canResetPassword?: boolean;
     isArchivedView?: boolean;
 }
 
@@ -52,15 +54,22 @@ export function EmployeeTable({
     canEdit = false, 
     canDelete = false, 
     canRestore = false,
+    canResetPassword = false,
     isArchivedView = false 
 }: Props) {
     const [employeeToDelete, setEmployeeToDelete] = useState<User | null>(null);
     const [employeeToRestore, setEmployeeToRestore] = useState<User | null>(null);
+    const [employeeToReset, setEmployeeToReset] = useState<User | null>(null);
+    const [newPassword, setNewPassword] = useState<string | null>(null);
+    const [isResetting, setIsResetting] = useState(false);
+    const [copied, setCopied] = useState(false);
+
+    const http = useHttp();
 
     const formatDate = (date: string | null) => {
         if (!date) {
-return 'N/A';
-}
+            return 'N/A';
+        }
 
         return new Date(date).toLocaleDateString([], { month: 'short', day: '2-digit', year: 'numeric' });
     };
@@ -95,7 +104,84 @@ return 'N/A';
         }
     };
 
-    const fullName = (emp: User) => `${emp.first_name} ${emp.last_name}`;
+    const handleResetPassword = () => {
+        if (!employeeToReset) {
+            return;
+        }
+
+        setIsResetting(true);
+        http.post(resetPasswordRoute({ user: employeeToReset.id }).url, {
+            onSuccess: (response: any) => {
+                setNewPassword(response.new_password);
+                toast.success('Password reset successfully');
+            },
+            onError: () => {
+                toast.error('Failed to reset password');
+            },
+            onFinish: () => {
+                setIsResetting(false);
+                setEmployeeToReset(null);
+            }
+        });
+    };
+
+    const copyToClipboard = async () => {
+        if (!newPassword) {
+            return;
+        }
+
+        const onCopySuccess = () => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+            toast.success('Password copied to clipboard');
+        };
+
+        try {
+            // Priority 1: Modern Clipboard API (Requires HTTPS or Localhost)
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(newPassword);
+                onCopySuccess();
+
+                return;
+            }
+
+            // Priority 2: Fallback to execCommand (Works in HTTP)
+            const textArea = document.createElement("textarea");
+            textArea.value = newPassword;
+            
+            // Styling to ensure it's not visible but exists in DOM
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
+            textArea.style.opacity = "0";
+            textArea.setAttribute('readonly', ''); // Prevents keyboard popup on mobile
+            
+            document.body.appendChild(textArea);
+            
+            // Selection logic
+            textArea.focus();
+            textArea.select();
+            textArea.setSelectionRange(0, 99999); // For mobile compatibility
+
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            if (successful) {
+                onCopySuccess();
+            } else {
+                throw new Error('execCommand was unsuccessful');
+            }
+        } catch (err) {
+            console.error('Clipboard copy failed:', err);
+            toast.error('Could not copy automatically. Please select the password manually.');
+        }
+    };
+
+    const fullName = (emp: User) => {
+        const middleInitial = emp.middle_name ? ` ${emp.middle_name.charAt(0)}.` : '';
+
+        return `${emp.last_name}, ${emp.first_name}${middleInitial}`;
+    };
 
     return (
         <>
@@ -132,7 +218,7 @@ return 'N/A';
                                                 </div>
                                                 <div className="flex flex-col">
                                                     <span className="font-bold text-foreground group-hover:text-primary transition-colors">
-                                                        {employee.first_name || 'Missing'} {employee.last_name || 'Name'}
+                                                        {fullName(employee)}
                                                     </span>
                                                     <span className="text-[10px] text-muted-foreground font-mono tracking-tighter">
                                                         {employee.employee_number || 'NO-ID'}
@@ -159,20 +245,20 @@ return 'N/A';
                                                     const name = (employee.employment_status?.name || '').toLowerCase();
 
                                                     if (name.includes('permanent')) {
-return 'status-badge-permanent';
-}
+                                                        return 'status-badge-permanent';
+                                                    }
 
                                                     if (name.includes('co-terminous') || name.includes('coterminous') || name.includes('co terminous')) {
-return 'status-badge-coterminous';
-}
+                                                        return 'status-badge-coterminous';
+                                                    }
 
                                                     if (name.includes('contractual')) {
-return 'status-badge-contractual';
-}
+                                                        return 'status-badge-contractual';
+                                                    }
 
                                                     if (name.includes('casual')) {
-return 'status-badge-casual';
-}
+                                                        return 'status-badge-casual';
+                                                    }
 
                                                     return 'status-badge-unknown';
                                                 })()
@@ -204,6 +290,16 @@ return 'status-badge-casual';
                                                     />
                                                 )}
  
+                                                {canResetPassword && !isArchivedView && (
+                                                    <ActionButton
+                                                        onClick={() => setEmployeeToReset(employee)}
+                                                        title={`Reset password for ${fullName(employee)}`}
+                                                        icon={Key}
+                                                        variant="ghost"
+                                                        className="text-amber-500 hover:text-amber-600 hover:bg-amber-50"
+                                                    />
+                                                )}
+                                                
                                                 {canDelete && !isArchivedView && (
                                                     <DeleteActionButton 
                                                         onClick={() => setEmployeeToDelete(employee)} 
@@ -259,6 +355,62 @@ return 'status-badge-casual';
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setEmployeeToRestore(null)} className="btn-ghost-specular px-6 border-none">Cancel</Button>
                         <Button onClick={handleRestore} className="btn-ghost-specular px-6 border-none">Restore Employee</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Reset Password Confirmation Dialog */}
+            <Dialog open={!!employeeToReset} onOpenChange={(open) => !open && setEmployeeToReset(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Reset Password?</DialogTitle>
+                        <DialogDescription>
+                            This will reset the password for <strong>{employeeToReset ? fullName(employeeToReset) : ''}</strong> to a randomly generated string.
+                            You will be shown the new password once the reset is complete.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="ghost" onClick={() => setEmployeeToReset(null)} disabled={isResetting} className="btn-ghost-specular px-6 border-none">Cancel</Button>
+                        <Button onClick={handleResetPassword} disabled={isResetting} className="btn-ghost-specular px-6 border-none gap-2 text-amber-500">
+                            {isResetting ? <RefreshCcw className="h-4 w-4 animate-spin" /> : <Key className="h-4 w-4" />}
+                            Reset Password
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Success Modal with New Password */}
+            <Dialog open={!!newPassword} onOpenChange={(open) => !open && setNewPassword(null)}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <Check className="h-5 w-5 text-green-500" />
+                            Password Reset Successful
+                        </DialogTitle>
+                        <DialogDescription>
+                            The new temporary password has been generated. Please provide this to the employee.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex flex-col items-center gap-4 py-4">
+                        <div className="w-full p-6 bg-muted/50 rounded-2xl border border-dashed border-primary/20 flex flex-col items-center gap-3">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Temporary Password</span>
+                            <code className="text-3xl font-mono font-black tracking-widest text-primary select-all">
+                                {newPassword}
+                            </code>
+                        </div>
+                        <Button 
+                            variant="outline" 
+                            className="w-full gap-2 rounded-xl h-12" 
+                            onClick={copyToClipboard}
+                        >
+                            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                            {copied ? 'Copied!' : 'Copy Password'}
+                        </Button>
+                    </div>
+                    <DialogFooter>
+                        <Button onClick={() => setNewPassword(null)} className="btn-specular w-full rounded-xl h-12 border-none">
+                            Got it, I've saved the password
+                        </Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

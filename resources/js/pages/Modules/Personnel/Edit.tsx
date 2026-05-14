@@ -16,6 +16,7 @@ export default function Edit({ employee, divisions, units, positions, employment
     const { data, setData, put, processing, errors, transform } = useForm({
         employee_number: employee?.employee_number || '',
         first_name: employee?.first_name || '',
+        middle_name: employee?.middle_name || '',
         last_name: employee?.last_name || '',
         email: employee?.email || '',
         sex: employee?.sex || '',

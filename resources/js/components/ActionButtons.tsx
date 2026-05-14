@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { Edit, Eye, Trash2, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface ActionButtonProps {
     href?: string;
@@ -72,6 +73,32 @@ export const RestoreActionButton = ({ href, onClick, title }: ActionButtonProps)
             </Link>
         ) : (
             <RotateCcw className="h-4 w-4" />
+        )}
+    </Button>
+);
+
+interface GenericActionButtonProps extends ActionButtonProps {
+    icon: any;
+    variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+    className?: string;
+    disabled?: boolean;
+}
+
+export const ActionButton = ({ href, onClick, title, icon: Icon, variant = "ghost", className, disabled }: GenericActionButtonProps) => (
+    <Button 
+        size="sm" 
+        variant={variant}
+        asChild={!!href}
+        onClick={onClick}
+        disabled={disabled}
+        className={cn("border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform", className)}
+    >
+        {href ? (
+            <Link href={href} title={title} aria-label={title}>
+                <Icon className="h-4 w-4" />
+            </Link>
+        ) : (
+            <Icon className="h-4 w-4" />
         )}
     </Button>
 );

@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 
 interface Employee {
     first_name: string;
+    middle_name: string | null;
     last_name: string;
     employee_number: string | null;
     email: string | null;
@@ -58,7 +59,9 @@ export function EmployeeCard({ employee }: Props) {
                     </div>
                     <div className="flex-1 text-center md:text-left space-y-1">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-                            <h2 className="text-3xl font-black tracking-tighter text-foreground">{employee.first_name} {employee.last_name}</h2>
+                            <h2 className="text-3xl font-black tracking-tighter text-foreground">
+                                {`${employee.last_name.toUpperCase()}, ${employee.first_name}${employee.middle_name ? ' ' + employee.middle_name : ''}`}
+                            </h2>
                             <Badge variant="outline" className="font-mono bg-surface-2 border-border-2 px-3 py-1 rounded-xl w-fit mx-auto md:mx-0">
                                 {employee.employee_number || 'NO-ID'}
                             </Badge>

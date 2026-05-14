@@ -131,16 +131,15 @@ export function EmployeeForm({
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="employee_number">Employee Number <Required /></Label>
+                            <Label htmlFor="last_name">Last Name <Required /></Label>
                             <Input
-                                id="employee_number"
-                                value={data.employee_number}
-                                onChange={e => setData('employee_number', e.target.value)}
-                                placeholder="P-XXXX"
-                                aria-invalid={!!errors.employee_number}
-                                className={cn(errors.employee_number && "border-destructive focus-visible:ring-destructive")}
+                                id="last_name"
+                                value={data.last_name}
+                                onChange={e => setData('last_name', e.target.value)}
+                                aria-invalid={!!errors.last_name}
+                                className={cn(errors.last_name && "border-destructive focus-visible:ring-destructive")}
                             />
-                            {errors.employee_number && <p className="text-xs text-destructive">{errors.employee_number}</p>}
+                            {errors.last_name && <p className="text-xs text-destructive">{errors.last_name}</p>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="first_name">First Name <Required /></Label>
@@ -154,15 +153,36 @@ export function EmployeeForm({
                             {errors.first_name && <p className="text-xs text-destructive">{errors.first_name}</p>}
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="last_name">Last Name <Required /></Label>
+                            <Label htmlFor="middle_name">Middle Name</Label>
                             <Input
-                                id="last_name"
-                                value={data.last_name}
-                                onChange={e => setData('last_name', e.target.value)}
-                                aria-invalid={!!errors.last_name}
-                                className={cn(errors.last_name && "border-destructive focus-visible:ring-destructive")}
+                                id="middle_name"
+                                value={data.middle_name || ''}
+                                onChange={e => setData('middle_name', e.target.value)}
+                                aria-invalid={!!errors.middle_name}
+                                className={cn(errors.middle_name && "border-destructive focus-visible:ring-destructive")}
                             />
-                            {errors.last_name && <p className="text-xs text-destructive">{errors.last_name}</p>}
+                            {errors.middle_name && <p className="text-xs text-destructive">{errors.middle_name}</p>}
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="employee_number">Employee Number <Required /></Label>
+                            <Input
+                                id="employee_number"
+                                value={data.employee_number}
+                                onChange={e => setData('employee_number', e.target.value)}
+                                aria-invalid={!!errors.employee_number}
+                                className={cn(errors.employee_number && "border-destructive focus-visible:ring-destructive")}
+                            />
+                            {errors.employee_number && <p className="text-xs text-destructive">{errors.employee_number}</p>}
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="date_of_birth">Date of Birth</Label>
+                            <DatePicker
+                                id="birth_date"
+                                value={data.birth_date}
+                                onChange={val => setData('birth_date', val || '')}
+                                aria-invalid={!!errors.birth_date}
+                            />
+                            {errors.date_of_birth && <p className="text-xs text-destructive">{errors.date_of_birth}</p>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="sex">Sex</Label>
@@ -170,7 +190,7 @@ export function EmployeeForm({
                                 value={data.sex}
                                 onValueChange={value => setData('sex', value)}
                             >
-                                <SelectTrigger 
+                                <SelectTrigger
                                     aria-invalid={!!errors.sex}
                                     className={cn(errors.sex && "border-destructive focus:ring-destructive")}
                                 >
@@ -182,16 +202,6 @@ export function EmployeeForm({
                                 </SelectContent>
                             </Select>
                             {errors.sex && <p className="text-xs text-destructive">{errors.sex}</p>}
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="date_of_birth">Date of Birth</Label>
-                            <DatePicker
-                                id="birth_date"
-                                value={data.birth_date}
-                                onChange={val => setData('birth_date', val || '')}
-                                aria-invalid={!!errors.birth_date}
-                            />
-                            {errors.date_of_birth && <p className="text-xs text-destructive">{errors.date_of_birth}</p>}
                         </div>
                     </div>
                 </div>
@@ -210,7 +220,7 @@ export function EmployeeForm({
                                     setData(d => ({ ...d, division_id: value, unit_id: '', positions: [{ id: '', name: '', is_primary: true }] }));
                                 }}
                             >
-                                <SelectTrigger 
+                                <SelectTrigger
                                     aria-invalid={!!errors.division_id}
                                     className={cn(errors.division_id && "border-destructive focus:ring-destructive")}
                                 >
@@ -232,7 +242,7 @@ export function EmployeeForm({
                                 onValueChange={value => setData('unit_id', value)}
                                 disabled={!data.division_id || filteredUnits.length === 0}
                             >
-                                <SelectTrigger 
+                                <SelectTrigger
                                     aria-invalid={!!errors.unit_id}
                                     className={cn(errors.unit_id && "border-destructive focus:ring-destructive")}
                                 >
@@ -256,7 +266,7 @@ export function EmployeeForm({
                                     <span className="text-[#1c1c1e] font-bold">Add Position</span>
                                 </Button>
                             </div>
-                            
+
                             <div className="space-y-4 mt-2">
                                 {data.positions.map((pos: any, index: number) => (
                                     <div key={index} className="flex items-start gap-2 p-3 bg-surface-2/30 rounded-2xl border border-border/5">
@@ -271,7 +281,7 @@ export function EmployeeForm({
                                             {errors[`positions.${index}.id`] && <p className="text-xs text-destructive mt-1">{errors[`positions.${index}.id`]}</p>}
                                             {errors[`positions.${index}.name`] && <p className="text-xs text-destructive mt-1">{errors[`positions.${index}.name`]}</p>}
                                         </div>
-                                        
+
                                         <div className="flex items-center gap-1">
                                             <Button
                                                 type="button"
@@ -281,8 +291,8 @@ export function EmployeeForm({
                                                 onClick={() => handleSetPrimaryPosition(index)}
                                                 className={cn(
                                                     "rounded-2xl transition-all h-9 w-9 p-0 group",
-                                                    pos.is_primary 
-                                                        ? "item-hover-gradient border-none shadow-md" 
+                                                    pos.is_primary
+                                                        ? "item-hover-gradient border-none shadow-md"
                                                         : "btn-ghost-specular border-border/20"
                                                 )}
                                             >
@@ -291,7 +301,7 @@ export function EmployeeForm({
                                                     pos.is_primary ? "fill-current text-[#1c1c1e]" : "text-muted-foreground group-hover:text-foreground"
                                                 )} />
                                             </Button>
-                                            
+
                                             {data.positions.length > 1 && (
                                                 <Button
                                                     type="button"
@@ -316,7 +326,7 @@ export function EmployeeForm({
                                 value={data.employment_status_id?.toString() || ""}
                                 onValueChange={value => setData('employment_status_id', value)}
                             >
-                                <SelectTrigger 
+                                <SelectTrigger
                                     aria-invalid={!!errors.employment_status_id}
                                     className={cn(errors.employment_status_id && "border-destructive focus:ring-destructive")}
                                 >
@@ -459,7 +469,6 @@ export function EmployeeForm({
                                 id="prc_id_no"
                                 value={data.prc_id_no}
                                 onChange={e => handlePrcChange(e.target.value)}
-                                placeholder="Enter PRC ID Number"
                                 aria-invalid={!!errors.prc_id_no}
                                 className={cn(errors.prc_id_no && "border-destructive focus-visible:ring-destructive")}
                             />
@@ -492,7 +501,7 @@ export function EmployeeForm({
                                 type="email"
                                 value={data.email}
                                 onChange={e => setData('email', e.target.value)}
-                                placeholder="employee@agency.gov.ph"
+                                placeholder="example@example.com"
                                 aria-invalid={!!errors.email}
                                 className={cn(errors.email && "border-destructive focus-visible:ring-destructive")}
                             />
@@ -526,6 +535,48 @@ export function EmployeeForm({
                         </div>
                     </div>
                 </div>
+
+                {/* Account Security (New Employees Only) */}
+                {!employee && (
+                    <div className="space-y-4 md:col-span-2 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                        <div className="flex items-center gap-2 mb-4 border-b pb-2">
+                            <h3 className="text-sm font-black text-muted-foreground uppercase tracking-[0.2em]">Account Security</h3>
+                        </div>
+                        <div className="max-w-md space-y-4 p-4 rounded-xl border bg-muted/30">
+                            <div className="space-y-2">
+                                <Label htmlFor="password">Temporary Password <Required /></Label>
+                                <div className="flex gap-2">
+                                    <Input
+                                        id="password"
+                                        value={data.password || ''}
+                                        onChange={e => setData('password', e.target.value)}
+                                        aria-invalid={!!errors.password}
+                                        className={cn(
+                                            "font-mono tracking-wider",
+                                            errors.password && "border-destructive focus-visible:ring-destructive"
+                                        )}
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="shrink-0"
+                                        onClick={() => {
+                                            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                                            const pass = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+                                            setData('password', pass);
+                                        }}
+                                    >
+                                        Regenerate
+                                    </Button>
+                                </div>
+                                {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
+                                <p className="text-xs text-muted-foreground">
+                                    This temporary password will be used for the first login. The employee will be prompted to change it.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div className="flex items-center justify-end gap-3 pt-6 border-t border-border/50">

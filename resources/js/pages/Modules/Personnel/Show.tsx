@@ -14,7 +14,7 @@ export default function Show({ employee }: Props) {
 
     return (
         <>
-            <Head title={`${employee.first_name} ${employee.last_name} - Profile`} />
+            <Head title={`${[employee.first_name, employee.middle_name, employee.last_name].filter(Boolean).join(' ')} - Profile`} />
             
             <div className="space-y-6 p-4 max-w-5xl mx-auto">
                 <div className="flex items-center justify-between">
