@@ -1,5 +1,7 @@
 import { Link } from '@inertiajs/react';
+// Premium Employee Form Component
 import { Loader2, Save, AlertCircle, Plus, Trash2, Star } from 'lucide-react';
+import { DatePicker } from '@/components/date-picker';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -183,13 +185,11 @@ export function EmployeeForm({
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="date_of_birth">Date of Birth</Label>
-                            <Input
-                                id="date_of_birth"
-                                type="date"
-                                value={data.date_of_birth}
-                                onChange={e => setData('date_of_birth', e.target.value)}
-                                aria-invalid={!!errors.date_of_birth}
-                                className={cn(errors.date_of_birth && "border-destructive focus-visible:ring-destructive")}
+                            <DatePicker
+                                id="birth_date"
+                                value={data.birth_date}
+                                onChange={val => setData('birth_date', val || '')}
+                                aria-invalid={!!errors.birth_date}
                             />
                             {errors.date_of_birth && <p className="text-xs text-destructive">{errors.date_of_birth}</p>}
                         </div>
@@ -207,7 +207,7 @@ export function EmployeeForm({
                             <Select
                                 value={data.division_id?.toString() || ""}
                                 onValueChange={value => {
-                                    setData({ ...data, division_id: value, unit_id: '', positions: [{ id: '', name: '', is_primary: true }] });
+                                    setData(d => ({ ...d, division_id: value, unit_id: '', positions: [{ id: '', name: '', is_primary: true }] }));
                                 }}
                             >
                                 <SelectTrigger 
@@ -251,15 +251,15 @@ export function EmployeeForm({
                         <div className="space-y-3 md:col-span-3 pt-2">
                             <div className="flex items-center justify-between">
                                 <Label>Positions <Required /></Label>
-                                <Button type="button" variant="outline" size="sm" onClick={handleAddPosition} className="btn-ghost-specular border-border/20 rounded-2xl px-4 py-2 h-9 transition-all group">
-                                    <Plus className="h-4 w-4 mr-2 text-muted-foreground group-hover:text-[#1c1c1e] transition-colors" />
-                                    Add Position
+                                <Button type="button" variant="default" size="sm" onClick={handleAddPosition} className="btn-specular rounded-2xl px-6 py-2 h-9 transition-all group border-none shadow-md">
+                                    <Plus className="h-4 w-4 mr-2 text-[#1c1c1e] transition-colors" />
+                                    <span className="text-[#1c1c1e] font-bold">Add Position</span>
                                 </Button>
                             </div>
                             
-                            <div className="space-y-3">
+                            <div className="space-y-4 mt-2">
                                 {data.positions.map((pos: any, index: number) => (
-                                    <div key={index} className="flex items-start gap-2">
+                                    <div key={index} className="flex items-start gap-2 p-3 bg-surface-2/30 rounded-2xl border border-border/5">
                                         <div className="flex-1">
                                             <PositionCombobox
                                                 positions={filteredPositions}
@@ -288,7 +288,7 @@ export function EmployeeForm({
                                             >
                                                 <Star className={cn(
                                                     "h-4 w-4 transition-colors",
-                                                    pos.is_primary ? "fill-current text-[#1c1c1e]" : "text-muted-foreground group-hover:text-[#1c1c1e]"
+                                                    pos.is_primary ? "fill-current text-[#1c1c1e]" : "text-muted-foreground group-hover:text-foreground"
                                                 )} />
                                             </Button>
                                             
@@ -359,52 +359,44 @@ export function EmployeeForm({
 
                         <div className="space-y-2">
                             <Label htmlFor="hire_date">Date of Hire <Required /></Label>
-                            <Input
+                            <DatePicker
                                 id="hire_date"
-                                type="date"
                                 value={data.hire_date}
-                                onChange={e => setData('hire_date', e.target.value)}
+                                onChange={val => setData('hire_date', val || '')}
                                 aria-invalid={!!errors.hire_date}
-                                className={cn(errors.hire_date && "border-destructive focus-visible:ring-destructive")}
                             />
                             {errors.hire_date && <p className="text-xs text-destructive">{errors.hire_date}</p>}
                         </div>
 
                         <div className="space-y-2">
                             <Label htmlFor="orig_date_of_appointment">Orig Date of Appointment</Label>
-                            <Input
-                                id="orig_date_of_appointment"
-                                type="date"
-                                value={data.orig_date_of_appointment}
-                                onChange={e => setData('orig_date_of_appointment', e.target.value)}
-                                aria-invalid={!!errors.orig_date_of_appointment}
-                                className={cn(errors.orig_date_of_appointment && "border-destructive focus-visible:ring-destructive")}
+                            <DatePicker
+                                id="original_appointment_date"
+                                value={data.original_appointment_date}
+                                onChange={val => setData('original_appointment_date', val || '')}
+                                aria-invalid={!!errors.original_appointment_date}
                             />
                             {errors.orig_date_of_appointment && <p className="text-xs text-destructive">{errors.orig_date_of_appointment}</p>}
                         </div>
 
                         <div className="space-y-2">
                             <Label htmlFor="date_of_latest_appointment">Date of Latest Appointment</Label>
-                            <Input
+                            <DatePicker
                                 id="date_of_latest_appointment"
-                                type="date"
                                 value={data.date_of_latest_appointment}
-                                onChange={e => setData('date_of_latest_appointment', e.target.value)}
+                                onChange={val => setData('date_of_latest_appointment', val || '')}
                                 aria-invalid={!!errors.date_of_latest_appointment}
-                                className={cn(errors.date_of_latest_appointment && "border-destructive focus-visible:ring-destructive")}
                             />
                             {errors.date_of_latest_appointment && <p className="text-xs text-destructive">{errors.date_of_latest_appointment}</p>}
                         </div>
 
                         <div className="space-y-2">
                             <Label htmlFor="date_of_assumption">Date of Assumption</Label>
-                            <Input
+                            <DatePicker
                                 id="date_of_assumption"
-                                type="date"
                                 value={data.date_of_assumption}
-                                onChange={e => setData('date_of_assumption', e.target.value)}
+                                onChange={val => setData('date_of_assumption', val || '')}
                                 aria-invalid={!!errors.date_of_assumption}
-                                className={cn(errors.date_of_assumption && "border-destructive focus-visible:ring-destructive")}
                             />
                             {errors.date_of_assumption && <p className="text-xs text-destructive">{errors.date_of_assumption}</p>}
                         </div>
@@ -475,17 +467,12 @@ export function EmployeeForm({
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="prc_expiration">PRC Expiration</Label>
-                            <Input
+                            <DatePicker
                                 id="prc_expiration"
-                                type="date"
                                 value={data.prc_expiration}
-                                onChange={e => setData('prc_expiration', e.target.value)}
+                                onChange={val => setData('prc_expiration', val || '')}
                                 disabled={!isPrcNotEmpty}
                                 aria-invalid={!!errors.prc_expiration}
-                                className={cn(
-                                    !isPrcNotEmpty && "opacity-50 cursor-not-allowed",
-                                    errors.prc_expiration && "border-destructive focus-visible:ring-destructive"
-                                )}
                             />
                             {errors.prc_expiration && <p className="text-xs text-destructive">{errors.prc_expiration}</p>}
                         </div>

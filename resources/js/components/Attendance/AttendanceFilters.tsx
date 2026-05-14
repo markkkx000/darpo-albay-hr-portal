@@ -1,6 +1,7 @@
 import { router } from '@inertiajs/react';
-import { Search, X, Calendar, Filter, RefreshCw } from 'lucide-react';
+import { Search, X, Filter, RefreshCw } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
+import { DatePicker } from '@/components/date-picker';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -148,17 +149,14 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                 <div className="space-y-2.5 group">
                     <Label htmlFor="from_date" className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80 ml-0.5">From Date</Label>
                     <div className="relative focus-glow rounded-2xl">
-                        <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60 pointer-events-none group-focus-within:text-primary transition-colors z-10" />
-                        <Input
+                        <DatePicker
                             id="from_date"
-                            type="date"
                             value={fromDate}
-                            onChange={(e) => {
-                                const val = e.target.value;
-                                setFromDate(val);
-                                updateFilters({ from_date: val });
+                            onChange={(val) => {
+                                setFromDate(val || '');
+                                updateFilters({ from_date: val || '' });
                             }}
-                            className="input-etched !pl-11"
+                            className="!pl-11"
                         />
                     </div>
                 </div>
@@ -167,17 +165,14 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                 <div className="space-y-2.5 group">
                     <Label htmlFor="to_date" className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80 ml-0.5">To Date</Label>
                     <div className="relative focus-glow rounded-2xl">
-                        <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60 pointer-events-none group-focus-within:text-primary transition-colors z-10" />
-                        <Input
+                        <DatePicker
                             id="to_date"
-                            type="date"
                             value={toDate}
-                            onChange={(e) => {
-                                const val = e.target.value;
-                                setToDate(val);
-                                updateFilters({ to_date: val });
+                            onChange={(val) => {
+                                setToDate(val || '');
+                                updateFilters({ to_date: val || '' });
                             }}
-                            className="input-etched !pl-11"
+                            className="!pl-11"
                         />
                     </div>
                 </div>

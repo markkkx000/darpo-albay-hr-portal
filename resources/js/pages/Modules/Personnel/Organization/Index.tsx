@@ -205,7 +205,7 @@ export default function Index({ divisions }: Props) {
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
-                                                    <Button variant="ghost" size="sm" onClick={() => openDivisionDialog(div)} className="h-8 w-8 p-0 rounded-full hover:bg-primary/10 hover:text-primary">
+                                                    <Button variant="ghost" size="sm" onClick={() => openDivisionDialog(div)} className="h-10 w-10 p-0 rounded-full btn-ghost-specular border-none">
                                                         <Edit className="h-4 w-4" />
                                                     </Button>
                                                 </td>
@@ -255,7 +255,7 @@ export default function Index({ divisions }: Props) {
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
-                                                    <Button variant="ghost" size="sm" onClick={() => openUnitDialog(unit)} className="h-8 w-8 p-0 rounded-full hover:bg-primary/10 hover:text-primary">
+                                                    <Button variant="ghost" size="sm" onClick={() => openUnitDialog(unit)} className="h-10 w-10 p-0 rounded-full btn-ghost-specular border-none">
                                                         <Edit className="h-4 w-4" />
                                                     </Button>
                                                 </td>
@@ -305,7 +305,7 @@ export default function Index({ divisions }: Props) {
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
-                                                    <Button variant="ghost" size="sm" onClick={() => openPositionDialog(pos)} className="h-8 w-8 p-0 rounded-full hover:bg-primary/10 hover:text-primary">
+                                                    <Button variant="ghost" size="sm" onClick={() => openPositionDialog(pos)} className="h-10 w-10 p-0 rounded-full btn-ghost-specular border-none">
                                                         <Edit className="h-4 w-4" />
                                                     </Button>
                                                 </td>

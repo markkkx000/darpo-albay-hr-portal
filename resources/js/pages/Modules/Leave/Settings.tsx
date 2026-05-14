@@ -2,6 +2,7 @@ import { Head, router } from '@inertiajs/react';
 import { Plus, Power, PowerOff } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { DatePicker } from '@/components/date-picker';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -155,7 +156,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                             <form onSubmit={handleAddHoliday} className="flex space-x-2 mb-6 items-end">
                                 <div className="space-y-1 flex-1">
                                     <Label>Date</Label>
-                                    <Input type="date" value={holidayDate} onChange={e => setHolidayDate(e.target.value)} required />
+                                    <DatePicker value={holidayDate} onChange={val => setHolidayDate(val || '')} />
                                 </div>
                                 <div className="space-y-1 flex-1">
                                     <Label>Name</Label>

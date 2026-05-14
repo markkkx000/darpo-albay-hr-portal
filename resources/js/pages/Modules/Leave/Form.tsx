@@ -3,6 +3,7 @@ import { X, Plus, Trash2, AlertCircle } from 'lucide-react';
 import { useState, useEffect, useRef, useMemo, useSyncExternalStore } from 'react';
 import type { FormEvent } from 'react';
 import { toast } from 'sonner';
+import { DatePicker } from '@/components/date-picker';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { CreditPreview } from '@/components/Leave/CreditPreview';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -447,10 +448,9 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                             </div>
                             <div className="space-y-2">
                                 <Label>Date Filed</Label>
-                                <Input
-                                    type="date"
+                                <DatePicker
                                     value={data.date_filed}
-                                    onChange={e => setData('date_filed', e.target.value)}
+                                    onChange={val => setData('date_filed', val || '')}
                                 />
                                 {errors.date_filed && <p className="text-sm text-destructive">{errors.date_filed}</p>}
                             </div>
@@ -590,22 +590,20 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                                 <div className="grid grid-cols-3 gap-4">
                                          <div className="space-y-2">
                                              <Label>Start Date <Required /></Label>
-                                             <Input 
-                                                type="date" 
+                                             <DatePicker 
                                                 value={data.start_date} 
-                                                onChange={e => setData('start_date', e.target.value)} 
-                                               aria-invalid={!!errors.start_date}
+                                                onChange={val => setData('start_date', val || '')} 
+                                                aria-invalid={!!errors.start_date}
                                              />
                                              {errors.start_date && <p className="text-sm text-destructive">{errors.start_date}</p>}
                                              {errors.dates && <p className="text-sm text-destructive">{errors.dates}</p>}
                                          </div>
                                          <div className="space-y-2">
                                              <Label>End Date <Required /></Label>
-                                             <Input 
-                                                type="date" 
+                                             <DatePicker 
                                                 value={data.end_date} 
-                                                onChange={e => setData('end_date', e.target.value)} 
-                                               aria-invalid={!!errors.end_date}
+                                                onChange={val => setData('end_date', val || '')} 
+                                                aria-invalid={!!errors.end_date}
                                              />
                                              {errors.end_date && <p className="text-sm text-destructive">{errors.end_date}</p>}
                                          </div>
@@ -628,7 +626,7 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                                         <div className="col-span-2 space-y-2">
                                             <Label>Add Specific Date</Label>
                                             <div className="flex space-x-2">
-                                                <Input type="date" value={specificDateInput} onChange={e => setSpecificDateInput(e.target.value)} />
+                                                <DatePicker value={specificDateInput} onChange={val => setSpecificDateInput(val || '')} />
                                                 <Button type="button" variant="secondary" onClick={addSpecificDate}>Add Date</Button>
                                             </div>
                                             {errors.specific_dates && <p className="text-sm text-destructive">{errors.specific_dates}</p>}
@@ -667,11 +665,11 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                         <div className="grid grid-cols-3 gap-4">
                             <div className="space-y-2">
                                 <Label>Date Received</Label>
-                                <Input type="date" value={data.date_received} onChange={e => setData('date_received', e.target.value)} />
+                                <DatePicker value={data.date_received} onChange={val => setData('date_received', val || '')} />
                             </div>
                             <div className="space-y-2">
                                 <Label>Date Approved</Label>
-                                <Input type="date" value={data.date_approved} onChange={e => setData('date_approved', e.target.value)} />
+                                <DatePicker value={data.date_approved} onChange={val => setData('date_approved', val || '')} />
                             </div>
                             <div className="space-y-2">
                                 <Label>Approved By</Label>

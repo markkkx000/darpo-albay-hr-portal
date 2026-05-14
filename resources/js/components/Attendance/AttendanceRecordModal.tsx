@@ -6,6 +6,7 @@ import { Check, ChevronsUpDown, User as UserIcon } from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';
 import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
+import { DatePicker } from '@/components/date-picker';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -232,11 +233,11 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
 
                     <div className="grid gap-2">
                         <Label htmlFor="date">Date</Label>
-                        <Input
+                        <DatePicker
                             id="date"
-                            type="date"
                             value={data.date}
-                            onChange={(e) => setData('date', e.target.value)}
+                            onChange={(val) => setData('date', val || '')}
+                            aria-invalid={!!errors.date}
                         />
                         {errors.date && <p className="text-xs text-red-500">{errors.date}</p>}
                     </div>
