@@ -14,14 +14,14 @@ export const ViewActionButton = ({ href, onClick, title }: ActionButtonProps) =>
         size="sm" 
         asChild={!!href}
         onClick={onClick}
-        className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
+        className="btn-ghost-specular border-none h-10 w-10 p-0 rounded-full hover:scale-110 transition-transform"
     >
         {href ? (
             <Link href={href} title={title} aria-label={title}>
-                <Eye className="h-4 w-4" />
+                <Eye className="h-5 w-5" />
             </Link>
         ) : (
-            <Eye className="h-4 w-4" />
+            <Eye className="h-5 w-5" />
         )}
     </Button>
 );
@@ -31,14 +31,14 @@ export const EditActionButton = ({ href, onClick, title }: ActionButtonProps) =>
         size="sm" 
         asChild={!!href}
         onClick={onClick}
-        className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
+        className="btn-ghost-specular border-none h-10 w-10 p-0 rounded-full hover:scale-110 transition-transform"
     >
         {href ? (
             <Link href={href} title={title} aria-label={title}>
-                <Edit className="h-4 w-4" />
+                <Edit className="h-5 w-5" />
             </Link>
         ) : (
-            <Edit className="h-4 w-4" />
+            <Edit className="h-5 w-5" />
         )}
     </Button>
 );
@@ -48,14 +48,14 @@ export const DeleteActionButton = ({ href, onClick, title }: ActionButtonProps) 
         size="sm" 
         asChild={!!href}
         onClick={onClick}
-        className="btn-ghost-danger-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
+        className="btn-ghost-danger-specular border-none h-10 w-10 p-0 rounded-full hover:scale-110 transition-transform"
     >
         {href ? (
             <Link href={href} title={title} aria-label={title}>
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-5 w-5" />
             </Link>
         ) : (
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-5 w-5" />
         )}
     </Button>
 );
@@ -65,14 +65,14 @@ export const RestoreActionButton = ({ href, onClick, title }: ActionButtonProps)
         size="sm" 
         asChild={!!href}
         onClick={onClick}
-        className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform"
+        className="btn-ghost-specular border-none h-10 w-10 p-0 rounded-full hover:scale-110 transition-transform"
     >
         {href ? (
             <Link href={href} title={title} aria-label={title}>
-                <RotateCcw className="h-4 w-4" />
+                <RotateCcw className="h-5 w-5" />
             </Link>
         ) : (
-            <RotateCcw className="h-4 w-4" />
+            <RotateCcw className="h-5 w-5" />
         )}
     </Button>
 );
@@ -91,14 +91,14 @@ export const ActionButton = ({ href, onClick, title, icon: Icon, variant = "ghos
         asChild={!!href}
         onClick={onClick}
         disabled={disabled}
-        className={cn("border-none h-8 w-8 p-0 rounded-full hover:scale-110 transition-transform", className)}
+        className={cn("border-none h-10 w-10 p-0 rounded-full hover:scale-110 transition-transform", className)}
     >
         {href ? (
             <Link href={href} title={title} aria-label={title}>
-                <Icon className="h-4 w-4" />
+                <Icon className="h-5 w-5" />
             </Link>
         ) : (
-            <Icon className="h-4 w-4" />
+            <Icon className="h-5 w-5" />
         )}
     </Button>
 );

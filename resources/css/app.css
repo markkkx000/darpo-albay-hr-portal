@@ -460,6 +460,41 @@ table {
         @apply opacity-100;
     }
 
+    /* Hover-only Warning (Amber) Specular */
+    .btn-ghost-warning-specular {
+        @apply relative overflow-hidden transition-all duration-200 rounded-full;
+        background: var(--surface-1);
+        color: var(--foreground);
+        border: 1px solid var(--border-2);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .dark .btn-ghost-warning-specular { box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .btn-ghost-warning-specular:hover {
+        background: linear-gradient(135deg, #fff100 0%, #fde047 100%);
+        color: #000;
+        border-color: transparent;
+        box-shadow: 
+            0 1px 0 rgba(255, 255, 255, 0.25) inset,
+            0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+            0 8px 24px rgba(255, 241, 0, 0.35);
+    }
+    .btn-ghost-warning-specular:active {
+        transform: translateY(1px);
+        box-shadow: 
+            0 1px 0 rgba(255, 255, 255, 0.15) inset,
+            0 -1px 0 rgba(0, 0, 0, 0.2) inset,
+            0 4px 12px rgba(255, 241, 0, 0.25);
+    }
+    .btn-ghost-warning-specular::before {
+        content: '';
+        @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none opacity-0 transition-opacity duration-200;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
+        border-radius: 9999px 9999px 40% 40%;
+    }
+    .btn-ghost-warning-specular:hover::before {
+        @apply opacity-100;
+    }
+
     .sidebar-active-gradient {
         background: var(--grad-primary);
         box-shadow: 

@@ -296,7 +296,7 @@ export function EmployeeTable({
                                                         title={`Reset password for ${fullName(employee)}`}
                                                         icon={Key}
                                                         variant="ghost"
-                                                        className="text-amber-500 hover:text-amber-600 hover:bg-amber-50"
+                                                        className="h-10 w-10 p-0 rounded-full btn-ghost-warning-specular border-none text-yellow-600"
                                                     />
                                                 )}
                                                 
@@ -371,7 +371,7 @@ export function EmployeeTable({
                     </DialogHeader>
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setEmployeeToReset(null)} disabled={isResetting} className="btn-ghost-specular px-6 border-none">Cancel</Button>
-                        <Button onClick={handleResetPassword} disabled={isResetting} className="btn-ghost-specular px-6 border-none gap-2 text-amber-500">
+                        <Button onClick={handleResetPassword} disabled={isResetting} className="btn-ghost-warning-specular px-6 border-none gap-2 text-yellow-600">
                             {isResetting ? <RefreshCcw className="h-4 w-4 animate-spin" /> : <Key className="h-4 w-4" />}
                             Reset Password
                         </Button>
