@@ -176,7 +176,6 @@ return [];
                                                         {trackedTypes.map((type: any) => {
                                                             const credit = user.leave_credits?.find((c: any) => c.leave_type_id === type.id);
                                                             const balance = parseFloat(credit?.balance || '0');
-                                                            const shortName = type.name.split(' ').map((w: string) => w[0]).join('');
 
                                                             return (
                                                                 <Badge
@@ -188,7 +187,7 @@ return [];
                                                                         className="mr-1.5 h-1.5 w-1.5 rounded-full inline-block"
                                                                         style={{ backgroundColor: type.color_code }}
                                                                     />
-                                                                    <span className="text-muted-foreground mr-1 uppercase text-[10px]">{shortName}:</span>
+                                                                    <span className="text-muted-foreground mr-1 uppercase text-[10px]">{type.name}:</span>
                                                                     <span className="text-foreground">{balance.toFixed(2)}</span>
                                                                 </Badge>
                                                             );
