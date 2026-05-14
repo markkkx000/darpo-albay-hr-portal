@@ -129,16 +129,15 @@ export function EmployeeForm({
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="employee_number">Employee Number <Required /></Label>
+                            <Label htmlFor="last_name">Last Name <Required /></Label>
                             <Input
-                                id="employee_number"
-                                value={data.employee_number}
-                                onChange={e => setData('employee_number', e.target.value)}
-                                placeholder="P-XXXX"
-                                aria-invalid={!!errors.employee_number}
-                                className={cn(errors.employee_number && "border-destructive focus-visible:ring-destructive")}
+                                id="last_name"
+                                value={data.last_name}
+                                onChange={e => setData('last_name', e.target.value)}
+                                aria-invalid={!!errors.last_name}
+                                className={cn(errors.last_name && "border-destructive focus-visible:ring-destructive")}
                             />
-                            {errors.employee_number && <p className="text-xs text-destructive">{errors.employee_number}</p>}
+                            {errors.last_name && <p className="text-xs text-destructive">{errors.last_name}</p>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="first_name">First Name <Required /></Label>
@@ -163,34 +162,15 @@ export function EmployeeForm({
                             {errors.middle_name && <p className="text-xs text-destructive">{errors.middle_name}</p>}
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="last_name">Last Name <Required /></Label>
+                            <Label htmlFor="employee_number">Employee Number <Required /></Label>
                             <Input
-                                id="last_name"
-                                value={data.last_name}
-                                onChange={e => setData('last_name', e.target.value)}
-                                aria-invalid={!!errors.last_name}
-                                className={cn(errors.last_name && "border-destructive focus-visible:ring-destructive")}
+                                id="employee_number"
+                                value={data.employee_number}
+                                onChange={e => setData('employee_number', e.target.value)}
+                                aria-invalid={!!errors.employee_number}
+                                className={cn(errors.employee_number && "border-destructive focus-visible:ring-destructive")}
                             />
-                            {errors.last_name && <p className="text-xs text-destructive">{errors.last_name}</p>}
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="sex">Sex</Label>
-                            <Select
-                                value={data.sex}
-                                onValueChange={value => setData('sex', value)}
-                            >
-                                <SelectTrigger 
-                                    aria-invalid={!!errors.sex}
-                                    className={cn(errors.sex && "border-destructive focus:ring-destructive")}
-                                >
-                                    <SelectValue placeholder="Select Sex" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Male">Male</SelectItem>
-                                    <SelectItem value="Female">Female</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            {errors.sex && <p className="text-xs text-destructive">{errors.sex}</p>}
+                            {errors.employee_number && <p className="text-xs text-destructive">{errors.employee_number}</p>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="date_of_birth">Date of Birth</Label>
@@ -203,6 +183,25 @@ export function EmployeeForm({
                                 className={cn(errors.date_of_birth && "border-destructive focus-visible:ring-destructive")}
                             />
                             {errors.date_of_birth && <p className="text-xs text-destructive">{errors.date_of_birth}</p>}
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="sex">Sex</Label>
+                            <Select
+                                value={data.sex}
+                                onValueChange={value => setData('sex', value)}
+                            >
+                                <SelectTrigger
+                                    aria-invalid={!!errors.sex}
+                                    className={cn(errors.sex && "border-destructive focus:ring-destructive")}
+                                >
+                                    <SelectValue placeholder="Select Sex" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Male">Male</SelectItem>
+                                    <SelectItem value="Female">Female</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {errors.sex && <p className="text-xs text-destructive">{errors.sex}</p>}
                         </div>
                     </div>
                 </div>
@@ -221,7 +220,7 @@ export function EmployeeForm({
                                     setData(prev => ({ ...prev, division_id: value, unit_id: '', positions: [{ id: '', name: '', is_primary: true }] }));
                                 }}
                             >
-                                <SelectTrigger 
+                                <SelectTrigger
                                     aria-invalid={!!errors.division_id}
                                     className={cn(errors.division_id && "border-destructive focus:ring-destructive")}
                                 >
@@ -243,7 +242,7 @@ export function EmployeeForm({
                                 onValueChange={value => setData('unit_id', value)}
                                 disabled={!data.division_id || filteredUnits.length === 0}
                             >
-                                <SelectTrigger 
+                                <SelectTrigger
                                     aria-invalid={!!errors.unit_id}
                                     className={cn(errors.unit_id && "border-destructive focus:ring-destructive")}
                                 >
@@ -267,7 +266,7 @@ export function EmployeeForm({
                                     Add Position
                                 </Button>
                             </div>
-                            
+
                             <div className="space-y-3">
                                 {data.positions.map((pos: any, index: number) => (
                                     <div key={index} className="flex items-start gap-2">
@@ -282,7 +281,7 @@ export function EmployeeForm({
                                             {errors[`positions.${index}.id`] && <p className="text-xs text-destructive mt-1">{errors[`positions.${index}.id`]}</p>}
                                             {errors[`positions.${index}.name`] && <p className="text-xs text-destructive mt-1">{errors[`positions.${index}.name`]}</p>}
                                         </div>
-                                        
+
                                         <div className="flex items-center gap-1">
                                             <Button
                                                 type="button"
@@ -294,7 +293,7 @@ export function EmployeeForm({
                                             >
                                                 <Star className={cn("h-4 w-4", pos.is_primary ? "fill-current" : "")} />
                                             </Button>
-                                            
+
                                             {data.positions.length > 1 && (
                                                 <Button
                                                     type="button"
@@ -319,7 +318,7 @@ export function EmployeeForm({
                                 value={data.employment_status_id}
                                 onValueChange={value => setData('employment_status_id', value)}
                             >
-                                <SelectTrigger 
+                                <SelectTrigger
                                     aria-invalid={!!errors.employment_status_id}
                                     className={cn(errors.employment_status_id && "border-destructive focus:ring-destructive")}
                                 >
@@ -470,7 +469,6 @@ export function EmployeeForm({
                                 id="prc_id_no"
                                 value={data.prc_id_no}
                                 onChange={e => handlePrcChange(e.target.value)}
-                                placeholder="Enter PRC ID Number"
                                 aria-invalid={!!errors.prc_id_no}
                                 className={cn(errors.prc_id_no && "border-destructive focus-visible:ring-destructive")}
                             />
@@ -508,7 +506,7 @@ export function EmployeeForm({
                                 type="email"
                                 value={data.email}
                                 onChange={e => setData('email', e.target.value)}
-                                placeholder="employee@agency.gov.ph"
+                                placeholder="example@example.com"
                                 aria-invalid={!!errors.email}
                                 className={cn(errors.email && "border-destructive focus-visible:ring-destructive")}
                             />
