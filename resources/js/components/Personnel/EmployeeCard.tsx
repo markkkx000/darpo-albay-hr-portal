@@ -47,8 +47,8 @@ export function EmployeeCard({ employee }: Props) {
 
     const iconContainerClass = 'p-2.5 rounded-xl border border-border/20 transition-all duration-200 group-hover:item-hover-gradient';
     const iconClass = 'h-4 w-4 text-muted-foreground group-hover:text-black transition-colors duration-200';
-    const labelClass = 'text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black transition-colors duration-200';
-    const valueClass = 'text-sm font-bold text-foreground/90 group-hover:text-black transition-colors duration-200';
+    const labelClass = 'text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors duration-200';
+    const valueClass = 'text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors duration-200';
 
     return (
         <div className="matte-card elev-2 overflow-hidden">

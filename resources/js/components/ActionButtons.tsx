@@ -18,10 +18,10 @@ export const ViewActionButton = ({ href, onClick, title }: ActionButtonProps) =>
     >
         {href ? (
             <Link href={href} title={title} aria-label={title}>
-                <Eye className="h-5 w-5" />
+                <Eye className="h-4 w-4" />
             </Link>
         ) : (
-            <Eye className="h-5 w-5" />
+            <Eye className="h-4 w-4" />
         )}
     </Button>
 );
@@ -35,10 +35,10 @@ export const EditActionButton = ({ href, onClick, title }: ActionButtonProps) =>
     >
         {href ? (
             <Link href={href} title={title} aria-label={title}>
-                <Edit className="h-5 w-5" />
+                <Edit className="h-4 w-4" />
             </Link>
         ) : (
-            <Edit className="h-5 w-5" />
+            <Edit className="h-4 w-4" />
         )}
     </Button>
 );
@@ -52,10 +52,10 @@ export const DeleteActionButton = ({ href, onClick, title }: ActionButtonProps) 
     >
         {href ? (
             <Link href={href} title={title} aria-label={title}>
-                <Trash2 className="h-5 w-5" />
+                <Trash2 className="h-4 w-4" />
             </Link>
         ) : (
-            <Trash2 className="h-5 w-5" />
+            <Trash2 className="h-4 w-4" />
         )}
     </Button>
 );
@@ -69,10 +69,10 @@ export const RestoreActionButton = ({ href, onClick, title }: ActionButtonProps)
     >
         {href ? (
             <Link href={href} title={title} aria-label={title}>
-                <RotateCcw className="h-5 w-5" />
+                <RotateCcw className="h-4 w-4" />
             </Link>
         ) : (
-            <RotateCcw className="h-5 w-5" />
+            <RotateCcw className="h-4 w-4" />
         )}
     </Button>
 );
@@ -91,14 +91,14 @@ export const ActionButton = ({ href, onClick, title, icon: Icon, variant = "ghos
         asChild={!!href}
         onClick={onClick}
         disabled={disabled}
-        className={cn("border-none h-10 w-10 p-0 rounded-full hover:scale-110 transition-transform", className)}
+        className={cn("border-none h-10 w-10 p-0 rounded-full hover:scale-110 transition-transform dark:hover:text-black", className)}
     >
         {href ? (
             <Link href={href} title={title} aria-label={title}>
-                <Icon className="h-5 w-5" />
+                <Icon className="h-4 w-4" />
             </Link>
         ) : (
-            <Icon className="h-5 w-5" />
+            <Icon className="h-4 w-4" />
         )}
     </Button>
 );
