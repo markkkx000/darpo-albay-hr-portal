@@ -507,11 +507,11 @@ table {
 
     /* Technique 04: Mesh Gradients */
     .mesh-container {
-        @apply relative overflow-hidden bg-background;
+        @apply relative overflow-hidden;
     }
 
     .mesh-blob {
-        @apply absolute rounded-full blur-[80px] pointer-events-none opacity-20 dark:opacity-30;
+        @apply absolute rounded-full blur-[80px] pointer-events-none opacity-40 dark:opacity-50;
         animation: blobFloat 12s ease-in-out infinite;
     }
 
