@@ -68,7 +68,7 @@ export function PositionCombobox({ positions, value, onChange, disabled, placeho
           aria-expanded={open}
           disabled={disabled}
           className={cn(
-            "w-full justify-between font-normal",
+            "w-full justify-between font-normal bg-transparent rounded-2xl transition-all",
             !displayName && "text-muted-foreground"
           )}
         >
@@ -93,7 +93,7 @@ return 1;
             <CommandEmpty>
               {inputValue ? (
                 <div 
-                  className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+                  className="relative flex cursor-pointer select-none items-center rounded-2xl px-2 py-1.5 text-sm outline-none hover:item-hover-gradient transition-all"
                   onClick={() => handleSelect(inputValue)}
                 >
                   <Plus className="mr-2 h-4 w-4" />
@@ -107,6 +107,7 @@ return 1;
                   key={position.id}
                   value={position.name}
                   onSelect={() => handleSelect(position.name)}
+                  className="aria-selected:item-hover-gradient rounded-2xl transition-all"
                 >
                   <Check
                     className={cn(
@@ -122,6 +123,7 @@ return 1;
                 <CommandItem
                   value={inputValue}
                   onSelect={() => handleSelect(inputValue)}
+                  className="aria-selected:item-hover-gradient rounded-2xl transition-all"
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   Create "{inputValue}"

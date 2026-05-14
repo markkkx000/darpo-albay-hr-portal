@@ -205,9 +205,9 @@ export function EmployeeForm({
                         <div className="space-y-2">
                             <Label htmlFor="division_id">Division <Required /></Label>
                             <Select
-                                value={data.division_id}
+                                value={data.division_id?.toString() || ""}
                                 onValueChange={value => {
-                                    setData(prev => ({ ...prev, division_id: value, unit_id: '', positions: [{ id: '', name: '', is_primary: true }] }));
+                                    setData({ ...data, division_id: value, unit_id: '', positions: [{ id: '', name: '', is_primary: true }] });
                                 }}
                             >
                                 <SelectTrigger 
@@ -228,7 +228,7 @@ export function EmployeeForm({
                         <div className="space-y-2">
                             <Label htmlFor="unit_id">Unit</Label>
                             <Select
-                                value={data.unit_id}
+                                value={data.unit_id?.toString() || ""}
                                 onValueChange={value => setData('unit_id', value)}
                                 disabled={!data.division_id || filteredUnits.length === 0}
                             >
@@ -248,11 +248,11 @@ export function EmployeeForm({
                             {errors.unit_id && <p className="text-xs text-destructive">{errors.unit_id}</p>}
                         </div>
 
-                        <div className="space-y-4 md:col-span-3 border p-4 rounded-xl bg-card">
+                        <div className="space-y-3 md:col-span-3 pt-2">
                             <div className="flex items-center justify-between">
                                 <Label>Positions <Required /></Label>
-                                <Button type="button" variant="outline" size="sm" onClick={handleAddPosition}>
-                                    <Plus className="h-4 w-4 mr-2" />
+                                <Button type="button" variant="outline" size="sm" onClick={handleAddPosition} className="btn-ghost-specular border-border/20 rounded-2xl px-4 py-2 h-9 transition-all group">
+                                    <Plus className="h-4 w-4 mr-2 text-muted-foreground group-hover:text-[#1c1c1e] transition-colors" />
                                     Add Position
                                 </Button>
                             </div>
@@ -279,9 +279,17 @@ export function EmployeeForm({
                                                 size="icon"
                                                 title={pos.is_primary ? "Primary Position" : "Set as Primary"}
                                                 onClick={() => handleSetPrimaryPosition(index)}
-                                                className={pos.is_primary ? "bg-amber-500 hover:bg-amber-600 text-white border-none" : ""}
+                                                className={cn(
+                                                    "rounded-2xl transition-all h-9 w-9 p-0 group",
+                                                    pos.is_primary 
+                                                        ? "item-hover-gradient border-none shadow-md" 
+                                                        : "btn-ghost-specular border-border/20"
+                                                )}
                                             >
-                                                <Star className={cn("h-4 w-4", pos.is_primary ? "fill-current" : "")} />
+                                                <Star className={cn(
+                                                    "h-4 w-4 transition-colors",
+                                                    pos.is_primary ? "fill-current text-[#1c1c1e]" : "text-muted-foreground group-hover:text-[#1c1c1e]"
+                                                )} />
                                             </Button>
                                             
                                             {data.positions.length > 1 && (
@@ -289,10 +297,10 @@ export function EmployeeForm({
                                                     type="button"
                                                     variant="outline"
                                                     size="icon"
-                                                    className="text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/20"
+                                                    className="btn-ghost-danger-specular border-border/20 h-9 w-9 p-0 rounded-full hover:scale-110 transition-all duration-300 group"
                                                     onClick={() => handleRemovePosition(index)}
                                                 >
-                                                    <Trash2 className="h-4 w-4" />
+                                                    <Trash2 className="h-4 w-4 text-muted-foreground group-hover:text-white transition-colors" />
                                                 </Button>
                                             )}
                                         </div>
@@ -305,7 +313,7 @@ export function EmployeeForm({
                         <div className="space-y-2">
                             <Label htmlFor="employment_status_id">Employment Status <Required /></Label>
                             <Select
-                                value={data.employment_status_id}
+                                value={data.employment_status_id?.toString() || ""}
                                 onValueChange={value => setData('employment_status_id', value)}
                             >
                                 <SelectTrigger 

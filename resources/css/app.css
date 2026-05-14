@@ -74,7 +74,7 @@
 
 @utility item-hover-gradient {
     background: var(--grad-primary) !important;
-    color: #000 !important;
+    color: #1c1c1e !important;
     font-weight: 600 !important;
     border-radius: var(--r-lg) !important;
     transition-property: all;
