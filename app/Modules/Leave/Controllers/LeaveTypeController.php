@@ -4,38 +4,21 @@ namespace App\Modules\Leave\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Leave\Models\LeaveType;
-use Illuminate\Http\Request;
+use App\Modules\Leave\Requests\StoreLeaveTypeRequest;
+use App\Modules\Leave\Requests\UpdateLeaveTypeRequest;
 
 class LeaveTypeController extends Controller
 {
-    public function store(Request $request)
+    public function store(StoreLeaveTypeRequest $request)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:leave_types,name'],
-            'abbreviation' => ['nullable', 'string', 'max:20'],
-            'description' => ['nullable', 'string', 'max:255'],
-            'color_code' => ['nullable', 'string', 'max:50'],
-            'is_cumulative' => ['nullable', 'boolean'],
-            'is_active' => ['boolean'],
-        ]);
-
-        LeaveType::create($data);
+        LeaveType::create($request->validated());
 
         return redirect()->back()->with('success', 'Leave Type added successfully.');
     }
 
-    public function update(Request $request, LeaveType $leaveType)
+    public function update(UpdateLeaveTypeRequest $request, LeaveType $leaveType)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:leave_types,name,'.$leaveType->id],
-            'abbreviation' => ['nullable', 'string', 'max:20'],
-            'description' => ['nullable', 'string', 'max:255'],
-            'color_code' => ['nullable', 'string', 'max:50'],
-            'is_cumulative' => ['nullable', 'boolean'],
-            'is_active' => ['boolean'],
-        ]);
-
-        $leaveType->update($data);
+        $leaveType->update($request->validated());
 
         return redirect()->back()->with('success', 'Leave Type updated successfully.');
     }

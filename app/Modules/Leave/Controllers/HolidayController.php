@@ -4,30 +4,21 @@ namespace App\Modules\Leave\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Leave\Models\Holiday;
-use Illuminate\Http\Request;
+use App\Modules\Leave\Requests\StoreHolidayRequest;
+use App\Modules\Leave\Requests\UpdateHolidayRequest;
 
 class HolidayController extends Controller
 {
-    public function store(Request $request)
+    public function store(StoreHolidayRequest $request)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'date' => ['required', 'date'],
-        ]);
-
-        Holiday::create($data);
+        Holiday::create($request->validated());
 
         return redirect()->back()->with('success', 'Holiday added successfully.');
     }
 
-    public function update(Request $request, Holiday $holiday)
+    public function update(UpdateHolidayRequest $request, Holiday $holiday)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'date' => ['required', 'date'],
-        ]);
-
-        $holiday->update($data);
+        $holiday->update($request->validated());
 
         return redirect()->back()->with('success', 'Holiday updated successfully.');
     }

@@ -4,30 +4,21 @@ namespace App\Modules\Leave\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Leave\Models\LeaveStatus;
-use Illuminate\Http\Request;
+use App\Modules\Leave\Requests\StoreLeaveStatusRequest;
+use App\Modules\Leave\Requests\UpdateLeaveStatusRequest;
 
 class LeaveStatusController extends Controller
 {
-    public function store(Request $request)
+    public function store(StoreLeaveStatusRequest $request)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:leave_statuses,name'],
-            'is_active' => ['boolean'],
-        ]);
-
-        LeaveStatus::create($data);
+        LeaveStatus::create($request->validated());
 
         return redirect()->back()->with('success', 'Leave Status added successfully.');
     }
 
-    public function update(Request $request, LeaveStatus $leaveStatus)
+    public function update(UpdateLeaveStatusRequest $request, LeaveStatus $leaveStatus)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:leave_statuses,name,'.$leaveStatus->id],
-            'is_active' => ['boolean'],
-        ]);
-
-        $leaveStatus->update($data);
+        $leaveStatus->update($request->validated());
 
         return redirect()->back()->with('success', 'Leave Status updated successfully.');
     }

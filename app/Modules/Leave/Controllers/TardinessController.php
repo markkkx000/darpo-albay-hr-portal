@@ -5,6 +5,7 @@ namespace App\Modules\Leave\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\Leave\Models\TardinessRecord;
+use App\Modules\Leave\Requests\UpdateTardinessRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -43,14 +44,8 @@ class TardinessController extends Controller
         ]);
     }
 
-    public function update(Request $request, $userId)
+    public function update(UpdateTardinessRequest $request, $userId)
     {
-        $request->validate([
-            'year' => ['required', 'integer'],
-            'month' => ['required', 'integer', 'between:1,12'],
-            'tardiness_count' => ['required', 'integer', 'min:0'],
-            'undertime_count' => ['required', 'integer', 'min:0'],
-        ]);
 
         TardinessRecord::updateOrCreate(
             [
