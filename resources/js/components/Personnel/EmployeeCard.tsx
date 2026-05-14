@@ -1,5 +1,6 @@
 import { Mail, Phone, MapPin, Calendar, Briefcase, Building2, User as UserIcon, BadgeInfo, Building, FileText, CreditCard } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 interface Employee {
     first_name: string;
@@ -13,7 +14,7 @@ interface Employee {
     unit?: { name: string };
     position?: { name: string };
     employment_status?: { name: string };
-    
+
     sex: string | null;
     date_of_birth: string | null;
     age: number | null;
@@ -37,11 +38,14 @@ interface Props {
 export function EmployeeCard({ employee }: Props) {
     const formatDate = (date: string | null) => {
         if (!date) {
-return 'Not set';
-}
+            return 'Not set';
+        }
 
         return new Date(date).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' });
     };
+
+    const iconContainerClass = 'p-2.5 rounded-xl border border-border/20 transition-all duration-200 group-hover:item-hover-gradient';
+    const iconClass = 'h-4 w-4 text-muted-foreground group-hover:text-black transition-colors duration-200';
 
     return (
         <div className="matte-card elev-2 overflow-hidden">
@@ -75,9 +79,9 @@ return 'Not set';
                     </div>
                 </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
-                
+
                 {/* Personal & Contact Information */}
                 <div className="space-y-6">
                     <div className="flex items-center gap-2">
@@ -86,46 +90,48 @@ return 'Not set';
                     </div>
                     <div className="space-y-4">
                         <div className="flex items-center gap-4 group">
-                            <div className="p-2.5 rounded-xl bg-muted/40 group-hover:bg-primary/10 border border-border/20 group-hover:border-primary/20 transition-all duration-300">
-                                <UserIcon className="h-4 w-4 text-primary" />
+                            <div className={iconContainerClass}>
+                                <UserIcon className={iconClass} />
                             </div>
                             <div className="grid grid-cols-3 w-full">
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Sex</span>
-                                    <span className="text-sm font-bold text-foreground/90">{employee.sex || 'Not set'}</span>
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black transition-colors">Sex</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black transition-colors">{employee.sex || 'Not set'}</span>
                                 </div>
                                 <div className="flex flex-col col-span-2">
-                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Birthdate / Age</span>
-                                    <span className="text-sm font-bold text-foreground/90">{formatDate(employee.date_of_birth)} ({employee.age ? `${employee.age} yrs` : 'N/A'})</span>
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black transition-colors">Birthdate / Age</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black transition-colors">{formatDate(employee.date_of_birth)} ({employee.age ? `${employee.age} yrs` : 'N/A'})</span>
                                 </div>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-4 group">
-                            <div className="p-2.5 rounded-xl bg-muted/40 group-hover:bg-primary/10 border border-border/20 group-hover:border-primary/20 transition-all duration-300">
-                                <Mail className="h-4 w-4 text-primary" />
+                            <div className={iconContainerClass}>
+                                <Mail className={iconClass} />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Email Address</span>
-                                <span className="text-sm font-bold text-foreground/90">{employee.email || 'No email provided'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black transition-colors">Email Address</span>
+                                <span className="text-sm font-bold text-foreground/90 group-hover:text-black transition-colors">{employee.email || 'No email provided'}</span>
                             </div>
                         </div>
+
                         <div className="flex items-center gap-4 group">
-                            <div className="p-2.5 rounded-xl bg-muted/40 group-hover:bg-primary/10 border border-border/20 group-hover:border-primary/20 transition-all duration-300">
-                                <Phone className="h-4 w-4 text-primary" />
+                            <div className={iconContainerClass}>
+                                <Phone className={iconClass} />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Contact Number</span>
-                                <span className="text-sm font-bold text-foreground/90">{employee.contact_number || 'No contact number'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black transition-colors">Contact Number</span>
+                                <span className="text-sm font-bold text-foreground/90 group-hover:text-black transition-colors">{employee.contact_number || 'No contact number'}</span>
                             </div>
                         </div>
-                        <div className="flex items-center gap-4 group items-start">
-                            <div className="p-2.5 rounded-xl bg-muted/40 group-hover:bg-primary/10 border border-border/20 group-hover:border-primary/20 transition-all duration-300 mt-1">
-                                <MapPin className="h-4 w-4 text-primary" />
+
+                        <div className="flex items-start gap-4 group">
+                            <div className={cn(iconContainerClass, 'mt-1')}>
+                                <MapPin className={iconClass} />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Residential Address</span>
-                                <span className="text-sm font-bold leading-relaxed text-foreground/90">{employee.address || 'Address not listed'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black transition-colors">Residential Address</span>
+                                <span className="text-sm font-bold leading-relaxed text-foreground/90 group-hover:text-black transition-colors">{employee.address || 'Address not listed'}</span>
                             </div>
                         </div>
                     </div>
@@ -139,55 +145,58 @@ return 'Not set';
                     </div>
                     <div className="space-y-4">
                         <div className="flex items-center gap-4 group">
-                            <div className="p-2.5 rounded-xl bg-muted/40 group-hover:bg-primary/10 border border-border/20 group-hover:border-primary/20 transition-all duration-300">
-                                <Calendar className="h-4 w-4 text-primary" />
+                            <div className={iconContainerClass}>
+                                <Calendar className={iconClass} />
                             </div>
                             <div className="grid grid-cols-2 w-full gap-2">
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Date of Hire</span>
-                                    <span className="text-sm font-bold text-foreground/90">{formatDate(employee.hire_date)}</span>
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black transition-colors">Date of Hire</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black transition-colors">{formatDate(employee.hire_date)}</span>
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Years in Service</span>
-                                    <span className="text-sm font-bold text-foreground/90">{employee.years_in_service ? `${employee.years_in_service} years` : 'Not set'}</span>
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black transition-colors">Years in Service</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black transition-colors">{employee.years_in_service ? `${employee.years_in_service} years` : 'Not set'}</span>
                                 </div>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-4 group">
-                            <div className="p-2.5 rounded-xl bg-muted/40 group-hover:bg-primary/10 border border-border/20 group-hover:border-primary/20 transition-all duration-300">
-                                <Briefcase className="h-4 w-4 text-primary" />
+                            <div className={iconContainerClass}>
+                                <Briefcase className={iconClass} />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Employment Status</span>
-                                <Badge className="mt-1 w-fit uppercase text-[10px] py-0.5 px-3 font-black rounded-full shadow-lg shadow-primary/10">
+                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black transition-colors">Employment Status</span>
+                                <span
+                                    className="mt-1 w-fit uppercase text-[10px] py-0.5 px-3 font-black rounded-full text-black shadow-lg shadow-primary/20"
+                                    style={{ background: 'var(--grad-primary)' }}
+                                >
                                     {employee.employment_status?.name || 'N/A'}
-                                </Badge>
+                                </span>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-4 group">
-                            <div className="p-2.5 rounded-xl bg-muted/40 group-hover:bg-primary/10 border border-border/20 group-hover:border-primary/20 transition-all duration-300">
-                                <FileText className="h-4 w-4 text-primary" />
+                            <div className={iconContainerClass}>
+                                <FileText className={iconClass} />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Plantilla Number</span>
-                                <span className="text-sm font-bold text-foreground/90">{employee.plantilla_number || 'Not set'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black transition-colors">Plantilla Number</span>
+                                <span className="text-sm font-bold text-foreground/90 group-hover:text-black transition-colors">{employee.plantilla_number || 'Not set'}</span>
                             </div>
                         </div>
-                        
+
                         <div className="flex items-center gap-4 group">
-                            <div className="p-2.5 rounded-xl bg-muted/40 group-hover:bg-primary/10 border border-border/20 group-hover:border-primary/20 transition-all duration-300">
-                                <Calendar className="h-4 w-4 text-primary" />
+                            <div className={iconContainerClass}>
+                                <Calendar className={iconClass} />
                             </div>
                             <div className="grid grid-cols-2 w-full gap-2">
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Orig Appointment</span>
-                                    <span className="text-sm font-bold text-foreground/90">{formatDate(employee.orig_date_of_appointment)}</span>
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black transition-colors">Orig Appointment</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black transition-colors">{formatDate(employee.orig_date_of_appointment)}</span>
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">Latest Appointment</span>
-                                    <span className="text-sm font-bold text-foreground/90">{formatDate(employee.date_of_latest_appointment)}</span>
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black transition-colors">Latest Appointment</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black transition-colors">{formatDate(employee.date_of_latest_appointment)}</span>
                                 </div>
                             </div>
                         </div>
@@ -201,43 +210,43 @@ return 'Not set';
                         <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">Government IDs & Credentials</h3>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30">
-                            <BadgeInfo className="h-5 w-5 text-muted-foreground" />
+                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
+                            <BadgeInfo className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
                             <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase">GSIS BP No.</span>
-                                <span className="text-sm font-bold">{employee.gsis_bp_number || 'N/A'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">GSIS BP No.</span>
+                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.gsis_bp_number || 'N/A'}</span>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30">
-                            <CreditCard className="h-5 w-5 text-muted-foreground" />
+                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
+                            <CreditCard className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
                             <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase">PhilHealth</span>
-                                <span className="text-sm font-bold">{employee.philhealth || 'N/A'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PhilHealth</span>
+                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.philhealth || 'N/A'}</span>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30">
-                            <BadgeInfo className="h-5 w-5 text-muted-foreground" />
+                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
+                            <BadgeInfo className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
                             <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase">PAGIBIG No.</span>
-                                <span className="text-sm font-bold">{employee.hdmf_pagibig_no || 'N/A'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PAGIBIG No.</span>
+                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.hdmf_pagibig_no || 'N/A'}</span>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30">
-                            <CreditCard className="h-5 w-5 text-muted-foreground" />
+                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
+                            <CreditCard className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
                             <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase">TIN Number</span>
-                                <span className="text-sm font-bold">{employee.tin_number || 'N/A'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">TIN Number</span>
+                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.tin_number || 'N/A'}</span>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 col-span-2">
-                            <BadgeInfo className="h-5 w-5 text-muted-foreground" />
+                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 col-span-2 group hover:item-hover-gradient transition-all duration-200">
+                            <BadgeInfo className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
                             <div className="flex flex-col flex-1">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase">PRC ID No.</span>
-                                <span className="text-sm font-bold">{employee.prc_id_no || 'N/A'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PRC ID No.</span>
+                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.prc_id_no || 'N/A'}</span>
                             </div>
                             <div className="flex flex-col pl-4 border-l border-border/50">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase">Expiration</span>
-                                <span className="text-sm font-bold">{formatDate(employee.prc_expiration)}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">Expiration</span>
+                                <span className="text-sm font-bold group-hover:text-black transition-colors">{formatDate(employee.prc_expiration)}</span>
                             </div>
                         </div>
                     </div>
