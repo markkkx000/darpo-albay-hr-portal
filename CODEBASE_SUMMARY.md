@@ -121,7 +121,7 @@ resources/js/
     Announcements/               # AnnouncementCard, AnnouncementForm, RichTextEditor, TargetSelector
     Attendance/                  # AttendanceFilters, AttendanceHistory, AttendanceRecordModal, AttendanceStatus, ClockDisplay
     Leave/CreditPreview.tsx      # Module-specific components
-    Personnel/                   # EmployeeCard, EmployeeForm, EmployeeTable
+    Personnel/                   # EmployeeCard, EmployeeForm, EmployeeTable, PositionCombobox
     Roles/                       # RoleModal, RoleAssignmentModal, RolesNavigation
     app-sidebar.tsx
     app-sidebar-header.tsx       # Global header with breadcrumbs + NotificationBell
@@ -139,6 +139,7 @@ routes/
 
 database/
   factories/                     # UserFactory, AnnouncementFactory, AttendanceFactory, DivisionFactory, PositionFactory, EmploymentStatusFactory
+                                   # Note: UserFactory does NOT include position_id — use user->positions()->sync() after factory creation
   seeders/                       # DatabaseSeeder, RoleAndPermissionSeeder, PersonnelSeeder, LeaveTypeSeeder, LeaveStatusSeeder, HolidaySeeder
 
 tests/
@@ -191,9 +192,11 @@ tests/
 
 ### Personnel Directory Module (`app/Modules/Personnel/`)
 - **Employee CRUD**: Full create, read, update, soft delete, and restore via `EmployeeService`. Extensive profile fields including Personal Information, Employment Details, Contact Information, and Government IDs/Credentials. Auto-calculates `age` based on birthdate.
-- **Lookup Tables**: `divisions`, `units`, `positions`, `employment_statuses` — all use `is_active` flag, never hard deleted. `units` and `positions` are hierarchically nested under a `division`.
+- **Multi-Position Architecture**: Employees are linked to positions via a `position_user` **many-to-many pivot table** (not a `position_id` column on `users`). The pivot includes an `is_primary` boolean to distinguish the employee's primary role from secondary ones. The `User` model exposes a `positions()` `belongsToMany` relationship. This is the source of truth — never reference a `position_id` column on `users`.
+- **Dynamic Position Creation**: The `PositionCombobox` React component (in `resources/js/components/Personnel/`) allows selecting existing positions or typing a new name to create one on-the-fly. The `EmployeeService` handles new position creation inside a database transaction when syncing pivot data.
+- **Lookup Tables**: `divisions`, `units`, `positions`, `employment_statuses` — all use `is_active` flag, never hard deleted. `units` and `positions` are hierarchically nested under a `division`. Each user belongs to exactly one `division_id` and optionally one `unit_id` (primary assignment), but can hold multiple positions.
 - **Organization Management**: Dedicated management dashboard for Divisions, Units, and Positions (`Organization/Index.tsx`) via `OrganizationController` and `OrganizationService`. Full CRUD with form requests for each entity type.
-- **Dynamic Field Logic**: Position and Unit dropdowns filter by selected Division in create/edit forms. PRC Expiration is automatically enabled/disabled based on validation of a 7-digit PRC ID number.
+- **Dynamic Field Logic**: Position and Unit comboboxes filter by selected Division in create/edit forms. PRC Expiration is automatically enabled/disabled based on validation of a 7-digit PRC ID number.
 - **Soft Delete & Restoration**: Archived employees viewable by `personnel.view` users (read-only at `Archived.tsx`). Restore restricted to `personnel.manage` users via `/personnel/archived`.
 - **Search & Filtering**: By name, employee number, division, employment status. 500ms debounce with Enter key trigger.
 - **Permissions**: `personnel.view` (hr_staff, hr_admin, super_admin), `personnel.manage` (hr_admin, super_admin).
@@ -210,7 +213,7 @@ tests/
 
 ### Notifications Infrastructure (Hybrid: `app/Core/Services/` + `app/Modules/Notifications/`)
 This is **infrastructure, not a feature module**. It is a hybrid: the dispatch/management service lives in `app/Core/Services/NotificationService.php` (consumed by all modules), while the UI routes and pages live in `app/Modules/Notifications/` (auto-registered by `ModuleServiceProvider`). It has **no sidebar link** — no `navigation.php` file exists.
-- **Core Service**: `NotificationService` provides `notifyUser()`, `notifyDepartment()`, `notifyPosition()`, `notifyAll()`, `markAsRead()`, `markAllAsRead()`, `dismissBySubtype()`. Any module can inject this service to dispatch notifications.
+- **Core Service**: `NotificationService` provides `notifyUser()`, `notifyDepartment()`, `notifyPosition()`, `notifyAll()`, `markAsRead()`, `markAllAsRead()`, `dismissBySubtype()`. Any module can inject this service to dispatch notifications. `notifyPosition()` queries the `positions` relationship (`whereHas`) — never the removed `position_id` column.
 - **Notification Class**: A single `GenericDatabaseNotification` handles all types. The `type`, `subtype`, `priority`, and `dismissible` fields in the JSON payload differentiate behavior.
 - **Bell Icon**: `NotificationBell.tsx` renders in the global `AppSidebarHeader` on every authenticated page. Shows unread count badge (from `appNotifications.unread_count` shared prop). Opens a dropdown with the 20 most recent notifications fetched via `fetch()` to `GET /notifications/recent` (JSON endpoint).
 - **Full Page**: `GET /notifications` renders `Index.tsx` — a paginated list using shared `Pagination.tsx`.

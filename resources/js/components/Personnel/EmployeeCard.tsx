@@ -12,7 +12,7 @@ interface Employee {
     hire_date: string | null;
     division?: { name: string };
     unit?: { name: string };
-    position?: { name: string };
+    positions?: Array<{ name: string; pivot: { is_primary: boolean } }>;
     employment_status?: { name: string };
 
     sex: string | null;
@@ -63,7 +63,11 @@ export function EmployeeCard({ employee }: Props) {
                         </div>
                         <div className="flex items-center justify-center md:justify-start gap-2 text-primary font-bold">
                             <Briefcase className="h-4 w-4" />
-                            <span className="text-sm uppercase tracking-wide">{employee.position?.name || 'Unassigned Position'}</span>
+                            <span className="text-sm uppercase tracking-wide">
+                                {employee.positions?.length 
+                                    ? employee.positions.map(p => p.name).join(' • ') 
+                                    : 'Unassigned Position'}
+                            </span>
                         </div>
                         <div className="flex flex-col md:flex-row items-center md:justify-start gap-2 text-muted-foreground text-sm font-medium">
                             <div className="flex items-center gap-1">

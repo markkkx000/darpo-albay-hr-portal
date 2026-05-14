@@ -25,7 +25,7 @@ interface User {
     email: string | null;
     division?: { name: string };
     unit?: { name: string };
-    position?: { name: string };
+    positions?: Array<{ name: string; pivot: { is_primary: boolean } }>;
     employment_status?: { name: string };
     hire_date: string | null;
     deleted_at: string | null;
@@ -143,7 +143,13 @@ return 'N/A';
                                         <td className="px-6 py-4">
                                             <div className="flex flex-col">
                                                 <span className="font-semibold text-sm">{employee.division?.name || 'No Division'}</span>
-                                                <span className="text-[11px] text-muted-foreground">{employee.unit?.name || 'No Unit'} &bull; {employee.position?.name || 'No Position'}</span>
+                                                <span className="text-[11px] text-muted-foreground">
+                                                    {employee.unit?.name || 'No Unit'} &bull; {
+                                                        employee.positions?.length 
+                                                            ? (employee.positions.find(p => p.pivot?.is_primary)?.name || employee.positions[0].name) + (employee.positions.length > 1 ? ` (+${employee.positions.length - 1})` : '')
+                                                            : 'No Position'
+                                                    }
+                                                </span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
