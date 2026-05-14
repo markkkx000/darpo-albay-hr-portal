@@ -1,10 +1,18 @@
 import { Head, router } from '@inertiajs/react';
-import { Plus, Power, PowerOff } from 'lucide-react';
+import { Pipette, Plus, Power, PowerOff } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { cn } from '@/lib/utils';
 import { store as holidays_store, destroy as holidays_destroy } from '@/routes/leave/holidays/index';
 import { settings, index as leave_index } from '@/routes/leave/index';
@@ -18,6 +26,8 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
     const [holidayName, setHolidayName] = useState('');
     const [holidayDate, setHolidayDate] = useState('');
     const [typeName, setTypeName] = useState('');
+    const [typeAbbreviation, setTypeAbbreviation] = useState('');
+    const [typeIsCumulative, setTypeIsCumulative] = useState<string>('null');
     const [typeDescription, setTypeDescription] = useState('');
     const [typeColor, setTypeColor] = useState('#3b82f6');
     const [statusName, setStatusName] = useState('');
@@ -50,6 +60,8 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
         e.preventDefault();
         router.post(types_store().url, {
             name: typeName,
+            abbreviation: typeAbbreviation,
+            is_cumulative: typeIsCumulative === 'true' ? true : (typeIsCumulative === 'false' ? false : null),
             description: typeDescription,
             color_code: typeColor,
             is_active: true,
@@ -58,6 +70,8 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
             onSuccess: () => {
                 toast.success('Leave type added successfully');
                 setTypeName('');
+                setTypeAbbreviation('');
+                setTypeIsCumulative('null');
                 setTypeDescription('');
                 setTypeColor('#3b82f6');
             }
@@ -188,20 +202,54 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                             <div className="p-6">
                                 <h2 className="t-headline mb-4">Leave Types</h2>
                                 
-                                <form onSubmit={handleAddType} className="space-y-3 mb-6 p-4 matte-card elev-1 bg-muted/30">
-                                    <div className="grid grid-cols-2 gap-3">
+                                <form onSubmit={handleAddType} className="space-y-4 mb-6 p-4 matte-card elev-1 bg-muted/30">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-1">
                                             <Label>Name</Label>
                                             <Input value={typeName} onChange={e => setTypeName(e.target.value)} placeholder="e.g. Vacation Leave" required />
                                         </div>
                                         <div className="space-y-1">
+                                            <Label>Abbreviation</Label>
+                                            <Input value={typeAbbreviation} onChange={e => setTypeAbbreviation(e.target.value)} placeholder="e.g. VL" />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
                                             <Label>Color</Label>
                                             <div className="flex space-x-2">
-                                                <Input type="color" value={typeColor} onChange={e => setTypeColor(e.target.value)} className="w-12 p-1" />
+                                                <div className="relative w-12 h-9 shrink-0 group/color">
+                                                    <div 
+                                                        className="absolute inset-0 rounded-2xl border border-border shadow-sm transition-all group-hover/color:brightness-90 active:scale-95 flex items-center justify-center" 
+                                                        style={{ backgroundColor: typeColor }}
+                                                    >
+                                                        <Pipette className="h-4 w-4 text-white opacity-0 group-hover/color:opacity-100 transition-opacity drop-shadow-sm" />
+                                                    </div>
+                                                    <input 
+                                                        type="color" 
+                                                        value={typeColor} 
+                                                        onChange={e => setTypeColor(e.target.value)} 
+                                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                                                    />
+                                                </div>
                                                 <Input value={typeColor} onChange={e => setTypeColor(e.target.value)} className="flex-1" />
                                             </div>
                                         </div>
+                                        <div>
+                                            <Label htmlFor="cumulative">Credit Behavior</Label>
+                                            <Select value={typeIsCumulative} onValueChange={setTypeIsCumulative}>
+                                                <SelectTrigger id="cumulative" className="bg-background">
+                                                    <SelectValue placeholder="Select behavior" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="true">Cumulative</SelectItem>
+                                                    <SelectItem value="false">Non-Cumulative</SelectItem>
+                                                    <SelectItem value="null">N/A </SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
                                     </div>
+
                                     <div className="space-y-1">
                                         <Label>Description (Optional)</Label>
                                         <Input value={typeDescription} onChange={e => setTypeDescription(e.target.value)} placeholder="Short description..." />
@@ -217,7 +265,13 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                             <div className="flex items-center space-x-3">
                                                 <div className="w-4 h-4 rounded-full shrink-0" style={{ backgroundColor: t.color_code }}></div>
                                                 <div>
-                                                    <span className="font-medium block">{t.name}</span>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-bold block">{t.name}</span>
+                                                        {t.abbreviation && <Badge variant="outline" className="text-[10px] font-mono px-1.5 py-0 h-4 bg-muted/50">{t.abbreviation}</Badge>}
+                                                        {t.is_cumulative === true && <Badge variant="secondary" className="text-[9px] uppercase tracking-tighter px-1 py-0 h-4 bg-primary/10 text-primary border-none">Cumulative</Badge>}
+                                                        {t.is_cumulative === false && <Badge variant="outline" className="text-[9px] uppercase tracking-tighter px-1 py-0 h-4 border-muted-foreground/30 text-muted-foreground">Non-Cumulative</Badge>}
+                                                        {t.is_cumulative === null && <Badge variant="outline" className="text-[9px] uppercase tracking-tighter px-1 py-0 h-4 text-muted-foreground/50 border-muted-foreground/20 border-dashed italic">N/A</Badge>}
+                                                    </div>
                                                     {t.description && <span className="text-xs text-muted-foreground">{t.description}</span>}
                                                 </div>
                                             </div>
