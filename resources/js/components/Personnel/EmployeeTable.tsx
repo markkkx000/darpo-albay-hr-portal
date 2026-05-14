@@ -178,7 +178,9 @@ export function EmployeeTable({
     };
 
     const fullName = (emp: User) => {
-        return [emp.first_name, emp.middle_name, emp.last_name].filter(Boolean).join(' ');
+        const middleInitial = emp.middle_name ? ` ${emp.middle_name.charAt(0)}.` : '';
+
+        return `${emp.last_name}, ${emp.first_name}${middleInitial}`;
     };
 
     return (

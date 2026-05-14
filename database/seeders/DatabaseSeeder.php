@@ -27,13 +27,14 @@ class DatabaseSeeder extends Seeder
         $adminPosition = Position::where('name', 'Provincial Chief Administrative Officer')->where('division_id', $stod->id)->first();
         $staffPosition = Position::where('name', 'HR Staff')->where('division_id', $stod->id)->first();
 
-        // Create a Super Admin (no employee number, uses email login)
+        // Create a Super Admin
         $superAdmin = User::updateOrCreate(
-            ['email' => 'admin@darpo-albay.gov.ph'],
+            ['employee_number' => 'superadmin'],
             [
-                'employee_number' => null,
                 'first_name' => 'Super',
+                'middle_name' => 'Central',
                 'last_name' => 'Admin',
+                'email' => 'admin@darpo-albay.gov.ph',
                 'password' => bcrypt('password'),
                 'is_active' => true,
             ]
@@ -42,11 +43,12 @@ class DatabaseSeeder extends Seeder
 
         // Create an HR Admin
         $hrAdmin = User::updateOrCreate(
-            ['email' => 'maria.santos@darpo-albay.gov.ph'],
+            ['employee_number' => 'hradmin'],
             [
-                'employee_number' => 'HR-0001',
-                'first_name' => 'Maria',
-                'last_name' => 'Santos',
+                'first_name' => 'HR',
+                'middle_name' => 'Management',
+                'last_name' => 'Admin',
+                'email' => 'maria.santos@darpo-albay.gov.ph',
                 'password' => bcrypt('password'),
                 'division_id' => $stod->id,
                 'employment_status_id' => $permanent?->id,
@@ -61,11 +63,12 @@ class DatabaseSeeder extends Seeder
 
         // Create an HR Staff
         $hrStaff = User::updateOrCreate(
-            ['email' => 'juan.delacruz@darpo-albay.gov.ph'],
+            ['employee_number' => 'hrstaff'],
             [
-                'employee_number' => 'HR-0002',
-                'first_name' => 'Juan',
-                'last_name' => 'Dela Cruz',
+                'first_name' => 'HR',
+                'middle_name' => 'Support',
+                'last_name' => 'Staff',
+                'email' => 'juan.delacruz@darpo-albay.gov.ph',
                 'password' => bcrypt('password'),
                 'division_id' => $stod->id,
                 'employment_status_id' => $permanent?->id,
@@ -78,12 +81,13 @@ class DatabaseSeeder extends Seeder
             $hrStaff->positions()->sync([$staffPosition->id => ['is_primary' => true]]);
         }
 
-        // Create a regular Employee (no email, uses employee number login)
+        // Create a regular Employee
         $employee = User::updateOrCreate(
-            ['employee_number' => 'EMP-0001'],
+            ['employee_number' => 'E-0123456789'],
             [
-                'first_name' => 'Ana',
-                'last_name' => 'Reyes',
+                'first_name' => 'John',
+                'middle_name' => 'Quincy',
+                'last_name' => 'Doe',
                 'email' => null,
                 'password' => bcrypt('password'),
                 'is_active' => true,

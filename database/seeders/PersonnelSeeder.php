@@ -192,11 +192,12 @@ class PersonnelSeeder extends Seeder
 
         // Ensure at least one HR Admin exists for testing
         $hrAdmin = User::updateOrCreate(
-            ['email' => 'hr@darpo.gov.ph'],
+            ['employee_number' => 'hradmin'],
             [
                 'first_name' => 'HR',
+                'middle_name' => 'Management',
                 'last_name' => 'Admin',
-                'employee_number' => 'HR-001',
+                'email' => 'hr@darpo.gov.ph',
                 'password' => bcrypt('password'), // or use factory default
                 'is_active' => true,
             ]
