@@ -31,6 +31,7 @@ class EmployeeService
                         }
                         $q->where(function ($inner) use ($keyword) {
                             $inner->where('first_name', 'ilike', "%{$keyword}%")
+                                ->orWhere('middle_name', 'ilike', "%{$keyword}%")
                                 ->orWhere('last_name', 'ilike', "%{$keyword}%")
                                 ->orWhere('employee_number', 'ilike', "%{$keyword}%");
                         });
@@ -44,7 +45,8 @@ class EmployeeService
                 $query->where('employment_status_id', $statusId);
             })
             ->orderBy('last_name')
-            ->orderBy('first_name');
+            ->orderBy('first_name')
+            ->orderBy('middle_name');
 
         return $query->paginate(15)->withQueryString();
     }
@@ -65,6 +67,7 @@ class EmployeeService
                         }
                         $q->where(function ($inner) use ($keyword) {
                             $inner->where('first_name', 'ilike', "%{$keyword}%")
+                                ->orWhere('middle_name', 'ilike', "%{$keyword}%")
                                 ->orWhere('last_name', 'ilike', "%{$keyword}%")
                                 ->orWhere('employee_number', 'ilike', "%{$keyword}%");
                         });
@@ -85,6 +88,7 @@ class EmployeeService
             $user = User::create([
                 'employee_number' => $data['employee_number'],
                 'first_name' => $data['first_name'],
+                'middle_name' => $data['middle_name'] ?? null,
                 'last_name' => $data['last_name'],
                 'email' => $data['email'] ?? null,
                 'password' => Hash::make($data['password']), // Password is now provided from the form

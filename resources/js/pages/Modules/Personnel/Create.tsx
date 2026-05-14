@@ -21,6 +21,7 @@ export default function Create({ divisions, units, positions, employmentStatuses
     const { data, setData, post, processing, errors, transform } = useForm({
         employee_number: '',
         first_name: '',
+        middle_name: '',
         last_name: '',
         email: '',
         sex: '',

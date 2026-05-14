@@ -23,7 +23,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['employee_number', 'first_name', 'last_name', 'email', 'password', 'is_active', 'division_id', 'unit_id', 'employment_status_id', 'hire_date', 'contact_number', 'address', 'sex', 'date_of_birth', 'years_in_service', 'plantilla_number', 'gsis_bp_number', 'philhealth', 'hdmf_pagibig_no', 'tin_number', 'prc_id_no', 'prc_expiration', 'orig_date_of_appointment', 'date_of_latest_appointment', 'date_of_assumption'])]
+#[Fillable(['employee_number', 'first_name', 'middle_name', 'last_name', 'email', 'password', 'is_active', 'division_id', 'unit_id', 'employment_status_id', 'hire_date', 'contact_number', 'address', 'sex', 'date_of_birth', 'years_in_service', 'plantilla_number', 'gsis_bp_number', 'philhealth', 'hdmf_pagibig_no', 'tin_number', 'prc_id_no', 'prc_expiration', 'orig_date_of_appointment', 'date_of_latest_appointment', 'date_of_assumption'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -57,7 +57,9 @@ class User extends Authenticatable
      */
     public function getNameAttribute(): string
     {
-        return "{$this->first_name} {$this->last_name}";
+        return collect([$this->first_name, $this->middle_name, $this->last_name])
+            ->filter()
+            ->implode(' ');
     }
 
     public function getAgeAttribute(): ?int

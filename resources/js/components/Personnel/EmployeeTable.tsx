@@ -21,6 +21,7 @@ interface User {
     id: number;
     employee_number: string | null;
     first_name: string;
+    middle_name: string | null;
     last_name: string;
     email: string | null;
     division?: { name: string };
@@ -140,6 +141,7 @@ export function EmployeeTable({
             if (navigator.clipboard && window.isSecureContext) {
                 await navigator.clipboard.writeText(newPassword);
                 onCopySuccess();
+
                 return;
             }
 
@@ -175,7 +177,9 @@ export function EmployeeTable({
         }
     };
 
-    const fullName = (emp: User) => `${emp.first_name} ${emp.last_name}`;
+    const fullName = (emp: User) => {
+        return [emp.first_name, emp.middle_name, emp.last_name].filter(Boolean).join(' ');
+    };
 
     return (
         <>
@@ -212,7 +216,7 @@ export function EmployeeTable({
                                                 </div>
                                                 <div className="flex flex-col">
                                                     <span className="font-bold text-foreground group-hover:text-primary transition-colors">
-                                                        {employee.first_name || 'Missing'} {employee.last_name || 'Name'}
+                                                        {fullName(employee)}
                                                     </span>
                                                     <span className="text-[10px] text-muted-foreground font-mono tracking-tighter">
                                                         {employee.employee_number || 'NO-ID'}

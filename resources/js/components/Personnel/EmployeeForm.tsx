@@ -152,6 +152,17 @@ export function EmployeeForm({
                             {errors.first_name && <p className="text-xs text-destructive">{errors.first_name}</p>}
                         </div>
                         <div className="space-y-2">
+                            <Label htmlFor="middle_name">Middle Name</Label>
+                            <Input
+                                id="middle_name"
+                                value={data.middle_name || ''}
+                                onChange={e => setData('middle_name', e.target.value)}
+                                aria-invalid={!!errors.middle_name}
+                                className={cn(errors.middle_name && "border-destructive focus-visible:ring-destructive")}
+                            />
+                            {errors.middle_name && <p className="text-xs text-destructive">{errors.middle_name}</p>}
+                        </div>
+                        <div className="space-y-2">
                             <Label htmlFor="last_name">Last Name <Required /></Label>
                             <Input
                                 id="last_name"
