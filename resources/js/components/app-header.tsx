@@ -148,7 +148,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                                     item.href,
                                                     activeItemStyles,
                                                 ),
-                                                'h-9 cursor-pointer px-3 rounded-full transition-all hover:bg-primary/5',
+                                                'h-9 cursor-pointer px-3 rounded-full transition-all hover:item-hover-gradient hover:text-black',
                                             )}
                                         >
                                             {item.icon && (
@@ -175,7 +175,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                                 href={toUrl(item.href)}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="group inline-flex h-9 w-9 items-center justify-center rounded-full bg-transparent p-0 text-sm font-medium text-accent-foreground ring-offset-background transition-colors hover:bg-primary/5 hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                                                className="group inline-flex h-9 w-9 items-center justify-center rounded-full bg-transparent p-0 text-sm font-medium text-accent-foreground ring-offset-background transition-all hover:item-hover-gradient hover:text-black focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
                                             >
                                                 <span className="sr-only">
                                                     {item.title}
@@ -196,7 +196,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                             <DropdownMenuTrigger asChild>
                                 <Button
                                     variant="ghost"
-                                    className="size-10 rounded-full p-1 hover:ring-2 hover:ring-primary/20 transition-all"
+                                    className="size-10 rounded-full p-1 hover:item-hover-gradient hover:text-black hover:ring-2 hover:ring-primary/20 transition-all"
                                 >
                                     <Avatar className="size-8 overflow-hidden rounded-full border border-primary/10">
                                         <AvatarImage
@@ -220,7 +220,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
             </div>
             {breadcrumbs.length > 1 && (
                 <div className="flex w-full matte-card h-11 border-t border-border/10">
-                    <div className="mx-auto flex h-full w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl">
+                    <div className="mx-auto flex h-full w-full items-center justify-start px-4 text-muted-foreground md:max-w-7xl">
                         <Breadcrumbs breadcrumbs={breadcrumbs} />
                     </div>
                 </div>

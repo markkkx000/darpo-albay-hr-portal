@@ -64,7 +64,7 @@ export function EmployeeCard({ employee }: Props) {
                                 {employee.employee_number || 'NO-ID'}
                             </Badge>
                         </div>
-                        <div className="flex items-center justify-center md:justify-start gap-2 text-primary font-bold">
+                        <div className="flex items-center justify-center md:justify-start gap-2 text-foreground font-bold">
                             <Briefcase className="h-4 w-4" />
                             <span className="text-sm uppercase tracking-wide">
                                 {employee.positions?.length

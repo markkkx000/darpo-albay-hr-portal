@@ -14,12 +14,12 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40",
         outline:
-          "border border-border-2 bg-background shadow-xs hover:bg-surface-3 hover:text-accent-foreground",
+          "border border-border-2 bg-background shadow-xs hover:item-hover-gradient hover:border-transparent hover:text-black",
         "outline-primary":
-          "border border-primary/30 bg-transparent text-primary font-semibold hover:border-transparent hover:bg-gradient-to-br hover:from-green-400 hover:to-yellow-400 hover:text-black hover:shadow-[0_4px_16px_rgba(34,197,94,0.3),0_2px_8px_rgba(250,204,21,0.2)] transition-all duration-300",
+          "border border-primary/30 bg-transparent text-primary font-semibold hover:item-hover-gradient hover:border-transparent hover:text-black hover:shadow-[0_8px_24px_rgba(34,197,94,0.35)] transition-all duration-300",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-surface-4",
-        ghost: "hover:bg-surface-3 hover:text-accent-foreground",
+          "bg-secondary text-secondary-foreground shadow-xs hover:item-hover-gradient hover:text-black",
+        ghost: "hover:item-hover-gradient hover:text-black",
         link: "text-primary underline-offset-4 hover:underline",
         warning:
           "btn-warning-specular",

@@ -389,13 +389,14 @@
   - Ensure visual hierarchy and physical depth translate perfectly between light and dark themes.
   - Shadows in light mode must translate to subtle borders or inner glows in dark mode to maintain elevation.
   - Colors should automatically map to their mode-specific semantic tokens without requiring explicit overriding classes whenever possible.
+  - **Base Contrast:** Enforce high-contrast readability by using black text and icons in light mode and white text and icons in dark mode as the default standard.
 
 ### Interactive Elements & Branding
 - **Rule:** Enforce the "Premium UI" brand identity across all interactive components to ensure a cohesive and high-end agency experience.
 - **Apply:**
   - **Dropdowns & Lists:** All dropdown menus, select items, and interactive lists must utilize the `item-hover-gradient` utility. Hover states must feature the "floating bubble" effect with precisely centered text and indicators.
   - **Buttons:** Primary call-to-action buttons should have the iconic fully rounded shape (`rounded-full`) and the signature green-yellow gradient (`btn-specular`).
-  - **High-Contrast Gradient:** All brand-gradient elements must use black text (`text-black`) to ensure optimal high-contrast accessibility and premium aesthetic.
+  - **Interactive Hover Specification:** The default interactive hover gradient is green-yellow (`var(--grad-primary)`) unless explicitly stated otherwise. All brand-gradient interactive elements must use black-colored font and icons (`text-black`) when hovered to ensure optimal high-contrast accessibility and premium aesthetic across both light and dark modes.
 
 ---
 

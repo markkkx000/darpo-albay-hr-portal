@@ -140,7 +140,7 @@ return '';
                             <div className="grid grid-cols-2 gap-6">
                                 <div className="space-y-1">
                                     <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Duration</p>
-                                    <p className="text-2xl font-black text-primary">
+                                    <p className="text-2xl font-black text-foreground">
                                         {leaveRequest.days_requested} {leaveRequest.days_requested == 1 ? 'Day' : 'Days'}
                                         {isHalfDay && <span className="text-sm font-normal text-muted-foreground ml-2">(Half Day)</span>}
                                     </p>
@@ -212,11 +212,11 @@ return '';
                             </h2>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="bg-primary/5 p-4 rounded-xl border border-primary/10">
-                                    <p className="text-[10px] font-bold uppercase text-primary/70 mb-1">Vacation Leave Balance</p>
+                                    <p className="text-[10px] font-bold uppercase text-muted-foreground mb-1">Vacation Leave Balance</p>
                                     <p className="text-2xl font-black">{parseFloat(leaveRequest.vl_balance_at_filing || 0).toFixed(3)}</p>
                                 </div>
                                 <div className="bg-primary/5 p-4 rounded-xl border border-primary/10">
-                                    <p className="text-[10px] font-bold uppercase text-primary/70 mb-1">Sick Leave Balance</p>
+                                    <p className="text-[10px] font-bold uppercase text-muted-foreground mb-1">Sick Leave Balance</p>
                                     <p className="text-2xl font-black">{parseFloat(leaveRequest.sl_balance_at_filing || 0).toFixed(3)}</p>
                                 </div>
                             </div>

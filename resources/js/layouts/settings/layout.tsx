@@ -54,8 +54,8 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                     className={cn(
                                         'relative flex items-center rounded-2xl px-4 py-2.5 transition-all duration-300',
                                         active
-                                            ? 'text-[#030f04] font-bold'
-                                            : 'text-neutral-500 hover:text-black dark:text-neutral-400 dark:hover:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/5',
+                                            ? 'text-black font-bold'
+                                            : 'text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5',
                                     )}
                                 >
                                     {active && (

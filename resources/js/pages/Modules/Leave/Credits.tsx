@@ -270,7 +270,7 @@ return [];
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-5 text-center">
-                                                    <span className="text-lg font-black text-primary">{balance.toFixed(3)}</span>
+                                                    <span className="text-lg font-black text-foreground">{balance.toFixed(3)}</span>
                                                 </td>
                                                 <td className="px-6 py-5 text-center">
                                                     <span className="text-lg font-bold text-orange-600">{used.toFixed(3)}</span>

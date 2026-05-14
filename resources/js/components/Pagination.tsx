@@ -68,8 +68,8 @@ export function Pagination({ links, meta }: PaginationProps) {
                                 className={cn(
                                     "flex h-11 min-w-11 items-center justify-center rounded-full border text-sm transition-all duration-300 font-bold",
                                     link.active 
-                                        ? "btn-specular border-none shadow-lg" 
-                                        : "bg-surface-1 border-border-1 text-muted-foreground hover:bg-surface-2 hover:text-foreground",
+                                        ? "btn-specular border-none shadow-lg text-black" 
+                                        : "bg-surface-1 border-border-1 text-muted-foreground hover:item-hover-gradient hover:border-transparent hover:text-black",
                                     (isPrev || isNext) && "px-2"
                                 )}
                             >

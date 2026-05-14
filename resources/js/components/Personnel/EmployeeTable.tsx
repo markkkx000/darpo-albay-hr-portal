@@ -217,7 +217,7 @@ export function EmployeeTable({
                                                     {(employee.first_name?.[0] || '')}{(employee.last_name?.[0] || '') || <UserIcon className="h-4 w-4" />}
                                                 </div>
                                                 <div className="flex flex-col">
-                                                    <span className="font-bold text-foreground group-hover:text-primary transition-colors">
+                                                    <span className="font-bold text-foreground transition-colors">
                                                         {fullName(employee)}
                                                     </span>
                                                     <span className="text-[10px] text-muted-foreground font-mono tracking-tighter">
@@ -296,7 +296,7 @@ export function EmployeeTable({
                                                         title={`Reset password for ${fullName(employee)}`}
                                                         icon={Key}
                                                         variant="ghost"
-                                                        className="h-10 w-10 p-0 rounded-full btn-ghost-warning-specular border-none text-yellow-600"
+                                                        className="h-10 w-10 p-0 rounded-full btn-ghost-specular border-none text-amber-600 hover:text-black group"
                                                     />
                                                 )}
                                                 
@@ -371,8 +371,8 @@ export function EmployeeTable({
                     </DialogHeader>
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setEmployeeToReset(null)} disabled={isResetting} className="btn-ghost-specular px-6 border-none">Cancel</Button>
-                        <Button onClick={handleResetPassword} disabled={isResetting} className="btn-ghost-warning-specular px-6 border-none gap-2 text-yellow-600">
-                            {isResetting ? <RefreshCcw className="h-4 w-4 animate-spin" /> : <Key className="h-4 w-4" />}
+                        <Button onClick={handleResetPassword} disabled={isResetting} className="btn-ghost-specular px-6 border-none gap-2 text-amber-600 hover:text-black group">
+                            {isResetting ? <RefreshCcw className="h-4 w-4 animate-spin" /> : <Key className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />}
                             Reset Password
                         </Button>
                     </DialogFooter>
@@ -394,7 +394,7 @@ export function EmployeeTable({
                     <div className="flex flex-col items-center gap-4 py-4">
                         <div className="w-full p-6 bg-muted/50 rounded-2xl border border-dashed border-primary/20 flex flex-col items-center gap-3">
                             <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Temporary Password</span>
-                            <code className="text-3xl font-mono font-black tracking-widest text-primary select-all">
+                            <code className="text-3xl font-mono font-black tracking-widest text-foreground select-all">
                                 {newPassword}
                             </code>
                         </div>

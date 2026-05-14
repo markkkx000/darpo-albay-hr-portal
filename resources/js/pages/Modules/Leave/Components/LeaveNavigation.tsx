@@ -48,10 +48,10 @@ export default function LeaveNavigation() {
                         key={tab.name}
                         href={tab.href}
                         className={cn(
-                            'relative flex items-center space-x-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors',
+                            'relative flex items-center space-x-2 border-b-2 px-4 py-3 text-sm font-medium transition-all duration-200 rounded-xl',
                             isActive
                                 ? 'border-transparent font-semibold'
-                                : 'border-transparent text-muted-foreground hover:border-border-2 hover:text-foreground'
+                                : 'border-transparent text-muted-foreground hover:item-hover-gradient hover:text-black hover:scale-105 active:scale-95'
                         )}
                     >
                         {isActive && (
