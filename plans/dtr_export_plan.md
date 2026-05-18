@@ -1,61 +1,97 @@
-## DTR Export Implementation Plan: DO NOT EXECUTE YET (STILL NEEDS REVIEW)
+# Implementation Plan: DTR Export Module: GOOD TO GO
 
-**Reminder:** Follow the rules and checklist in `RULES_AND_GUIDELINES.md` strictly to avoid shortcuts. Each module must adhere to the modular architecture, with backend components in `app/Modules/{ModuleName}/`, routes in `routes.php` (auto-registered), thin controllers delegating to services, validation via form requests, PostgreSQL-compatible migrations, and frontend pages under `resources/js/pages/Modules/{ModuleName}/`. Ensure to use Laravel 13 PHP attributes, `Laravel Wayfinder` for routing, `sonner` for toast notifications, and `matte-card elev-2` for styling.
+This plan outlines the implementation required to export employee attendance records into standard CS Form 48 (Daily Time Record) PDF format and raw data CSV format. This module depends heavily on the existing `Attendance` module data — no new tables are required.
 
-**TL;DR:** Export attendance data to PDF/CSV formats.
+## User Review Required
 
----
+> [!IMPORTANT]
+> - **Dependency**: This module relies entirely on existing `Attendance` records. If the attendance schema changes, the export service must be updated.
+> - **Download Mechanism**: Inertia forms do not natively handle binary file downloads via POST. The export route will be configured as a `POST` route using Axios with `responseType: 'blob'`, rather than a raw browser redirect. This preserves the SPA experience and allows us to catch and display JSON validation errors smoothly without full page reloads.
+> - **PDF Performance & "All Employees"**: `barryvdh/laravel-dompdf` is memory-intensive. To prevent timeout/memory exhaustion, "All Employees" bulk exporting will be restricted to **CSV only**. PDF exports require a specific employee to be selected.
+> - **Permissions**: Access to the DTR export module is strictly restricted to HR administrators (`dtr.manage` permission). Employees cannot self-export their DTR in this iteration.
 
-## Steps
-
-1. Use existing Attendance module data; no new tables needed.
-2. Create `DTRService` (inside `app/Modules/DTR/Services/`) for querying attendance by date range, formatting for CS Form 48 / Appendix 24 (daily time records). Ensure `ilike` is used for case-insensitive search queries.
-3. Form Requests: Create `DTRGenerateRequest` for validation.
-4. `DTRController` with `index` (form) and export methods (`exportPdf`, `exportCsv`). Keep the controller thin by delegating data fetching to `DTRService`.
-5. Create `app/Modules/DTR/routes.php` protected by `permission:dtr.manage` middleware. 
-6. Create `app/Modules/DTR/navigation.php` to register the DTR Export sidebar links via `ModuleRegistry`. Return a closure accepting `$registry`.
-7. Create frontend pages in `resources/js/pages/Modules/DTR/` using **Laravel Wayfinder** for all routing.
-    - Apply `matte-card elev-2` for card containers.
-    - Implement `disabled={isProcessing}` loading states on generation action buttons.
-    - Use the shared `EmployeeSearch.tsx` combobox to filter by employee (must implement keyword-splitting logic in controller/service).
-8. Install and use `barryvdh/laravel-dompdf` for PDF, `maatwebsite/excel` for CSV (verify version compatibilities with PHP 8.4 and Laravel 13 if necessary).
-9. Permissions: Ensure `dtr.manage` is handled appropriately in `RoleAndPermissionSeeder` (assigned to HR roles).
-10. Write Pest feature tests in `tests/Feature/Modules/DTR/` to verify export generation without layout errors.
-11. Run `vendor/bin/pint --dirty --format agent` and test.
+## Proposed Changes
 
 ---
 
-## Relevant Files
+### 1. Database & Models
 
-- `app/Modules/DTR/routes.php`
-- `app/Modules/DTR/navigation.php`
-- Module files in `app/Modules/DTR/`
-- Frontend files in `resources/js/pages/Modules/DTR/`
-- Update `composer.json`: `"barryvdh/laravel-dompdf"`, `"maatwebsite/excel"`.
+No database migrations or new models are required. The module will purely query the existing `Attendance` model.
 
 ---
 
-## Verification
+### 2. Backend Logic (Services & Requests)
 
-1. Routes auto-registered via `ModuleServiceProvider`.
-2. Pest tests pass against PostgreSQL (`DB_CONNECTION=pgsql`).
-3. Exports generate correct file content.
-4. Wayfinder routes are correctly typed and working.
-5. Form buttons properly disable during processing.
+#### [NEW] DTRService.php (app/Modules/DTR/Services/DTRService.php)
+- **`getAttendanceForExport`**: Queries the `Attendance` model by month and year. Accepts an optional `userId` to filter for a specific employee. Sorts records by user and then by date.
+- **`generatePdf`**: Takes the fetched `Collection` and uses `barryvdh/laravel-dompdf` to render `dtr_pdf.blade.php`. Returns the generated PDF stream.
+    - **Time Splitting Logic**: CS Form 48 requires "Morning In/Out" and "Afternoon In/Out". Since the database stores a single daily `clock_in`/`clock_out`, this service will artificially split the shift using a hardcoded noon break (e.g., Morning Out at 12:00 PM, Afternoon In at 01:00 PM) for visual conformity on the printed form.
+- **`generateCsv`**: Uses `maatwebsite/excel` (or standard `fputcsv` streamed response) to generate a CSV of the data and returns the response.
+
+#### [NEW] DTRGenerateRequest.php (app/Modules/DTR/Requests/DTRGenerateRequest.php)
+- Add validation rules:
+    - `month`: required, integer between 1 and 12.
+    - `year`: required, valid integer.
+    - `format`: required, in `pdf` or `csv`.
+    - `user_id`: nullable, must exist in `users.id`. **Conditional constraint**: If `format` is `pdf`, `user_id` becomes `required` to prevent bulk-PDF generation timeouts.
+
+#### [NEW] DTRController.php (app/Modules/DTR/Controllers/DTRController.php)
+- **`index`**: Returns the Inertia view (`Modules/DTR/Index`) with the export form.
+- **`export`**: Validates the `DTRGenerateRequest`. Calls `DTRService` to fetch the data and then returns the appropriate file download response (PDF or CSV) directly to the browser.
+
+#### [NEW] routes.php (app/Modules/DTR/routes.php)
+- `GET /` — Renders the index form view.
+- `POST /export` — The export generation route.
+- Protect all routes with `permission:dtr.manage` middleware.
+
+#### [NEW] navigation.php (app/Modules/DTR/navigation.php)
+- Register the "DTR Export" sidebar link via `ModuleRegistry`.
 
 ---
 
-## Decisions
+### 3. Frontend (UI/UX)
 
-- Depends heavily on the existing Attendance module.
-- No new tables, therefore no soft deletes or migrations needed.
+#### [NEW] Index.tsx (resources/js/pages/Modules/DTR/Index.tsx)
+- **Layout**: Use the `matte-card elev-2` class for the main form container.
+- **Form Fields**: 
+    - Select for Month (1-12).
+    - Select for Year (past 5 years to current).
+    - `EmployeeSearch.tsx` combobox for selecting a specific employee (include an option to clear selection for "All Employees").
+    - Select for Format (PDF or CSV). If "All Employees" is selected, disable the PDF option or show a warning.
+- **Download Handling (Blob)**: Implement an `isProcessing` state for the export button. On submit, bypass Inertia's `useForm` and instead use `axios.post` with `responseType: 'blob'`. 
+    - On success: Create a temporary `window.URL.createObjectURL(blob)` and trigger a hidden `<a>` tag click to download the file seamlessly.
+    - On error (422): Catch the JSON validation errors and display them in the UI using standard error states or `sonner` toasts.
+
+#### [NEW] dtr_pdf.blade.php (resources/views/exports/dtr_pdf.blade.php)
+- Build an HTML layout matching the standard CS Form 48 formatting (Name, Month, daily rows 1-31, In/Out columns, totals).
+- **CSS Constraints**: `DOMPDF` does not support Flexbox or CSS Grid. You must use classic `<table>` layouts and basic inline block styling to ensure proper rendering.
 
 ---
 
-## Expected Behavior When Complete
+### 4. Route Synchronization & Dependencies
 
-### HR View (`/dtr`)
-- **Export Page**: Form to select month/year, employee (or all), format (PDF/CSV). Submit downloads file. Fluid `w-full` layout.
-- Use `EmployeeSearch.tsx` for fast autocomplete filtering.
-- PDF generates formatted CS Form 48 with employee details, daily clock-in/out, totals.
-- CSV generates raw data for spreadsheet import.
+#### [Artisan] `sail artisan wayfinder:generate`
+Run this after route creation to ensure TypeScript types are synchronized.
+
+#### [Composer] Install Packages
+Run `composer require barryvdh/laravel-dompdf maatwebsite/excel` to install the required export engines.
+
+#### [Pint] `vendor/bin/pint --dirty --format agent`
+Run this on modified PHP files before final verification.
+
+## Verification Plan
+
+### Automated Tests
+- `sail artisan test --compact --filter=DTRExportTest`
+- Create `tests/Feature/Modules/DTR/DTRExportTest.php` to verify:
+    - Route protection (blocks employees, allows HR admins).
+    - Validation failures on missing/invalid parameters (specifically verifying `user_id` is required when `format` is `pdf`).
+    - PDF and CSV generation endpoints return successful download responses.
+
+### Manual Verification
+- **Scenario 1**: Access `/dtr` as `hr_admin`. Verify the form loads correctly within the `matte-card`.
+- **Scenario 2**: Trigger an export with invalid parameters (e.g., missing format). Verify that Axios catches the 422 error and the page does not reload, displaying the validation error cleanly.
+- **Scenario 3**: Select a specific user, month, year, and the PDF format. Verify that a PDF file downloads via the Blob method and visually matches the CS Form 48 template, showing AM/PM split times.
+- **Scenario 4**: Select "All Employees" and attempt to select PDF format. Verify the UI blocks this or the backend throws a validation error.
+- **Scenario 5**: Select the CSV format for "All Employees". Verify that a CSV file downloads containing raw tabular data (Name, Date, Clock In, Clock Out, Status) for the entire staff.
+- **Scenario 6**: Log in as a standard `employee` and attempt to access `/dtr`. Verify it returns a 403 Forbidden response and the sidebar link is hidden.
