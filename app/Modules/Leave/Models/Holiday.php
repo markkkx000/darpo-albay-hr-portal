@@ -12,6 +12,6 @@ class Holiday extends Model
     use HasFactory;
 
     protected $casts = [
-        'date' => 'date',
+        'date' => 'date:Y-m-d',
     ];
 }

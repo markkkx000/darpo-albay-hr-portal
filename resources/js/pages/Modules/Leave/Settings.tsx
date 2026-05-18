@@ -1,4 +1,5 @@
 import { Head, router } from '@inertiajs/react';
+import { format } from 'date-fns';
 import { Pipette, Plus, Power, PowerOff } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -220,7 +221,9 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                     <div key={h.id} className="flex justify-between items-center p-3 matte-card elev-1">
                                         <div>
                                             <span className="font-medium block">{h.name}</span>
-                                            <span className="text-sm text-muted-foreground">{h.date}</span>
+                                            <span className="text-sm text-muted-foreground">
+                                                {h.date ? format(new Date(h.date.includes('T') ? h.date : h.date + 'T00:00:00'), 'MMMM d, yyyy') : ''}
+                                            </span>
                                         </div>
                                         <Button className="btn-ghost-danger-specular border-none px-4" size="sm" onClick={() => handleDeleteHoliday(h.id)} disabled={processing}>
                                             Delete

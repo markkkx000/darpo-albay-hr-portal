@@ -29,7 +29,7 @@ const formatDateForInput = (dateString: string | null | undefined) => {
 };
 
 
-export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatuses }: any) {
+export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatuses, holidays = [] }: any) {
     const isEdit = !!leaveRequest;
 
     const { data, setData, processing, errors, post, put, transform } = useForm({
@@ -146,6 +146,10 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
         return new Date(y, m - 1, d);
     };
 
+    const holidayDates = useMemo(() => {
+        return (holidays || []).map((h: any) => h.date);
+    }, [holidays]);
+
     const calculatedDays = useMemo(() => {
         if (dateMode === 'range') {
             const start = parseLocalDate(data.start_date);
@@ -164,8 +168,13 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
 
             for (let i = 0; i < diffDays; i++) {
                 const day = tempDate.getDay();
+                
+                const yyyy = tempDate.getFullYear();
+                const mm = String(tempDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(tempDate.getDate()).padStart(2, '0');
+                const dateString = `${yyyy}-${mm}-${dd}`;
 
-                if (day !== 0 && day !== 6) {
+                if (day !== 0 && day !== 6 && !holidayDates.includes(dateString)) {
                     count++;
                 }
 
@@ -182,10 +191,10 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                 const date = parseLocalDate(d);
                 const day = date?.getDay();
 
-                return day !== 0 && day !== 6;
+                return day !== 0 && day !== 6 && !holidayDates.includes(d);
             }).length.toString();
         }
-    }, [data.start_date, data.end_date, data.specific_dates, dateMode]);
+    }, [data.start_date, data.end_date, data.specific_dates, dateMode, holidayDates]);
 
     const lastAutoCalc = useRef(calculatedDays);
 
