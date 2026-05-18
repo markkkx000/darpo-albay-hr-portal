@@ -28,6 +28,7 @@ interface User {
     id: number;
     first_name: string;
     last_name: string;
+    employee_number?: string | null;
 }
 
 interface AttendanceRecord {
@@ -80,14 +81,30 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
     });
 
     const filteredEmployees = useMemo(() => {
-        return query === ''
-            ? employees
-            : employees.filter((employee) => {
-                  const fullName = `${employee.first_name} ${employee.last_name}`.toLowerCase();
+        const employeesArray = Array.isArray(employees) ? employees : [];
 
-                  return fullName.includes(query.toLowerCase());
-              });
-    }, [query, employees]);
+        // Identify selected employee display name to prevent dropdown truncation when clicking
+        let selectedName = '';
+        if (data.user_id) {
+            const found = employeesArray.find((e) => e.id.toString() === data.user_id.toString());
+            if (found) {
+                selectedName = `${found.first_name} ${found.last_name}`;
+            }
+        }
+
+        // If query is empty or matches the selected display name exactly, show all employees
+        if (query === '' || query.toLowerCase() === selectedName.toLowerCase()) {
+            return employeesArray;
+        }
+
+        return employeesArray.filter((employee) => {
+            const fullName = `${employee.first_name} ${employee.last_name}`.toLowerCase();
+            const employeeNum = (employee.employee_number || '').toLowerCase();
+            const search = query.toLowerCase();
+
+            return fullName.includes(search) || employeeNum.includes(search);
+        });
+    }, [query, employees, data.user_id]);
 
     const selectedEmployee = useMemo(() => {
         return employees.find((e) => e.id.toString() === data.user_id);
@@ -207,13 +224,13 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
                                                             }
                                                             value={person.id.toString()}
                                                         >
-                                                            {({ selected, focus }) => (
+                                                             {({ selected, focus }) => (
                                                                 <>
                                                                     <span className={cn("block truncate", selected ? "font-medium" : "font-normal")}>
                                                                         {person.first_name} {person.last_name}
                                                                     </span>
                                                                     {selected ? (
-                                                                        <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3", focus ? "text-accent-foreground" : "text-primary")}>
+                                                                        <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3", focus ? "text-black font-extrabold" : "text-primary")}>
                                                                             <Check className="h-4 w-4" aria-hidden="true" />
                                                                         </span>
                                                                     ) : null}

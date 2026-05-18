@@ -39,7 +39,21 @@ export function EmployeeSearch({
     const filteredUsers = useMemo(() => {
         const usersArray = Array.isArray(users) ? users : [];
 
-        if (query === '') {
+        // Identify the display name of the selected employee to prevent dropdown truncation when clicking
+        let selectedName = '';
+        if (selectedId) {
+            if (returnValue === 'id' || !isNaN(Number(selectedId))) {
+                const found = usersArray.find((u) => u.id.toString() === selectedId.toString());
+                if (found) {
+                    selectedName = `${found.first_name} ${found.last_name}`;
+                }
+            } else {
+                selectedName = selectedId.toString();
+            }
+        }
+
+        // If the query is empty or matches the selected name exactly, show all employees so the list is not cut
+        if (query === '' || query.toLowerCase() === selectedName.toLowerCase()) {
             return usersArray;
         }
 
@@ -50,7 +64,7 @@ export function EmployeeSearch({
 
             return keywords.every((keyword) => searchable.includes(keyword));
         });
-    }, [query, users]);
+    }, [query, users, selectedId, returnValue]);
 
     const handleChange = (val: string | null) => {
         if (onSelect) {
@@ -150,7 +164,7 @@ export function EmployeeSearch({
                                                         All Employees
                                                     </span>
                                                     {selected ? (
-                                                        <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3", focus ? "text-accent-foreground" : "text-primary")}>
+                                                        <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3", focus ? "text-black font-extrabold" : "text-primary")}>
                                                             <Check className="h-4 w-4" aria-hidden="true" />
                                                         </span>
                                                     ) : null}
@@ -176,7 +190,7 @@ export function EmployeeSearch({
                                                         <span className={cn("ml-2 text-xs transition-colors duration-200", focus ? "text-black/65 font-semibold" : "text-muted-foreground")}>({person.employee_number})</span>
                                                     </span>
                                                     {selected ? (
-                                                        <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3", focus ? "text-accent-foreground" : "text-primary")}>
+                                                        <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3", focus ? "text-black font-extrabold" : "text-primary")}>
                                                             <Check className="h-4 w-4" aria-hidden="true" />
                                                         </span>
                                                     ) : null}

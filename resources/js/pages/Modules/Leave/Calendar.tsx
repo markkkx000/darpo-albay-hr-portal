@@ -37,14 +37,31 @@ return '';
     })), [leaves]);
 
     const filteredUsers = useMemo(() => {
-        return query === ''
-            ? users
-            : users.filter((u: any) => {
-                  const fullName = `${u.first_name} ${u.last_name}`.toLowerCase();
+        const usersArray = Array.isArray(users) ? users : [];
 
-                  return fullName.includes(query.toLowerCase());
-              });
-    }, [query, users]);
+        // Identify selected user name to prevent dropdown truncation when clicking
+        let selectedName = '';
+        if (userId) {
+            const found = usersArray.find((u: any) => u.id.toString() === userId.toString());
+            if (found) {
+                selectedName = `${found.last_name}, ${found.first_name}`;
+            }
+        }
+
+        // If query is empty or matches the selected display name exactly, show all employees
+        if (query === '' || query.toLowerCase() === selectedName.toLowerCase()) {
+            return usersArray;
+        }
+
+        return usersArray.filter((u: any) => {
+            const fullName = `${u.first_name} ${u.last_name}`.toLowerCase();
+            const lastNameFirst = `${u.last_name}, ${u.first_name}`.toLowerCase();
+            const employeeNum = (u.employee_number || '').toLowerCase();
+            const search = query.toLowerCase();
+
+            return fullName.includes(search) || lastNameFirst.includes(search) || employeeNum.includes(search);
+        });
+    }, [query, users, userId]);
 
     const changeMonth = (delta: number) => {
         let newMonth = month + delta;
@@ -185,7 +202,7 @@ return 'All Employees';
                                                                     All Employees
                                                                 </span>
                                                                 {selected ? (
-                                                                    <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3", focus ? "text-accent-foreground" : "text-primary")}>
+                                                                    <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3", focus ? "text-black font-extrabold" : "text-primary")}>
                                                                         <Check className="h-4 w-4" aria-hidden="true" />
                                                                     </span>
                                                                 ) : null}
@@ -209,7 +226,7 @@ return 'All Employees';
                                                                         {person.last_name}, {person.first_name}
                                                                     </span>
                                                                     {selected ? (
-                                                                        <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3", focus ? "text-accent-foreground" : "text-primary")}>
+                                                                        <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3", focus ? "text-black font-extrabold" : "text-primary")}>
                                                                             <Check className="h-4 w-4" aria-hidden="true" />
                                                                         </span>
                                                                     ) : null}
