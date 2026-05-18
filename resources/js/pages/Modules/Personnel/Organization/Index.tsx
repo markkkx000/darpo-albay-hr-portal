@@ -87,6 +87,7 @@ export default function Index({ divisions }: Props) {
                 onSuccess: () => {
                     toast.success('Division updated successfully');
                     setIsDivisionOpen(false);
+                    router.clearHistory();
                 },
                 onFinish: () => setProcessing(false)
             });
@@ -95,6 +96,7 @@ export default function Index({ divisions }: Props) {
                 onSuccess: () => {
                     toast.success('Division created successfully');
                     setIsDivisionOpen(false);
+                    router.clearHistory();
                 },
                 onFinish: () => setProcessing(false)
             });
@@ -110,6 +112,7 @@ export default function Index({ divisions }: Props) {
                 onSuccess: () => {
                     toast.success('Unit updated successfully');
                     setIsUnitOpen(false);
+                    router.clearHistory();
                 },
                 onFinish: () => setProcessing(false)
             });
@@ -118,6 +121,7 @@ export default function Index({ divisions }: Props) {
                 onSuccess: () => {
                     toast.success('Unit created successfully');
                     setIsUnitOpen(false);
+                    router.clearHistory();
                 },
                 onFinish: () => setProcessing(false)
             });
@@ -133,6 +137,7 @@ export default function Index({ divisions }: Props) {
                 onSuccess: () => {
                     toast.success('Position updated successfully');
                     setIsPositionOpen(false);
+                    router.clearHistory();
                 },
                 onFinish: () => setProcessing(false)
             });
@@ -141,6 +146,7 @@ export default function Index({ divisions }: Props) {
                 onSuccess: () => {
                     toast.success('Position created successfully');
                     setIsPositionOpen(false);
+                    router.clearHistory();
                 },
                 onFinish: () => setProcessing(false)
             });

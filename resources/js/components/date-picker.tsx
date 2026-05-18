@@ -77,11 +77,11 @@ export function DatePicker({ value, onChange, placeholder = "Pick a date", class
             onSelect={handleSelect}
             initialFocus
           />
-          <div className="p-4 border-t border-border/5 bg-[#0a0a0a]">
+          <div className="p-4 border-t border-border bg-muted/30">
             <Button
               variant="default"
               size="default"
-              className="w-full h-12 rounded-2xl bg-[#111111] hover:bg-[#1a1a1a] text-white font-bold transition-all border-none shadow-lg"
+              className="w-full h-12 rounded-2xl font-bold border-none shadow-lg"
               onClick={() => handleSelect(undefined)}
             >
               Clear

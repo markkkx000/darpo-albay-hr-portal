@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import LeaveRoutes from '@/routes/leave';
 import LeaveNavigation from './Components/LeaveNavigation';
+import { useDebounce } from '@/hooks/use-debounce';
 
 
 export default function LeaveTardiness({ users, currentYear, allEmployees, filters }: any) {
@@ -34,6 +35,7 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
     const Counter = ({ value, onChange }: { value: number, onChange: (val: number) => void }) => {
         const [localValue, setLocalValue] = useState(value);
         const [isDirty, setIsDirty] = useState(false);
+        const debouncedValue = useDebounce(localValue, 500);
 
         // Sync with external value only if we are not currently typing/clicking
         useEffect(() => {
@@ -44,17 +46,11 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
 
         // Debounce update
         useEffect(() => {
-            if (!isDirty) {
-                return;
-            }
-
-            const timer = setTimeout(() => {
-                onChange(localValue);
+            if (isDirty) {
+                onChange(debouncedValue);
                 setIsDirty(false);
-            }, 500);
-
-            return () => clearTimeout(timer);
-        }, [localValue, isDirty, onChange]);
+            }
+        }, [debouncedValue, isDirty, onChange]);
 
         const updateValue = (val: number) => {
             const next = Math.max(0, val);

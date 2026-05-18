@@ -6,6 +6,7 @@ import { EmployeeTable } from '@/components/Personnel/EmployeeTable';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { index as indexRoute, archived as archivedRoute } from '@/routes/personnel';
+import { useDebounce } from '@/hooks/use-debounce';
 
 interface Props {
     employees: any;
@@ -17,25 +18,22 @@ interface Props {
 export default function Archived({ employees, filters }: Props) {
     const { auth } = usePage().props as any;
     const [search, setSearch] = useState(filters.search || '');
+    const debouncedSearch = useDebounce(search, 500);
 
-    const handleFilter = useCallback(() => {
+    const handleFilter = useCallback((searchTerm: string) => {
         router.get(archivedRoute().url, {
-            search,
+            search: searchTerm || undefined,
         }, {
             preserveState: true,
             replace: true,
         });
-    }, [search]);
+    }, []);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (search !== (filters.search || '')) {
-                handleFilter();
-            }
-        }, 500);
-
-        return () => clearTimeout(timer);
-    }, [search, filters.search, handleFilter]);
+        if (debouncedSearch !== (filters.search || '')) {
+            handleFilter(debouncedSearch);
+        }
+    }, [debouncedSearch, filters.search, handleFilter]);
 
     return (
         <>
@@ -68,7 +66,7 @@ export default function Archived({ employees, filters }: Props) {
                             onChange={e => setSearch(e.target.value)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
-                                    handleFilter();
+                                    handleFilter(search);
                                 }
                             }}
                         />

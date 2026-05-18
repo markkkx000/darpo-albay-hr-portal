@@ -226,11 +226,14 @@ return 'All Employees';
                         </div>
 
                         {/* 50% - Legends */}
-                        <div className="col-span-1 lg:col-span-2 flex items-center justify-center lg:justify-start gap-4 flex-wrap">
+                        <div className="col-span-1 lg:col-span-2 flex items-center justify-center lg:justify-start gap-2 flex-wrap">
                             {leaveTypes.map((t: any) => (
-                                <div key={t.id} className="flex items-center space-x-1 text-xs shrink-0">
-                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: t.color_code }}></div>
-                                    <span className="text-muted-foreground whitespace-nowrap">{t.name}</span>
+                                <div 
+                                    key={t.id} 
+                                    className="flex items-center space-x-1.5 text-[11px] sm:text-xs font-medium shrink-0 px-3 py-1 rounded-full border border-border bg-secondary text-secondary-foreground shadow-sm cursor-default"
+                                >
+                                    <div className="w-2.5 h-2.5 rounded-full shrink-0 shadow-sm" style={{ backgroundColor: t.color_code }}></div>
+                                    <span className="whitespace-nowrap">{t.name}</span>
                                 </div>
                             ))}
                         </div>

@@ -50,13 +50,17 @@ interface Props {
 export default function Manage({ announcements }: Props) {
     const [announcementToDelete, setAnnouncementToDelete] = useState<any | null>(null);
     const [announcementToPublish, setAnnouncementToPublish] = useState<any | null>(null);
+    const [isProcessing, setIsProcessing] = useState(false);
 
     const handleDelete = () => {
         if (announcementToDelete) {
             router.delete(destroy(announcementToDelete.id).url, {
+                onStart: () => setIsProcessing(true),
+                onFinish: () => setIsProcessing(false),
                 onSuccess: () => {
                     toast.success('Announcement deleted');
                     setAnnouncementToDelete(null);
+                    router.clearHistory();
                 },
                 onError: () => {
                     toast.error('Failed to delete announcement');
@@ -69,9 +73,12 @@ export default function Manage({ announcements }: Props) {
     const handlePublish = () => {
         if (announcementToPublish) {
             router.post(publish(announcementToPublish.id).url, {}, {
+                onStart: () => setIsProcessing(true),
+                onFinish: () => setIsProcessing(false),
                 onSuccess: () => {
                     toast.success('Announcement published');
                     setAnnouncementToPublish(null);
+                    router.clearHistory();
                 },
                 onError: () => {
                     toast.error('Failed to publish announcement');
@@ -232,7 +239,7 @@ export default function Manage({ announcements }: Props) {
             </div>
 
             {/* Delete Confirmation Dialog */}
-            <Dialog open={!!announcementToDelete} onOpenChange={(open) => !open && setAnnouncementToDelete(null)}>
+            <Dialog open={!!announcementToDelete} onOpenChange={(open) => !open && !isProcessing && setAnnouncementToDelete(null)}>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Delete Announcement?</DialogTitle>
@@ -241,14 +248,14 @@ export default function Manage({ announcements }: Props) {
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setAnnouncementToDelete(null)}>Cancel</Button>
-                        <Button variant="destructive" onClick={handleDelete}>Delete</Button>
+                        <Button variant="outline" onClick={() => setAnnouncementToDelete(null)} disabled={isProcessing}>Cancel</Button>
+                        <Button variant="destructive" onClick={handleDelete} disabled={isProcessing}>Delete</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
 
             {/* Publish Confirmation Dialog */}
-            <Dialog open={!!announcementToPublish} onOpenChange={(open) => !open && setAnnouncementToPublish(null)}>
+            <Dialog open={!!announcementToPublish} onOpenChange={(open) => !open && !isProcessing && setAnnouncementToPublish(null)}>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Publish Announcement?</DialogTitle>
@@ -257,8 +264,8 @@ export default function Manage({ announcements }: Props) {
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setAnnouncementToPublish(null)} className="rounded-xl">Cancel</Button>
-                        <Button onClick={handlePublish} className="btn-specular gap-2 px-6 py-5 rounded-full shadow-lg border-none">
+                        <Button variant="outline" onClick={() => setAnnouncementToPublish(null)} className="rounded-xl" disabled={isProcessing}>Cancel</Button>
+                        <Button onClick={handlePublish} className="btn-specular gap-2 px-6 py-5 rounded-full shadow-lg border-none" disabled={isProcessing}>
                             <Send className="h-4 w-4" />
                             Publish Now
                         </Button>

@@ -60,6 +60,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState<AttendanceRecord | null>(null);
     const [recordToDelete, setRecordToDelete] = useState<AttendanceRecord | null>(null);
+    const [isProcessing, setIsProcessing] = useState(false);
     const canDelete = auth.permissions?.includes('attendance.logs.manage');
 
     const handleEdit = (record: AttendanceRecord) => {
@@ -79,9 +80,12 @@ export default function ManageRecords({ records, employees, filters }: Props) {
     const handleDelete = () => {
         if (recordToDelete) {
             router.delete(destroyRecord({ attendance: recordToDelete.id }).url, {
+                onStart: () => setIsProcessing(true),
+                onFinish: () => setIsProcessing(false),
                 onSuccess: () => {
                     toast.success('Record deleted successfully');
                     setRecordToDelete(null);
+                    router.clearHistory();
                 },
                 onError: () => {
                     toast.error('Failed to delete record');
@@ -274,7 +278,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                 employees={employees}
             />
 
-            <Dialog open={!!recordToDelete} onOpenChange={(open) => !open && setRecordToDelete(null)}>
+            <Dialog open={!!recordToDelete} onOpenChange={(open) => !open && !isProcessing && setRecordToDelete(null)}>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Are you absolutely sure?</DialogTitle>
@@ -284,8 +288,8 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button variant="ghost" onClick={() => setRecordToDelete(null)} className="btn-ghost-specular px-6 border-none">Cancel</Button>
-                        <Button onClick={handleDelete} className="btn-ghost-danger-specular px-6 border-none">
+                        <Button variant="ghost" onClick={() => setRecordToDelete(null)} className="btn-ghost-specular px-6 border-none" disabled={isProcessing}>Cancel</Button>
+                        <Button onClick={handleDelete} className="btn-ghost-danger-specular px-6 border-none" disabled={isProcessing}>
                             Delete Record
                         </Button>
                     </DialogFooter>

@@ -296,7 +296,7 @@ export function EmployeeTable({
                                                         title={`Reset password for ${fullName(employee)}`}
                                                         icon={Key}
                                                         variant="ghost"
-                                                        className="h-10 w-10 p-0 rounded-full btn-ghost-specular border-none text-amber-600 hover:text-black group"
+                                                        className="btn-ghost-specular border-none text-amber-600 hover:text-black group"
                                                     />
                                                 )}
                                                 

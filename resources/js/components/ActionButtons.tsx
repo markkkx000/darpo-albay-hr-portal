@@ -11,13 +11,13 @@ interface ActionButtonProps {
 
 export const ViewActionButton = ({ href, onClick, title }: ActionButtonProps) => (
     <Button 
-        size="sm" 
+        size="icon" 
         asChild={!!href}
         onClick={onClick}
-        className="btn-ghost-specular border-none h-10 w-10 p-0 rounded-full hover:scale-110 transition-transform group"
+        className="btn-ghost-specular border-none rounded-full hover:scale-110 transition-transform group"
     >
         {href ? (
-            <Link href={href} title={title} aria-label={title} className="flex items-center justify-center w-full h-full">
+            <Link href={href} title={title} aria-label={title}>
                 <Eye className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />
             </Link>
         ) : (
@@ -28,13 +28,13 @@ export const ViewActionButton = ({ href, onClick, title }: ActionButtonProps) =>
 
 export const EditActionButton = ({ href, onClick, title }: ActionButtonProps) => (
     <Button 
-        size="sm" 
+        size="icon" 
         asChild={!!href}
         onClick={onClick}
-        className="btn-ghost-specular border-none h-10 w-10 p-0 rounded-full hover:scale-110 transition-transform group"
+        className="btn-ghost-specular border-none rounded-full hover:scale-110 transition-transform group"
     >
         {href ? (
-            <Link href={href} title={title} aria-label={title} className="flex items-center justify-center w-full h-full">
+            <Link href={href} title={title} aria-label={title}>
                 <Edit className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />
             </Link>
         ) : (
@@ -45,13 +45,13 @@ export const EditActionButton = ({ href, onClick, title }: ActionButtonProps) =>
 
 export const DeleteActionButton = ({ href, onClick, title }: ActionButtonProps) => (
     <Button 
-        size="sm" 
+        size="icon" 
         asChild={!!href}
         onClick={onClick}
-        className="btn-ghost-danger-specular border-none h-10 w-10 p-0 rounded-full hover:scale-110 transition-transform group"
+        className="btn-ghost-danger-specular border-none rounded-full hover:scale-110 transition-transform group"
     >
         {href ? (
-            <Link href={href} title={title} aria-label={title} className="flex items-center justify-center w-full h-full">
+            <Link href={href} title={title} aria-label={title}>
                 <Trash2 className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />
             </Link>
         ) : (
@@ -62,13 +62,13 @@ export const DeleteActionButton = ({ href, onClick, title }: ActionButtonProps) 
 
 export const RestoreActionButton = ({ href, onClick, title }: ActionButtonProps) => (
     <Button 
-        size="sm" 
+        size="icon" 
         asChild={!!href}
         onClick={onClick}
-        className="btn-ghost-specular border-none h-10 w-10 p-0 rounded-full hover:scale-110 transition-transform group"
+        className="btn-ghost-specular border-none rounded-full hover:scale-110 transition-transform group"
     >
         {href ? (
-            <Link href={href} title={title} aria-label={title} className="flex items-center justify-center w-full h-full">
+            <Link href={href} title={title} aria-label={title}>
                 <RotateCcw className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />
             </Link>
         ) : (
@@ -86,15 +86,15 @@ interface GenericActionButtonProps extends ActionButtonProps {
 
 export const ActionButton = ({ href, onClick, title, icon: Icon, variant = "ghost", className, disabled }: GenericActionButtonProps) => (
     <Button 
-        size="sm" 
+        size="icon" 
         variant={variant}
         asChild={!!href}
         onClick={onClick}
         disabled={disabled}
-        className={cn("border-none h-10 w-10 p-0 rounded-full hover:scale-110 transition-transform dark:hover:text-black group", className)}
+        className={cn("border-none rounded-full hover:scale-110 transition-transform dark:hover:text-black group", className)}
     >
         {href ? (
-            <Link href={href} title={title} aria-label={title} className="flex items-center justify-center w-full h-full">
+            <Link href={href} title={title} aria-label={title}>
                 <Icon className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />
             </Link>
         ) : (

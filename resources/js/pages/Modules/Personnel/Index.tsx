@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import PersonnelRoutes from '@/routes/personnel';
+import { useDebounce } from '@/hooks/use-debounce';
 
 const createRoute = () => PersonnelRoutes.create();
 const indexRoute = () => PersonnelRoutes.index();
@@ -28,36 +29,33 @@ export default function Index({ employees, filters, divisions = [], employmentSt
     const { auth } = usePage().props as any;
 
     const [search, setSearch] = useState(filters?.search || '');
+    const debouncedSearch = useDebounce(search, 500);
     const [divisionId, setDivisionId] = useState(filters?.division_id || 'all');
     const [statusId, setStatusId] = useState(filters?.employment_status_id || 'all');
 
     const canCreate = auth?.permissions?.includes('personnel.manage');
 
-    const handleFilter = useCallback(() => {
+    const handleFilter = useCallback((searchTerm: string) => {
         router.get(indexRoute().url, {
-            search,
+            search: searchTerm || undefined,
             division_id: divisionId === 'all' ? undefined : divisionId,
             employment_status_id: statusId === 'all' ? undefined : statusId,
         }, {
             preserveState: true,
             replace: true,
         });
-    }, [search, divisionId, statusId]);
+    }, [divisionId, statusId]);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (search !== (filters?.search || '')) {
-                handleFilter();
-            }
-        }, 500);
-
-        return () => clearTimeout(timer);
-    }, [search, filters?.search, handleFilter]);
+        if (debouncedSearch !== (filters?.search || '')) {
+            handleFilter(debouncedSearch);
+        }
+    }, [debouncedSearch, filters?.search, handleFilter]);
 
     const handleDivisionChange = (val: string) => {
         setDivisionId(val);
         router.get(indexRoute().url, {
-            search,
+            search: search || undefined,
             division_id: val === 'all' ? undefined : val,
             employment_status_id: statusId === 'all' ? undefined : statusId
         }, { preserveState: true, replace: true });
@@ -66,7 +64,7 @@ export default function Index({ employees, filters, divisions = [], employmentSt
     const handleStatusChange = (val: string) => {
         setStatusId(val);
         router.get(indexRoute().url, {
-            search,
+            search: search || undefined,
             division_id: divisionId === 'all' ? undefined : divisionId,
             employment_status_id: val === 'all' ? undefined : val
         }, { preserveState: true, replace: true });
@@ -135,7 +133,7 @@ export default function Index({ employees, filters, divisions = [], employmentSt
                             onChange={e => setSearch(e.target.value)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
-                                    handleFilter();
+                                    handleFilter(search);
                                 }
                             }}
                         />

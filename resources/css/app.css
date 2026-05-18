@@ -92,6 +92,25 @@
         color: #000 !important;
     }
 }
+@utility tabular-nums {
+    font-variant-numeric: tabular-nums;
+}
+
+@utility spring-physics {
+    transition-timing-function: var(--spring);
+}
+
+@utility tab-active-gradient-text {
+    @apply font-bold;
+    background: var(--grad-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+table {
+    @apply tabular-nums;
+}
 
 
 /* ═══════════════════════════════════════════
@@ -130,26 +149,6 @@
     --sidebar-accent-foreground: #000000;
     --sidebar-border: rgba(0, 0, 0, 0.06);
     --sidebar-ring: rgba(34, 197, 94, 0.4);
-
-    .tabular-nums {
-    font-variant-numeric: tabular-nums;
-}
-
-table {
-    @apply tabular-nums;
-}
-
-.spring-physics {
-    transition-timing-function: var(--spring);
-}
-
-.tab-active-gradient-text {
-    @apply font-bold;
-    background: var(--grad-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
 
     /* ── Brand ── */
     --green-300: #86efac;

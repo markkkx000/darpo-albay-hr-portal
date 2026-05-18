@@ -61,10 +61,10 @@ function CalendarCaption({ displayMonth }: { displayMonth: Date }) {
   return (
     <div className="flex items-center justify-center gap-1.5">
       <Select value={currentMonth.toString()} onValueChange={handleMonthChange}>
-        <SelectTrigger className="h-10 px-4 bg-[#111111] border-none rounded-2xl text-base font-bold text-white hover:bg-[#1a1a1a] transition-all focus:ring-0 gap-2 min-w-[90px] justify-center cursor-pointer shadow-md">
+        <SelectTrigger className="h-10 px-4 bg-secondary border border-border rounded-2xl text-base font-bold text-secondary-foreground hover:bg-secondary/80 transition-all focus:ring-0 gap-2 min-w-[90px] justify-center cursor-pointer shadow-sm">
           <SelectValue>{months[currentMonth]}</SelectValue>
         </SelectTrigger>
-        <SelectContent className="matte-card elev-4 border-border/20 max-h-[350px]">
+        <SelectContent className="matte-card elev-4 border-border max-h-[350px]">
           {months.map((month, i) => (
             <SelectItem key={i} value={i.toString()} className="text-sm font-medium focus:item-hover-gradient">
               {month}
@@ -74,10 +74,10 @@ function CalendarCaption({ displayMonth }: { displayMonth: Date }) {
       </Select>
 
       <Select value={currentYear.toString()} onValueChange={handleYearChange}>
-        <SelectTrigger className="h-10 px-4 bg-[#111111] border-none rounded-2xl text-base font-bold text-white hover:bg-[#1a1a1a] transition-all focus:ring-0 gap-2 min-w-[85px] justify-center cursor-pointer shadow-md">
+        <SelectTrigger className="h-10 px-4 bg-secondary border border-border rounded-2xl text-base font-bold text-secondary-foreground hover:bg-secondary/80 transition-all focus:ring-0 gap-2 min-w-[85px] justify-center cursor-pointer shadow-sm">
           <SelectValue>{currentYear}</SelectValue>
         </SelectTrigger>
-        <SelectContent className="matte-card elev-4 border-border/20 max-h-[350px]">
+        <SelectContent className="matte-card elev-4 border-border max-h-[350px]">
           {sortedDecades.map((decade) => (
             <SelectGroup key={decade}>
               <SelectLabel className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground px-3 py-2 bg-surface-2/50 font-black">

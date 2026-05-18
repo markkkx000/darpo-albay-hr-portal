@@ -32,6 +32,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
     const [typeDescription, setTypeDescription] = useState('');
     const [typeColor, setTypeColor] = useState('#3b82f6');
     const [statusName, setStatusName] = useState('');
+    const [processing, setProcessing] = useState(false);
 
     const handleAddHoliday = (e: React.FormEvent) => {
         e.preventDefault();
@@ -40,10 +41,13 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
             date: holidayDate,
         }, {
             preserveScroll: true,
+            onStart: () => setProcessing(true),
+            onFinish: () => setProcessing(false),
             onSuccess: () => {
                 toast.success('Holiday added successfully');
                 setHolidayName('');
                 setHolidayDate('');
+                router.clearHistory();
             }
         });
     };
@@ -52,7 +56,12 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
         if (confirm('Are you sure you want to delete this holiday?')) {
             router.delete(holidays_destroy(id).url, {
                 preserveScroll: true,
-                onSuccess: () => toast.success('Holiday deleted successfully')
+                onStart: () => setProcessing(true),
+                onFinish: () => setProcessing(false),
+                onSuccess: () => {
+                    toast.success('Holiday deleted successfully');
+                    router.clearHistory();
+                }
             });
         }
     };
@@ -68,6 +77,8 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
             is_active: true,
         }, {
             preserveScroll: true,
+            onStart: () => setProcessing(true),
+            onFinish: () => setProcessing(false),
             onSuccess: () => {
                 toast.success('Leave type added successfully');
                 setTypeName('');
@@ -75,6 +86,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                 setTypeIsCumulative('null');
                 setTypeDescription('');
                 setTypeColor('#3b82f6');
+                router.clearHistory();
             }
         });
     };
@@ -86,12 +98,22 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
             if (type.is_active) {
                 router.delete(types_destroy(type.id).url, {
                     preserveScroll: true,
-                    onSuccess: () => toast.success(`Leave type ${action}d successfully`)
+                    onStart: () => setProcessing(true),
+                    onFinish: () => setProcessing(false),
+                    onSuccess: () => {
+                        toast.success(`Leave type ${action}d successfully`);
+                        router.clearHistory();
+                    }
                 });
             } else {
                 router.put(types_update(type.id).url, { ...type, is_active: true }, {
                     preserveScroll: true,
-                    onSuccess: () => toast.success(`Leave type ${action}d successfully`)
+                    onStart: () => setProcessing(true),
+                    onFinish: () => setProcessing(false),
+                    onSuccess: () => {
+                        toast.success(`Leave type ${action}d successfully`);
+                        router.clearHistory();
+                    }
                 });
             }
         }
@@ -104,9 +126,12 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
             is_active: true,
         }, {
             preserveScroll: true,
+            onStart: () => setProcessing(true),
+            onFinish: () => setProcessing(false),
             onSuccess: () => {
                 toast.success('Leave status added successfully');
                 setStatusName('');
+                router.clearHistory();
             }
         });
     };
@@ -118,12 +143,22 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
             if (status.is_active) {
                 router.delete(statuses_destroy(status.id).url, {
                     preserveScroll: true,
-                    onSuccess: () => toast.success(`Leave status ${action}d successfully`)
+                    onStart: () => setProcessing(true),
+                    onFinish: () => setProcessing(false),
+                    onSuccess: () => {
+                        toast.success(`Leave status ${action}d successfully`);
+                        router.clearHistory();
+                    }
                 });
             } else {
                 router.put(statuses_update(status.id).url, { ...status, is_active: true }, {
                     preserveScroll: true,
-                    onSuccess: () => toast.success(`Leave status ${action}d successfully`)
+                    onStart: () => setProcessing(true),
+                    onFinish: () => setProcessing(false),
+                    onSuccess: () => {
+                        toast.success(`Leave status ${action}d successfully`);
+                        router.clearHistory();
+                    }
                 });
             }
         }
@@ -176,7 +211,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                     <Label>Name</Label>
                                     <Input type="text" value={holidayName} onChange={e => setHolidayName(e.target.value)} required />
                                 </div>
-                                <Button type="submit" className="btn-specular px-5">Add</Button>
+                                <Button type="submit" className="btn-specular px-5" disabled={processing}>Add</Button>
                             </form>
 
                             <div className="space-y-2">
@@ -186,7 +221,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                             <span className="font-medium block">{h.name}</span>
                                             <span className="text-sm text-muted-foreground">{h.date}</span>
                                         </div>
-                                        <Button className="btn-ghost-danger-specular border-none px-4" size="sm" onClick={() => handleDeleteHoliday(h.id)}>
+                                        <Button className="btn-ghost-danger-specular border-none px-4" size="sm" onClick={() => handleDeleteHoliday(h.id)} disabled={processing}>
                                             Delete
                                         </Button>
                                     </div>
@@ -255,7 +290,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                         <Label>Description (Optional)</Label>
                                         <Input value={typeDescription} onChange={e => setTypeDescription(e.target.value)} placeholder="Short description..." />
                                     </div>
-                                    <Button type="submit" className="btn-specular w-full">
+                                    <Button type="submit" className="btn-specular w-full" disabled={processing}>
                                         <Plus className="mr-2 h-4 w-4" /> Add Leave Type
                                     </Button>
                                 </form>
@@ -281,6 +316,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                                 size="sm"
                                                 onClick={() => handleToggleType(t)}
                                                 className={t.is_active ? 'btn-ghost-danger-specular border-none' : 'btn-ghost-specular border-none'}
+                                                disabled={processing}
                                             >
                                                 {t.is_active ? <PowerOff className="h-4 w-4" /> : <Power className="h-4 w-4" />}
                                             </Button>
@@ -299,7 +335,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                         <Label>Status Name</Label>
                                         <Input value={statusName} onChange={e => setStatusName(e.target.value)} placeholder="e.g. Approved" required />
                                     </div>
-                                    <Button type="submit" className="btn-specular px-5">
+                                    <Button type="submit" className="btn-specular px-5" disabled={processing}>
                                         <Plus className="h-4 w-4" />
                                     </Button>
                                 </form>
@@ -313,6 +349,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                                 size="sm"
                                                 onClick={() => handleToggleStatus(s)}
                                                 className={s.is_active ? 'btn-ghost-danger-specular border-none' : 'btn-ghost-specular border-none'}
+                                                disabled={processing}
                                             >
                                                 {s.is_active ? <PowerOff className="h-4 w-4" /> : <Power className="h-4 w-4" />}
                                             </Button>
