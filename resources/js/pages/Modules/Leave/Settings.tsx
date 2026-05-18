@@ -20,6 +20,7 @@ import { settings, index as leave_index } from '@/routes/leave/index';
 import { store as statuses_store, update as statuses_update, destroy as statuses_destroy } from '@/routes/leave/statuses/index';
 import { store as types_store, update as types_update, destroy as types_destroy } from '@/routes/leave/types/index';
 import LeaveNavigation from './Components/LeaveNavigation';
+import { ColorPicker } from '@/components/ui/color-picker';
 
 
 export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, currentYear }: any) {
@@ -253,23 +254,7 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
                                             <Label>Color</Label>
-                                            <div className="flex space-x-2">
-                                                <div className="relative w-12 h-9 shrink-0 group/color">
-                                                    <div
-                                                        className="absolute inset-0 rounded-2xl border border-border shadow-sm transition-all group-hover/color:brightness-90 active:scale-95 flex items-center justify-center"
-                                                        style={{ backgroundColor: typeColor }}
-                                                    >
-                                                        <Pipette className="h-4 w-4 text-white opacity-0 group-hover/color:opacity-100 transition-opacity drop-shadow-sm" />
-                                                    </div>
-                                                    <input
-                                                        type="color"
-                                                        value={typeColor}
-                                                        onChange={e => setTypeColor(e.target.value)}
-                                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                                    />
-                                                </div>
-                                                <Input value={typeColor} onChange={e => setTypeColor(e.target.value)} className="flex-1" />
-                                            </div>
+                                            <ColorPicker value={typeColor} onChange={setTypeColor} />
                                         </div>
                                         <div>
                                             <Label htmlFor="cumulative">Credit Behavior</Label>
