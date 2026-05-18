@@ -173,7 +173,7 @@ export function EmployeeSearch({
                                                 <div className="contents">
                                                     <span className={cn("block truncate", selected ? "font-medium" : "font-normal")}>
                                                         {person.first_name} {person.last_name}
-                                                        <span className="ml-2 text-xs text-muted-foreground">({person.employee_number})</span>
+                                                        <span className={cn("ml-2 text-xs transition-colors duration-200", focus ? "text-black/65 font-semibold" : "text-muted-foreground")}>({person.employee_number})</span>
                                                     </span>
                                                     {selected ? (
                                                         <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3", focus ? "text-accent-foreground" : "text-primary")}>

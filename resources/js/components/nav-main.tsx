@@ -28,7 +28,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 asChild
                                 isActive={active}
                                 tooltip={{ children: item.title }}
-                                className="relative"
+                                className="relative spring-press"
                             >
                                 <Link href={item.href} prefetch className="relative">
                                     {active && (

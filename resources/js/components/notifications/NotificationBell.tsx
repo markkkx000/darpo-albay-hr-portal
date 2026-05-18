@@ -61,13 +61,13 @@ export default function NotificationBell() {
     return (
         <DropdownMenu onOpenChange={(open) => open && fetchRecent()}>
             <DropdownMenuTrigger asChild>
-                <div className="relative inline-flex transition-transform hover:scale-110">
+                <div className="relative inline-flex group spring-press cursor-pointer">
                     <Button
                         size="icon"
-                        className="btn-ghost-specular relative h-9 w-9 border-none shadow-none"
+                        className="btn-ghost-specular relative h-9 w-9 border-none shadow-none pointer-events-none"
                         aria-label="Notifications"
                     >
-                        <Bell className="h-5 w-5" />
+                        <Bell className="h-5 w-5 transition-transform duration-200 group-hover:rotate-12" />
                     </Button>
                     {unreadCount > 0 && (
                         <Badge

@@ -295,7 +295,7 @@ export function EmployeeTable({
                                                         onClick={() => setEmployeeToReset(employee)}
                                                         title={`Reset password for ${fullName(employee)}`}
                                                         icon={Key}
-                                                        variant="ghost"
+                                                        variant="default"
                                                         className="btn-ghost-specular border-none text-amber-600 hover:text-black group"
                                                     />
                                                 )}

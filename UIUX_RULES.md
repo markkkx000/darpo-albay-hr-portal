@@ -239,6 +239,7 @@
   - Maintain a minimum contrast ratio of 4.5:1 for normal text and 3:1 for large text (WCAG AA standard).
   - Use high-contrast color for primary CTAs to make them unmissable.
   - Ensure interactive elements are visually distinct from non-interactive ones.
+  - **Contrast is King:** Hover gradients must ALWAYS transform child texts to dark/black shades to maintain maximum accessibility.
 
 ---
 
