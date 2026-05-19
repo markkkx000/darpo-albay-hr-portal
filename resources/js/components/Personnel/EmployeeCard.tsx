@@ -220,40 +220,40 @@ export function EmployeeCard({ employee }: Props) {
                         <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
                             <BadgeInfo className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
                             <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black dark:group-hover:text-white transition-colors">GSIS BP No.</span>
-                                <span className="text-sm font-bold group-hover:text-black dark:group-hover:text-white transition-colors">{employee.gsis_bp_number || 'N/A'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">GSIS BP No.</span>
+                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.gsis_bp_number || 'N/A'}</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
                             <CreditCard className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
                             <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black dark:group-hover:text-white transition-colors">PhilHealth</span>
-                                <span className="text-sm font-bold group-hover:text-black dark:group-hover:text-white transition-colors">{employee.philhealth || 'N/A'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PhilHealth</span>
+                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.philhealth || 'N/A'}</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
                             <BadgeInfo className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
                             <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black dark:group-hover:text-white transition-colors">PAGIBIG No.</span>
-                                <span className="text-sm font-bold group-hover:text-black dark:group-hover:text-white transition-colors">{employee.hdmf_pagibig_no || 'N/A'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PAGIBIG No.</span>
+                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.hdmf_pagibig_no || 'N/A'}</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
                             <CreditCard className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
                             <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black dark:group-hover:text-white transition-colors">TIN Number</span>
-                                <span className="text-sm font-bold group-hover:text-black dark:group-hover:text-white transition-colors">{employee.tin_number || 'N/A'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">TIN Number</span>
+                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.tin_number || 'N/A'}</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 col-span-2 group hover:item-hover-gradient transition-all duration-200">
                             <BadgeInfo className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
                             <div className="flex flex-col flex-1">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black dark:group-hover:text-white transition-colors">PRC ID No.</span>
-                                <span className="text-sm font-bold group-hover:text-black dark:group-hover:text-white transition-colors">{employee.prc_id_no || 'N/A'}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PRC ID No.</span>
+                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.prc_id_no || 'N/A'}</span>
                             </div>
                             <div className="flex flex-col pl-4 border-l border-border/50">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black dark:group-hover:text-white transition-colors">Expiration</span>
-                                <span className="text-sm font-bold group-hover:text-black dark:group-hover:text-white transition-colors">{formatDate(employee.prc_expiration)}</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">Expiration</span>
+                                <span className="text-sm font-bold group-hover:text-black transition-colors">{formatDate(employee.prc_expiration)}</span>
                             </div>
                         </div>
                     </div>
