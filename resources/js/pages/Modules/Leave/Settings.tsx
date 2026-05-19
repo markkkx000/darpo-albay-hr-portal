@@ -1,11 +1,12 @@
 import { Head, router } from '@inertiajs/react';
 import { format } from 'date-fns';
-import { Pipette, Plus, Power, PowerOff } from 'lucide-react';
+import { Plus, Power, PowerOff } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { DatePicker } from '@/components/date-picker';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { ColorPicker } from '@/components/ui/color-picker';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -21,7 +22,6 @@ import { settings, index as leave_index } from '@/routes/leave/index';
 import { store as statuses_store, update as statuses_update, destroy as statuses_destroy } from '@/routes/leave/statuses/index';
 import { store as types_store, update as types_update, destroy as types_destroy } from '@/routes/leave/types/index';
 import LeaveNavigation from './Components/LeaveNavigation';
-import { ColorPicker } from '@/components/ui/color-picker';
 
 
 export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, currentYear }: any) {

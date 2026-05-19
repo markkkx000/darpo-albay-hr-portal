@@ -5,8 +5,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { EmployeeTable } from '@/components/Personnel/EmployeeTable';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { index as indexRoute, archived as archivedRoute } from '@/routes/personnel';
 import { useDebounce } from '@/hooks/use-debounce';
+import { index as indexRoute, archived as archivedRoute } from '@/routes/personnel';
 
 interface Props {
     employees: any;

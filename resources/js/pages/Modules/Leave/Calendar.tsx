@@ -41,8 +41,10 @@ return '';
 
         // Identify selected user name to prevent dropdown truncation when clicking
         let selectedName = '';
+
         if (userId) {
             const found = usersArray.find((u: any) => u.id.toString() === userId.toString());
+
             if (found) {
                 selectedName = `${found.last_name}, ${found.first_name}`;
             }

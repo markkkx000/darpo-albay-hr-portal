@@ -41,9 +41,11 @@ export function EmployeeSearch({
 
         // Identify the display name of the selected employee to prevent dropdown truncation when clicking
         let selectedName = '';
+
         if (selectedId) {
             if (returnValue === 'id' || !isNaN(Number(selectedId))) {
                 const found = usersArray.find((u) => u.id.toString() === selectedId.toString());
+
                 if (found) {
                     selectedName = `${found.first_name} ${found.last_name}`;
                 }

@@ -8,9 +8,9 @@ import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useDebounce } from '@/hooks/use-debounce';
 import LeaveRoutes from '@/routes/leave';
 import LeaveNavigation from './Components/LeaveNavigation';
-import { useDebounce } from '@/hooks/use-debounce';
 
 
 export default function LeaveTardiness({ users, currentYear, allEmployees, filters }: any) {

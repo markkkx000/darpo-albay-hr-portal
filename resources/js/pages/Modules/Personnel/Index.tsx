@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import PersonnelRoutes from '@/routes/personnel';
 import { useDebounce } from '@/hooks/use-debounce';
+import PersonnelRoutes from '@/routes/personnel';
 
 const createRoute = () => PersonnelRoutes.create();
 const indexRoute = () => PersonnelRoutes.index();

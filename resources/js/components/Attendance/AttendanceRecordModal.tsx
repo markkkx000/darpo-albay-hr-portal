@@ -85,8 +85,10 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
 
         // Identify selected employee display name to prevent dropdown truncation when clicking
         let selectedName = '';
+
         if (data.user_id) {
             const found = employeesArray.find((e) => e.id.toString() === data.user_id.toString());
+
             if (found) {
                 selectedName = `${found.first_name} ${found.last_name}`;
             }
