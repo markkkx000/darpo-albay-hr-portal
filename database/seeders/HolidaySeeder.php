@@ -35,6 +35,10 @@ class HolidaySeeder extends Seeder
             ['date' => '2025-12-25', 'name' => 'Christmas Day'],
             ['date' => '2025-12-30', 'name' => 'Rizal Day'],
             ['date' => '2025-12-31', 'name' => 'New Year\'s Eve'],
+            ['date' => '2026-04-02', 'name' => 'Maundy Thursday'],
+            ['date' => '2026-04-03', 'name' => 'Good Friday'],
+            ['date' => '2026-04-04', 'name' => 'Black Saturday'],
+            ['date' => '2026-04-09', 'name' => 'Araw ng Kagitingan'],
         ];
 
         foreach ($holidays as $holiday) {
