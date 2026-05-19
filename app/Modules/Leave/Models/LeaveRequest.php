@@ -17,16 +17,16 @@ class LeaveRequest extends Model
     protected $appends = ['pay_status'];
 
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'date_received' => 'date',
-        'date_approved' => 'date',
+        'start_date' => 'date:Y-m-d',
+        'end_date' => 'date:Y-m-d',
+        'date_received' => 'date:Y-m-d',
+        'date_approved' => 'date:Y-m-d',
         'days_requested' => 'decimal:2',
         'commutation_requested' => 'boolean',
         'is_filed' => 'boolean',
         'specific_dates' => 'array',
         'salary' => 'decimal:2',
-        'date_filed' => 'date',
+        'date_filed' => 'date:Y-m-d',
         'vl_balance_at_filing' => 'decimal:3',
         'sl_balance_at_filing' => 'decimal:3',
         'has_attachments' => 'boolean',
