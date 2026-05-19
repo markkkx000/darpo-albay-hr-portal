@@ -123,6 +123,7 @@ class LeaveController extends Controller
             'leaves' => $this->leaveService->getCalendarLeaves($year, $month, $userId),
             'leaveTypes' => LeaveType::all(),
             'users' => User::select('id', 'first_name', 'last_name', 'employee_number')->orderBy('last_name')->get(),
+            'holidays' => Holiday::whereYear('date', $year)->whereMonth('date', $month)->get(),
             'currentYear' => $year,
             'currentMonth' => $month,
             'currentUserId' => $userId,

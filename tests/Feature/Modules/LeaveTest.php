@@ -34,3 +34,19 @@ it('allows super admin to access leave settings', function () {
         ->get('/leave/settings')
         ->assertOk();
 });
+
+it('allows super admin to access leave calendar with holidays', function () {
+    \App\Modules\Leave\Models\Holiday::create([
+        'name' => 'Test Holiday',
+        'date' => now()->format('Y-m-d')
+    ]);
+
+    $response = $this->actingAs($this->superAdmin)
+        ->get('/leave/calendar')
+        ->assertOk();
+
+    $response->assertInertia(fn ($page) => $page
+        ->component('Modules/Leave/Calendar')
+        ->has('holidays')
+    );
+});

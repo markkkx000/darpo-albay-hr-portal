@@ -11,7 +11,7 @@ import { index, calendar } from '@/routes/leave/index';
 import LeaveNavigation from './Components/LeaveNavigation';
 
 
-export default function LeaveCalendar({ leaves, leaveTypes, users, currentYear, currentMonth, currentUserId }: any) {
+export default function LeaveCalendar({ leaves, leaveTypes, users, currentYear, currentMonth, currentUserId, holidays = [] }: any) {
     const year = parseInt(currentYear, 10);
     const month = parseInt(currentMonth, 10);
     const userId = currentUserId;
@@ -272,6 +272,9 @@ return 'All Employees';
                         {days.map(day => {
                             const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                             
+                            // Find holiday for this day
+                            const holiday = holidays.find((h: any) => h.date && h.date.startsWith(dateStr));
+
                             // Find leaves for this day
                             const dayLeaves = formattedLeaves.filter((l: any) => {
                                 if (l.manila_specific_dates && l.manila_specific_dates.length > 0) {
@@ -286,9 +289,16 @@ return 'All Employees';
                             const hiddenCount = dayLeaves.length - 3;
 
                             return (
-                                <div key={day} className="bg-background min-h-[120px] p-2 border-t">
-                                    <span className="text-sm font-medium text-muted-foreground">{day}</span>
-                                    <div className="mt-1 space-y-1">
+                                <div key={day} className={cn("bg-background min-h-[120px] p-2 border-t", holiday && "bg-yellow-500/10 dark:bg-yellow-500/5")}>
+                                    <div className="flex justify-between items-start mb-1">
+                                        <span className={cn("text-sm font-medium", holiday ? "text-yellow-600 dark:text-yellow-400 font-bold" : "text-muted-foreground")}>{day}</span>
+                                        {holiday && (
+                                            <span className="text-[9px] font-bold text-yellow-600 dark:text-yellow-400 uppercase tracking-tighter text-right leading-tight max-w-[70%]" title={holiday.name}>
+                                                {holiday.name}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="space-y-1">
                                         {visibleLeaves.map((leave: any) => {
                                             // Handle half-day visual representation
                                             const isHalfDay = leave.days_requested < 1.0 && leave.start_date === leave.end_date;

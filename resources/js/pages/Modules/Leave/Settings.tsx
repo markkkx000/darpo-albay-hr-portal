@@ -7,6 +7,15 @@ import { DatePicker } from '@/components/date-picker';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ColorPicker } from '@/components/ui/color-picker';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -35,6 +44,14 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
     const [typeColor, setTypeColor] = useState('#3b82f6');
     const [statusName, setStatusName] = useState('');
     const [processing, setProcessing] = useState(false);
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [confirmConfig, setConfirmConfig] = useState<{
+        title: string;
+        description: string;
+        confirmText?: string;
+        isDestructive?: boolean;
+        onConfirm: () => void;
+    } | null>(null);
 
     const handleAddHoliday = (e: React.FormEvent) => {
         e.preventDefault();
@@ -55,17 +72,24 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
     };
 
     const handleDeleteHoliday = (id: number) => {
-        if (confirm('Are you sure you want to delete this holiday?')) {
-            router.delete(holidays_destroy(id).url, {
-                preserveScroll: true,
-                onStart: () => setProcessing(true),
-                onFinish: () => setProcessing(false),
-                onSuccess: () => {
-                    toast.success('Holiday deleted successfully');
-                    router.clearHistory();
-                }
-            });
-        }
+        setConfirmConfig({
+            title: 'Delete Holiday',
+            description: 'Are you sure you want to delete this holiday?',
+            confirmText: 'Delete',
+            isDestructive: true,
+            onConfirm: () => {
+                router.delete(holidays_destroy(id).url, {
+                    preserveScroll: true,
+                    onStart: () => setProcessing(true),
+                    onFinish: () => setProcessing(false),
+                    onSuccess: () => {
+                        toast.success('Holiday deleted successfully');
+                        router.clearHistory();
+                    }
+                });
+            }
+        });
+        setConfirmOpen(true);
     };
 
     const handleAddType = (e: React.FormEvent) => {
@@ -96,29 +120,36 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
     const handleToggleType = (type: any) => {
         const action = type.is_active ? 'deactivate' : 'reactivate';
 
-        if (confirm(`Are you sure you want to ${action} this leave type?`)) {
-            if (type.is_active) {
-                router.delete(types_destroy(type.id).url, {
-                    preserveScroll: true,
-                    onStart: () => setProcessing(true),
-                    onFinish: () => setProcessing(false),
-                    onSuccess: () => {
-                        toast.success(`Leave type ${action}d successfully`);
-                        router.clearHistory();
-                    }
-                });
-            } else {
-                router.put(types_update(type.id).url, { ...type, is_active: true }, {
-                    preserveScroll: true,
-                    onStart: () => setProcessing(true),
-                    onFinish: () => setProcessing(false),
-                    onSuccess: () => {
-                        toast.success(`Leave type ${action}d successfully`);
-                        router.clearHistory();
-                    }
-                });
+        setConfirmConfig({
+            title: `${type.is_active ? 'Deactivate' : 'Reactivate'} Leave Type`,
+            description: `Are you sure you want to ${action} this leave type?`,
+            confirmText: type.is_active ? 'Deactivate' : 'Reactivate',
+            isDestructive: type.is_active,
+            onConfirm: () => {
+                if (type.is_active) {
+                    router.delete(types_destroy(type.id).url, {
+                        preserveScroll: true,
+                        onStart: () => setProcessing(true),
+                        onFinish: () => setProcessing(false),
+                        onSuccess: () => {
+                            toast.success(`Leave type ${action}d successfully`);
+                            router.clearHistory();
+                        }
+                    });
+                } else {
+                    router.put(types_update(type.id).url, { ...type, is_active: true }, {
+                        preserveScroll: true,
+                        onStart: () => setProcessing(true),
+                        onFinish: () => setProcessing(false),
+                        onSuccess: () => {
+                            toast.success(`Leave type ${action}d successfully`);
+                            router.clearHistory();
+                        }
+                    });
+                }
             }
-        }
+        });
+        setConfirmOpen(true);
     };
 
     const handleAddStatus = (e: React.FormEvent) => {
@@ -141,29 +172,36 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
     const handleToggleStatus = (status: any) => {
         const action = status.is_active ? 'deactivate' : 'reactivate';
 
-        if (confirm(`Are you sure you want to ${action} this leave status?`)) {
-            if (status.is_active) {
-                router.delete(statuses_destroy(status.id).url, {
-                    preserveScroll: true,
-                    onStart: () => setProcessing(true),
-                    onFinish: () => setProcessing(false),
-                    onSuccess: () => {
-                        toast.success(`Leave status ${action}d successfully`);
-                        router.clearHistory();
-                    }
-                });
-            } else {
-                router.put(statuses_update(status.id).url, { ...status, is_active: true }, {
-                    preserveScroll: true,
-                    onStart: () => setProcessing(true),
-                    onFinish: () => setProcessing(false),
-                    onSuccess: () => {
-                        toast.success(`Leave status ${action}d successfully`);
-                        router.clearHistory();
-                    }
-                });
+        setConfirmConfig({
+            title: `${status.is_active ? 'Deactivate' : 'Reactivate'} Leave Status`,
+            description: `Are you sure you want to ${action} this leave status?`,
+            confirmText: status.is_active ? 'Deactivate' : 'Reactivate',
+            isDestructive: status.is_active,
+            onConfirm: () => {
+                if (status.is_active) {
+                    router.delete(statuses_destroy(status.id).url, {
+                        preserveScroll: true,
+                        onStart: () => setProcessing(true),
+                        onFinish: () => setProcessing(false),
+                        onSuccess: () => {
+                            toast.success(`Leave status ${action}d successfully`);
+                            router.clearHistory();
+                        }
+                    });
+                } else {
+                    router.put(statuses_update(status.id).url, { ...status, is_active: true }, {
+                        preserveScroll: true,
+                        onStart: () => setProcessing(true),
+                        onFinish: () => setProcessing(false),
+                        onSuccess: () => {
+                            toast.success(`Leave status ${action}d successfully`);
+                            router.clearHistory();
+                        }
+                    });
+                }
             }
-        }
+        });
+        setConfirmOpen(true);
     };
 
     return (
@@ -349,6 +387,40 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                     </div>
                 </div>
             </div>
+
+            <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+                <DialogContent className="matte-card border border-border-2 rounded-2xl max-w-md p-6 !fixed">
+                    <DialogHeader>
+                        <DialogTitle className="t-headline">
+                            {confirmConfig?.title}
+                        </DialogTitle>
+                        <DialogDescription className="text-muted-foreground text-sm">
+                            {confirmConfig?.description}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="flex justify-end gap-2 mt-4">
+                        <DialogClose asChild>
+                            <Button variant="ghost" className="btn-ghost-specular border-none">
+                                Cancel
+                            </Button>
+                        </DialogClose>
+                        <Button
+                            className={cn(
+                                "border-none px-5",
+                                confirmConfig?.isDestructive 
+                                    ? "btn-danger-specular" 
+                                    : "btn-specular"
+                            )}
+                            onClick={() => {
+                                confirmConfig?.onConfirm();
+                                setConfirmOpen(false);
+                            }}
+                        >
+                            {confirmConfig?.confirmText || 'Confirm'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }
