@@ -4,10 +4,11 @@ import { EmployeeOverview } from '@/components/dashboard/employee-overview';
 import { HROverview } from '@/components/dashboard/hr-overview';
 import { dashboard } from '@/routes';
 
-export default function Dashboard() {
-    const { auth } = usePage().props;
-    const isSuperAdmin = auth.roles?.includes('super_admin');
-    const isHR = auth.roles?.includes('hr_admin') || auth.roles?.includes('hr_staff');
+export default function Dashboard({ adminData, hrData, employeeData }: any) {
+    const { auth } = usePage<any>().props;
+    const isSuperAdmin = auth.permissions?.includes('roles.manage');
+    const isHR = auth.permissions?.includes('personnel.view') || auth.permissions?.includes('leave.manage');
+
     const isEmployee = !isSuperAdmin && !isHR;
 
     return (
@@ -29,9 +30,9 @@ export default function Dashboard() {
                 </div>
 
                 <div className="space-y-8">
-                    {isSuperAdmin && <AdminOverview />}
-                    {isHR && <HROverview />}
-                    {isEmployee && <EmployeeOverview />}
+                    {isSuperAdmin && <AdminOverview data={adminData} />}
+                    {(isSuperAdmin || isHR) && <HROverview data={hrData} />}
+                    {isEmployee && <EmployeeOverview data={employeeData} />}
                 </div>
             </div>
         </>
