@@ -27,7 +27,22 @@ class ModuleRegistry
      */
     public function getNavigation(): array
     {
-        // For now, just return all. Later we can filter by permissions here.
+        $order = [
+            'Attendance' => 10,
+            'Announcements' => 20,
+            'Leave Tracking' => 30,
+            'Personnel Directory' => 40,
+            'Travel Orders' => 50,
+            'DTR Export' => 60,
+            'Roles & Permissions' => 70,
+        ];
+
+        usort($this->navigation, function ($a, $b) use ($order) {
+            $orderA = $order[$a['title']] ?? 999;
+            $orderB = $order[$b['title']] ?? 999;
+            return $orderA <=> $orderB;
+        });
+
         return $this->navigation;
     }
 }
