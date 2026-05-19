@@ -397,7 +397,7 @@
 - **Apply:**
   - **Dropdowns & Lists:** All dropdown menus, select items, and interactive lists must utilize the `item-hover-gradient` utility. Hover states must feature the "floating bubble" effect with precisely centered text and indicators.
   - **Buttons:** Primary call-to-action buttons should have the iconic fully rounded shape (`rounded-full`) and the signature green-yellow gradient (`btn-specular`).
-  - **Interactive Hover Specification:** The default interactive hover gradient is green-yellow (`var(--grad-primary)`) unless explicitly stated otherwise. All brand-gradient interactive elements must use black-colored font and icons (`text-black`) when hovered to ensure optimal high-contrast accessibility and premium aesthetic across both light and dark modes.
+  - **Interactive Hover Specification:** The default interactive hover gradient is green-yellow (`var(--grad-primary)`) unless explicitly stated otherwise. All brand-gradient interactive elements must use black-colored icons (`text-black`) when hovered to ensure optimal high-contrast accessibility on the gradient background. However, for readability on dark card backgrounds in dark mode, hovered text must transition to white (`text-white`) instead of black, while transitioning to black (`text-black`) in light mode.
 
 ---
 
