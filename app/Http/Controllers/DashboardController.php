@@ -101,7 +101,7 @@ class DashboardController extends Controller
             $adminData = [
                 'total_users' => $totalUsers,
                 'active_sessions' => $activeSessions,
-                'system_health' => "{$healthScore}%",
+                'system_health' => $healthScore === 100 ? 'Healthy' : "{$healthScore}%",
                 'recentActivity' => $recentActivity,
             ];
         }
