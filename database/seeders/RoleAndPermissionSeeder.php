@@ -104,7 +104,6 @@ class RoleAndPermissionSeeder extends Seeder
             'leave.view',
             'leave.credits.view',
             'announcements.view',
-            'travel_order.create',
         ]);
     }
 }
