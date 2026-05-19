@@ -75,17 +75,13 @@ class DTRService
                 $isHoliday = Holiday::whereDate('date', $dateString)->exists();
 
                 if ($isHoliday) {
-                    $amIn = 'HOLI';
-                    $amOut = 'DAY';
+                    $amIn = 'HOLIDAY';
                 } elseif ($date->dayOfWeek === Carbon::SATURDAY) {
-                    $amIn = 'SATU';
-                    $amOut = 'RDAY';
+                    $amIn = 'SATURDAY';
                 } elseif ($date->dayOfWeek === Carbon::SUNDAY) {
-                    $amIn = 'SUN';
-                    $amOut = 'DAY';
+                    $amIn = 'SUNDAY';
                 } elseif ($isCompressed && $date->dayOfWeek === Carbon::FRIDAY) {
-                    $amIn = 'FRI';
-                    $amOut = 'DAY';
+                    $amIn = 'FRIDAY';
                 }
             }
 

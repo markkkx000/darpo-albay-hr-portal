@@ -2,6 +2,9 @@
 
 use App\Models\User;
 use App\Modules\Attendance\Models\Attendance;
+use App\Modules\DTR\Services\DTRService;
+use App\Modules\Leave\Models\Holiday;
+use Illuminate\Database\Eloquent\Collection;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -98,4 +101,52 @@ it('validates required parameters for export', function () {
         ->postJson('/dtr/export', [])
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['user_id', 'month', 'year', 'format']);
+});
+
+it('formats weekend days without splitting them into two columns', function () {
+    $service = new DTRService;
+
+    // March 1, 2026 is Sunday, March 7 is Saturday.
+    $attendance = new Collection;
+    $dailyData = $service->generateDailyData($attendance, 3, 2026);
+
+    // Day 1 (Sunday)
+    $sunday = collect($dailyData)->firstWhere('day', 1);
+    expect($sunday['am_in'])->toBe('SUNDAY');
+    expect($sunday['am_out'])->toBeNull();
+
+    // Day 7 (Saturday)
+    $saturday = collect($dailyData)->firstWhere('day', 7);
+    expect($saturday['am_in'])->toBe('SATURDAY');
+    expect($saturday['am_out'])->toBeNull();
+});
+
+it('formats holidays without splitting them into two columns', function () {
+    $service = new DTRService;
+
+    // Create a holiday on March 2, 2026
+    Holiday::create([
+        'name' => 'Test Holiday',
+        'date' => '2026-03-02',
+    ]);
+
+    $attendance = new Collection;
+    $dailyData = $service->generateDailyData($attendance, 3, 2026);
+
+    $holiday = collect($dailyData)->firstWhere('day', 2);
+    expect($holiday['am_in'])->toBe('HOLIDAY');
+    expect($holiday['am_out'])->toBeNull();
+});
+
+it('formats compressed Fridays without splitting them into two columns', function () {
+    $service = new DTRService;
+
+    $attendance = new Collection;
+    // March 6, 2026 is a Friday.
+    // Official hours containing "compressed"
+    $dailyData = $service->generateDailyData($attendance, 3, 2026, 'Compressed 4-day workweek');
+
+    $friday = collect($dailyData)->firstWhere('day', 6);
+    expect($friday['am_in'])->toBe('FRIDAY');
+    expect($friday['am_out'])->toBeNull();
 });
