@@ -121,7 +121,22 @@ class AttendanceService
      */
     public function updateRecord(Attendance $attendance, array $data): Attendance
     {
+        if (isset($data['date']) && $data['date'] !== $attendance->date) {
+            $exists = Attendance::where('user_id', $attendance->user_id)
+                ->whereDate('date', $data['date'])
+                ->where('id', '!=', $attendance->id)
+                ->withTrashed()
+                ->exists();
+
+            if ($exists) {
+                throw ValidationException::withMessages([
+                    'date' => 'This employee already has an attendance record (active or archived) for this date.',
+                ]);
+            }
+        }
+
         $attendance->update([
+            'date' => $data['date'] ?? $attendance->date,
             'clock_in' => $data['clock_in'],
             'clock_out' => $data['clock_out'] ?? null,
         ]);
@@ -135,5 +150,15 @@ class AttendanceService
     public function deleteRecord(Attendance $attendance): bool
     {
         return $attendance->delete();
+    }
+
+    /**
+     * Restore a soft-deleted attendance record.
+     */
+    public function restoreRecord(int $id): bool
+    {
+        $attendance = Attendance::onlyTrashed()->findOrFail($id);
+
+        return $attendance->restore();
     }
 }

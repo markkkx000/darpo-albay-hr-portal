@@ -51,4 +51,13 @@ class AttendanceManagementController extends Controller
 
         return back()->with('success', 'Attendance record deleted successfully.');
     }
+
+    public function restore(int $id)
+    {
+        Gate::authorize('attendance.logs.manage');
+
+        $this->attendanceService->restoreRecord($id);
+
+        return back()->with('success', 'Attendance record restored successfully.');
+    }
 }

@@ -49,6 +49,8 @@ class Attendance extends Model
                     ->whereDate('date', '<', Carbon::today());
             } elseif ($status === 'completed') {
                 $query->whereNotNull('clock_out');
+            } elseif ($status === 'archived') {
+                $query->onlyTrashed();
             }
         }
 

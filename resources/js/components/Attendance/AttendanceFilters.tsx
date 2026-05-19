@@ -140,6 +140,7 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                                 <SelectItem value="working">Currently Working</SelectItem>
                                 <SelectItem value="completed">Completed</SelectItem>
                                 <SelectItem value="incomplete">Incomplete (Missing Out)</SelectItem>
+                                <SelectItem value="archived">Archived</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

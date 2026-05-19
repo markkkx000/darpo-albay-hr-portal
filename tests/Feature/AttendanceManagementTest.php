@@ -7,6 +7,7 @@ use App\Modules\Attendance\Models\Attendance;
 use Carbon\Carbon;
 use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
@@ -78,6 +79,7 @@ test('authorized user can update attendance record', function () {
     ]);
 
     $data = [
+        'date' => Carbon::today()->toDateString(),
         'clock_in' => Carbon::today()->setTime(8, 30, 0)->format('Y-m-d H:i:s'),
         'clock_out' => Carbon::today()->setTime(17, 30, 0)->format('Y-m-d H:i:s'),
     ];
@@ -88,6 +90,52 @@ test('authorized user can update attendance record', function () {
     $attendance->refresh();
     expect($attendance->clock_in->format('H:i:s'))->toBe('08:30:00');
     expect($attendance->clock_out->format('H:i:s'))->toBe('17:30:00');
+});
+
+test('authorized user can update attendance record date', function () {
+    $attendance = Attendance::create([
+        'user_id' => $this->employee->id,
+        'date' => Carbon::today()->toDateString(),
+        'clock_in' => Carbon::today()->setTime(8, 0, 0),
+    ]);
+
+    $newDate = Carbon::yesterday()->toDateString();
+    $data = [
+        'date' => $newDate,
+        'clock_in' => Carbon::yesterday()->setTime(8, 30, 0)->format('Y-m-d H:i:s'),
+        'clock_out' => Carbon::yesterday()->setTime(17, 30, 0)->format('Y-m-d H:i:s'),
+    ];
+
+    $response = $this->actingAs($this->hrStaff)->put(route('attendance.manage.records.update', $attendance), $data);
+
+    $response->assertRedirect();
+    $attendance->refresh();
+    expect($attendance->date)->toBe($newDate);
+});
+
+test('updating attendance record date prevents duplicate records', function () {
+    // Existing record on yesterday
+    Attendance::create([
+        'user_id' => $this->employee->id,
+        'date' => Carbon::yesterday()->toDateString(),
+        'clock_in' => Carbon::yesterday()->setTime(8, 0, 0),
+    ]);
+
+    // Record on today we want to update to yesterday
+    $attendance = Attendance::create([
+        'user_id' => $this->employee->id,
+        'date' => Carbon::today()->toDateString(),
+        'clock_in' => Carbon::today()->setTime(8, 0, 0),
+    ]);
+
+    $data = [
+        'date' => Carbon::yesterday()->toDateString(),
+        'clock_in' => Carbon::yesterday()->setTime(8, 30, 0)->format('Y-m-d H:i:s'),
+    ];
+
+    $response = $this->actingAs($this->hrStaff)->put(route('attendance.manage.records.update', $attendance), $data);
+
+    $response->assertSessionHasErrors('date');
 });
 
 test('hr_staff cannot delete attendance record', function () {
@@ -115,7 +163,56 @@ test('hr_admin and super_admin can soft delete attendance record', function () {
     $this->assertSoftDeleted('attendances', ['id' => $attendance->id]);
 });
 
-use Inertia\Testing\AssertableInertia as Assert;
+test('authorized user can view archived records', function () {
+    $attendance = Attendance::create([
+        'user_id' => $this->employee->id,
+        'date' => Carbon::today()->toDateString(),
+        'clock_in' => Carbon::now(),
+    ]);
+
+    $attendance->delete();
+
+    $response = $this->actingAs($this->hrStaff)
+        ->get(route('attendance.manage.records.index', ['status' => 'archived']));
+
+    $response->assertStatus(200);
+    $response->assertInertia(fn (Assert $page) => $page
+        ->has('records.data', 1)
+        ->where('records.data.0.id', $attendance->id)
+    );
+});
+
+test('authorized user can restore archived record', function () {
+    $attendance = Attendance::create([
+        'user_id' => $this->employee->id,
+        'date' => Carbon::today()->toDateString(),
+        'clock_in' => Carbon::now(),
+    ]);
+
+    $attendance->delete();
+
+    $response = $this->actingAs($this->hrAdmin)
+        ->post(route('attendance.manage.records.restore', ['id' => $attendance->id]));
+
+    $response->assertRedirect();
+    $this->assertNotSoftDeleted('attendances', ['id' => $attendance->id]);
+});
+
+test('unauthorized user cannot restore archived record', function () {
+    $attendance = Attendance::create([
+        'user_id' => $this->employee->id,
+        'date' => Carbon::today()->toDateString(),
+        'clock_in' => Carbon::now(),
+    ]);
+
+    $attendance->delete();
+
+    // employee doesn't have attendance.logs.manage
+    $response = $this->actingAs($this->employee)
+        ->post(route('attendance.manage.records.restore', ['id' => $attendance->id]));
+
+    $response->assertStatus(403);
+});
 
 test('permissions are correctly shared to the frontend', function () {
     // Check as HR Staff (should see it)

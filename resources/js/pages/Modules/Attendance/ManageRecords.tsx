@@ -1,5 +1,5 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { Plus, Edit, Trash2, Clock, X } from 'lucide-react';
+import { Plus, Edit, Trash2, Clock, X, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { AttendanceFilters } from '@/components/Attendance/AttendanceFilters';
@@ -19,7 +19,7 @@ import {
 
 import { cn } from '@/lib/utils';
 import { index as attendanceIndexRoute } from '@/routes/attendance';
-import { index as manageRecordsIndexRoute, destroy as destroyRecord } from '@/routes/attendance/manage/records';
+import { index as manageRecordsIndexRoute, destroy as destroyRecord, restore as restoreRecord } from '@/routes/attendance/manage/records';
 
 interface User {
     id: number;
@@ -34,6 +34,7 @@ interface AttendanceRecord {
     clock_in: string;
     clock_out: string | null;
     user?: User;
+    deleted_at?: string | null;
 }
 
 interface Props {
@@ -77,6 +78,21 @@ export default function ManageRecords({ records, employees, filters }: Props) {
         setRecordToDelete(record);
     };
 
+    const handleRestore = (record: AttendanceRecord) => {
+        router.post(restoreRecord({ id: record.id }).url, {}, {
+            preserveScroll: true,
+            onStart: () => setIsProcessing(true),
+            onFinish: () => setIsProcessing(false),
+            onSuccess: () => {
+                toast.success('Record restored successfully');
+                router.clearHistory();
+            },
+            onError: () => {
+                toast.error('Failed to restore record');
+            }
+        });
+    };
+
     const handleDelete = () => {
         if (recordToDelete) {
             router.delete(destroyRecord({ attendance: recordToDelete.id }).url, {
@@ -104,6 +120,10 @@ export default function ManageRecords({ records, employees, filters }: Props) {
     };
 
     const getStatusInfo = (record: AttendanceRecord) => {
+        if (record.deleted_at) {
+            return { label: 'Archived', variant: 'outline' as const };
+        }
+
         if (record.clock_out) {
             return { label: 'Completed', variant: 'secondary' as const };
         }
@@ -226,7 +246,8 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                                 "uppercase text-[9px] px-2 py-0.5 font-bold tracking-tight shadow-sm",
                                                                 status.label === 'Completed' && "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
                                                                 status.label === 'Incomplete' && "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
-                                                                status.label === 'Working' && "bg-primary/10 text-primary border-primary/20 animate-pulse"
+                                                                status.label === 'Working' && "bg-primary/10 text-primary border-primary/20 animate-pulse",
+                                                                status.label === 'Archived' && "bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border-zinc-500/20"
                                                             )}
                                                         >
                                                             {status.label}
@@ -234,25 +255,40 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                     </td>
                                                     <td className="px-6 py-4 text-right">
                                                         <div className="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-all duration-300">
-                                                            <Button
-                                                                size="sm"
-                                                                onClick={() => handleEdit(record)}
-                                                                className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full"
-                                                                aria-label={`Edit record for ${record.user?.first_name} ${record.user?.last_name}`}
-                                                                title="Edit Record"
-                                                            >
-                                                                <Edit className="h-3.5 w-3.5" />
-                                                            </Button>
-                                                            {canDelete && (
-                                                                <Button
-                                                                    size="sm"
-                                                                    onClick={() => confirmDelete(record)}
-                                                                    className="btn-ghost-danger-specular border-none h-8 w-8 p-0 rounded-full"
-                                                                    aria-label={`Delete record for ${record.user?.first_name} ${record.user?.last_name}`}
-                                                                    title="Delete Record"
-                                                                >
-                                                                    <Trash2 className="h-3.5 w-3.5" />
-                                                                </Button>
+                                                            {record.deleted_at ? (
+                                                                canDelete && (
+                                                                    <Button
+                                                                        size="sm"
+                                                                        onClick={() => handleRestore(record)}
+                                                                        className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full"
+                                                                        title="Restore Record"
+                                                                    >
+                                                                        <RefreshCw className="h-3.5 w-3.5" />
+                                                                    </Button>
+                                                                )
+                                                            ) : (
+                                                                <>
+                                                                    <Button
+                                                                        size="sm"
+                                                                        onClick={() => handleEdit(record)}
+                                                                        className="btn-ghost-specular border-none h-8 w-8 p-0 rounded-full"
+                                                                        aria-label={`Edit record for ${record.user?.first_name} ${record.user?.last_name}`}
+                                                                        title="Edit Record"
+                                                                    >
+                                                                        <Edit className="h-3.5 w-3.5" />
+                                                                    </Button>
+                                                                    {canDelete && (
+                                                                        <Button
+                                                                            size="sm"
+                                                                            onClick={() => confirmDelete(record)}
+                                                                            className="btn-ghost-danger-specular border-none h-8 w-8 p-0 rounded-full"
+                                                                            aria-label={`Delete record for ${record.user?.first_name} ${record.user?.last_name}`}
+                                                                            title="Delete Record"
+                                                                        >
+                                                                            <Trash2 className="h-3.5 w-3.5" />
+                                                                        </Button>
+                                                                    )}
+                                                                </>
                                                             )}
                                                         </div>
                                                     </td>

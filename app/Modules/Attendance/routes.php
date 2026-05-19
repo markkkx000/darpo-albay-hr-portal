@@ -15,5 +15,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/records', [AttendanceManagementController::class, 'store'])->name('records.store');
         Route::put('/records/{attendance}', [AttendanceManagementController::class, 'update'])->name('records.update');
         Route::delete('/records/{attendance}', [AttendanceManagementController::class, 'destroy'])->name('records.destroy');
+        Route::post('/records/{id}/restore', [AttendanceManagementController::class, 'restore'])->name('records.restore');
     });
 });
