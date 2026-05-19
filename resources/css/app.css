@@ -83,8 +83,6 @@
     background: var(--grad-primary) !important;
     color: #000 !important;
     font-weight: 600 !important;
-    transition-property: all;
-    transition-duration: 200ms;
 
     .dark & {
         background: var(--grad-primary) !important;
