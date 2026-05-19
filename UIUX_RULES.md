@@ -20,6 +20,7 @@
 11. [Accessibility](#11-accessibility)
 12. [Performance & Perception](#12-performance--perception)
 13. [Code Efficiency & Anti-Bloat](#13-code-efficiency--anti-bloat)
+14. [Important Specifications](#14-important-specifications)
 
 ---
 
@@ -375,7 +376,10 @@
 
 ---
 
-## 14. Specifications
+## 14. Important Specifications
+
+> [!IMPORTANT]
+> Whenever this markdown file (`UIUX_RULES.md`) is mentioned, referenced, or when you are prompted to remember these UI/UX design rules, you MUST always follow all rules and guidelines stated under these Important (or Considered) Specifications.
 
 ### Rounded Elements
 - **Rule:** Use consistent rounding across the interface to maintain a unified, modern aesthetic.
@@ -397,7 +401,9 @@
 - **Apply:**
   - **Dropdowns & Lists:** All dropdown menus, select items, and interactive lists must utilize the `item-hover-gradient` utility. Hover states must feature the "floating bubble" effect with precisely centered text and indicators.
   - **Buttons:** Primary call-to-action buttons should have the iconic fully rounded shape (`rounded-full`) and the signature green-yellow gradient (`btn-specular`).
-  - **Interactive Hover Specification:** The default interactive hover gradient is green-yellow (`var(--grad-primary)`) unless explicitly stated otherwise. All brand-gradient interactive elements must use black-colored icons (`text-black`) when hovered to ensure optimal high-contrast accessibility on the gradient background. However, for readability on dark card backgrounds in dark mode, hovered text must transition to white (`text-white`) instead of black, while transitioning to black (`text-black`) in light mode.
+  - **Interactive Hover Specification:** The default interactive hover gradient is green-yellow (`var(--grad-primary)`) unless explicitly stated otherwise. All brand-gradient interactive elements must use black-colored icons (`text-black`) when hovered to ensure optimal high-contrast accessibility on the gradient background. For text/label elements:
+    - **Element Covered by Gradient Hover:** When the element itself is covered by the green-yellow gradient hover background, all text and icons inside it MUST be black (`text-black`) to contrast with the bright gradient.
+    - **Element NOT Covered by Gradient Hover (Offset Hover):** When only a sibling container (e.g., an icon container) gets the gradient hover while the text area remains on the card background, the hovered text must transition to white (`text-white`) in dark mode, and black (`text-black`) in light mode.
 
 ---
 
