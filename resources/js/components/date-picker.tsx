@@ -1,10 +1,11 @@
-import { format } from "date-fns"
+import { format, isValid, parse } from "date-fns"
 // Premium DatePicker Wrapper
 import { Calendar as CalendarIcon } from "lucide-react"
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
+import { Input } from "@/components/ui/input"
 import {
   Popover,
   PopoverContent,
@@ -22,28 +23,66 @@ interface DatePickerProps {
   "aria-invalid"?: boolean
 }
 
-export function DatePicker({ value, onChange, placeholder = "Pick a date", className, disabled, id, "aria-invalid": ariaInvalid }: DatePickerProps) {
+export function DatePicker({ value, onChange, placeholder = "MM-DD-YYYY", className, disabled, id, "aria-invalid": ariaInvalid }: DatePickerProps) {
   const [date, setDate] = React.useState<Date | undefined>(
     value ? new Date(value + 'T00:00:00') : undefined
   )
+  const [inputValue, setInputValue] = React.useState(value || "")
   const [open, setOpen] = React.useState(false)
 
   React.useEffect(() => {
     if (value) {
-      setDate(new Date(value + 'T00:00:00'))
+      const parsedDate = new Date(value + 'T00:00:00')
+
+      if (!isNaN(parsedDate.getTime())) {
+        setDate(parsedDate)
+        setInputValue(format(parsedDate, "MM-dd-yyyy"))
+      } else {
+        setDate(undefined)
+        setInputValue(value)
+      }
     } else {
       setDate(undefined)
+      setInputValue("")
     }
   }, [value])
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setInputValue(val)
+
+    if (onChange) {
+      if (val === "") {
+        onChange(null)
+      } else if (val.length === 10) {
+        let parsed = parse(val, "MM-dd-yyyy", new Date())
+
+        if (!isValid(parsed)) {
+            parsed = parse(val, "MM/dd/yyyy", new Date())
+        }
+        
+        if (isValid(parsed)) {
+            onChange(format(parsed, "yyyy-MM-dd"))
+        } else {
+            onChange(val)
+        }
+      } else {
+        onChange(val)
+      }
+    }
+  }
 
   const handleSelect = (selectedDate: Date | undefined) => {
     setDate(selectedDate)
 
     if (onChange) {
       if (selectedDate) {
-        onChange(format(selectedDate, "yyyy-MM-dd"))
+        const formatted = format(selectedDate, "yyyy-MM-dd")
+        onChange(formatted)
+        setInputValue(format(selectedDate, "MM-dd-yyyy"))
       } else {
         onChange(null)
+        setInputValue("")
       }
     }
 
@@ -51,44 +90,51 @@ export function DatePicker({ value, onChange, placeholder = "Pick a date", class
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          id={id}
-          variant="outline"
-          disabled={disabled}
-          aria-invalid={ariaInvalid}
-          className={cn(
-            "w-full justify-start text-left font-normal bg-transparent rounded-2xl h-10 px-4",
-            !date && "text-muted-foreground",
-            ariaInvalid && "border-destructive focus-visible:ring-destructive",
-            className
-          )}
-        >
-          <CalendarIcon className="mr-3 h-4 w-4 opacity-70" />
-          {date ? <span className="font-medium text-foreground">{format(date, "MMMM d, yyyy")}</span> : <span>{placeholder}</span>}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 matte-card elev-3 rounded-2xl border-border/20 shadow-xl overflow-hidden" align="start">
-        <div className="flex flex-col">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={handleSelect}
-            initialFocus
-          />
-          <div className="p-4 border-t border-border bg-muted/30">
-            <Button
-              variant="default"
-              size="default"
-              className="w-full h-12 rounded-2xl font-bold border-none shadow-lg"
-              onClick={() => handleSelect(undefined)}
-            >
-              Clear
-            </Button>
+    <div className={cn("relative w-full", className)}>
+      <Input
+        id={id}
+        type="text"
+        value={inputValue}
+        onChange={handleInputChange}
+        disabled={disabled}
+        placeholder={placeholder}
+        aria-invalid={ariaInvalid}
+        className={cn(
+          "w-full pr-10 h-10 px-4",
+          ariaInvalid && "border-destructive focus-visible:ring-destructive"
+        )}
+      />
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            disabled={disabled}
+            className="absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:opacity-50 disabled:pointer-events-none"
+          >
+            <CalendarIcon className="h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0 matte-card elev-3 rounded-2xl border-border/20 shadow-xl overflow-hidden" align="end">
+          <div className="flex flex-col">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={handleSelect}
+              initialFocus
+            />
+            <div className="p-4 border-t border-border bg-muted/30">
+              <Button
+                variant="default"
+                size="default"
+                className="w-full h-12 rounded-2xl font-bold border-none shadow-lg"
+                onClick={() => handleSelect(undefined)}
+              >
+                Clear
+              </Button>
+            </div>
           </div>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </PopoverContent>
+      </Popover>
+    </div>
   )
 }
