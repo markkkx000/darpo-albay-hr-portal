@@ -7,8 +7,8 @@ This plan outlines the implementation required to export employee attendance rec
 > [!IMPORTANT]
 > - **Dependency**: This module relies entirely on existing `Attendance` records. If the attendance schema changes, the export service must be updated.
 > - **Download Mechanism**: Inertia forms do not natively handle binary file downloads via POST. The export route will be configured as a `POST` route using Axios with `responseType: 'blob'`, rather than a raw browser redirect. This preserves the SPA experience and allows us to catch and display JSON validation errors smoothly without full page reloads.
-> - **PDF Performance & "All Employees"**: `barryvdh/laravel-dompdf` is memory-intensive. To prevent timeout/memory exhaustion, "All Employees" bulk exporting will be restricted to **CSV only**. PDF exports require a specific employee to be selected.
-> - **Permissions**: Access to the DTR export module is strictly restricted to HR administrators (`dtr.manage` permission). Employees cannot self-export their DTR in this iteration.
+> - **Performance Considerations**: `barryvdh/laravel-dompdf` is memory-intensive. Exports are strictly limited to one specific employee per request. The "All Employees" bulk export feature is not in scope.
+> - **Permissions**: HR administrators (`dtr.manage`) can export DTRs for any employee. Standard employees can access this module to self-export their own DTR only. The backend will enforce this restriction.
 
 ## Proposed Changes
 
@@ -33,7 +33,8 @@ No database migrations or new models are required. The module will purely query 
     - `month`: required, integer between 1 and 12.
     - `year`: required, valid integer.
     - `format`: required, in `pdf` or `csv`.
-    - `user_id`: nullable, must exist in `users.id`. **Conditional constraint**: If `format` is `pdf`, `user_id` becomes `required` to prevent bulk-PDF generation timeouts.
+    - `user_id`: required, must exist in `users.id`.
+    - **Authorization logic**: Inside `authorize()`, ensure that if the authenticated user lacks the `dtr.manage` permission, the requested `user_id` must match their own ID (preventing them from downloading another employee's DTR).
 
 #### [NEW] DTRController.php (app/Modules/DTR/Controllers/DTRController.php)
 - **`index`**: Returns the Inertia view (`Modules/DTR/Index`) with the export form.
@@ -42,7 +43,7 @@ No database migrations or new models are required. The module will purely query 
 #### [NEW] routes.php (app/Modules/DTR/routes.php)
 - `GET /` — Renders the index form view.
 - `POST /export` — The export generation route.
-- Protect all routes with `permission:dtr.manage` middleware.
+- Protect routes with the standard `auth` middleware. Fine-grained access control (allowing self-export but preventing cross-export) will be handled by the FormRequest authorization.
 
 #### [NEW] navigation.php (app/Modules/DTR/navigation.php)
 - Register the "DTR Export" sidebar link via `ModuleRegistry`.
@@ -56,8 +57,8 @@ No database migrations or new models are required. The module will purely query 
 - **Form Fields**: 
     - Select for Month (1-12).
     - Select for Year (past 5 years to current).
-    - `EmployeeSearch.tsx` combobox for selecting a specific employee (include an option to clear selection for "All Employees").
-    - Select for Format (PDF or CSV). If "All Employees" is selected, disable the PDF option or show a warning.
+    - `EmployeeSearch.tsx` combobox for selecting a specific employee. (If the user is a standard employee without `dtr.manage`, this field should ideally be hidden or locked to their own user record).
+    - Select for Format (PDF or CSV).
 - **Download Handling (Blob)**: Implement an `isProcessing` state for the export button. On submit, bypass Inertia's `useForm` and instead use `axios.post` with `responseType: 'blob'`. 
     - On success: Create a temporary `window.URL.createObjectURL(blob)` and trigger a hidden `<a>` tag click to download the file seamlessly.
     - On error (422): Catch the JSON validation errors and display them in the UI using standard error states or `sonner` toasts.
@@ -84,14 +85,13 @@ Run this on modified PHP files before final verification.
 ### Automated Tests
 - `sail artisan test --compact --filter=DTRExportTest`
 - Create `tests/Feature/Modules/DTR/DTRExportTest.php` to verify:
-    - Route protection (blocks employees, allows HR admins).
-    - Validation failures on missing/invalid parameters (specifically verifying `user_id` is required when `format` is `pdf`).
+    - Authorization protection (blocks employees from exporting other IDs, allows HR admins to export any ID).
+    - Validation failures on missing/invalid parameters.
     - PDF and CSV generation endpoints return successful download responses.
 
 ### Manual Verification
 - **Scenario 1**: Access `/dtr` as `hr_admin`. Verify the form loads correctly within the `matte-card`.
 - **Scenario 2**: Trigger an export with invalid parameters (e.g., missing format). Verify that Axios catches the 422 error and the page does not reload, displaying the validation error cleanly.
 - **Scenario 3**: Select a specific user, month, year, and the PDF format. Verify that a PDF file downloads via the Blob method and visually matches the CS Form 48 template, showing AM/PM split times.
-- **Scenario 4**: Select "All Employees" and attempt to select PDF format. Verify the UI blocks this or the backend throws a validation error.
-- **Scenario 5**: Select the CSV format for "All Employees". Verify that a CSV file downloads containing raw tabular data (Name, Date, Clock In, Clock Out, Status) for the entire staff.
-- **Scenario 6**: Log in as a standard `employee` and attempt to access `/dtr`. Verify it returns a 403 Forbidden response and the sidebar link is hidden.
+- **Scenario 4**: Log in as a standard `employee` and attempt to access `/dtr`. Verify the form loads but the employee search component is either hidden or read-only (locked to their own account).
+- **Scenario 5**: As a standard employee, attempt to submit an export request for a different user's ID via the API/Axios directly. Verify the backend returns a 403 Forbidden response.
