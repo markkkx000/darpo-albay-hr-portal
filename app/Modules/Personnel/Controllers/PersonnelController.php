@@ -158,4 +158,14 @@ class PersonnelController extends Controller
             'new_password' => $newPassword,
         ]);
     }
+
+    /**
+     * Display the authenticated user's personnel record.
+     */
+    public function myRecord(Request $request): Response
+    {
+        return Inertia::render('Modules/Personnel/MyRecord', [
+            'employee' => $request->user()->load(['division', 'unit', 'positions', 'appointmentStatus']),
+        ]);
+    }
 }

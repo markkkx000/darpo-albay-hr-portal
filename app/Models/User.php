@@ -30,7 +30,7 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable, SoftDeletes;
 
-    protected $appends = ['name', 'age'];
+    protected $appends = ['name', 'age', 'avatar'];
 
     /**
      * Get the attributes that should be cast.
@@ -74,6 +74,11 @@ class User extends Authenticatable
         }
 
         return Carbon::parse($this->date_of_birth)->age;
+    }
+
+    public function getAvatarAttribute(): string
+    {
+        return $this->profile_picture ? asset('storage/'.$this->profile_picture) : asset('img/pfp_placeholder.png');
     }
 
     public function division(): BelongsTo

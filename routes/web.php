@@ -2,6 +2,7 @@
 
 use App\Core\Auth\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Modules\Personnel\Controllers\PersonnelController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,6 +20,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('userinfo', [PersonnelController::class, 'myRecord'])->name('userinfo');
 });
 
 Route::inertia('/', 'welcome', [
