@@ -141,8 +141,10 @@ export function EmployeeSearch({
                         </div>
                     </div>
                     <ComboboxOptions 
+                        anchor={{ to: 'bottom start', gap: 4 }}
+                        portal
                         transition
-                        className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-popover py-1 px-1.5 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm border z-50 transition duration-100 ease-in data-[leave]:opacity-0"
+                        className="max-h-60 w-[var(--input-width)] overflow-auto rounded-xl bg-popover py-1 px-1.5 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm border z-50 transition duration-100 ease-in data-[leave]:opacity-0"
                     >
                             {filteredUsers.length === 0 && query !== '' ? (
                                 <div className="relative cursor-default select-none py-2 px-4 text-muted-foreground">

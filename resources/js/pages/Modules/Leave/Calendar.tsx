@@ -4,7 +4,6 @@ import {
     ComboboxOption,
     ComboboxOptions,
     ComboboxButton,
-    Transition,
 } from '@headlessui/react';
 import { Head, router } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight, Check, ChevronsUpDown } from 'lucide-react';
@@ -304,6 +303,7 @@ export default function LeaveCalendar({
                             <Combobox
                                 value={userId ? userId.toString() : 'all'}
                                 onChange={changeUser}
+                                onClose={() => setQuery('')}
                             >
                                 <div className="relative z-50 w-full">
                                     <div className="relative w-full cursor-default overflow-hidden rounded-xl border border-input bg-background text-left shadow-sm focus-within:ring-1 focus-within:ring-ring">
@@ -335,13 +335,12 @@ export default function LeaveCalendar({
                                             />
                                         </ComboboxButton>
                                     </div>
-                                    <Transition
-                                        leave="transition ease-in duration-100"
-                                        leaveFrom="opacity-100"
-                                        leaveTo="opacity-0"
-                                        afterLeave={() => setQuery('')}
-                                    >
-                                        <ComboboxOptions className="ring-opacity-5 absolute mt-1 max-h-60 w-full overflow-auto rounded-xl border bg-popover px-1.5 py-1 text-base shadow-lg ring-1 ring-black focus:outline-none sm:text-sm">
+                                        <ComboboxOptions 
+                                            anchor={{ to: 'bottom start', gap: 4 }}
+                                            portal
+                                            transition
+                                            className="ring-opacity-5 max-h-60 w-[var(--input-width)] overflow-auto rounded-xl border bg-popover px-1.5 py-1 text-base shadow-lg ring-1 ring-black focus:outline-none sm:text-sm transition duration-100 ease-in data-[leave]:opacity-0 z-50"
+                                        >
                                             {filteredUsers.length === 0 &&
                                             query !== '' ? (
                                                 <div className="relative cursor-default px-4 py-2 text-muted-foreground select-none">
@@ -456,7 +455,6 @@ export default function LeaveCalendar({
                                                 </>
                                             )}
                                         </ComboboxOptions>
-                                    </Transition>
                                 </div>
                             </Combobox>
                         </div>
