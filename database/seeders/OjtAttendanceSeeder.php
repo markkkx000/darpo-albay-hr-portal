@@ -32,7 +32,7 @@ class OjtAttendanceSeeder extends Seeder
             $user->assignRole('employee');
         }
 
-        $jsonPath = base_path('ojt-temp-file/ojt_backup_2026-05-20.json');
+        $jsonPath = base_path('ojt-temp-file/updated_ojt_backup_2026-05-20.json');
 
         if (!file_exists($jsonPath)) {
             $this->command->error("JSON file not found at: {$jsonPath}");
@@ -49,7 +49,8 @@ class OjtAttendanceSeeder extends Seeder
 
             $date = $record['date'];
 
-            // "only take the first clock-in and the last clock-out, so for full day of attendance, take the morning clock-in and the afternoon clock-out. for half-days, well no need to do anything just take the clock-in and clock-out."
+            // "only take the first clock-in and the last clock-out"
+            // Earliest available time (morIn if present, else aftIn)
             $clockInTime = null;
             if (!empty($record['morIn'])) {
                 $clockInTime = $record['morIn'];
@@ -57,6 +58,7 @@ class OjtAttendanceSeeder extends Seeder
                 $clockInTime = $record['aftIn'];
             }
 
+            // Latest available time (aftOut if present, else morOut)
             $clockOutTime = null;
             if (!empty($record['aftOut'])) {
                 $clockOutTime = $record['aftOut'];
