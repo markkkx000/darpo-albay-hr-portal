@@ -8,10 +8,10 @@ interface Props {
     divisions: any[];
     units: any[];
     positions: any[];
-    employmentStatuses: any[];
+    appointmentStatuses: any[];
 }
 
-export default function Create({ divisions, units, positions, employmentStatuses }: Props) {
+export default function Create({ divisions, units, positions, appointmentStatuses }: Props) {
     const generateRandomPassword = () => {
         const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -26,28 +26,43 @@ export default function Create({ divisions, units, positions, employmentStatuses
         email: '',
         sex: '',
         date_of_birth: '',
+        civil_status: '',
         password: generateRandomPassword(),
         
         positions: [{ id: '', name: '', is_primary: true }],
         division_id: '',
         unit_id: '',
-        employment_status_id: '',
+        appointment_status_id: '',
         hire_date: '',
+        date_hired_government: '',
         years_in_service: '',
         plantilla_number: '',
+        plantilla_position: '',
+        item_number: '',
+        office_per_appointment: '',
         orig_date_of_appointment: '',
         date_of_latest_appointment: '',
         date_of_assumption: '',
+        date_of_separation: '',
         
         contact_number: '',
+        present_address: '',
         address: '',
         
         gsis_bp_number: '',
         philhealth: '',
         hdmf_pagibig_no: '',
         tin_number: '',
+        lbp_account_number: '',
         prc_id_no: '',
         prc_expiration: '',
+        
+        fund_code: '',
+        func_activity_code: '',
+        profile_picture: null as File | null,
+        salary_grade: '',
+        salary_step: '',
+        monthly_salary: '',
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -90,7 +105,7 @@ export default function Create({ divisions, units, positions, employmentStatuses
                             divisions={divisions}
                             units={units}
                             positions={positions}
-                            employmentStatuses={employmentStatuses}
+                            appointmentStatuses={appointmentStatuses}
                             onSubmit={handleSubmit}
                             cancelUrl={indexRoute().url}
                         />

@@ -3,20 +3,20 @@
 namespace App\Modules\Personnel\Models;
 
 use App\Models\User;
-use Database\Factories\EmploymentStatusFactory;
+use Database\Factories\AppointmentStatusFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['name', 'is_active'])]
-class EmploymentStatus extends Model
+class AppointmentStatus extends Model
 {
     use HasFactory;
 
     protected static function newFactory()
     {
-        return EmploymentStatusFactory::new();
+        return AppointmentStatusFactory::new();
     }
 
     protected $casts = [

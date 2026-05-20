@@ -3,6 +3,8 @@
 ## Overview
 This application is a **Laravel 13** backend with an **Inertia.js React** frontend. It strictly requires **PHP 8.4**. Authentication is custom and uses Laravel `Auth::attempt()` instead of Fortify, with role-based redirects to a single dashboard page. The application uses a modular architecture for navigation and feature development.
 
+Currently implemented modules: **Announcements, Attendance, DTR Export, Leave Tracking, Notifications (infra), Personnel Directory, Roles & Permissions, Travel Orders (stub)**.
+
 ---
 
 ## Key Architecture
@@ -11,7 +13,7 @@ This application is a **Laravel 13** backend with an **Inertia.js React** fronte
 - `routes/web.php` — defines core auth routes and the dashboard route only. Module routes are never registered here.
 - `routes/settings.php` — handles user profile and security settings. Self-service account deletion is intentionally disabled to preserve historical HR data integrity.
 - `app/Core/Auth/Controllers/AuthController.php` — handles login/logout and role-based redirects.
-- `app/Core/Services/ModuleRegistry.php` — singleton that aggregates navigation items and module metadata from all active modules.
+- `app/Core/Services/ModuleRegistry.php` — singleton that aggregates navigation items and module metadata from all active modules. Navigation ordering is enforced by an explicit weight map in `getNavigation()`: Attendance (10), Announcements (20), Leave Tracking (30), Personnel Directory (40), Travel Orders (50), DTR Export (60), Roles & Permissions (70).
 - `app/Core/Services/NotificationService.php` — cross-cutting notification infrastructure. Any module can import this service to dispatch notifications. See Notifications Infrastructure below.
 - `app/Observers/UserObserver.php` — listens for User model `password` changes and auto-dismisses the default password notification via `NotificationService::dismissBySubtype()`.
 - `app/Providers/ModuleServiceProvider.php` — bootstraps modules by automatically scanning for and registering `routes.php` and `navigation.php` files in each module directory under `app/Modules/`.
@@ -28,7 +30,7 @@ This application is a **Laravel 13** backend with an **Inertia.js React** fronte
 
 ### Frontend
 - `resources/js/app.tsx` — initializes Inertia, adds global providers, and centralizes **layout resolution logic** based on page name (e.g., `settings/*` uses nested layouts).
-- `resources/js/pages/dashboard.tsx` — dispatcher that renders role-specific overview components (`AdminOverview`, `HROverview`, `EmployeeOverview`).
+- `resources/js/pages/dashboard.tsx` — dispatcher that renders role-specific overview components. Logic: `super_admin` → AdminOverview + HROverview; HR roles (`personnel.view` or `leave.manage`) → HROverview only; employees → EmployeeOverview only. `EmployeeOverview` is **never shown** to admin/HR roles.
 - `resources/js/pages/auth/login.tsx` — login page (dual-field: email or employee number).
 - `resources/js/pages/welcome.tsx` — public landing page.
 - `resources/js/components/app-sidebar.tsx` — renders the core Dashboard link plus dynamic module links from `auth.navigation`.
@@ -70,10 +72,17 @@ app/
       Models/Attendance.php
       Requests/ClockInRequest.php, ClockOutRequest.php, StoreAttendanceRecordRequest.php, UpdateAttendanceRecordRequest.php
       Services/AttendanceService.php
+    DTR/                         # Daily Time Record export (CS Form 48)
+      Controllers/DTRController.php
+      Requests/DTRGenerateRequest.php
+      Services/DTRService.php
+      navigation.php             # Sidebar: 'DTR Export', permission: attendance.view
     Leave/
       Controllers/LeaveController.php, LeaveCreditController.php, TardinessController.php, HolidayController.php, LeaveTypeController.php, LeaveStatusController.php
       Models/LeaveRequest.php, LeaveType.php, LeaveStatus.php, LeaveCredit.php, TardinessRecord.php, Holiday.php
       Requests/StoreLeaveRequest.php, UpdateLeaveRequest.php, UpdateLeaveCreditRequest.php
+               StoreLeaveTypeRequest.php, UpdateLeaveTypeRequest.php, StoreLeaveStatusRequest.php, UpdateLeaveStatusRequest.php
+               StoreHolidayRequest.php, UpdateHolidayRequest.php, UpdateTardinessRequest.php
       Services/LeaveService.php, LeaveCreditService.php
     Notifications/               # Hybrid: UI module for core notification infrastructure
       Controllers/NotificationController.php
@@ -87,6 +96,9 @@ app/
       Controllers/RoleController.php, UserRoleController.php
       Requests/RoleCreateRequest.php, RoleUpdateRequest.php, UserRoleSyncRequest.php
       Services/RoleService.php
+    Travel/                      # Travel Orders (stub — under construction)
+      Controllers/TravelOrderController.php
+      navigation.php             # Sidebar: 'Travel Orders', permission: travel_order.create|travel_order.manage
   Notifications/                 # Laravel notification class
     GenericDatabaseNotification.php
   Observers/
@@ -105,6 +117,8 @@ resources/js/
         Index.tsx, Show.tsx, Manage.tsx, Create.tsx, Edit.tsx
       Attendance/
         ClockInOut.tsx, ManageRecords.tsx
+      DTR/
+        Index.tsx                # CS Form 48 export form (employee or HR admin view)
       Leave/
         Index.tsx, Show.tsx, Form.tsx, Calendar.tsx, Credits.tsx, Tardiness.tsx, Settings.tsx
         Components/LeaveNavigation.tsx, AdjustBalanceForm.tsx, CreditDetailSheet.tsx
@@ -115,6 +129,8 @@ resources/js/
         Organization/Index.tsx   # Division, Unit, Position management
       Roles/
         RolesIndex.tsx, UserRolesIndex.tsx
+      Travel/
+        Index.tsx                # Placeholder (under construction)
   components/
     dashboard/                   # AdminOverview, HROverview, EmployeeOverview, StatCard
     notifications/NotificationBell.tsx  # Global header bell icon + dropdown
@@ -141,10 +157,12 @@ database/
   factories/                     # UserFactory, AnnouncementFactory, AttendanceFactory, DivisionFactory, PositionFactory, EmploymentStatusFactory
                                    # Note: UserFactory does NOT include position_id — use user->positions()->sync() after factory creation
   seeders/                       # DatabaseSeeder, RoleAndPermissionSeeder, PersonnelSeeder, LeaveTypeSeeder, LeaveStatusSeeder, HolidaySeeder
+                                   # DTRSuperAdminAprilSeeder, OjtAttendanceSeeder (dev-only data seeders)
 
 tests/
   Feature/                       # Root-level feature tests
     Modules/                     # Module-specific test subdirectories
+      DTR/DTRExportTest.php
       LeaveCreditTest.php, LeaveDigitizationTest.php, LeaveTest.php
       Roles/
   Pest.php                       # Global Pest config (RefreshDatabase for Feature tests)
@@ -183,15 +201,17 @@ tests/
 - **Calendar** (`Calendar.tsx`): Visual monthly calendar showing leave requests per day. Employee filter via Headless UI Combobox. Color-coded by leave type. Click on a day to see details in a dialog.
 - **Leave Credits** (`Credits.tsx`): Dual-view — HR sees a paginated table of all employees with inline-editable earned/used credits; employees/division_heads see their own credits. Features a "Display Leave Types" toggle to choose which credits are visible in the table. This visibility state is persisted via `localStorage` and defaults to VL and SL. Includes `CreditDetailSheet` for viewing individual employee credit details and `AdjustBalanceForm` for balance adjustments.
 - **Tardiness & Undertime** (`Tardiness.tsx`): Paginated table of employees with inline-editable tardiness/undertime counts per month. Features a custom counter UI with `+`/`-` buttons and a 500ms debounce for database updates to prevent rapid redundant requests.
-- **Settings** (`Settings.tsx`): Admin-only tab (requires `leave.settings.manage`). CRUD for holidays (add/edit/delete by year), leave types (add with name/color/description, toggle active/inactive), and leave statuses (add, toggle active/inactive). Deactivation pattern preferred over hard deletion to preserve historical integrity.
+- **Settings** (`Settings.tsx`): Admin-only tab (requires `leave.settings.manage`). CRUD for holidays (add/edit/delete by year), leave types (add with name/color/description/abbreviation/credit-behavior, toggle active/inactive), and leave statuses (add, toggle active/inactive). Deactivation pattern preferred over hard deletion to preserve historical integrity.
+  - **Credit Behavior**: Leave types have a **tri-state** `is_cumulative` field (`true` = Cumulative, `false` = Non-Cumulative, `null` = N/A). The Settings UI uses a `<Select>` with string values `'true'`/`'false'`/`'null'` that are transformed to the appropriate PHP types on submission.
 - **Navigation**: `LeaveNavigation.tsx` provides in-module tab navigation (Dashboard, Calendar, Credits, Tardiness, Settings). Settings tab is hidden from users without `leave.settings.manage`.
 - **Service Layer**: `LeaveService` handles overlap validation, half-day validation, working-day calculation, and automatic credit deduction/restoration on approved leave changes. `LeaveCreditService` handles credit queries and updates.
-- **Models**: `LeaveRequest` (with CS Form 6 digitization fields: `salary`, `date_filed`, `days_with_pay`, `days_without_pay`, `others_pay_remarks`, `approved_by_official`, `leave_detail_type`, `leave_detail_remarks`, `vl_balance_at_filing`, `sl_balance_at_filing`, `has_attachments`, `supporting_documents`, `maternity_allocation_details`, plus computed `pay_status` accessor), `LeaveType` (with `color_code`, `is_active`), `LeaveStatus` (with `is_active`), `LeaveCredit` (per user, per type, per year), `TardinessRecord` (per user, per year/month, with `tardiness_count` and `undertime_count`), `Holiday`.
+- **Models**: `LeaveRequest` (with CS Form 6 digitization fields: `salary`, `date_filed`, `days_with_pay`, `days_without_pay`, `others_pay_remarks`, `approved_by_official`, `leave_detail_type`, `leave_detail_remarks`, `vl_balance_at_filing`, `sl_balance_at_filing`, `has_attachments`, `supporting_documents`, `maternity_allocation_details`, plus computed `pay_status` accessor), `LeaveType` (with `color_code`, `abbreviation`, `is_active`, `is_cumulative` tri-state nullable boolean), `LeaveStatus` (with `is_active`), `LeaveCredit` (per user, per type, per year), `TardinessRecord` (per user, per year/month, with `tardiness_count` and `undertime_count`), `Holiday`.
 - **Controllers**: `LeaveController` (index, create, store, show, edit, update, destroy, calendar, settings), `LeaveCreditController` (index, show, update), `TardinessController`, `HolidayController`, `LeaveTypeController`, `LeaveStatusController`.
 - **Permissions**: `leave.view` (all roles), `leave.manage` (hr_staff, hr_admin, super_admin), `leave.tardiness.manage` (hr_staff, hr_admin, super_admin), `leave.credits.view` (all roles), `leave.credits.manage` (hr_staff, hr_admin, super_admin), `leave.settings.manage` (hr_admin, super_admin).
 
 ### Personnel Directory Module (`app/Modules/Personnel/`)
-- **Employee CRUD**: Full create, read, update, soft delete, and restore via `EmployeeService`. Extensive profile fields including Personal Information, Employment Details, Contact Information, and Government IDs/Credentials. Auto-calculates `age` based on birthdate.
+- **Employee CRUD**: Full create, read, update, soft delete, and restore via `EmployeeService`. Extensive profile fields including Personal Information (including `middle_name`), Employment Details, Contact Information, and Government IDs/Credentials. Auto-calculates `age` based on birthdate.
+- **`middle_name` field**: Present on the `users` table and `User` model (`#[Fillable]`). The `name` accessor on `User` concatenates `first_name`, `middle_name`, and `last_name`, filtering null values. `EmployeeService` includes `middle_name` in search queries. All Personnel forms (`Create`, `Edit`) expose this field.
 - **Multi-Position Architecture**: Employees are linked to positions via a `position_user` **many-to-many pivot table** (not a `position_id` column on `users`). The pivot includes an `is_primary` boolean to distinguish the employee's primary role from secondary ones. The `User` model exposes a `positions()` `belongsToMany` relationship. This is the source of truth — never reference a `position_id` column on `users`.
 - **Dynamic Position Creation**: The `PositionCombobox` React component (in `resources/js/components/Personnel/`) allows selecting existing positions or typing a new name to create one on-the-fly. The `EmployeeService` handles new position creation inside a database transaction when syncing pivot data.
 - **Lookup Tables**: `divisions`, `units`, `positions`, `employment_statuses` — all use `is_active` flag, never hard deleted. `units` and `positions` are hierarchically nested under a `division`. Each user belongs to exactly one `division_id` and optionally one `unit_id` (primary assignment), but can hold multiple positions.
@@ -210,6 +230,22 @@ tests/
 - **Requests**: `RoleCreateRequest`, `RoleUpdateRequest`, `UserRoleSyncRequest`.
 - **Service Layer**: `RoleService` handles role business logic.
 - **Permissions**: Requires `roles.manage` (assigned to `super_admin`).
+
+### DTR Export Module (`app/Modules/DTR/`)
+- **Purpose**: Generates CS Form 48 (Daily Time Record) exports from attendance data. Accessible to all users with `attendance.view`. HR admins with `dtr.manage` can export for any employee; regular users can only export their own.
+- **Export Formats**: PDF (via `barryvdh/laravel-dompdf`, rendered from `resources/views/exports/dtr_pdf.blade.php`) and CSV (raw data).
+- **Official Hours**: Supports Regular (08:00 AM – 05:00 PM, Mon-Fri), Compressed (07:00 AM – 06:00 PM, Mon-Thu), and Custom modes. The compressed flag is auto-detected by `DTRService` when generating daily data (Fridays marked accordingly).
+- **Daily Data Logic**: `DTRService::generateDailyData()` maps clock-in/out timestamps to AM/PM slots, marking holidays (from `Holiday` model), Saturdays, Sundays, and Fridays (compressed only) with labels.
+- **Controller**: `DTRController` — `index()` renders the form, `export()` returns the file download response.
+- **Sidebar**: Registered with `attendance.view` permission, ordered after Travel Orders (weight 60).
+- **Tests**: `tests/Feature/Modules/DTR/DTRExportTest.php`.
+- **Permissions**: Uses `attendance.view` for access (all roles), `dtr.manage` (hr_admin, super_admin) to export on behalf of others.
+
+### Travel Orders Module (`app/Modules/Travel/`)
+- **Status**: **Stub / Under Construction** — the index page renders a placeholder card. No meaningful backend logic yet.
+- **Controller**: `TravelOrderController` (minimal).
+- **Sidebar**: Registered with `travel_order.create|travel_order.manage` permission, ordered before DTR Export (weight 50).
+- **Permissions**: `travel_order.create` (employee, division_head, super_admin), `travel_order.manage` (hr_staff, hr_admin, super_admin).
 
 ### Notifications Infrastructure (Hybrid: `app/Core/Services/` + `app/Modules/Notifications/`)
 This is **infrastructure, not a feature module**. It is a hybrid: the dispatch/management service lives in `app/Core/Services/NotificationService.php` (consumed by all modules), while the UI routes and pages live in `app/Modules/Notifications/` (auto-registered by `ModuleServiceProvider`). It has **no sidebar link** — no `navigation.php` file exists.
@@ -232,7 +268,9 @@ This is **infrastructure, not a feature module**. It is a hybrid: the dispatch/m
 | `hr_admin` | All HR modules, leave settings, attendance logs manage, personnel view/manage, announcements view/manage, DTR manage, travel order manage |
 | `hr_staff` | Attendance view + logs view, leave manage/credits/tardiness, personnel view, announcements view/manage, travel order manage |
 | `division_head` | Clock in/out, attendance view, leave view, leave credits view, announcements view/manage, travel order create |
-| `employee` | Clock in/out, attendance view, leave view, leave credits view, announcements view, travel order create |
+| `employee` | Clock in/out, attendance view, leave view, leave credits view, announcements view, travel order create (no `travel_order.create` in seeder — see note) |
+
+> **Note**: `travel_order.create` is seeded for `division_head` and `super_admin`. Regular `employee` role currently does **not** have `travel_order.create` in `RoleAndPermissionSeeder`.
 
 ### All Permissions (from `RoleAndPermissionSeeder`)
 
@@ -253,7 +291,7 @@ This is **infrastructure, not a feature module**. It is a hybrid: the dispatch/m
 | `announcements.view` | employee, division_head, hr_staff, hr_admin, super_admin |
 | `announcements.manage` | division_head, hr_staff, hr_admin, super_admin |
 | `dtr.manage` | hr_admin, super_admin |
-| `travel_order.create` | employee, division_head, super_admin |
+| `travel_order.create` | division_head, super_admin |
 | `travel_order.manage` | hr_staff, hr_admin, super_admin |
 | `roles.manage` | super_admin |
 

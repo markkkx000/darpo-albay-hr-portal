@@ -6,8 +6,8 @@ namespace App\Models;
 use App\Modules\Leave\Models\LeaveCredit;
 use App\Modules\Leave\Models\LeaveRequest;
 use App\Modules\Leave\Models\TardinessRecord;
+use App\Modules\Personnel\Models\AppointmentStatus;
 use App\Modules\Personnel\Models\Division;
-use App\Modules\Personnel\Models\EmploymentStatus;
 use App\Modules\Personnel\Models\Position;
 use App\Modules\Personnel\Models\Unit;
 use Carbon\Carbon;
@@ -23,7 +23,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['employee_number', 'first_name', 'middle_name', 'last_name', 'email', 'password', 'is_active', 'division_id', 'unit_id', 'employment_status_id', 'hire_date', 'contact_number', 'address', 'sex', 'date_of_birth', 'years_in_service', 'plantilla_number', 'gsis_bp_number', 'philhealth', 'hdmf_pagibig_no', 'tin_number', 'prc_id_no', 'prc_expiration', 'orig_date_of_appointment', 'date_of_latest_appointment', 'date_of_assumption'])]
+#[Fillable(['employee_number', 'first_name', 'middle_name', 'last_name', 'email', 'password', 'is_active', 'division_id', 'unit_id', 'appointment_status_id', 'hire_date', 'contact_number', 'address', 'sex', 'date_of_birth', 'years_in_service', 'plantilla_number', 'gsis_bp_number', 'philhealth', 'hdmf_pagibig_no', 'tin_number', 'prc_id_no', 'prc_expiration', 'orig_date_of_appointment', 'date_of_latest_appointment', 'date_of_assumption', 'date_of_separation', 'date_hired_government', 'present_address', 'civil_status', 'fund_code', 'func_activity_code', 'item_number', 'office_per_appointment', 'plantilla_position', 'lbp_account_number', 'profile_picture', 'salary_grade', 'salary_step', 'monthly_salary'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -49,6 +49,11 @@ class User extends Authenticatable
             'orig_date_of_appointment' => 'date',
             'date_of_latest_appointment' => 'date',
             'date_of_assumption' => 'date',
+            'date_of_separation' => 'date',
+            'date_hired_government' => 'date',
+            'salary_grade' => 'integer',
+            'salary_step' => 'integer',
+            'monthly_salary' => 'decimal:2',
         ];
     }
 
@@ -86,9 +91,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Position::class)->withPivot('is_primary')->withTimestamps();
     }
 
-    public function employmentStatus(): BelongsTo
+    public function appointmentStatus(): BelongsTo
     {
-        return $this->belongsTo(EmploymentStatus::class);
+        return $this->belongsTo(AppointmentStatus::class);
     }
 
     public function leaveCredits(): HasMany

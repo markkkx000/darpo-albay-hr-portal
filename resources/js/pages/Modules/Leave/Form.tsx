@@ -1,80 +1,97 @@
 import { Head, router, useForm, useHttp } from '@inertiajs/react';
-import { X, Plus, Trash2, AlertCircle } from 'lucide-react';
-import { useState, useEffect, useRef, useMemo, useSyncExternalStore } from 'react';
+import { AlertCircle } from 'lucide-react';
+import {
+    useState,
+    useEffect,
+    useRef,
+    useMemo,
+    useSyncExternalStore,
+} from 'react';
 import type { FormEvent } from 'react';
 import { toast } from 'sonner';
-import { DatePicker } from '@/components/date-picker';
-import { EmployeeSearch } from '@/components/EmployeeSearch';
-import { CreditPreview } from '@/components/Leave/CreditPreview';
+import Heading from '@/components/heading';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import LeaveRoutes from '@/routes/leave';
+import {
+    formatDateForInput,
+    parseLocalDate,
+    getDetailsOptions,
+    getSupportingDocsOptions,
+    getDetailsParts,
+    EmployeeSection,
+    LeaveTypeSection,
+    DetailsSection,
+    DateSection,
+    ApprovalSection,
+    StatusSection,
+    SupportingDocsSection,
+} from './Components/Form';
 import LeaveNavigation from './Components/LeaveNavigation';
 
-const Required = () => <span className="text-destructive ml-1">*</span>;
-
-const formatDateForInput = (dateString: string | null | undefined) => {
-    if (!dateString) {
-        return '';
-    }
-
-    const date = new Date(dateString);
-
-    return date.toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
-};
-
-
-export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatuses, holidays = [] }: any) {
+export default function LeaveForm({
+    leaveRequest,
+    users,
+    leaveTypes,
+    leaveStatuses,
+    holidays = [],
+}: any) {
     const isEdit = !!leaveRequest;
 
-    const { data, setData, processing, errors, post, put, transform } = useForm({
-        user_id: leaveRequest?.user_id?.toString() || '',
-        leave_type_id: leaveRequest?.leave_type_id?.toString() || '',
-        leave_status_id: leaveRequest?.leave_status_id?.toString() || '',
-        start_date: formatDateForInput(leaveRequest?.start_date),
-        end_date: formatDateForInput(leaveRequest?.end_date),
-        days_requested: leaveRequest?.days_requested || '',
-        dates: '', // Dummy field for backend overlap validation errors
-        date_received: formatDateForInput(leaveRequest?.date_received),
-        date_approved: formatDateForInput(leaveRequest?.date_approved),
-        approved_by_id: leaveRequest?.approved_by_id?.toString() || '',
-        leave_details: leaveRequest?.leave_details || '',
-        commutation_requested: leaveRequest?.commutation_requested || false,
-        is_filed: leaveRequest?.is_filed || false,
-        notes: leaveRequest?.notes || '',
-        attachment_urls: leaveRequest?.attachment_urls || [''],
-        specific_dates: (leaveRequest?.specific_dates || []).map(formatDateForInput),
-        salary: leaveRequest?.salary || '',
-        date_filed: formatDateForInput(leaveRequest?.date_filed) || formatDateForInput(new Date().toISOString()),
-        days_with_pay: leaveRequest?.days_with_pay || '',
-        days_without_pay: leaveRequest?.days_without_pay || '',
-        others_pay_remarks: leaveRequest?.others_pay_remarks || '',
-        approved_by_official: leaveRequest?.approved_by_official || '',
-        leave_detail_type: leaveRequest?.leave_detail_type || '',
-        leave_detail_remarks: leaveRequest?.leave_detail_remarks || '',
-        vl_balance_at_filing: leaveRequest?.vl_balance_at_filing || '',
-        sl_balance_at_filing: leaveRequest?.sl_balance_at_filing || '',
-        has_attachments: leaveRequest?.has_attachments || false,
-        supporting_documents: leaveRequest?.supporting_documents || [] as string[],
-        maternity_allocation_details: leaveRequest?.maternity_allocation_details || '',
-    });
+    const { data, setData, processing, errors, post, put, transform } = useForm(
+        {
+            user_id: leaveRequest?.user_id?.toString() || '',
+            leave_type_id: leaveRequest?.leave_type_id?.toString() || '',
+            leave_status_id: leaveRequest?.leave_status_id?.toString() || '',
+            start_date: formatDateForInput(leaveRequest?.start_date),
+            end_date: formatDateForInput(leaveRequest?.end_date),
+            days_requested: leaveRequest?.days_requested || '',
+            dates: '', // Dummy field for backend overlap validation errors
+            date_received: formatDateForInput(leaveRequest?.date_received),
+            date_approved: formatDateForInput(leaveRequest?.date_approved),
+            approved_by_id: leaveRequest?.approved_by_id?.toString() || '',
+            leave_details: leaveRequest?.leave_details || '',
+            commutation_requested: leaveRequest?.commutation_requested || false,
+            is_filed: leaveRequest?.is_filed || false,
+            notes: leaveRequest?.notes || '',
+            attachment_urls: leaveRequest?.attachment_urls || [''],
+            specific_dates: (leaveRequest?.specific_dates || []).map(
+                formatDateForInput,
+            ),
+            salary: leaveRequest?.salary || '',
+            date_filed:
+                formatDateForInput(leaveRequest?.date_filed) ||
+                formatDateForInput(new Date().toISOString()),
+            days_with_pay: leaveRequest?.days_with_pay || '',
+            days_without_pay: leaveRequest?.days_without_pay || '',
+            others_pay_remarks: leaveRequest?.others_pay_remarks || '',
+            approved_by_official: leaveRequest?.approved_by_official || '',
+            leave_detail_type: leaveRequest?.leave_detail_type || '',
+            leave_detail_remarks: leaveRequest?.leave_detail_remarks || '',
+            vl_balance_at_filing: leaveRequest?.vl_balance_at_filing || '',
+            sl_balance_at_filing: leaveRequest?.sl_balance_at_filing || '',
+            has_attachments: leaveRequest?.has_attachments || false,
+            supporting_documents:
+                leaveRequest?.supporting_documents || ([] as string[]),
+            maternity_allocation_details:
+                leaveRequest?.maternity_allocation_details || '',
+        },
+    );
 
     const [dateMode, setDateMode] = useState<'range' | 'specific'>(
-        leaveRequest?.specific_dates && leaveRequest.specific_dates.length > 0 ? 'specific' : 'range'
+        leaveRequest?.specific_dates && leaveRequest.specific_dates.length > 0
+            ? 'specific'
+            : 'range',
     );
-    const [specificDateInput, setSpecificDateInput] = useState('');
     const [userCredits, setUserCredits] = useState<any[]>([]);
     const http = useHttp();
 
     const mounted = useSyncExternalStore(
-        () => () => { },
+        () => () => {},
         () => true,
-        () => false
+        () => false,
     );
 
     const lastFetched = useRef<string | null>(null);
@@ -89,7 +106,9 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
         // Use start_date year, or date_filed year, or current year
         const year = data.start_date
             ? new Date(data.start_date).getFullYear()
-            : (data.date_filed ? new Date(data.date_filed).getFullYear() : new Date().getFullYear());
+            : data.date_filed
+              ? new Date(data.date_filed).getFullYear()
+              : new Date().getFullYear();
 
         const fetchKey = `${data.user_id}-${year}`;
 
@@ -99,17 +118,23 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
 
         lastFetched.current = fetchKey;
 
-        const route = LeaveRoutes.credits.show({ user: data.user_id }, { query: { year } });
+        const route = LeaveRoutes.credits.show(
+            { user: data.user_id },
+            { query: { year } },
+        );
 
         http.submit(route)
             .then((res: any) => {
-                // With submit, res is usually the direct response body
-                const credits = res?.credits ?? res?.data?.credits ?? res?.data ?? res;
+                const credits =
+                    res?.credits ?? res?.data?.credits ?? res?.data ?? res;
 
                 if (Array.isArray(credits)) {
                     setUserCredits(credits);
-                } else if (credits && typeof credits === 'object' && credits.credits) {
-                    // Nested case
+                } else if (
+                    credits &&
+                    typeof credits === 'object' &&
+                    credits.credits
+                ) {
                     setUserCredits(credits.credits);
                 }
             })
@@ -120,31 +145,16 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
     }, [data.user_id, data.start_date, data.date_filed, http]);
 
     const currentCredit = Array.isArray(userCredits)
-        ? userCredits.find(c =>
-            c.user_id?.toString() === data.user_id &&
-            c.leave_type_id?.toString() === data.leave_type_id
-        )
+        ? userCredits.find(
+              (c) =>
+                  c.user_id?.toString() === data.user_id &&
+                  c.leave_type_id?.toString() === data.leave_type_id,
+          )
         : null;
 
     const available = currentCredit ? parseFloat(currentCredit.balance) : 0;
     const requested = parseFloat(data.days_requested) || 0;
     const remaining = available - requested;
-
-
-
-
-
-
-
-    const parseLocalDate = (dateString: string) => {
-        if (!dateString) {
-            return null;
-        }
-
-        const [y, m, d] = dateString.split('-').map(Number);
-
-        return new Date(y, m - 1, d);
-    };
 
     const holidayDates = useMemo(() => {
         return (holidays || []).map((h: any) => h.date);
@@ -159,7 +169,6 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                 return '';
             }
 
-            // Mathematical calculation of weekdays
             const diffTime = Math.abs(end.getTime() - start.getTime());
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
@@ -168,13 +177,17 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
 
             for (let i = 0; i < diffDays; i++) {
                 const day = tempDate.getDay();
-                
+
                 const yyyy = tempDate.getFullYear();
                 const mm = String(tempDate.getMonth() + 1).padStart(2, '0');
                 const dd = String(tempDate.getDate()).padStart(2, '0');
                 const dateString = `${yyyy}-${mm}-${dd}`;
 
-                if (day !== 0 && day !== 6 && !holidayDates.includes(dateString)) {
+                if (
+                    day !== 0 &&
+                    day !== 6 &&
+                    !holidayDates.includes(dateString)
+                ) {
                     count++;
                 }
 
@@ -187,19 +200,30 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                 return '';
             }
 
-            return data.specific_dates.filter((d: string) => {
-                const date = parseLocalDate(d);
-                const day = date?.getDay();
+            return data.specific_dates
+                .filter((d: string) => {
+                    const date = parseLocalDate(d);
+                    const day = date?.getDay();
 
-                return day !== 0 && day !== 6 && !holidayDates.includes(d);
-            }).length.toString();
+                    return day !== 0 && day !== 6 && !holidayDates.includes(d);
+                })
+                .length.toString();
         }
-    }, [data.start_date, data.end_date, data.specific_dates, dateMode, holidayDates]);
+    }, [
+        data.start_date,
+        data.end_date,
+        data.specific_dates,
+        dateMode,
+        holidayDates,
+    ]);
 
     const lastAutoCalc = useRef(calculatedDays);
 
     useEffect(() => {
-        if (calculatedDays !== '' && (calculatedDays !== lastAutoCalc.current || available !== undefined)) {
+        if (
+            calculatedDays !== '' &&
+            (calculatedDays !== lastAutoCalc.current || available !== undefined)
+        ) {
             const requestedNum = parseFloat(calculatedDays) || 0;
             const withPay = Math.min(requestedNum, available);
             const withoutPay = Math.max(0, requestedNum - withPay);
@@ -208,22 +232,11 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                 ...prev,
                 days_requested: calculatedDays,
                 days_with_pay: withPay > 0 ? withPay.toString() : '0',
-                days_without_pay: withoutPay > 0 ? withoutPay.toString() : '0'
+                days_without_pay: withoutPay > 0 ? withoutPay.toString() : '0',
             }));
             lastAutoCalc.current = calculatedDays;
         }
     }, [calculatedDays, available, setData]);
-
-    const addSpecificDate = () => {
-        if (specificDateInput && !data.specific_dates.includes(specificDateInput)) {
-            setData('specific_dates', [...data.specific_dates, specificDateInput].sort());
-            setSpecificDateInput('');
-        }
-    };
-
-    const removeSpecificDate = (dateToRemove: string) => {
-        setData('specific_dates', data.specific_dates.filter((d: string) => d !== dateToRemove));
-    };
 
     const toggleDateMode = (mode: 'range' | 'specific') => {
         setDateMode(mode);
@@ -236,101 +249,31 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
         }
     };
 
-    const selectedLeaveType = leaveTypes.find((t: any) => t.id.toString() === data.leave_type_id);
+    const selectedLeaveType = leaveTypes.find(
+        (t: any) => t.id.toString() === data.leave_type_id,
+    );
     const typeName = selectedLeaveType?.name?.toLowerCase() || '';
 
-    const getDetailsOptions = (name: string) => {
-        if (!name) {
-            return [];
-        }
-
-        if (name.includes('vacation') || name.includes('mandatory') || name.includes('special privilege')) {
-            return ['Within the Philippines', 'Abroad'];
-        }
-
-        if (name.includes('sick')) {
-            return ['In Hospital', 'Out Patient'];
-        }
-
-        if (name.includes('women')) {
-            return ['Illness'];
-        }
-
-        if (name.includes('study')) {
-            return ['Completion of Master\'s Degree', 'BAR/Board Examination Review', 'Others'];
-        }
-
-        if (name.includes('maternity') || name.includes('paternity') || name.includes('vawc') || name.includes('parent')) {
-            return ['N/A'];
-        }
-
-        return ['Monetization of Leave Credits', 'Terminal Leave', 'Others'];
-    };
-
-    const getSupportingDocsOptions = (name: string) => {
-        const docs = [];
-
-        if (name.includes('sick')) {
-            docs.push('Medical Certificate', 'Affidavit');
-        }
-
-        if (name.includes('maternity') || name.includes('paternity')) {
-            docs.push('Proof of Pregnancy/Delivery', 'Marriage Contract', 'Notice of Allocation (CS Form 6a)');
-        }
-
-        if (name.includes('solo parent')) {
-            docs.push('Solo Parent Identification Card', 'Birth Certificate');
-        }
-
-        if (name.includes('women')) {
-            docs.push('Medical Certificate (Gynecological Surgery)');
-        }
-
-        if (name.includes('vawc')) {
-            docs.push('Protection Order', 'Police Report');
-        }
-
-        if (name.includes('study') || name.includes('rehabilitation')) {
-            docs.push('Contract', 'Incident/Police Report', 'Written Concurrence');
-        }
-
-        if (parseFloat(data.days_requested) >= 30) {
-            docs.push('Clearance Form (CS Form 7)');
-        }
-
-        return [...new Set(docs)]; // Unique docs
-    };
-
     const detailsOptions = getDetailsOptions(typeName);
-    const supportingDocsOptions = getSupportingDocsOptions(typeName);
-
-    const getDetailsParts = (detailsString: string) => {
-        if (!detailsString) {
-            return { category: '', specify: '' };
-        }
-
-        const parts = detailsString.split(': ');
-
-        if (parts.length > 1) {
-            return { category: parts[0], specify: parts.slice(1).join(': ') };
-        }
-
-        return { category: detailsString, specify: '' };
-    };
+    const supportingDocsOptions = getSupportingDocsOptions(
+        typeName,
+        data.days_requested,
+    );
 
     const { category, specify } = getDetailsParts(data.leave_details);
 
     const updateDetails = (newCategory: string, newSpecify: string) => {
-        const newValue = newSpecify && newSpecify.trim() !== ''
-            ? `${newCategory}: ${newSpecify}`
-            : newCategory;
+        const newValue =
+            newSpecify && newSpecify.trim() !== ''
+                ? `${newCategory}: ${newSpecify}`
+                : newCategory;
 
         if (data.leave_details !== newValue) {
             setData((prev: any) => ({
                 ...prev,
                 leave_details: newValue,
                 leave_detail_type: newCategory,
-                leave_detail_remarks: newSpecify
+                leave_detail_remarks: newSpecify,
             }));
         }
     };
@@ -347,49 +290,48 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
         });
     };
 
-    const specifyPlaceholder = typeName.includes('sick') || typeName.includes('women') ? 'Specify Illness...'
-        : typeName.includes('vacation') ? 'Specify Location...'
-            : 'Specify details...';
+    const specifyPlaceholder =
+        typeName.includes('sick') || typeName.includes('women')
+            ? 'Specify Illness...'
+            : typeName.includes('vacation')
+              ? 'Specify Location...'
+              : 'Specify details...';
 
-    const hideSpecify = ['Monetization of Leave Credits', 'Terminal Leave', 'Completion of Master\'s Degree', 'BAR/Board Examination Review'].includes(category);
-
-    const addAttachmentUrl = () => {
-        setData('attachment_urls', [...data.attachment_urls, '']);
-    };
-
-    const removeAttachmentUrl = (index: number) => {
-        const urls = [...data.attachment_urls];
-        urls.splice(index, 1);
-        setData('attachment_urls', urls.length > 0 ? urls : ['']);
-    };
-
-    const updateAttachmentUrl = (index: number, val: string) => {
-        const urls = [...data.attachment_urls];
-        urls[index] = val;
-        setData('attachment_urls', urls);
-    };
+    const hideSpecify = [
+        'Monetization of Leave Credits',
+        'Terminal Leave',
+        "Completion of Master's Degree",
+        'BAR/Board Examination Review',
+    ].includes(category);
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
 
         transform((data) => {
-            let transformed = { 
+            let transformed = {
                 ...data,
                 attachment_urls: data.attachment_urls
                     .filter((url: string) => url.trim() !== '')
                     .map((url: string) => {
                         const trimmed = url.trim();
 
-                        // If it doesn't start with a protocol but contains a dot (likely a domain)
-                        if (trimmed && !/^https?:\/\//i.test(trimmed) && trimmed.includes('.')) {
+                        if (
+                            trimmed &&
+                            !/^https?:\/\//i.test(trimmed) &&
+                            trimmed.includes('.')
+                        ) {
                             return `https://${trimmed}`;
                         }
 
                         return trimmed;
-                    })
+                    }),
             };
 
-            if (dateMode === 'range' && data.start_date === data.end_date && data.start_date) {
+            if (
+                dateMode === 'range' &&
+                data.start_date === data.end_date &&
+                data.start_date
+            ) {
                 transformed = {
                     ...transformed,
                     specific_dates: [data.start_date],
@@ -407,420 +349,144 @@ export default function LeaveForm({ leaveRequest, users, leaveTypes, leaveStatus
                 onSuccess: () => {
                     toast.success('Leave request updated successfully');
                     router.clearHistory();
-                }
+                },
             });
         } else {
             post(LeaveRoutes.store().url, {
                 onSuccess: () => {
                     toast.success('Leave request created successfully');
                     router.clearHistory();
-                }
+                },
             });
         }
     };
 
     return (
         <>
-            <Head title={isEdit ? "Edit Leave Request" : "Encode Leave Request"} />
-            <div className="container mx-auto py-6 max-w-4xl">
-                <div className="mb-6">
-                    <h1 className="t-title">{isEdit ? 'Edit Leave Request' : 'Encode Leave Request'}</h1>
-                    <p className="text-muted-foreground">CS Form No. 6 digitizer.</p>
-                </div>
+            <Head
+                title={isEdit ? 'Edit Leave Request' : 'Encode Leave Request'}
+            />
+            <div className="mx-auto w-full max-w-4xl p-4 md:p-6">
+                <Heading
+                    as="h1"
+                    title={
+                        isEdit ? 'Edit Leave Request' : 'Encode Leave Request'
+                    }
+                    description="CS Form No. 6 digitizer."
+                />
 
                 <LeaveNavigation />
 
                 <div className="matte-card elev-2">
-                    <form onSubmit={submit} className="p-6 space-y-6" noValidate>
+                    <form
+                        onSubmit={submit}
+                        className="space-y-6 p-6"
+                        noValidate
+                    >
                         {Object.keys(errors).length > 0 && (
-                            <Alert variant="destructive" className="animate-in fade-in slide-in-from-top-2 duration-300">
+                            <Alert
+                                variant="destructive"
+                                className="animate-in duration-300 fade-in slide-in-from-top-2"
+                            >
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertTitle>Validation Error</AlertTitle>
                                 <AlertDescription>
-                                    Please check the form for missing or invalid fields (e.g. invalid URLs or mandatory documents).
+                                    Please check the form for missing or invalid
+                                    fields (e.g. invalid URLs or mandatory
+                                    documents).
                                 </AlertDescription>
                             </Alert>
                         )}
 
-                        <div className="grid grid-cols-3 gap-4">
-                            <div className="space-y-2">
-                                <Label>Employee <Required /></Label>
-                                <EmployeeSearch
-                                    users={users}
-                                    selectedId={data.user_id}
-                                    onSelect={(val) => setData('user_id', val === 'all' ? '' : val)}
-                                    placeholder="Search Employee..."
-                                    returnValue="id"
-                                    aria-invalid={!!errors.user_id}
-                                />
-                                {errors.user_id && <p className="text-sm text-destructive">{errors.user_id}</p>}
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Date Filed</Label>
-                                <DatePicker
-                                    value={data.date_filed}
-                                    onChange={val => setData('date_filed', val || '')}
-                                />
-                                {errors.date_filed && <p className="text-sm text-destructive">{errors.date_filed}</p>}
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Monthly Salary</Label>
-                                <Input
-                                    type="text"
-                                    placeholder="0.00"
-                                    value={data.salary}
-                                    onChange={e => {
-                                        const val = e.target.value.replace(/,/g, '');
+                        <EmployeeSection
+                            users={users}
+                            data={data}
+                            errors={errors}
+                            setData={setData}
+                        />
 
-                                        if (val === '' || /^\d*\.?\d*$/.test(val)) {
-                                            setData('salary', val);
-                                        }
-                                    }}
-                                />
-                                {errors.salary && <p className="text-sm text-destructive">{errors.salary}</p>}
-                            </div>
-                        </div>
+                        <LeaveTypeSection
+                            leaveTypes={leaveTypes}
+                            data={data}
+                            errors={errors}
+                            setData={setData}
+                            handleLeaveTypeChange={handleLeaveTypeChange}
+                            isEdit={isEdit}
+                            available={available}
+                            requested={requested}
+                            remaining={remaining}
+                            typeName={typeName}
+                            selectedLeaveType={selectedLeaveType}
+                        />
 
-                        <div className="grid grid-cols-2 gap-4 border-t pt-6">
-                            <div className="space-y-2">
-                                <Label>Leave Type <Required /></Label>
-                                <Select value={data.leave_type_id} onValueChange={handleLeaveTypeChange}>
-                                    <SelectTrigger aria-invalid={!!errors.leave_type_id}>
-                                        <div className="truncate text-left flex-1">
-                                            <SelectValue placeholder="Select Leave Type" />
-                                        </div>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {leaveTypes.map((type: any) => (
-                                            <SelectItem key={type.id} value={type.id.toString()}>
-                                                {type.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {errors.leave_type_id && <p className="text-sm text-destructive">{errors.leave_type_id}</p>}
-                            </div>
-                            <div className="space-y-4">
-                                <Label>Approved For (Credits) <Required /></Label>
-                                <div className="grid grid-cols-2 gap-y-4 gap-x-6">
-                                    <div className="flex items-center gap-3">
-                                        <Input
-                                            className="w-24 h-9"
-                                            type="number"
-                                            step="any"
-                                            value={data.days_with_pay}
-                                            onChange={e => setData('days_with_pay', e.target.value)}
-                                        />
-                                        <span className="text-sm">days with pay</span>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <Input
-                                            className="w-24 h-9"
-                                            type="number"
-                                            step="any"
-                                            value={data.days_without_pay}
-                                            onChange={e => setData('days_without_pay', e.target.value)}
-                                        />
-                                        <span className="text-sm">days without pay</span>
-                                    </div>
-                                    <div className="col-span-2 flex items-center gap-3">
-                                        <Input
-                                            className="flex-1 h-9"
-                                            type="text"
-                                            placeholder="Others (Specify)"
-                                            value={data.others_pay_remarks}
-                                            onChange={e => setData('others_pay_remarks', e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-                                {(errors.days_with_pay || errors.days_without_pay) && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.days_with_pay || errors.days_without_pay}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
+                        <DetailsSection
+                            category={category}
+                            specify={specify}
+                            updateDetails={updateDetails}
+                            mounted={mounted}
+                            typeName={typeName}
+                            detailsOptions={detailsOptions}
+                            specifyPlaceholder={specifyPlaceholder}
+                            hideSpecify={hideSpecify}
+                        />
 
-                        {!isEdit && data.user_id && data.leave_type_id && (
-                            <div className="bg-muted/30 p-4 rounded-xl border border-border/50">
-                                <CreditPreview
-                                    available={available}
-                                    requested={requested}
-                                    remaining={remaining}
-                                    leaveTypeName={typeName}
-                                    accentColor={selectedLeaveType?.color ?? '#3B82F6'}
-                                />
-                            </div>
-                        )}
+                        <DateSection
+                            dateMode={dateMode}
+                            toggleDateMode={toggleDateMode}
+                            data={data}
+                            errors={errors}
+                            setData={setData}
+                        />
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label>Leave Details (Section 6.B) <Required /></Label>
-                                <Select
-                                    value={category}
-                                    onValueChange={(val) => updateDetails(val, specify)}
-                                    disabled={!mounted || !typeName}
-                                >
-                                    <SelectTrigger className={(!mounted || !typeName) ? "opacity-50" : ""}>
-                                        <div className="truncate text-left flex-1">
-                                            <SelectValue placeholder={!typeName ? "Select Leave Type first" : "Select details..."} />
-                                        </div>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {detailsOptions.map(opt => (
-                                            <SelectItem key={opt} value={opt}>{opt}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                        <ApprovalSection
+                            users={users}
+                            data={data}
+                            errors={errors}
+                            setData={setData}
+                        />
 
-                            <div className="space-y-2">
-                                <Label>Specifics / Remarks</Label>
-                                <Input
-                                    placeholder={specifyPlaceholder}
-                                    value={specify}
-                                    onChange={(e) => updateDetails(category, e.target.value)}
-                                    disabled={!mounted || !typeName || !category || hideSpecify}
-                                    className={(!mounted || !typeName || !category || hideSpecify) ? "opacity-50 bg-muted cursor-not-allowed" : ""}
-                                />
-                            </div>
-                        </div>
+                        <StatusSection
+                            leaveStatuses={leaveStatuses}
+                            data={data}
+                            errors={errors}
+                            setData={setData}
+                        />
 
-                        <div className="space-y-4 border-y py-4 my-4">
-                            <div className="flex items-center justify-between">
-                                <Label className="text-base">Date Selection</Label>
-                                <div className="flex items-center space-x-2 bg-muted p-1 rounded-full">
-                                    <Button type="button" size="sm" variant={dateMode === 'range' ? 'default' : 'ghost'} onClick={() => toggleDateMode('range')}>Date Range</Button>
-                                    <Button type="button" size="sm" variant={dateMode === 'specific' ? 'default' : 'ghost'} onClick={() => toggleDateMode('specific')}>Specific Dates</Button>
-                                </div>
-                            </div>
-
-                            {dateMode === 'range' ? (
-                                <div className="grid grid-cols-3 gap-4">
-                                         <div className="space-y-2">
-                                             <Label>Start Date <Required /></Label>
-                                             <DatePicker 
-                                                value={data.start_date} 
-                                                onChange={val => setData('start_date', val || '')} 
-                                                aria-invalid={!!errors.start_date}
-                                             />
-                                             {errors.start_date && <p className="text-sm text-destructive">{errors.start_date}</p>}
-                                             {errors.dates && <p className="text-sm text-destructive">{errors.dates}</p>}
-                                         </div>
-                                         <div className="space-y-2">
-                                             <Label>End Date <Required /></Label>
-                                             <DatePicker 
-                                                value={data.end_date} 
-                                                onChange={val => setData('end_date', val || '')} 
-                                                aria-invalid={!!errors.end_date}
-                                             />
-                                             {errors.end_date && <p className="text-sm text-destructive">{errors.end_date}</p>}
-                                         </div>
-                                         <div className="space-y-2">
-                                             <Label>Days Requested <Required /></Label>
-                                             <Input 
-                                                type="number" 
-                                                step="any" 
-                                                min="0" 
-                                                value={data.days_requested} 
-                                                onChange={e => setData('days_requested', e.target.value)} 
-                                                aria-invalid={!!errors.days_requested}
-                                             />
-                                             {errors.days_requested && <p className="text-sm text-destructive">{errors.days_requested}</p>}
-                                         </div>
-                                </div>
-                            ) : (
-                                <div className="space-y-4">
-                                    <div className="grid grid-cols-3 gap-4">
-                                        <div className="col-span-2 space-y-2">
-                                            <Label>Add Specific Date</Label>
-                                            <div className="flex space-x-2">
-                                                <DatePicker value={specificDateInput} onChange={val => setSpecificDateInput(val || '')} />
-                                                <Button type="button" variant="secondary" onClick={addSpecificDate}>Add Date</Button>
-                                            </div>
-                                            {errors.specific_dates && <p className="text-sm text-destructive">{errors.specific_dates}</p>}
-                                            {errors.dates && <p className="text-sm text-destructive">{errors.dates}</p>}
-                                        </div>
-                                         <div className="space-y-2">
-                                             <Label>Days Requested <Required /></Label>
-                                             <Input 
-                                                type="number" 
-                                                step="any" 
-                                                min="0" 
-                                                value={data.days_requested} 
-                                                onChange={e => setData('days_requested', e.target.value)} 
-                                                aria-invalid={!!errors.days_requested}
-                                             />
-                                             {errors.days_requested && <p className="text-sm text-destructive">{errors.days_requested}</p>}
-                                         </div>
-                                    </div>
-                                    <div className="flex flex-wrap gap-2">
-                                        {data.specific_dates.map((d: string) => (
-                                            <div key={d} className="badge-premium group">
-                                                <span>{parseLocalDate(d)?.toLocaleDateString('en-GB', { timeZone: 'Asia/Manila' }) ?? d}</span>
-                                                <button type="button" onClick={() => removeSpecificDate(d)} className="text-black/50 hover:text-black transition-colors">
-                                                    <X className="h-3.5 w-3.5" />
-                                                </button>
-                                            </div>
-                                        ))}
-                                        {data.specific_dates.length === 0 && (
-                                            <p className="text-sm text-muted-foreground italic mt-2">No dates added yet.</p>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="grid grid-cols-3 gap-4">
-                            <div className="space-y-2">
-                                <Label>Date Received</Label>
-                                <DatePicker value={data.date_received} onChange={val => setData('date_received', val || '')} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Date Approved</Label>
-                                <DatePicker value={data.date_approved} onChange={val => setData('date_approved', val || '')} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Approved By</Label>
-                                <EmployeeSearch
-                                    users={users}
-                                    selectedId={data.approved_by_id}
-                                    onSelect={(val) => setData('approved_by_id', val === 'all' ? '' : val)}
-                                    placeholder="Search Approver..."
-                                    returnValue="id"
-                                    aria-invalid={!!errors.approved_by_id}
-                                />
-                                {errors.approved_by_id && <p className="text-sm text-destructive">{errors.approved_by_id}</p>}
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label>Status <Required /></Label>
-                                <Select value={data.leave_status_id} onValueChange={(v) => setData('leave_status_id', v)}>
-                                    <SelectTrigger aria-invalid={!!errors.leave_status_id}>
-                                        <div className="truncate text-left flex-1">
-                                            <SelectValue placeholder="Select Status" />
-                                        </div>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {leaveStatuses.map((s: any) => (
-                                            <SelectItem key={s.id} value={s.id.toString()}>
-                                                {s.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {errors.leave_status_id && <p className="text-sm text-destructive">{errors.leave_status_id}</p>}
-                            </div>
-                            <div className="space-y-3">
-                                <Label>Attachment/s URL</Label>
-                                <div className="space-y-2">
-                                    {data.attachment_urls.map((url: string, idx: number) => (
-                                        <div key={idx} className="space-y-1">
-                                            <div className="flex space-x-2">
-                                                <Input
-                                                    type="url"
-                                                    placeholder="https://drive.google.com/..."
-                                                    value={url}
-                                                    onChange={e => updateAttachmentUrl(idx, e.target.value)}
-                                                    className={(errors as any)[`attachment_urls.${idx}`] ? "border-destructive" : ""}
-                                                />
-                                                {data.attachment_urls.length > 1 && (
-                                                    <Button type="button" variant="ghost" size="icon" onClick={() => removeAttachmentUrl(idx)}>
-                                                        <Trash2 className="h-4 w-4 text-destructive" />
-                                                    </Button>
-                                                )}
-                                            </div>
-                                            {(errors as any)[`attachment_urls.${idx}`] && (
-                                                <p className="text-[10px] font-bold text-destructive uppercase tracking-tight animate-in fade-in slide-in-from-left-1">
-                                                    {(errors as any)[`attachment_urls.${idx}`]}
-                                                </p>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                                <Button type="button" variant="outline" size="sm" onClick={addAttachmentUrl} className="mt-2">
-                                    <Plus className="h-4 w-4 mr-2" />
-                                    Add another URL
-                                </Button>
-                                {errors.attachment_urls && <p className="text-sm text-destructive">{errors.attachment_urls}</p>}
-                            </div>
-                        </div>
-
-                        {typeName && (
-                            <div className="space-y-3 border-t pt-4">
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox
-                                        id="has_attachments"
-                                        checked={data.has_attachments}
-                                        onCheckedChange={(c) => setData('has_attachments', c === true)}
-                                    />
-                                    <Label htmlFor="has_attachments" className="font-semibold">Has Supporting Documents / Attachments</Label>
-                                </div>
-
-                                {data.has_attachments && (
-                                    <div className="pl-6 grid grid-cols-2 gap-y-2 gap-x-4 animate-in fade-in slide-in-from-left-2 duration-200">
-                                        {supportingDocsOptions.map(doc => (
-                                            <div key={doc} className="flex items-center space-x-2">
-                                                <Checkbox
-                                                    id={`doc-${doc}`}
-                                                    checked={data.supporting_documents.includes(doc)}
-                                                    onCheckedChange={(c) => {
-                                                        const docs = [...data.supporting_documents];
-
-                                                        if (c) {
-                                                            docs.push(doc);
-                                                        } else {
-                                                            const idx = docs.indexOf(doc);
-
-                                                            if (idx > -1) {
-                                                                docs.splice(idx, 1);
-                                                            }
-                                                        }
-
-                                                        setData('supporting_documents', docs);
-                                                    }}
-                                                />
-                                                <Label htmlFor={`doc-${doc}`} className="text-sm">{doc}</Label>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                                {errors.supporting_documents && <p className="text-sm text-destructive">{errors.supporting_documents}</p>}
-                            </div>
-                        )}
-
-                        {typeName.includes('maternity') && (
-                            <div className="space-y-2 border-t pt-4">
-                                <Label>Maternity Allocation (CS Form 6a)</Label>
-                                <Input
-                                    placeholder="e.g. Allocated 7 days to John Doe (Husband)"
-                                    value={data.maternity_allocation_details}
-                                    onChange={e => setData('maternity_allocation_details', e.target.value)}
-                                />
-                            </div>
-                        )}
-
-                        <div className="flex space-x-6 py-2">
-                            <div className="flex items-center space-x-2">
-                                <Checkbox id="commutation" checked={data.commutation_requested} onCheckedChange={(c) => setData('commutation_requested', c === true)} />
-                                <Label htmlFor="commutation" className="text-sm font-medium leading-none">Commutation Requested</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox id="is_filed" checked={data.is_filed} onCheckedChange={(c) => setData('is_filed', c === true)} />
-                                <Label htmlFor="is_filed" className="text-sm font-medium leading-none">Form is properly filed</Label>
-                            </div>
-                        </div>
+                        <SupportingDocsSection
+                            typeName={typeName}
+                            data={data}
+                            errors={errors}
+                            setData={setData}
+                            supportingDocsOptions={supportingDocsOptions}
+                        />
 
                         <div className="space-y-2">
-                            <Label>Notes</Label>
-                            <Textarea value={data.notes} onChange={e => setData('notes', e.target.value)} />
+                            <Label
+                                htmlFor="notes"
+                                className="text-sm font-medium"
+                            >
+                                Notes
+                            </Label>
+                            <Textarea
+                                id="notes"
+                                value={data.notes}
+                                onChange={(e) =>
+                                    setData('notes', e.target.value)
+                                }
+                            />
                         </div>
 
                         <div className="flex justify-end space-x-2">
-                            <Button type="button" variant="outline" onClick={() => window.history.back()}>Cancel</Button>
-                            <Button type="submit" disabled={processing}>{isEdit ? 'Update Request' : 'Save Request'}</Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => window.history.back()}
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" disabled={processing}>
+                                {isEdit ? 'Update Request' : 'Save Request'}
+                            </Button>
                         </div>
                     </form>
                 </div>

@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Modules\Personnel\Models\AppointmentStatus;
 use App\Modules\Personnel\Models\Division;
-use App\Modules\Personnel\Models\EmploymentStatus;
 use App\Modules\Personnel\Models\Position;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         $this->call(OjtAttendanceSeeder::class);
 
         $stod = Division::where('name', 'Support To Operations Division (STOD)')->first();
-        $permanent = EmploymentStatus::where('name', 'Permanent')->first();
+        $permanent = AppointmentStatus::where('name', 'Permanent')->first();
         $adminPosition = Position::where('name', 'Provincial Chief Administrative Officer')->where('division_id', $stod->id)->first();
         $staffPosition = Position::where('name', 'HR Staff')->where('division_id', $stod->id)->first();
 
@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
                 'email' => 'maria.santos@darpo-albay.gov.ph',
                 'password' => bcrypt('password'),
                 'division_id' => $stod->id,
-                'employment_status_id' => $permanent?->id,
+                'appointment_status_id' => $permanent?->id,
                 'hire_date' => '2015-06-16',
                 'is_active' => true,
             ]
@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
                 'email' => 'juan.delacruz@darpo-albay.gov.ph',
                 'password' => bcrypt('password'),
                 'division_id' => $stod->id,
-                'employment_status_id' => $permanent?->id,
+                'appointment_status_id' => $permanent?->id,
                 'hire_date' => '2018-03-20',
                 'is_active' => true,
             ]
@@ -99,15 +99,15 @@ class DatabaseSeeder extends Seeder
         // Create 30 additional random employees ONLY if we are low on users
         if (User::count() < 30) {
             $divisions = Division::all();
-            $employmentStatuses = EmploymentStatus::all();
+            $appointmentStatuses = AppointmentStatus::all();
 
-            User::factory()->count(30)->create()->each(function (User $u) use ($divisions, $employmentStatuses) {
+            User::factory()->count(30)->create()->each(function (User $u) use ($divisions, $appointmentStatuses) {
                 $div = $divisions->random();
                 $pos = Position::where('division_id', $div->id)->first();
 
                 $u->update([
                     'division_id' => $div->id,
-                    'employment_status_id' => $employmentStatuses->random()->id,
+                    'appointment_status_id' => $appointmentStatuses->random()->id,
                 ]);
 
                 if ($pos) {

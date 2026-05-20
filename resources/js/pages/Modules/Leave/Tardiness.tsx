@@ -4,20 +4,73 @@ import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
 import { EmployeeSearch } from '@/components/EmployeeSearch';
+import Heading from '@/components/heading';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { useDebounce } from '@/hooks/use-debounce';
 import LeaveRoutes from '@/routes/leave';
 import LeaveNavigation from './Components/LeaveNavigation';
 
+interface User {
+    id: number;
+    first_name: string;
+    last_name: string;
+    employee_number: string | null;
+    [key: string]: any;
+}
 
-export default function LeaveTardiness({ users, currentYear, allEmployees, filters }: any) {
+interface TardinessRecord {
+    id: number;
+    user_id: number;
+    year: number;
+    month: number;
+    tardiness_count: number;
+    undertime_count: number;
+    [key: string]: any;
+}
+
+interface PaginatedUsers {
+    data: (User & { tardiness_records?: TardinessRecord[] })[];
+    links: any[];
+    from: number | null;
+    to: number | null;
+    total: number;
+    current_page: number;
+    last_page: number;
+}
+
+interface Props {
+    users: PaginatedUsers;
+    currentYear: number;
+    allEmployees: User[];
+    filters?: {
+        search?: string;
+    };
+}
+
+export default function LeaveTardiness({
+    users,
+    currentYear,
+    allEmployees,
+    filters,
+}: Props) {
     const [year, setYear] = useState(currentYear);
     const [month, setMonth] = useState(new Date().getMonth() + 1);
 
-    const handleUpdate = (userId: number, field: string, value: number, record: any) => {
+    const handleUpdate = (
+        userId: number,
+        field: string,
+        value: number,
+        record: any,
+    ) => {
         const payload = {
             year,
             month,
@@ -26,13 +79,23 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
             [field]: value,
         };
 
-        router.put(LeaveRoutes.tardiness.update({ user_id: userId }).url, payload, {
-            preserveScroll: true,
-            onSuccess: () => toast.success('Record updated successfully')
-        });
+        router.put(
+            LeaveRoutes.tardiness.update({ user_id: userId }).url,
+            payload,
+            {
+                preserveScroll: true,
+                onSuccess: () => toast.success('Record updated successfully'),
+            },
+        );
     };
 
-    const Counter = ({ value, onChange }: { value: number, onChange: (val: number) => void }) => {
+    const Counter = ({
+        value,
+        onChange,
+    }: {
+        value: number;
+        onChange: (val: number) => void;
+    }) => {
         const [localValue, setLocalValue] = useState(value);
         const [isDirty, setIsDirty] = useState(false);
         const debouncedValue = useDebounce(localValue, 500);
@@ -74,9 +137,13 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
                 <Input
                     type="text"
                     inputMode="numeric"
-                    className="w-16 text-center h-9 font-mono font-bold rounded-full border-2 border-muted-foreground/20 focus:border-primary/50"
+                    className="h-9 w-16 rounded-full border-2 border-muted-foreground/20 text-center font-mono font-bold focus:border-primary/50"
                     value={localValue}
-                    onChange={(e) => updateValue(parseInt(e.target.value.replace(/\D/g, '')) || 0)}
+                    onChange={(e) =>
+                        updateValue(
+                            parseInt(e.target.value.replace(/\D/g, '')) || 0,
+                        )
+                    }
                 />
                 <Button
                     variant="ghost"
@@ -94,36 +161,61 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
         <>
             <Head title="Tardiness Records" />
             <div className="w-full p-4 md:p-6">
-                <div className="mb-6">
-                    <h1 className="t-title">Tardiness & Undertime</h1>
-                    <p className="text-muted-foreground">Manage tardiness and undertime records per month.</p>
-                </div>
+                <Heading
+                    as="h1"
+                    title="Tardiness &amp; Undertime"
+                    description="Manage tardiness and undertime records per month."
+                />
 
                 <LeaveNavigation />
 
                 <div className="matte-card elev-2 p-6">
-                    <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6">
+                    <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row">
                         <div className="flex items-center space-x-4">
                             <div className="w-24">
                                 <Input
                                     type="number"
                                     value={year}
-                                    onChange={(e) => setYear(Number(e.target.value))}
+                                    onChange={(e) =>
+                                        setYear(Number(e.target.value))
+                                    }
                                     placeholder="Year"
                                 />
                             </div>
                             <div className="w-40">
-                                <Select value={month.toString()} onValueChange={(v) => {
-                                    setMonth(parseInt(v));
-                                    router.get(LeaveRoutes.tardiness.index().url, { year, month: v, search: filters?.search }, { preserveState: true });
-                                }}>
+                                <Select
+                                    value={month.toString()}
+                                    onValueChange={(v) => {
+                                        setMonth(parseInt(v));
+                                        router.get(
+                                            LeaveRoutes.tardiness.index().url,
+                                            {
+                                                year,
+                                                month: v,
+                                                search: filters?.search,
+                                            },
+                                            { preserveState: true },
+                                        );
+                                    }}
+                                >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Month" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
-                                            <SelectItem key={m} value={m.toString()}>
-                                                {new Date(year, m - 1).toLocaleString('default', { month: 'long' })}
+                                        {Array.from(
+                                            { length: 12 },
+                                            (_, i) => i + 1,
+                                        ).map((m) => (
+                                            <SelectItem
+                                                key={m}
+                                                value={m.toString()}
+                                            >
+                                                {new Date(
+                                                    year,
+                                                    m - 1,
+                                                ).toLocaleString('default', {
+                                                    month: 'long',
+                                                })}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -142,32 +234,66 @@ export default function LeaveTardiness({ users, currentYear, allEmployees, filte
                     <div className="relative w-full overflow-auto">
                         <table className="w-full caption-bottom text-sm">
                             <thead className="[&_tr]:border-b">
-                                <tr className="border-b transition-colors hover:bg-muted/50 bg-muted/20">
-                                    <th className="h-12 px-4 text-left font-medium text-muted-foreground">Employee</th>
-                                    <th className="h-12 px-4 text-center font-medium text-muted-foreground border-x">Tardiness (Occurrences)</th>
-                                    <th className="h-12 px-4 text-center font-medium text-muted-foreground">Undertime (Occurrences)</th>
+                                <tr className="border-b bg-muted/20 transition-colors hover:bg-muted/50">
+                                    <th className="h-12 px-4 text-left font-medium text-muted-foreground">
+                                        Employee
+                                    </th>
+                                    <th className="h-12 border-x px-4 text-center font-medium text-muted-foreground">
+                                        Tardiness (Occurrences)
+                                    </th>
+                                    <th className="h-12 px-4 text-center font-medium text-muted-foreground">
+                                        Undertime (Occurrences)
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {users.data.map((user: any) => {
-                                    const record = user.tardiness_records?.find((r: any) => r.month === month);
+                                    const record = user.tardiness_records?.find(
+                                        (r: any) => r.month === month,
+                                    );
 
                                     return (
-                                        <tr key={user.id} className="border-b transition-colors hover:bg-muted/50">
-                                            <td className="p-4 font-medium border-r">
-                                                {user.first_name} {user.last_name}
-                                                <div className="text-xs text-muted-foreground">{user.employee_number}</div>
+                                        <tr
+                                            key={user.id}
+                                            className="border-b transition-colors hover:bg-muted/50"
+                                        >
+                                            <td className="border-r p-4 font-medium">
+                                                {user.first_name}{' '}
+                                                {user.last_name}
+                                                <div className="text-xs text-muted-foreground">
+                                                    {user.employee_number}
+                                                </div>
                                             </td>
-                                            <td className="p-4 text-center border-r">
+                                            <td className="border-r p-4 text-center">
                                                 <Counter
-                                                    value={record?.tardiness_count || 0}
-                                                    onChange={(val) => handleUpdate(user.id, 'tardiness_count', val, record)}
+                                                    value={
+                                                        record?.tardiness_count ||
+                                                        0
+                                                    }
+                                                    onChange={(val) =>
+                                                        handleUpdate(
+                                                            user.id,
+                                                            'tardiness_count',
+                                                            val,
+                                                            record,
+                                                        )
+                                                    }
                                                 />
                                             </td>
                                             <td className="p-4 text-center">
                                                 <Counter
-                                                    value={record?.undertime_count || 0}
-                                                    onChange={(val) => handleUpdate(user.id, 'undertime_count', val, record)}
+                                                    value={
+                                                        record?.undertime_count ||
+                                                        0
+                                                    }
+                                                    onChange={(val) =>
+                                                        handleUpdate(
+                                                            user.id,
+                                                            'undertime_count',
+                                                            val,
+                                                            record,
+                                                        )
+                                                    }
                                                 />
                                             </td>
                                         </tr>

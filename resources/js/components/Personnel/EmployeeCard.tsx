@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 interface Employee {
+    id: number;
     first_name: string;
     middle_name: string | null;
     last_name: string;
@@ -10,26 +11,40 @@ interface Employee {
     email: string | null;
     contact_number: string | null;
     address: string | null;
+    present_address: string | null;
     hire_date: string | null;
+    date_hired_government: string | null;
     division?: { name: string };
     unit?: { name: string };
     positions?: Array<{ name: string; pivot: { is_primary: boolean } }>;
-    employment_status?: { name: string };
+    appointment_status?: { name: string };
 
     sex: string | null;
     date_of_birth: string | null;
     age: number | null;
+    civil_status: string | null;
     years_in_service: number | null;
     plantilla_number: string | null;
+    plantilla_position: string | null;
+    item_number: string | null;
+    office_per_appointment: string | null;
     gsis_bp_number: string | null;
     philhealth: string | null;
     hdmf_pagibig_no: string | null;
     tin_number: string | null;
+    lbp_account_number: string | null;
     prc_id_no: string | null;
     prc_expiration: string | null;
     orig_date_of_appointment: string | null;
     date_of_latest_appointment: string | null;
     date_of_assumption: string | null;
+    date_of_separation: string | null;
+    fund_code: string | null;
+    func_activity_code: string | null;
+    profile_picture: string | null;
+    salary_grade: number | null;
+    salary_step: number | null;
+    monthly_salary: string | number | null;
 }
 
 interface Props {
@@ -52,8 +67,15 @@ export function EmployeeCard({ employee }: Props) {
         <div className="matte-card elev-2 overflow-hidden">
             <div className="bg-primary/5 p-6 border-b border-border/40">
                 <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-                    <div className="sqicon sqicon-green h-24 w-24 !rounded-[24px] flex items-center justify-center text-4xl font-black shadow-2xl ring-4 ring-surface-1">
-                        {employee.first_name[0]}{employee.last_name[0]}
+                    <div className="relative h-24 w-24 rounded-[24px] overflow-hidden shadow-2xl ring-4 ring-surface-1 bg-surface-2">
+                        <img 
+                            src={employee.profile_picture ? `/storage/${employee.profile_picture}` : '/img/pfp_placeholder.png'} 
+                            alt="Profile" 
+                            className="h-full w-full object-cover"
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/img/pfp_placeholder.png';
+                            }}
+                        />
                     </div>
                     <div className="flex-1 text-center md:text-left space-y-1">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
@@ -100,15 +122,29 @@ export function EmployeeCard({ employee }: Props) {
                             <div className={iconContainerClass}>
                                 <UserIcon className={iconClass} />
                             </div>
-                            <div className="grid grid-cols-3 w-full">
+                            <div className="grid grid-cols-3 w-full gap-2">
                                 <div className="flex flex-col">
                                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Sex</span>
                                     <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.sex || 'Not set'}</span>
                                 </div>
-                                <div className="flex flex-col col-span-2">
-                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Birthdate / Age</span>
-                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{formatDate(employee.date_of_birth)} ({employee.age ? `${employee.age} yrs` : 'N/A'})</span>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Civil Status</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.civil_status || 'Not set'}</span>
                                 </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Age</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.age ? `${employee.age} yrs` : 'N/A'}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-4 group">
+                            <div className={iconContainerClass}>
+                                <Calendar className={iconClass} />
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Birthdate</span>
+                                <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{formatDate(employee.date_of_birth)}</span>
                             </div>
                         </div>
 
@@ -137,7 +173,17 @@ export function EmployeeCard({ employee }: Props) {
                                 <MapPin className={iconClass} />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Residential Address</span>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Present Address</span>
+                                <span className="text-sm font-bold leading-relaxed text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.present_address || 'Address not listed'}</span>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start gap-4 group">
+                            <div className={cn(iconContainerClass, 'mt-1')}>
+                                <MapPin className={iconClass} />
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Permanent Address</span>
                                 <span className="text-sm font-bold leading-relaxed text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.address || 'Address not listed'}</span>
                             </div>
                         </div>
@@ -155,14 +201,14 @@ export function EmployeeCard({ employee }: Props) {
                             <div className={iconContainerClass}>
                                 <Calendar className={iconClass} />
                             </div>
-                            <div className="grid grid-cols-2 w-full gap-2">
+                            <div className="grid grid-cols-3 w-full gap-2">
                                 <div className="flex flex-col">
                                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Date of Hire</span>
                                     <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{formatDate(employee.hire_date)}</span>
                                 </div>
-                                <div className="flex flex-col">
-                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Years in Service</span>
-                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.years_in_service ? `${employee.years_in_service} years` : 'Not set'}</span>
+                                <div className="flex flex-col col-span-2">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Date Hired in Gov.</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{formatDate(employee.date_hired_government)}</span>
                                 </div>
                             </div>
                         </div>
@@ -171,14 +217,20 @@ export function EmployeeCard({ employee }: Props) {
                             <div className={iconContainerClass}>
                                 <Briefcase className={iconClass} />
                             </div>
-                            <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Employment Status</span>
-                                <span
-                                    className="mt-1 w-fit uppercase text-[10px] py-0.5 px-3 font-black rounded-full text-black shadow-lg shadow-primary/20"
-                                    style={{ background: 'var(--grad-primary)' }}
-                                >
-                                    {employee.employment_status?.name || 'N/A'}
-                                </span>
+                            <div className="grid grid-cols-2 w-full gap-2">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Appointment Status</span>
+                                    <span
+                                        className="mt-1 w-fit uppercase text-[10px] py-0.5 px-3 font-black rounded-full text-black shadow-lg shadow-primary/20"
+                                        style={{ background: 'var(--grad-primary)' }}
+                                    >
+                                        {employee.appointment_status?.name || 'N/A'}
+                                    </span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Years in Service</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.years_in_service !== null ? `${employee.years_in_service} years` : 'Not set'}</span>
+                                </div>
                             </div>
                         </div>
 
@@ -186,9 +238,31 @@ export function EmployeeCard({ employee }: Props) {
                             <div className={iconContainerClass}>
                                 <FileText className={iconClass} />
                             </div>
-                            <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Plantilla Number</span>
-                                <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.plantilla_number || 'Not set'}</span>
+                            <div className="grid grid-cols-2 w-full gap-2">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Plantilla Number</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.plantilla_number || 'Not set'}</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Item Number</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.item_number || 'Not set'}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-4 group">
+                            <div className={iconContainerClass}>
+                                <Briefcase className={iconClass} />
+                            </div>
+                            <div className="grid grid-cols-2 w-full gap-2">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Plantilla Position</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.plantilla_position || 'Not set'}</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Offc. Per Appointment</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.office_per_appointment || 'Not set'}</span>
+                                </div>
                             </div>
                         </div>
 
@@ -207,6 +281,60 @@ export function EmployeeCard({ employee }: Props) {
                                 </div>
                             </div>
                         </div>
+
+                        <div className="flex items-center gap-4 group">
+                            <div className={iconContainerClass}>
+                                <Calendar className={iconClass} />
+                            </div>
+                            <div className="grid grid-cols-2 w-full gap-2">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Assumption Date</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{formatDate(employee.date_of_assumption)}</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Separation Date</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{formatDate(employee.date_of_separation)}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-4 group">
+                            <div className={iconContainerClass}>
+                                <FileText className={iconClass} />
+                            </div>
+                            <div className="grid grid-cols-2 w-full gap-2">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Fund Code</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.fund_code || 'Not set'}</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Func./Activity Code</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.func_activity_code || 'Not set'}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-4 group">
+                            <div className={iconContainerClass}>
+                                <CreditCard className={iconClass} />
+                            </div>
+                            <div className="grid grid-cols-3 w-full gap-2">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Salary Grade</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.salary_grade || 'Not set'}</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Salary Step</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.salary_step || 'Not set'}</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Monthly Salary</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">
+                                        {employee.monthly_salary ? `₱${Number(employee.monthly_salary).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'Not set'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -216,7 +344,7 @@ export function EmployeeCard({ employee }: Props) {
                         <div className="h-1 w-8 bg-primary rounded-full" />
                         <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">Government IDs & Credentials</h3>
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
                             <BadgeInfo className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
                             <div className="flex flex-col">
@@ -245,14 +373,24 @@ export function EmployeeCard({ employee }: Props) {
                                 <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.tin_number || 'N/A'}</span>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 col-span-2 group hover:item-hover-gradient transition-all duration-200">
+                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
+                            <CreditCard className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
+                            <div className="flex flex-col">
+                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">LBP Account No.</span>
+                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.lbp_account_number || 'N/A'}</span>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200 col-span-1">
                             <BadgeInfo className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
                             <div className="flex flex-col flex-1">
                                 <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PRC ID No.</span>
                                 <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.prc_id_no || 'N/A'}</span>
                             </div>
-                            <div className="flex flex-col pl-4 border-l border-border/50">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">Expiration</span>
+                        </div>
+                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200 col-span-1 md:col-span-3">
+                            <Calendar className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
+                            <div className="flex flex-col">
+                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PRC Expiration</span>
                                 <span className="text-sm font-bold group-hover:text-black transition-colors">{formatDate(employee.prc_expiration)}</span>
                             </div>
                         </div>

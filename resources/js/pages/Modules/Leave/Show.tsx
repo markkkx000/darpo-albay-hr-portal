@@ -1,17 +1,88 @@
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, Calendar, FileText, CheckCircle, Clock } from 'lucide-react';
+import {
+    ArrowLeft,
+    Calendar,
+    User,
+    FileText,
+    CheckCircle,
+    Clock,
+} from 'lucide-react';
+import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import LeaveRoutes from '@/routes/leave';
 import LeaveNavigation from './Components/LeaveNavigation';
 
-export default function LeaveShow({ leaveRequest }: any) {
-    const formatDate = (dateString: string) => {
+interface User {
+    id: number;
+    first_name: string;
+    last_name: string;
+    middle_name?: string | null;
+    employee_number: string | null;
+    avatar?: string | null;
+    [key: string]: any;
+}
+
+interface LeaveType {
+    id: number;
+    name: string;
+    color_code?: string;
+}
+
+interface LeaveStatus {
+    id: number;
+    name: string;
+}
+
+interface LeaveRequest {
+    id: number;
+    user?: User;
+    leave_type?: LeaveType;
+    leave_status?: LeaveStatus;
+    start_date: string;
+    end_date: string;
+    specific_dates?: string[];
+    days_requested: number;
+    pay_status?: string;
+    days_with_pay: string;
+    days_without_pay: string;
+    others_pay_remarks: string | null;
+    is_filed: boolean;
+    salary: string | number | null;
+    date_filed: string;
+    date_received: string | null;
+    date_approved: string | null;
+    approved_by?: User | null;
+    approved_by_official?: string | null;
+    created_by?: User;
+    created_at: string;
+    updated_at?: string;
+    leave_details?: string | null;
+    leave_detail_type?: string | null;
+    leave_detail_remarks?: string | null;
+    commutation_requested: boolean;
+    notes?: string | null;
+    attachment_urls: string[];
+    has_attachments: boolean;
+    supporting_documents: string[];
+    maternity_allocation_details?: string | null;
+    vl_balance_at_filing: string | number | null;
+    sl_balance_at_filing: string | number | null;
+}
+
+interface Props {
+    leaveRequest: LeaveRequest;
+}
+
+export default function LeaveShow({ leaveRequest }: Props) {
+    const formatDate = (dateString: string | null) => {
         if (!dateString) {
             return '';
         }
 
-        return new Date(dateString).toLocaleDateString('en-US', { timeZone: 'Asia/Manila' });
+        return new Date(dateString).toLocaleDateString('en-US', {
+            timeZone: 'Asia/Manila',
+        });
     };
 
     const formatCurrency = (amount: number | string | null) => {
@@ -19,21 +90,27 @@ export default function LeaveShow({ leaveRequest }: any) {
             return '';
         }
 
-        return new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(Number(amount));
+        return new Intl.NumberFormat('en-PH', {
+            style: 'currency',
+            currency: 'PHP',
+        }).format(Number(amount));
     };
 
-    const isHalfDay = leaveRequest.days_requested < 1.0 && leaveRequest.start_date === leaveRequest.end_date;
+    const isHalfDay =
+        leaveRequest.days_requested < 1.0 &&
+        leaveRequest.start_date === leaveRequest.end_date;
 
     return (
         <>
             <Head title={`Leave Details - ${leaveRequest.user?.last_name}`} />
-            <div className="container mx-auto py-6 max-w-4xl px-4 lg:px-0">
-                <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <h1 className="t-display !text-4xl lg:!text-5xl">Leave Details</h1>
-                        <p className="text-muted-foreground mt-1">Detailed view of the leave request.</p>
-                    </div>
-                    <Button variant="outline" asChild className="btn-ghost-specular border-none">
+            <div className="mx-auto w-full max-w-4xl p-4 md:p-6">
+                <div className="mb-8 flex items-center justify-between">
+                    <Heading
+                        as="h1"
+                        title="Leave Details"
+                        description="Detailed view of the leave request."
+                    />
+                    <Button variant="outline" asChild>
                         <Link href={LeaveRoutes.index().url}>
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Back to Dashboard
@@ -43,76 +120,91 @@ export default function LeaveShow({ leaveRequest }: any) {
 
                 <LeaveNavigation />
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-up">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                     {/* Main Content */}
-                    <div className="md:col-span-2 space-y-6">
-                        <div className="matte-card elev-3 p-6 sm:p-8">
-                            <h2 className="t-headline mb-6 flex items-center">
-                                <FileText className="mr-2.5 h-5 w-5 text-primary" />
+                    <div className="space-y-6 md:col-span-2">
+                        <div className="matte-card elev-2 p-6">
+                            <h2 className="mb-4 flex items-center text-lg font-bold">
+                                <FileText className="mr-2 h-5 w-5 text-primary" />
                                 Leave Information (Section 6)
                             </h2>
-                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-8">
-                                <div className="space-y-1.5 col-span-2">
-                                    <p className="t-caption">Type of Leave</p>
-                                    <div className="flex items-center space-x-2.5">
-                                        <div 
-                                            className="h-3.5 w-3.5 rounded-full shadow-[0_0_8px_currentColor]" 
-                                            style={{ 
-                                                backgroundColor: leaveRequest.leave_type?.color_code,
-                                                color: leaveRequest.leave_type?.color_code 
+                            <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+                                <div className="col-span-2 space-y-1">
+                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                        Type of Leave
+                                    </p>
+                                    <div className="flex items-center space-x-2">
+                                        <div
+                                            className="h-3 w-3 rounded-full"
+                                            style={{
+                                                backgroundColor:
+                                                    leaveRequest.leave_type
+                                                        ?.color_code,
                                             }}
                                         ></div>
-                                        <p className="font-extrabold text-lg tracking-tight uppercase">{leaveRequest.leave_type?.name}</p>
+                                        <p className="font-semibold">
+                                            {leaveRequest.leave_type?.name}
+                                        </p>
                                     </div>
                                 </div>
-                                <div className="space-y-1.5">
-                                    <p className="t-caption">Status</p>
-                                    <span className={cn(
-                                        "inline-flex items-center rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest shadow-sm",
-                                        (() => {
-                                            const status = (leaveRequest.leave_status?.name || '').toLowerCase();
-
-                                            if (status.includes('approved')) {
-                                                return 'status-badge-permanent';
-                                            }
-
-                                            if (status.includes('pending')) {
-                                                return 'status-badge-warning';
-                                            }
-
-                                            if (status.includes('disapproved') || status.includes('cancelled')) {
-                                                return 'status-badge-danger';
-                                            }
-
-                                            return 'status-badge-unknown';
-                                        })()
-                                    )}>
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                        Status
+                                    </p>
+                                    <span className="inline-flex items-center rounded-full border bg-secondary px-2.5 py-0.5 text-xs font-semibold text-secondary-foreground">
                                         {leaveRequest.leave_status?.name}
                                     </span>
                                 </div>
-                                <div className="space-y-1.5">
-                                    <p className="t-caption">Pay Status</p>
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                        Pay Status
+                                    </p>
                                     <div className="flex flex-col gap-1.5">
-                                        <span className={cn(
-                                            "inline-flex items-center rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest shadow-sm",
-                                            leaveRequest.pay_status === 'with_pay' ? 'status-badge-permanent' : 
-                                            leaveRequest.pay_status === 'partial' ? 'status-badge-warning' :
-                                            'status-badge-danger text-white'
-                                        )}>
-                                            {leaveRequest.pay_status === 'with_pay' ? 'Full Pay' : 
-                                             leaveRequest.pay_status === 'partial' ? 'Partial Pay' : 
-                                             'Without Pay'}
+                                        <span
+                                            className={cn(
+                                                'inline-flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold',
+                                                leaveRequest.pay_status ===
+                                                    'with_pay'
+                                                    ? 'border-green-500/20 bg-green-500/10 text-green-600'
+                                                    : leaveRequest.pay_status ===
+                                                        'partial'
+                                                      ? 'border-blue-500/20 bg-blue-500/10 text-blue-600'
+                                                      : 'border-red-500/20 bg-red-500/10 text-red-600',
+                                            )}
+                                        >
+                                            {leaveRequest.pay_status ===
+                                            'with_pay'
+                                                ? 'Full Pay'
+                                                : leaveRequest.pay_status ===
+                                                    'partial'
+                                                  ? 'Partial Pay'
+                                                  : 'Without Pay'}
                                         </span>
-                                        {(parseFloat(leaveRequest.days_with_pay) > 0 || parseFloat(leaveRequest.days_without_pay) > 0) && (
-                                            <div className="text-[10px] text-muted-foreground flex gap-2 font-black uppercase tracking-tighter tabular-nums">
-                                                {parseFloat(leaveRequest.days_with_pay) > 0 && (
+                                        {(parseFloat(
+                                            leaveRequest.days_with_pay,
+                                        ) > 0 ||
+                                            parseFloat(
+                                                leaveRequest.days_without_pay,
+                                            ) > 0) && (
+                                            <div className="flex gap-2 text-[10px] font-medium text-muted-foreground">
+                                                {parseFloat(
+                                                    leaveRequest.days_with_pay,
+                                                ) > 0 && (
                                                     <span className="flex items-center text-green-600/80">
-                                                        {leaveRequest.days_with_pay}d pd
+                                                        {
+                                                            leaveRequest.days_with_pay
+                                                        }{' '}
+                                                        days paid
                                                     </span>
                                                 )}
-                                                {parseFloat(leaveRequest.days_without_pay) > 0 && (
+                                                {parseFloat(
+                                                    leaveRequest.days_without_pay,
+                                                ) > 0 && (
                                                     <span className="flex items-center text-red-600/80">
-                                                        {leaveRequest.days_without_pay}d upd
+                                                        {
+                                                            leaveRequest.days_without_pay
+                                                        }{' '}
+                                                        days unpaid
                                                     </span>
                                                 )}
                                             </div>
@@ -120,90 +212,156 @@ export default function LeaveShow({ leaveRequest }: any) {
                                     </div>
                                 </div>
 
-                                <div className="space-y-1.5">
-                                    <p className="t-caption">Verification</p>
-                                    <span className={cn(
-                                        "inline-flex items-center rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest shadow-sm",
-                                        leaveRequest.is_filed ? 'badge-hr-admin' : 'status-badge-warning'
-                                    )}>
-                                        {leaveRequest.is_filed ? 'Verified' : 'Pending'}
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                        Properly Filed
+                                    </p>
+                                    <span
+                                        className={cn(
+                                            'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold',
+                                            leaveRequest.is_filed
+                                                ? 'border-blue-500/20 bg-blue-500/10 text-blue-600'
+                                                : 'border-amber-500/20 bg-amber-500/10 text-amber-600',
+                                        )}
+                                    >
+                                        {leaveRequest.is_filed
+                                            ? 'Verified'
+                                            : 'Pending Verification'}
                                     </span>
                                 </div>
 
-                                <div className="space-y-1.5">
-                                    <p className="t-caption">Salary</p>
-                                    <p className="font-bold tabular-nums text-foreground/90">{formatCurrency(leaveRequest.salary)}</p>
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                        Salary
+                                    </p>
+                                    <p className="font-medium">
+                                        {formatCurrency(leaveRequest.salary)}
+                                    </p>
                                 </div>
-                                <div className="space-y-1.5">
-                                    <p className="t-caption">Date Filed</p>
-                                    <p className="font-bold text-foreground/90 tabular-nums">{formatDate(leaveRequest.date_filed)}</p>
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                        Date Filed
+                                    </p>
+                                    <p className="font-medium">
+                                        {formatDate(leaveRequest.date_filed)}
+                                    </p>
                                 </div>
-                                <div className="space-y-1.5 col-span-2">
-                                    <p className="t-caption">Specific Leave Category</p>
-                                    <p className="font-bold text-foreground uppercase tracking-tight truncate">{leaveRequest.leave_detail_type || 'N/A'}</p>
+                                <div className="col-span-2 space-y-1">
+                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                        Details Type
+                                    </p>
+                                    <p className="font-medium">
+                                        {leaveRequest.leave_detail_type || ''}
+                                    </p>
                                 </div>
 
-                                <div className="space-y-1.5">
-                                    <p className="t-caption">Commutation</p>
-                                    <p className="font-bold text-foreground/90">{leaveRequest.commutation_requested ? 'Requested' : 'Not Requested'}</p>
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                        Commutation
+                                    </p>
+                                    <p className="font-medium">
+                                        {leaveRequest.commutation_requested
+                                            ? 'Requested'
+                                            : 'Not Requested'}
+                                    </p>
                                 </div>
 
-                                <div className="space-y-2 col-span-full">
-                                    <p className="t-caption">Remarks / Specifics</p>
-                                    <div className="p-4 bg-muted/20 border border-border/5 rounded-2xl text-sm italic text-muted-foreground/90 leading-relaxed shadow-inner">
-                                        {leaveRequest.leave_detail_remarks || leaveRequest.leave_details || 'No specific remarks provided.'}
-                                    </div>
+                                <div className="col-span-4 space-y-1">
+                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                        Remarks / Specifics
+                                    </p>
+                                    <p className="rounded-xl bg-muted/30 p-3 text-sm italic">
+                                        {leaveRequest.leave_detail_remarks ||
+                                            leaveRequest.leave_details ||
+                                            ''}
+                                    </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="matte-card elev-3 p-6 sm:p-8">
-                            <h2 className="t-headline mb-6 flex items-center">
-                                <Calendar className="mr-2.5 h-5 w-5 text-primary" />
+                        <div className="matte-card elev-2 p-6">
+                            <h2 className="mb-4 flex items-center text-lg font-bold">
+                                <Calendar className="mr-2 h-5 w-5 text-primary" />
                                 Schedule & Duration
                             </h2>
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                <div className="space-y-1.5">
-                                    <p className="t-caption">Duration</p>
-                                    <p className="text-4xl font-black text-foreground tabular-nums tracking-tighter">
-                                        {leaveRequest.days_requested} 
-                                        <span className="text-xl ml-1 font-bold text-muted-foreground uppercase">{leaveRequest.days_requested == 1 ? 'Day' : 'Days'}</span>
-                                        {isHalfDay && <span className="text-sm font-medium text-amber-600 ml-2">(Half Day)</span>}
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                        Duration
+                                    </p>
+                                    <p className="text-2xl font-black text-foreground">
+                                        {leaveRequest.days_requested}{' '}
+                                        {leaveRequest.days_requested == 1
+                                            ? 'Day'
+                                            : 'Days'}
+                                        {isHalfDay && (
+                                            <span className="ml-2 text-sm font-normal text-muted-foreground">
+                                                (Half Day)
+                                            </span>
+                                        )}
                                     </p>
                                 </div>
-                                <div className="space-y-2">
-                                    <p className="t-caption">Dates Requested</p>
-                                    <div className="text-sm font-bold tabular-nums text-foreground/90">
-                                        {leaveRequest.specific_dates && leaveRequest.specific_dates.length > 0 ? (
-                                            <ul className="flex flex-wrap gap-2">
-                                                {leaveRequest.specific_dates.map((d: string, i: number) => (
-                                                    <li key={i} className="bg-muted/40 px-2 py-1 rounded-md border border-border/10">{formatDate(d)}</li>
-                                                ))}
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                        Dates Requested
+                                    </p>
+                                    <div className="text-sm font-medium">
+                                        {leaveRequest.specific_dates &&
+                                        leaveRequest.specific_dates.length >
+                                            0 ? (
+                                            <ul className="list-inside list-disc">
+                                                {leaveRequest.specific_dates.map(
+                                                    (d: string, i: number) => (
+                                                        <li key={i}>
+                                                            {formatDate(d)}
+                                                        </li>
+                                                    ),
+                                                )}
                                             </ul>
                                         ) : (
-                                            <div className="flex items-center gap-2">
-                                                <span className="bg-muted/40 px-2 py-1 rounded-md border border-border/10">{formatDate(leaveRequest.start_date)}</span>
-                                                <span className="text-muted-foreground/50">&mdash;</span>
-                                                <span className="bg-muted/40 px-2 py-1 rounded-md border border-border/10">{formatDate(leaveRequest.end_date)}</span>
-                                            </div>
+                                            <p>
+                                                {formatDate(
+                                                    leaveRequest.start_date,
+                                                )}{' '}
+                                                to{' '}
+                                                {formatDate(
+                                                    leaveRequest.end_date,
+                                                )}
+                                            </p>
                                         )}
                                     </div>
                                 </div>
-                                <div className="space-y-4 col-span-full border-t border-border/20 pt-6 mt-2">
-                                    <p className="t-caption">Pay Status Highlights</p>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div className="flex items-center justify-between p-4 bg-muted/10 rounded-2xl border border-border/5">
-                                            <span className="text-xs font-bold text-muted-foreground uppercase">Days with pay</span>
-                                            <span className="text-2xl font-black text-green-600 tabular-nums">{leaveRequest.days_with_pay}</span>
+                                <div className="col-span-2 mt-2 space-y-1 border-t pt-4">
+                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                        Pay Status Breakdown
+                                    </p>
+                                    <div className="mt-1 flex flex-wrap gap-6">
+                                        <div className="flex items-center gap-2 text-sm">
+                                            <span className="font-black text-green-600">
+                                                {leaveRequest.days_with_pay}
+                                            </span>
+                                            <span className="font-medium text-muted-foreground">
+                                                Days with pay
+                                            </span>
                                         </div>
-                                        <div className="flex items-center justify-between p-4 bg-muted/10 rounded-2xl border border-border/5">
-                                            <span className="text-xs font-bold text-muted-foreground uppercase">Days without pay</span>
-                                            <span className="text-2xl font-black text-amber-600 tabular-nums">{leaveRequest.days_without_pay}</span>
+                                        <div className="flex items-center gap-2 text-sm">
+                                            <span className="font-black text-amber-600">
+                                                {leaveRequest.days_without_pay}
+                                            </span>
+                                            <span className="font-medium text-muted-foreground">
+                                                Days without pay
+                                            </span>
                                         </div>
                                         {leaveRequest.others_pay_remarks && (
-                                            <div className="col-span-full p-4 bg-muted/10 rounded-2xl border border-border/5 flex flex-col gap-1">
-                                                <span className="text-[10px] font-black text-muted-foreground uppercase">Pay Remarks</span>
-                                                <span className="text-sm italic text-foreground/80">{leaveRequest.others_pay_remarks}</span>
+                                            <div className="flex items-center gap-2 text-sm">
+                                                <span className="font-medium text-muted-foreground">
+                                                    Others:
+                                                </span>
+                                                <span className="italic">
+                                                    {
+                                                        leaveRequest.others_pay_remarks
+                                                    }
+                                                </span>
                                             </div>
                                         )}
                                     </div>
@@ -212,10 +370,9 @@ export default function LeaveShow({ leaveRequest }: any) {
                         </div>
 
                         {leaveRequest.notes && (
-                            <div className="matte-card elev-3 p-6 sm:p-8 relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1.5 h-full bg-primary/40"></div>
-                                <h2 className="t-headline mb-3 flex items-center">
-                                    <FileText className="mr-2.5 h-5 w-5 text-primary" />
+                            <div className="matte-card elev-2 border-l-4 border-l-primary/50 p-6">
+                                <h2 className="mb-2 flex items-center text-lg font-bold">
+                                    <FileText className="mr-2 h-5 w-5 text-primary" />
                                     Admin Notes
                                 </h2>
                                 <p className="text-sm text-muted-foreground leading-relaxed">
@@ -225,10 +382,9 @@ export default function LeaveShow({ leaveRequest }: any) {
                         )}
 
                         {leaveRequest.maternity_allocation_details && (
-                            <div className="matte-card elev-3 p-6 sm:p-8 relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1.5 h-full bg-pink-500/40"></div>
-                                <h2 className="t-headline mb-3 flex items-center">
-                                    <CheckCircle className="mr-2.5 h-5 w-5 text-pink-500" />
+                            <div className="matte-card elev-2 border-l-4 border-l-pink-500/50 p-6">
+                                <h2 className="mb-2 flex items-center text-lg font-bold">
+                                    <CheckCircle className="mr-2 h-5 w-5 text-pink-500" />
                                     Maternity Allocation (CS Form 6a)
                                 </h2>
                                 <p className="text-sm text-muted-foreground italic leading-relaxed">
@@ -237,22 +393,36 @@ export default function LeaveShow({ leaveRequest }: any) {
                             </div>
                         )}
 
-                        <div className="matte-card elev-3 p-6 sm:p-8">
-                            <h2 className="t-headline mb-6 flex items-center">
-                                <Clock className="mr-2.5 h-5 w-5 text-primary" />
-                                Credential State at Filing
+                        <div className="matte-card elev-2 p-6">
+                            <h2 className="mb-4 flex items-center text-lg font-bold">
+                                <Clock className="mr-2 h-5 w-5 text-primary" />
+                                Credit Balances at Filing
                             </h2>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                <div className="matte-card elev-1 p-5 rounded-2xl border border-primary/5 bg-gradient-to-br from-background to-primary/5">
-                                    <p className="t-caption mb-3">Vacation Leave Balance</p>
-                                    <p className="text-3xl font-black tabular-nums tracking-tighter text-foreground">
-                                        {parseFloat(leaveRequest.vl_balance_at_filing || 0).toFixed(3)}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="rounded-xl border border-primary/10 bg-primary/5 p-4">
+                                    <p className="mb-1 text-[10px] font-bold text-muted-foreground uppercase">
+                                        Vacation Leave Balance
+                                    </p>
+                                    <p className="text-2xl font-black">
+                                        {parseFloat(
+                                            String(
+                                                leaveRequest.vl_balance_at_filing ||
+                                                    0,
+                                            ),
+                                        ).toFixed(3)}
                                     </p>
                                 </div>
-                                <div className="matte-card elev-1 p-5 rounded-2xl border border-primary/5 bg-gradient-to-br from-background to-primary/5">
-                                    <p className="t-caption mb-3">Sick Leave Balance</p>
-                                    <p className="text-3xl font-black tabular-nums tracking-tighter text-foreground">
-                                        {parseFloat(leaveRequest.sl_balance_at_filing || 0).toFixed(3)}
+                                <div className="rounded-xl border border-primary/10 bg-primary/5 p-4">
+                                    <p className="mb-1 text-[10px] font-bold text-muted-foreground uppercase">
+                                        Sick Leave Balance
+                                    </p>
+                                    <p className="text-2xl font-black">
+                                        {parseFloat(
+                                            String(
+                                                leaveRequest.sl_balance_at_filing ||
+                                                    0,
+                                            ),
+                                        ).toFixed(3)}
                                     </p>
                                 </div>
                             </div>
@@ -261,97 +431,159 @@ export default function LeaveShow({ leaveRequest }: any) {
 
                     {/* Sidebar */}
                     <div className="space-y-6">
-                        <div className="matte-card elev-3 p-6">
-                            <h2 className="t-caption mb-6 block">Employee</h2>
-                            <div className="flex items-center space-x-4">
-                                <div className="sqicon sqicon-green h-12 w-12 !rounded-[14px]">
-                                    {leaveRequest.user?.first_name[0]}{leaveRequest.user?.last_name[0]}
+                        <div className="matte-card elev-2 p-6">
+                            <h2 className="mb-4 flex items-center text-sm font-bold tracking-widest text-muted-foreground uppercase">
+                                <User className="mr-2 h-4 w-4" />
+                                Employee
+                            </h2>
+                            <div className="mb-4 flex items-center space-x-3">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 font-bold text-primary">
+                                    {leaveRequest.user?.first_name[0]}
+                                    {leaveRequest.user?.last_name[0]}
                                 </div>
-                                <div className="overflow-hidden">
-                                    <p className="font-extrabold text-foreground truncate">{leaveRequest.user?.first_name} {leaveRequest.user?.last_name}</p>
-                                    <p className="text-[10px] font-mono font-bold text-muted-foreground tracking-tighter uppercase">{leaveRequest.user?.employee_number}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="matte-card elev-3 p-6">
-                            <h2 className="t-caption mb-6 block">Timeline</h2>
-                            <div className="space-y-5">
-                                <div className="space-y-1 relative pl-4 border-l border-border/40">
-                                    <div className="absolute top-1 -left-[4.5px] h-2 w-2 rounded-full bg-border"></div>
-                                    <p className="text-[10px] font-black uppercase text-muted-foreground/70 tracking-widest">Filed On</p>
-                                    <p className="text-xs font-bold tabular-nums">{formatDate(leaveRequest.created_at)}</p>
-                                </div>
-                                <div className="space-y-1 relative pl-4 border-l border-border/40">
-                                    <div className="absolute top-1 -left-[4.5px] h-2 w-2 rounded-full bg-border"></div>
-                                    <p className="text-[10px] font-black uppercase text-muted-foreground/70 tracking-widest">Received On</p>
-                                    <p className="text-xs font-bold tabular-nums">{formatDate(leaveRequest.date_received) || 'N/A'}</p>
-                                </div>
-                                <div className={cn(
-                                    "space-y-1 relative pl-4 border-l border-border/40",
-                                    leaveRequest.date_approved ? "" : "opacity-50"
-                                )}>
-                                    <div className={cn("absolute top-1 -left-[4.5px] h-2 w-2 rounded-full", leaveRequest.date_approved ? "bg-primary" : "bg-border")}></div>
-                                    <p className="text-[10px] font-black uppercase text-muted-foreground/70 tracking-widest">Approved On</p>
-                                    <p className="text-xs font-bold tabular-nums">{formatDate(leaveRequest.date_approved) || 'Pending'}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="matte-card elev-3 p-6">
-                            <h2 className="t-caption mb-6 block">Authorization</h2>
-                            <div className="space-y-5">
-                                <div className="space-y-1">
-                                    <p className="text-[10px] font-black uppercase text-muted-foreground/70 tracking-widest">Encoded By</p>
-                                    <p className="text-xs font-bold">{leaveRequest.created_by?.first_name} {leaveRequest.created_by?.last_name}</p>
-                                </div>
-                                <div className="space-y-1">
-                                    <p className="text-[10px] font-black uppercase text-muted-foreground/70 tracking-widest">Approved By</p>
-                                    <p className="text-xs font-bold truncate">
-                                        {leaveRequest.approved_by 
-                                            ? `${leaveRequest.approved_by.first_name} ${leaveRequest.approved_by.last_name}` 
-                                            : (leaveRequest.approved_by_official || <span className="italic opacity-50">Pending</span>)
-                                        }
+                                <div>
+                                    <p className="font-bold">
+                                        {leaveRequest.user?.first_name}{' '}
+                                        {leaveRequest.user?.last_name}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                        {leaveRequest.user?.employee_number}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        {leaveRequest.attachment_urls && leaveRequest.attachment_urls.length > 0 && leaveRequest.attachment_urls.some((url: string) => !!url) && (
-                            <div className="matte-card elev-3 p-6">
-                                <h2 className="t-caption mb-6 block">Attachments</h2>
-                                <div className="space-y-3">
-                                    {leaveRequest.attachment_urls.map((url: string, i: number) => url && (
-                                        <Button 
-                                            key={i} 
-                                            variant="secondary" 
-                                            className="btn-ghost-specular w-full justify-start overflow-hidden px-4 border-none" 
-                                            asChild 
-                                            title={url}
-                                        >
-                                            <a href={url} target="_blank" rel="noreferrer">
-                                                <FileText className="mr-2.5 h-4 w-4 shrink-0 transition-transform duration-300 group-hover:rotate-12" />
-                                                <span className="truncate flex-1">View Attachment {leaveRequest.attachment_urls.length > 1 ? i + 1 : ''}</span>
-                                            </a>
-                                        </Button>
-                                    ))}
+                        <div className="matte-card elev-2 p-6">
+                            <h2 className="mb-4 flex items-center text-sm font-bold tracking-widest text-muted-foreground uppercase">
+                                <Clock className="mr-2 h-4 w-4" />
+                                Timeline
+                            </h2>
+                            <div className="space-y-4">
+                                <div className="space-y-1">
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                                        Filed On
+                                    </p>
+                                    <p className="text-xs font-medium">
+                                        {formatDate(leaveRequest.created_at)}
+                                    </p>
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                                        Received On
+                                    </p>
+                                    <p className="text-xs font-medium">
+                                        {formatDate(
+                                            leaveRequest.date_received,
+                                        ) || ''}
+                                    </p>
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                                        Approved On
+                                    </p>
+                                    <p className="text-xs font-medium">
+                                        {formatDate(
+                                            leaveRequest.date_approved,
+                                        ) || 'Pending'}
+                                    </p>
                                 </div>
                             </div>
-                        )}
+                        </div>
 
-                        {leaveRequest.has_attachments && leaveRequest.supporting_documents?.length > 0 && (
-                            <div className="matte-card elev-3 p-6">
-                                <h2 className="t-caption mb-6 block">Supporting Docs</h2>
-                                <ul className="space-y-3">
-                                    {leaveRequest.supporting_documents.map((doc: string) => (
-                                        <li key={doc} className="text-[11px] font-bold flex items-center text-foreground/80 uppercase tracking-tight">
-                                            <CheckCircle className="h-3.5 w-3.5 mr-2.5 text-primary shrink-0" />
-                                            {doc}
-                                        </li>
-                                    ))}
-                                </ul>
+                        <div className="matte-card elev-2 p-6">
+                            <h2 className="mb-4 flex items-center text-sm font-bold tracking-widest text-muted-foreground uppercase">
+                                <CheckCircle className="mr-2 h-4 w-4" />
+                                Authorization
+                            </h2>
+                            <div className="space-y-4">
+                                <div className="space-y-1">
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                                        Encoded By
+                                    </p>
+                                    <p className="text-xs font-medium">
+                                        {leaveRequest.created_by?.first_name}{' '}
+                                        {leaveRequest.created_by?.last_name}
+                                    </p>
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                                        Approved By
+                                    </p>
+                                    <p className="text-xs font-medium">
+                                        {leaveRequest.approved_by
+                                            ? `${leaveRequest.approved_by.first_name} ${leaveRequest.approved_by.last_name}`
+                                            : leaveRequest.approved_by_official ||
+                                              'Pending'}
+                                    </p>
+                                </div>
                             </div>
-                        )}
+                        </div>
+
+                        {leaveRequest.attachment_urls &&
+                            leaveRequest.attachment_urls.length > 0 &&
+                            leaveRequest.attachment_urls.some(
+                                (url: string) => !!url,
+                            ) && (
+                                <div className="matte-card elev-2 p-6">
+                                    <h2 className="mb-4 flex items-center text-sm font-bold tracking-widest text-muted-foreground uppercase">
+                                        <FileText className="mr-2 h-4 w-4" />
+                                        Attachment/s
+                                    </h2>
+                                    <div className="space-y-2">
+                                        {leaveRequest.attachment_urls.map(
+                                            (url: string, i: number) =>
+                                                url && (
+                                                    <Button
+                                                        key={i}
+                                                        variant="secondary"
+                                                        className="w-full justify-start overflow-hidden text-ellipsis whitespace-nowrap"
+                                                        asChild
+                                                        title={url}
+                                                    >
+                                                        <a
+                                                            href={url}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                        >
+                                                            <FileText className="mr-2 h-4 w-4 shrink-0" />
+                                                            <span className="truncate">
+                                                                View Link{' '}
+                                                                {leaveRequest
+                                                                    .attachment_urls
+                                                                    .length > 1
+                                                                    ? i + 1
+                                                                    : ''}
+                                                            </span>
+                                                        </a>
+                                                    </Button>
+                                                ),
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                        {leaveRequest.has_attachments &&
+                            leaveRequest.supporting_documents?.length > 0 && (
+                                <div className="matte-card elev-2 p-6">
+                                    <h2 className="mb-4 flex items-center text-sm font-bold tracking-widest text-muted-foreground uppercase">
+                                        <CheckCircle className="mr-2 h-4 w-4" />
+                                        Supporting Docs
+                                    </h2>
+                                    <ul className="space-y-2">
+                                        {leaveRequest.supporting_documents.map(
+                                            (doc: string) => (
+                                                <li
+                                                    key={doc}
+                                                    className="flex items-center text-xs"
+                                                >
+                                                    <CheckCircle className="mr-2 h-3 w-3 text-green-500" />
+                                                    {doc}
+                                                </li>
+                                            ),
+                                        )}
+                                    </ul>
+                                </div>
+                            )}
                     </div>
                 </div>
             </div>

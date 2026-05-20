@@ -4,8 +4,8 @@ namespace App\Modules\Personnel\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Modules\Personnel\Models\AppointmentStatus;
 use App\Modules\Personnel\Models\Division;
-use App\Modules\Personnel\Models\EmploymentStatus;
 use App\Modules\Personnel\Models\Position;
 use App\Modules\Personnel\Models\Unit;
 use App\Modules\Personnel\Requests\EmployeeCreateRequest;
@@ -33,10 +33,10 @@ class PersonnelController extends Controller
 
         return Inertia::render('Modules/Personnel/Index', [
             'employees' => $this->employeeService->getEmployees($request->all()),
-            'filters' => $request->only(['search', 'division_id', 'employment_status_id']),
+            'filters' => $request->only(['search', 'division_id', 'appointment_status_id']),
             'divisions' => Division::where('is_active', true)->get(),
             'units' => Unit::where('is_active', true)->get(),
-            'employmentStatuses' => EmploymentStatus::where('is_active', true)->get(),
+            'appointmentStatuses' => AppointmentStatus::where('is_active', true)->get(),
         ]);
     }
 
@@ -51,7 +51,7 @@ class PersonnelController extends Controller
             'divisions' => Division::where('is_active', true)->get(),
             'units' => Unit::where('is_active', true)->get(),
             'positions' => Position::where('is_active', true)->get(),
-            'employmentStatuses' => EmploymentStatus::where('is_active', true)->get(),
+            'appointmentStatuses' => AppointmentStatus::where('is_active', true)->get(),
         ]);
     }
 
@@ -74,7 +74,7 @@ class PersonnelController extends Controller
         $this->authorize('personnel.view');
 
         return Inertia::render('Modules/Personnel/Show', [
-            'employee' => $user->load(['division', 'unit', 'positions', 'employmentStatus']),
+            'employee' => $user->load(['division', 'unit', 'positions', 'appointmentStatus']),
         ]);
     }
 
@@ -90,7 +90,7 @@ class PersonnelController extends Controller
             'divisions' => Division::where('is_active', true)->get(),
             'units' => Unit::where('is_active', true)->get(),
             'positions' => Position::where('is_active', true)->get(),
-            'employmentStatuses' => EmploymentStatus::where('is_active', true)->get(),
+            'appointmentStatuses' => AppointmentStatus::where('is_active', true)->get(),
         ]);
     }
 

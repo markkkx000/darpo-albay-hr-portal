@@ -40,6 +40,7 @@ class ModuleRegistry
         usort($this->navigation, function ($a, $b) use ($order) {
             $orderA = $order[$a['title']] ?? 999;
             $orderB = $order[$b['title']] ?? 999;
+
             return $orderA <=> $orderB;
         });
 

@@ -27,7 +27,7 @@ interface User {
     division?: { name: string };
     unit?: { name: string };
     positions?: Array<{ name: string; pivot: { is_primary: boolean } }>;
-    employment_status?: { name: string };
+    appointment_status?: { name: string };
     hire_date: string | null;
     deleted_at: string | null;
 }
@@ -242,7 +242,7 @@ export function EmployeeTable({
                                             <span className={cn(
                                                 'inline-flex items-center rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wide shadow-sm',
                                                 (() => {
-                                                    const name = (employee.employment_status?.name || '').toLowerCase();
+                                                    const name = (employee.appointment_status?.name || '').toLowerCase();
 
                                                     if (name.includes('permanent')) {
                                                         return 'status-badge-permanent';
@@ -263,7 +263,7 @@ export function EmployeeTable({
                                                     return 'status-badge-unknown';
                                                 })()
                                             )}>
-                                                {employee.employment_status?.name || 'Unknown'}
+                                                {employee.appointment_status?.name || 'Unknown'}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-xs font-medium text-muted-foreground">
