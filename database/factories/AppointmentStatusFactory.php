@@ -2,15 +2,15 @@
 
 namespace Database\Factories;
 
-use App\Modules\Personnel\Models\EmploymentStatus;
+use App\Modules\Personnel\Models\AppointmentStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<EmploymentStatus>
+ * @extends Factory<AppointmentStatus>
  */
-class EmploymentStatusFactory extends Factory
+class AppointmentStatusFactory extends Factory
 {
-    protected $model = EmploymentStatus::class;
+    protected $model = AppointmentStatus::class;
 
     /**
      * Define the model's default state.

@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\User;
+use App\Modules\Personnel\Models\AppointmentStatus;
 use App\Modules\Personnel\Models\Division;
-use App\Modules\Personnel\Models\EmploymentStatus;
 use App\Modules\Personnel\Models\Position;
 use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,7 +18,7 @@ beforeEach(function () {
 
     $this->division = Division::factory()->create();
     $this->position = Position::factory()->create(['division_id' => $this->division->id]);
-    $this->status = EmploymentStatus::factory()->create();
+    $this->status = AppointmentStatus::factory()->create();
 });
 
 test('authorized users can view personnel directory', function () {
@@ -42,9 +42,12 @@ test('can create a new employee record', function () {
         'email' => 'john.doe@example.com',
         'division_id' => $this->division->id,
         'positions' => [['id' => $this->position->id, 'is_primary' => true]],
-        'employment_status_id' => $this->status->id,
+        'appointment_status_id' => $this->status->id,
         'hire_date' => now()->format('Y-m-d'),
         'password' => 'password123',
+        'salary_grade' => 15,
+        'salary_step' => 1,
+        'monthly_salary' => 35000.50,
     ];
 
     $response = $this->actingAs($this->admin)->post(route('personnel.store'), $data);
@@ -54,6 +57,9 @@ test('can create a new employee record', function () {
         'employee_number' => 'P-001',
         'first_name' => 'John',
         'last_name' => 'Doe',
+        'salary_grade' => 15,
+        'salary_step' => 1,
+        'monthly_salary' => 35000.50,
     ]);
 });
 
@@ -105,7 +111,7 @@ test('validates unique employee number', function () {
         'last_name' => 'User',
         'division_id' => $this->division->id,
         'positions' => [['id' => $this->position->id, 'is_primary' => true]],
-        'employment_status_id' => $this->status->id,
+        'appointment_status_id' => $this->status->id,
         'hire_date' => now()->format('Y-m-d'),
         'password' => 'password123',
     ];
@@ -120,8 +126,11 @@ test('can update an employee record', function () {
         'first_name' => 'Original',
         'last_name' => 'Name',
         'division_id' => $this->division->id,
-        'employment_status_id' => $this->status->id,
+        'appointment_status_id' => $this->status->id,
         'hire_date' => '2020-01-01',
+        'salary_grade' => 12,
+        'salary_step' => 2,
+        'monthly_salary' => 25000.00,
     ]);
 
     $data = [
@@ -130,8 +139,11 @@ test('can update an employee record', function () {
         'last_name' => 'Name',
         'division_id' => $this->division->id,
         'positions' => [['id' => $this->position->id, 'is_primary' => true]],
-        'employment_status_id' => $this->status->id,
+        'appointment_status_id' => $this->status->id,
         'hire_date' => '2020-01-01',
+        'salary_grade' => 16,
+        'salary_step' => 3,
+        'monthly_salary' => 38500.75,
     ];
 
     $response = $this->actingAs($this->admin)->put(route('personnel.update', $employee->id), $data);
@@ -140,5 +152,8 @@ test('can update an employee record', function () {
     $this->assertDatabaseHas('users', [
         'id' => $employee->id,
         'first_name' => 'Updated',
+        'salary_grade' => 16,
+        'salary_step' => 3,
+        'monthly_salary' => 38500.75,
     ]);
 });

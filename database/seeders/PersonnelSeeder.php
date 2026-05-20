@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Modules\Personnel\Models\AppointmentStatus;
 use App\Modules\Personnel\Models\Division;
-use App\Modules\Personnel\Models\EmploymentStatus;
 use App\Modules\Personnel\Models\Position;
 use App\Modules\Personnel\Models\Unit;
 use Illuminate\Database\Seeder;
@@ -166,13 +166,13 @@ class PersonnelSeeder extends Seeder
             }
         }
 
-        // 3. Create employment statuses
-        $statuses = ['Permanent', 'Co-terminous', 'Contractual', 'Casual'];
+        // 3. Create appointment statuses
+        $statuses = ['Permanent', 'Temporary', 'Coterminous', 'Contractual', 'Casual'];
         foreach ($statuses as $name) {
-            EmploymentStatus::updateOrCreate(['name' => $name], ['is_active' => true]);
+            AppointmentStatus::updateOrCreate(['name' => $name], ['is_active' => true]);
         }
 
-        $allStatuses = EmploymentStatus::all();
+        $allStatuses = AppointmentStatus::all();
         $allPositions = Position::all();
 
         // 4. Create random employees ONLY if we don't have many yet
@@ -181,7 +181,7 @@ class PersonnelSeeder extends Seeder
                 $position = $allPositions->random();
                 $user->update([
                     'division_id' => $position->division_id,
-                    'employment_status_id' => $allStatuses->random()->id,
+                    'appointment_status_id' => $allStatuses->random()->id,
                 ]);
                 $user->positions()->sync([$position->id => ['is_primary' => true]]);
 

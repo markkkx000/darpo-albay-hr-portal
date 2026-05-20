@@ -145,14 +145,14 @@ class DashboardController extends Controller
                 ->get()
                 ->map(function ($att) {
                     $name = $att->user ? "{$att->user->first_name} {$att->user->last_name}" : 'Unknown';
-                    $isClockOut = !is_null($att->clock_out);
+                    $isClockOut = ! is_null($att->clock_out);
                     $activityTime = $isClockOut ? $att->updated_at : $att->created_at;
 
                     return [
                         'id' => 'att_'.$att->id.($isClockOut ? '_out' : '_in'),
                         'type' => 'attendance_clock',
                         'title' => 'Attendance Log',
-                        'description' => "{$name} clocked " . ($isClockOut ? 'out.' : 'in.'),
+                        'description' => "{$name} clocked ".($isClockOut ? 'out.' : 'in.'),
                         'time' => $activityTime ? $activityTime->diffForHumans() : 'Just now',
                         'timestamp' => $activityTime ? $activityTime->timestamp : now()->timestamp,
                     ];
@@ -236,14 +236,14 @@ class DashboardController extends Controller
             ->take(3)
             ->get()
             ->map(function ($att) {
-                $isClockOut = !is_null($att->clock_out);
+                $isClockOut = ! is_null($att->clock_out);
                 $activityTime = $isClockOut ? $att->updated_at : $att->created_at;
 
                 return [
                     'id' => 'my_att_'.$att->id.($isClockOut ? '_out' : '_in'),
                     'type' => 'my_attendance',
                     'title' => 'Attendance log',
-                    'description' => 'Clocked ' . ($isClockOut ? 'out.' : 'in.'),
+                    'description' => 'Clocked '.($isClockOut ? 'out.' : 'in.'),
                     'time' => $activityTime ? $activityTime->diffForHumans() : 'Just now',
                     'timestamp' => $activityTime ? $activityTime->timestamp : now()->timestamp,
                 ];

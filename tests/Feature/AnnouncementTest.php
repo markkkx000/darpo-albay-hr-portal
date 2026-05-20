@@ -3,8 +3,8 @@
 use App\Core\Services\NotificationService;
 use App\Models\User;
 use App\Modules\Announcements\Models\Announcement;
+use App\Modules\Personnel\Models\AppointmentStatus;
 use App\Modules\Personnel\Models\Division;
-use App\Modules\Personnel\Models\EmploymentStatus;
 use App\Modules\Personnel\Models\Position;
 use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,25 +17,25 @@ beforeEach(function () {
     // Create base data for foreign keys
     $this->division = Division::create(['name' => 'IT', 'code' => 'IT']);
     $this->position = Position::create(['name' => 'Developer', 'division_id' => $this->division->id]);
-    $this->employmentStatus = EmploymentStatus::create(['name' => 'Regular']);
+    $this->employmentStatus = AppointmentStatus::create(['name' => 'Regular']);
 
     $this->hrAdmin = User::factory()->create([
         'division_id' => $this->division->id,
-        'employment_status_id' => $this->employmentStatus->id,
+        'appointment_status_id' => $this->employmentStatus->id,
     ]);
     $this->hrAdmin->positions()->sync([$this->position->id => ['is_primary' => true]]);
     $this->hrAdmin->assignRole('hr_admin');
 
     $this->employee = User::factory()->create([
         'division_id' => $this->division->id,
-        'employment_status_id' => $this->employmentStatus->id,
+        'appointment_status_id' => $this->employmentStatus->id,
     ]);
     $this->employee->positions()->sync([$this->position->id => ['is_primary' => true]]);
     $this->employee->assignRole('employee');
 
     $this->divisionHead = User::factory()->create([
         'division_id' => $this->division->id,
-        'employment_status_id' => $this->employmentStatus->id,
+        'appointment_status_id' => $this->employmentStatus->id,
     ]);
     $this->divisionHead->positions()->sync([$this->position->id => ['is_primary' => true]]);
     $this->divisionHead->assignRole('division_head');

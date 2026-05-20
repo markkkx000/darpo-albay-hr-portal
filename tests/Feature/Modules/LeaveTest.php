@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Modules\Leave\Models\Holiday;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -37,9 +38,9 @@ it('allows super admin to access leave settings', function () {
 });
 
 it('allows super admin to access leave calendar with holidays', function () {
-    \App\Modules\Leave\Models\Holiday::create([
+    Holiday::create([
         'name' => 'Test Holiday',
-        'date' => now()->format('Y-m-d')
+        'date' => now()->format('Y-m-d'),
     ]);
 
     $response = $this->actingAs($this->superAdmin)

@@ -36,12 +36,15 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'division_id' => null,
             'unit_id' => null,
-            'employment_status_id' => null,
+            'appointment_status_id' => null,
             'hire_date' => fake()->date(),
             'sex' => fake()->randomElement(['Male', 'Female']),
             'date_of_birth' => fake()->date('Y-m-d', '-20 years'),
             'contact_number' => fake()->phoneNumber(),
             'address' => fake()->address(),
+            'salary_grade' => fake()->numberBetween(1, 33),
+            'salary_step' => fake()->numberBetween(1, 8),
+            'monthly_salary' => fake()->randomFloat(2, 15000, 150000),
         ];
     }
 

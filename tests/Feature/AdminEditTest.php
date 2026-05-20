@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\User;
+use App\Modules\Personnel\Models\AppointmentStatus;
 use App\Modules\Personnel\Models\Division;
-use App\Modules\Personnel\Models\EmploymentStatus;
 use App\Modules\Personnel\Models\Position;
 use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,7 +22,7 @@ beforeEach(function () {
 
     $this->division = Division::factory()->create();
     $this->position = Position::factory()->create(['division_id' => $this->division->id]);
-    $this->status = EmploymentStatus::factory()->create();
+    $this->status = AppointmentStatus::factory()->create();
 });
 
 test('super admin can edit hr admin', function () {
@@ -32,7 +32,7 @@ test('super admin can edit hr admin', function () {
         'last_name' => 'Name',
         'division_id' => $this->division->id,
         'positions' => [['id' => $this->position->id, 'is_primary' => true]],
-        'employment_status_id' => $this->status->id,
+        'appointment_status_id' => $this->status->id,
         'hire_date' => '2020-01-01',
     ];
 
@@ -53,7 +53,7 @@ test('super admin can edit themselves', function () {
         'last_name' => 'Admin-Updated',
         'division_id' => $this->division->id,
         'positions' => [['id' => $this->position->id, 'is_primary' => true]],
-        'employment_status_id' => $this->status->id,
+        'appointment_status_id' => $this->status->id,
         'hire_date' => '2020-01-01',
     ];
 
