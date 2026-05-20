@@ -9,60 +9,78 @@ use Illuminate\Database\Seeder;
 
 class OjtAttendanceSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        $user = User::where('employee_number', 'OJT-4220386')->first();
+        // Find or create the OJT user
+        $user = User::updateOrCreate(
+            ['employee_number' => 'OJT-4220719'],
+            [
+                'first_name' => 'Allan Paul II',
+                'middle_name' => 'Alejandre',
+                'last_name' => 'Sodsod',
+                'email' => 'allan.sodsod@darpo-albay.gov.ph',
+                'password' => bcrypt('password'),
+                'is_active' => true,
+            ]
+        );
 
-        if (! $user) {
-            $this->command->error('User not found!');
+        // Assign the employee role
+        if (!$user->hasRole('employee')) {
+            $user->assignRole('employee');
+        }
 
+        $jsonPath = base_path('ojt-temp-file/ojt_backup_2026-05-20.json');
+
+        if (!file_exists($jsonPath)) {
+            $this->command->error("JSON file not found at: {$jsonPath}");
             return;
         }
 
-        $records = [
-            ['date' => '2026-03-05', 'in' => '08:04 AM', 'out' => '05:04 PM'],
-            ['date' => '2026-03-06', 'in' => '07:56 AM', 'out' => '05:06 PM'],
-            ['date' => '2026-03-09', 'in' => '08:00 AM', 'out' => '05:10 PM'],
-            ['date' => '2026-03-10', 'in' => '08:05 AM', 'out' => '05:11 PM'],
-            ['date' => '2026-03-12', 'in' => '07:14 AM', 'out' => '06:14 PM'],
-            ['date' => '2026-03-16', 'in' => '07:02 AM', 'out' => '05:00 PM'],
-            ['date' => '2026-03-18', 'in' => '08:10 AM', 'out' => '05:03 PM'],
-            ['date' => '2026-03-19', 'in' => '08:37 AM', 'out' => '05:22 PM'],
-            ['date' => '2026-03-24', 'in' => '07:16 AM', 'out' => '06:08 PM'],
-            ['date' => '2026-03-25', 'in' => '01:00 PM', 'out' => '06:07 PM'],
-            ['date' => '2026-03-30', 'in' => '07:00 AM', 'out' => '12:00 PM'],
-            ['date' => '2026-03-31', 'in' => '01:00 PM', 'out' => '06:00 PM'],
-            ['date' => '2026-04-06', 'in' => '06:57 AM', 'out' => '12:00 PM'],
-            ['date' => '2026-04-14', 'in' => '07:25 AM', 'out' => '06:00 PM'],
-            ['date' => '2026-04-15', 'in' => '07:25 AM', 'out' => '06:02 PM'],
-            ['date' => '2026-04-16', 'in' => '07:54 AM', 'out' => '06:00 PM'],
-            ['date' => '2026-04-20', 'in' => '07:50 AM', 'out' => '06:01 PM'],
-            ['date' => '2026-04-21', 'in' => '08:10 AM', 'out' => '06:08 PM'],
-            ['date' => '2026-04-27', 'in' => '08:00 AM', 'out' => '06:11 PM'],
-            ['date' => '2026-04-29', 'in' => '08:30 AM', 'out' => '06:20 PM'],
-            ['date' => '2026-04-30', 'in' => '08:30 AM', 'out' => '06:08 PM'],
-            ['date' => '2026-05-04', 'in' => '10:25 AM', 'out' => '06:20 PM'],
-            ['date' => '2026-05-06', 'in' => '07:25 AM', 'out' => '06:18 PM'],
-            ['date' => '2026-05-07', 'in' => '07:06 AM', 'out' => '06:11 PM'],
-            ['date' => '2026-05-12', 'in' => '08:00 AM', 'out' => '06:10 PM'],
-            ['date' => '2026-05-13', 'in' => '07:14 AM', 'out' => '06:17 PM'],
-            ['date' => '2026-05-14', 'in' => '08:30 AM', 'out' => '06:20 PM'],
-            ['date' => '2026-05-19', 'in' => '07:50 AM', 'out' => '06:15 PM'],
-        ];
+        $records = json_decode(file_get_contents($jsonPath), true);
+        $count = 0;
 
         foreach ($records as $record) {
-            $clockIn = Carbon::createFromFormat('Y-m-d h:i A', $record['date'].' '.$record['in']);
-            $clockOut = Carbon::createFromFormat('Y-m-d h:i A', $record['date'].' '.$record['out']);
+            if ($record['status'] === 'absent') {
+                continue;
+            }
+
+            $date = $record['date'];
+
+            // "only take the first clock-in and the last clock-out, so for full day of attendance, take the morning clock-in and the afternoon clock-out. for half-days, well no need to do anything just take the clock-in and clock-out."
+            $clockInTime = null;
+            if (!empty($record['morIn'])) {
+                $clockInTime = $record['morIn'];
+            } elseif (!empty($record['aftIn'])) {
+                $clockInTime = $record['aftIn'];
+            }
+
+            $clockOutTime = null;
+            if (!empty($record['aftOut'])) {
+                $clockOutTime = $record['aftOut'];
+            } elseif (!empty($record['morOut'])) {
+                $clockOutTime = $record['morOut'];
+            }
+
+            if (!$clockInTime || !$clockOutTime) {
+                continue;
+            }
+
+            $clockIn = Carbon::parse("{$date} {$clockInTime}");
+            $clockOut = Carbon::parse("{$date} {$clockOutTime}");
 
             Attendance::updateOrCreate(
-                ['user_id' => $user->id, 'date' => $record['date']],
+                ['user_id' => $user->id, 'date' => $date],
                 [
                     'clock_in' => $clockIn,
                     'clock_out' => $clockOut,
                 ]
             );
+            $count++;
         }
 
-        $this->command->info('Seeded '.count($records).' attendance records for '.$user->name);
+        $this->command->info("Seeded {$count} attendance records for {$user->name}");
     }
 }

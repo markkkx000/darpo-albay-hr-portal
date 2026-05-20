@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(LeaveTypeSeeder::class);
         $this->call(LeaveStatusSeeder::class);
         $this->call(HolidaySeeder::class);
+        $this->call(OjtAttendanceSeeder::class);
 
         $stod = Division::where('name', 'Support To Operations Division (STOD)')->first();
         $permanent = EmploymentStatus::where('name', 'Permanent')->first();
