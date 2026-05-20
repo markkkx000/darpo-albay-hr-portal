@@ -173,7 +173,7 @@ export default function LeaveDashboard({
         filters?.approved_by_id,
     ]);
 
-    const formatDate = (dateString: string) => {
+    const formatDate = (dateString: string | undefined | null) => {
         if (!dateString) {
             return '';
         }
