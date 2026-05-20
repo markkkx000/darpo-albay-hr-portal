@@ -2,7 +2,7 @@ import { Head, router } from '@inertiajs/react';
 import { UserCog, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
-import Heading from '@/components/heading';
+import PageHeader from '@/components/page-header';
 import { Pagination } from '@/components/Pagination';
 import { RoleAssignmentModal } from '@/components/Roles/RoleAssignmentModal';
 import { RolesNavigation } from '@/components/Roles/RolesNavigation';
@@ -74,12 +74,10 @@ export default function UserRolesIndex({ users, allUsers, roles, filters }: Prop
             <Head title="User Role Assignments" />
 
             <div className="p-4 w-full">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                    <Heading
-                        title="User Role Assignments"
-                        description="Assign primary roles to individual user accounts."
-                    />
-                </div>
+                <PageHeader
+                    title="User Role Assignments"
+                    description="Assign primary roles to individual user accounts."
+                />
 
                 <RolesNavigation />
 

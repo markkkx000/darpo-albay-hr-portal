@@ -2,7 +2,7 @@ import { Head, router } from '@inertiajs/react';
 import { ChevronRight, Filter, Settings2 } from 'lucide-react';
 import { useState, useMemo, useEffect } from 'react';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
-import Heading from '@/components/heading';
+import PageHeader from '@/components/page-header';
 import { Pagination } from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -141,17 +141,14 @@ export default function LeaveCredits({
         <>
             <Head title="Leave Credits" />
             <div className="w-full p-4 md:p-6">
-                <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
-                    <Heading
-                        as="h1"
-                        title="Leave Credits"
-                        description={
-                            canManageCredits
-                                ? 'Manage leave credits balances for all employees.'
-                                : 'View your available, used, and total leave credits.'
-                        }
-                    />
-                </div>
+                <PageHeader
+                    title="Leave Credits"
+                    description={
+                        canManageCredits
+                            ? 'Manage leave credits balances for all employees.'
+                            : 'View your available, used, and total leave credits.'
+                    }
+                />
 
                 <LeaveNavigation />
 

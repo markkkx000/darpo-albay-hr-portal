@@ -4,7 +4,7 @@ import { Plus, Power, PowerOff } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { DatePicker } from '@/components/date-picker';
-import Heading from '@/components/heading';
+import PageHeader from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ColorPicker } from '@/components/ui/color-picker';
@@ -285,8 +285,7 @@ export default function LeaveSettings({
         <>
             <Head title="Leave Settings" />
             <div className="w-full p-4 md:p-6">
-                <Heading
-                    as="h1"
+                <PageHeader
                     title="Leave Settings"
                     description="Manage holidays, leave types, and leave statuses."
                 />

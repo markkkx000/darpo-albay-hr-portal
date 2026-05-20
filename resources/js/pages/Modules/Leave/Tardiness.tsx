@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
 import { EmployeeSearch } from '@/components/EmployeeSearch';
-import Heading from '@/components/heading';
+import PageHeader from '@/components/page-header';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -161,8 +161,7 @@ export default function LeaveTardiness({
         <>
             <Head title="Tardiness Records" />
             <div className="w-full p-4 md:p-6">
-                <Heading
-                    as="h1"
+                <PageHeader
                     title="Tardiness &amp; Undertime"
                     description="Manage tardiness and undertime records per month."
                 />

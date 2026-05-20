@@ -9,7 +9,7 @@ import {
 import { Head, router } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight, Check, ChevronsUpDown } from 'lucide-react';
 import { useState, useMemo } from 'react';
-import Heading from '@/components/heading';
+import PageHeader from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -207,8 +207,7 @@ export default function LeaveCalendar({
         <>
             <Head title="Leave Calendar" />
             <div className="w-full p-4 md:p-6">
-                <Heading
-                    as="h1"
+                <PageHeader
                     title="Leave Calendar"
                     description="Visual overview of employee leaves."
                 />

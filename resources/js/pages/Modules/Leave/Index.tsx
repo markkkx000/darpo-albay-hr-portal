@@ -3,7 +3,7 @@ import { Plus, CalendarX } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { ViewActionButton, EditActionButton } from '@/components/ActionButtons';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
-import Heading from '@/components/heading';
+import PageHeader from '@/components/page-header';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import {
@@ -164,17 +164,11 @@ export default function LeaveDashboard({
         <>
             <Head title="Leave Tracking Dashboard" />
             <div className="w-full p-4">
-                <div className="matte-card elev-2 mb-6 flex flex-col justify-between gap-4 rounded-2xl px-6 py-5 md:flex-row md:items-center">
-                    <div className="flex items-center gap-3">
-                        <Heading
-                            title="Leave Tracking"
-                            description="Manage and track employee leave requests."
-                            as="h1"
-                            variant="small"
-                        />
-                    </div>
-                    <div className="flex w-full items-center gap-2 sm:w-auto">
-                        {canEncode && (
+                <PageHeader
+                    title="Leave Tracking"
+                    description="Manage and track employee leave requests."
+                    actions={
+                        canEncode && (
                             <Button
                                 asChild
                                 className="btn-ghost-specular border-none px-6"
@@ -184,9 +178,9 @@ export default function LeaveDashboard({
                                     Encode
                                 </Link>
                             </Button>
-                        )}
-                    </div>
-                </div>
+                        )
+                    }
+                />
 
                 <LeaveNavigation />
 

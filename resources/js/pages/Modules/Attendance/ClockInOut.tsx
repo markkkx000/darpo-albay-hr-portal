@@ -84,72 +84,102 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
             <Head title="Attendance Registry" />
 
             <div className="relative z-10 flex min-h-[calc(100vh-12rem)] flex-col items-center justify-start p-4 pt-4 gap-4 animate-fade-up">
-                <div className="w-full flex justify-end max-w-5xl">
+                <div className="relative w-full max-w-xl">
                     {canManage && (
-                        <Link href={records_index().url}>
-                            <Button variant="ghost" className="btn-ghost-specular border-none px-5">
-                                <Settings className="mr-2 h-4 w-4" />
-                                Attendance Management
+                        <Link
+                            href={records_index().url}
+                            className="absolute left-[calc(100%-3.5rem)] top-4 z-20"
+                        >
+                            <Button
+                                variant="ghost"
+                                className="group flex h-10 w-10 items-center justify-start overflow-hidden rounded-full border-none bg-background/80 p-0 shadow-md backdrop-blur-sm hover:w-64 btn-ghost-specular"
+                                style={{
+                                    transitionProperty: 'width, transform, background-color, border-color, box-shadow',
+                                    transitionDuration: '300ms',
+                                    transitionTimingFunction: 'ease-in-out'
+                                }}
+                            >
+                                <div className="flex h-full w-[38px] shrink-0 items-center justify-center">
+                                    <Settings
+                                        className="h-5 w-5 group-hover:rotate-180"
+                                        style={{
+                                            transitionProperty: 'rotate, transform',
+                                            transitionDuration: '300ms',
+                                            transitionTimingFunction: 'ease-in-out'
+                                        }}
+                                    />
+                                </div>
+                                <span
+                                    className="ml-1 whitespace-nowrap opacity-0 group-hover:opacity-100 font-bold text-xs uppercase tracking-wider"
+                                    style={{
+                                        transitionProperty: 'opacity',
+                                        transitionDuration: '500ms',
+                                        transitionDelay: '150ms',
+                                        transitionTimingFunction: 'ease-in-out'
+                                    }}
+                                >
+                                    Attendance Management
+                                </span>
                             </Button>
                         </Link>
                     )}
-                </div>
 
-                <div className="matte-card elev-3 w-full max-w-xl">
-                    <div className="flex flex-col space-y-1.5 p-6 text-center">
-                        <h3 className="t-title leading-none tracking-tight">Attendance Registry</h3>
-                        <p className="text-sm text-muted-foreground font-medium">Keep track of your daily work hours with precision.</p>
-                    </div>
+                    <div className="matte-card elev-3 w-full">
+                        <div className="flex flex-col space-y-1.5 p-6 text-center">
+                            <h3 className="t-title leading-none tracking-tight">Attendance Registry</h3>
+                            <p className="text-sm text-muted-foreground font-medium">Keep track of your daily work hours with precision.</p>
+                        </div>
 
-                    <div className="p-6 pt-0 flex flex-col md:flex-row gap-6">
-                        {/* Left Pane: Date Card — Premium Matte Surface */}
-                        <div
-                            className="w-full md:w-52 rounded-[2rem] p-6 flex flex-col justify-between shrink-0 overflow-hidden matte-card elev-1"
-                            style={{
-                                minHeight: '180px',
-                                boxShadow: `
+                        <div className="p-6 pt-0 flex flex-col md:flex-row gap-6">
+                            {/* Left Pane: Date Card — Premium Matte Surface */}
+                            <div
+                                className="w-full md:w-52 rounded-[2rem] p-6 flex flex-col justify-between shrink-0 overflow-hidden matte-card elev-1"
+                                style={{
+                                    minHeight: '180px',
+                                    boxShadow: `
                                     inset 0 -80px 60px -30px rgba(21, 128, 61, 1),
                                     inset 0 -40px 30px -8px rgba(74, 222, 128, 0.5),
                                     inset 0 -20px 20px -6px rgba(255, 255, 255, 0.4),
                                     inset 0 6px 6px -2px rgba(34, 197, 94, 0.15)
                                 `
-                            }}
-                        >
-                            <div>
-                                <p className="t-caption mb-1">Today</p>
-                                <h2 className="t-title leading-none">{todayDate}</h2>
+                                }}
+                            >
+                                <div>
+                                    <p className="t-caption mb-1">Today</p>
+                                    <h2 className="t-title leading-none">{todayDate}</h2>
+                                </div>
+                                <div className="mt-auto pt-6">
+                                    <p className="text-lg font-semibold text-foreground/80">{todayDay}</p>
+                                    <p className="text-xs font-medium text-muted-foreground mt-0.5 tracking-wide">{historyCount} {historyCount === 1 ? 'log' : 'logs'} this week</p>
+                                </div>
                             </div>
-                            <div className="mt-auto pt-6">
-                                <p className="text-lg font-semibold text-foreground/80">{todayDay}</p>
-                                <p className="text-xs font-medium text-muted-foreground mt-0.5 tracking-wide">{historyCount} {historyCount === 1 ? 'log' : 'logs'} this week</p>
-                            </div>
-                        </div>
 
-                        {/* Right Pane: History Timeline */}
-                        <div className="flex-1 py-2 px-1 flex flex-col overflow-hidden">
-                            <p className="t-caption mb-4">Recent History</p>
+                            {/* Right Pane: History Timeline */}
+                            <div className="flex-1 py-2 px-1 flex flex-col overflow-hidden">
+                                <p className="t-caption mb-4">Recent History</p>
 
-                            <div className="space-y-1 overflow-y-auto max-h-[160px] pr-2 scrollbar-thin">
-                                {timelineItems.length === 0 ? (
-                                    <div className="flex flex-col items-start gap-1 py-4">
-                                        <p className="text-sm text-muted-foreground italic">No records yet.</p>
-                                        <p className="text-[10px] text-muted-foreground/50">Your logs will appear here after clocking in.</p>
-                                    </div>
-                                ) : (
-                                    timelineItems.map((item) => {
-                                        return (
-                                            <div key={item.id} className="group flex items-center gap-3 px-2 py-2.5 rounded-xl hover:bg-surface-2 transition-colors">
-                                                <div
-                                                    className={cn("w-[3px] h-10 rounded-full shrink-0 spring-physics", item.status === 'active' ? 'bg-primary animate-pulse shadow-[0_0_8px_var(--green-glow)]' : 'bg-muted')}
-                                                />
-                                                <div className="flex flex-col min-w-0">
-                                                    <p className="text-[13px] font-semibold text-foreground/90 truncate">{item.date}</p>
-                                                    <p className="text-[11px] text-muted-foreground mt-0.5 font-mono tabular-nums tracking-wide">{item.timeStr}</p>
+                                <div className="space-y-1 overflow-y-auto max-h-[160px] pr-2 scrollbar-thin">
+                                    {timelineItems.length === 0 ? (
+                                        <div className="flex flex-col items-start gap-1 py-4">
+                                            <p className="text-sm text-muted-foreground italic">No records yet.</p>
+                                            <p className="text-[10px] text-muted-foreground/50">Your logs will appear here after clocking in.</p>
+                                        </div>
+                                    ) : (
+                                        timelineItems.map((item) => {
+                                            return (
+                                                <div key={item.id} className="group flex items-center gap-3 px-2 py-2.5 rounded-xl hover:bg-surface-2 transition-colors">
+                                                    <div
+                                                        className={cn("w-[3px] h-10 rounded-full shrink-0 spring-physics", item.status === 'active' ? 'bg-primary animate-pulse shadow-[0_0_8px_var(--green-glow)]' : 'bg-muted')}
+                                                    />
+                                                    <div className="flex flex-col min-w-0">
+                                                        <p className="text-[13px] font-semibold text-foreground/90 truncate">{item.date}</p>
+                                                        <p className="text-[11px] text-muted-foreground mt-0.5 font-mono tabular-nums tracking-wide">{item.timeStr}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        );
-                                    })
-                                )}
+                                            );
+                                        })
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

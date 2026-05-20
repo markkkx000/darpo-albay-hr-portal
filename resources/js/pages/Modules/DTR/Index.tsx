@@ -10,7 +10,7 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
-import Heading from '@/components/heading';
+import PageHeader from '@/components/page-header';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -172,8 +172,7 @@ export default function Index({ users, isHrAdmin }: Props) {
             <Head title="DTR Export" />
 
             <div className="animate-fade-up mx-auto w-full max-w-4xl p-4 md:p-8">
-                <Heading
-                    as="h1"
+                <PageHeader
                     title="Daily Time Record (DTR) Export"
                     description="Export CS Form 48 (Daily Time Record) or raw attendance data for employee records."
                 />

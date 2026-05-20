@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { AttendanceFilters } from '@/components/Attendance/AttendanceFilters';
 import { AttendanceRecordModal } from '@/components/Attendance/AttendanceRecordModal';
-import Heading from '@/components/heading';
+import PageHeader from '@/components/page-header';
 import { Pagination } from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -164,21 +164,20 @@ export default function ManageRecords({ records, employees, filters }: Props) {
             <Head title="Manage Attendance Records" />
 
             <div className="animate-fade-up relative z-10 w-full space-y-8 p-4">
-                <div className="matte-card elev-2 mb-6 flex flex-col justify-between gap-4 px-6 py-5 md:flex-row md:items-center">
-                    <Heading
-                        as="h1"
-                        title="Attendance Management"
-                        description="Systematically manage records and resolve logging anomalies."
-                    />
-                    <Button
-                        onClick={handleAddNew}
-                        size="lg"
-                        className="btn-ghost-specular border-none px-6"
-                    >
-                        <Plus className="mr-2 h-5 w-5" />
-                        Add Missing Record
-                    </Button>
-                </div>
+                <PageHeader
+                    title="Attendance Management"
+                    description="Systematically manage records and resolve logging anomalies."
+                    actions={
+                        <Button
+                            onClick={handleAddNew}
+                            size="lg"
+                            className="btn-ghost-specular border-none px-6"
+                        >
+                            <Plus className="mr-2 h-5 w-5" />
+                            Add Missing Record
+                        </Button>
+                    }
+                />
 
                 <div className="space-y-6">
                     <AttendanceFilters

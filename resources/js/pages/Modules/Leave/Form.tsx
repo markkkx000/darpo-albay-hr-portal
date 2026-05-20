@@ -9,7 +9,7 @@ import {
 } from 'react';
 import type { FormEvent } from 'react';
 import { toast } from 'sonner';
-import Heading from '@/components/heading';
+import PageHeader from '@/components/page-header';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -367,8 +367,7 @@ export default function LeaveForm({
                 title={isEdit ? 'Edit Leave Request' : 'Encode Leave Request'}
             />
             <div className="mx-auto w-full max-w-4xl p-4 md:p-6">
-                <Heading
-                    as="h1"
+                <PageHeader
                     title={
                         isEdit ? 'Edit Leave Request' : 'Encode Leave Request'
                     }

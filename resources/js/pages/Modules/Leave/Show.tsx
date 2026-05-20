@@ -7,7 +7,7 @@ import {
     CheckCircle,
     Clock,
 } from 'lucide-react';
-import Heading from '@/components/heading';
+import PageHeader from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import LeaveRoutes from '@/routes/leave';
@@ -104,19 +104,18 @@ export default function LeaveShow({ leaveRequest }: Props) {
         <>
             <Head title={`Leave Details - ${leaveRequest.user?.last_name}`} />
             <div className="mx-auto w-full max-w-4xl p-4 md:p-6">
-                <div className="mb-8 flex items-center justify-between">
-                    <Heading
-                        as="h1"
-                        title="Leave Details"
-                        description="Detailed view of the leave request."
-                    />
-                    <Button variant="outline" asChild>
-                        <Link href={LeaveRoutes.index().url}>
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Back to Dashboard
-                        </Link>
-                    </Button>
-                </div>
+                <PageHeader
+                    title="Leave Details"
+                    description="Detailed view of the leave request."
+                    actions={
+                        <Button variant="outline" asChild>
+                            <Link href={LeaveRoutes.index().url}>
+                                <ArrowLeft className="mr-2 h-4 w-4" />
+                                Back to Dashboard
+                            </Link>
+                        </Button>
+                    }
+                />
 
                 <LeaveNavigation />
 

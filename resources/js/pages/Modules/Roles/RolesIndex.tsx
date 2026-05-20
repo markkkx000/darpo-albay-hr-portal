@@ -2,7 +2,7 @@ import { Head, router } from '@inertiajs/react';
 import { Key, Shield, ShieldAlert, Trash2, Edit2, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import Heading from '@/components/heading';
+import PageHeader from '@/components/page-header';
 import { RoleModal } from '@/components/Roles/RoleModal';
 import { RolesNavigation } from '@/components/Roles/RolesNavigation';
 import { Badge } from '@/components/ui/badge';
@@ -71,16 +71,16 @@ export default function RolesIndex({ roles, permissions }: Props) {
             <Head title="Roles & Permissions" />
 
             <div className="p-4 w-full">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                    <Heading 
-                        title="Roles & Permissions"
-                        description="Manage system roles and their associated capabilities."
-                    />
-                    <Button onClick={handleCreate} className="btn-specular gap-2 border-none px-6">
-                        <Plus className="h-4 w-4" />
-                        Create Role
-                    </Button>
-                </div>
+                <PageHeader
+                    title="Roles & Permissions"
+                    description="Manage system roles and their associated capabilities."
+                    actions={
+                        <Button onClick={handleCreate} className="btn-specular gap-2 border-none px-6">
+                            <Plus className="h-4 w-4" />
+                            Create Role
+                        </Button>
+                    }
+                />
 
                 <RolesNavigation />
 

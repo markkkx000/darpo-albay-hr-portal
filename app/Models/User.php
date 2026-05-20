@@ -78,7 +78,19 @@ class User extends Authenticatable
 
     public function getAvatarAttribute(): string
     {
-        return $this->profile_picture ? asset('storage/'.$this->profile_picture) : asset('img/pfp_placeholder.png');
+        if (! $this->profile_picture) {
+            return asset('img/pfp_placeholder.png');
+        }
+
+        if (str_starts_with($this->profile_picture, '/storage/')) {
+            return asset(substr($this->profile_picture, 1));
+        }
+
+        if (str_starts_with($this->profile_picture, 'storage/')) {
+            return asset($this->profile_picture);
+        }
+
+        return asset('storage/'.$this->profile_picture);
     }
 
     public function division(): BelongsTo

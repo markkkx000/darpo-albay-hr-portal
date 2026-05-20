@@ -1,7 +1,7 @@
 import { Head, Link, usePage, router } from '@inertiajs/react';
 import { Plus, Search, Archive } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
-import Heading from '@/components/heading';
+import PageHeader from '@/components/page-header';
 import { EmployeeTable } from '@/components/Personnel/EmployeeTable';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -90,37 +90,35 @@ export default function Index({ employees, filters, divisions = [], appointmentS
             <Head title="Personnel Directory" />
 
             <div className="p-4 w-full">
-                <div className="matte-card elev-2 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 rounded-2xl">
-                    <Heading
-                        title="Personnel Directory"
-                        description="Manage and view all employee records across the agency."
-                        as="h1"
-                        variant="small"
-                    />
-                    <div className="flex items-center gap-3">
-                        <Button asChild className="btn-ghost-specular gap-2 border-none">
-                            <Link href={archivedRoute().url}>
-                                <Archive className="h-4 w-4" />
-                                View Archived
-                            </Link>
-                        </Button>
-                        {canCreate && (
-                            <>
-                                <Button asChild className="btn-ghost-specular border-none">
-                                    <Link href={PersonnelRoutes.organization.index().url}>
-                                        Manage Organization
-                                    </Link>
-                                </Button>
-                                <Button asChild className="btn-ghost-specular px-6 border-none">
-                                    <Link href={createRoute().url}>
-                                        <Plus className="h-4 w-4" />
-                                        Add Employee
-                                    </Link>
-                                </Button>
-                            </>
-                        )}
-                    </div>
-                </div>
+                <PageHeader
+                    title="Personnel Directory"
+                    description="Manage and view all employee records across the agency."
+                    actions={
+                        <>
+                            <Button asChild className="btn-ghost-specular gap-2 border-none">
+                                <Link href={archivedRoute().url}>
+                                    <Archive className="h-4 w-4" />
+                                    View Archived
+                                </Link>
+                            </Button>
+                            {canCreate && (
+                                <>
+                                    <Button asChild className="btn-ghost-specular border-none">
+                                        <Link href={PersonnelRoutes.organization.index().url}>
+                                            Manage Organization
+                                        </Link>
+                                    </Button>
+                                    <Button asChild className="btn-ghost-specular px-6 border-none">
+                                        <Link href={createRoute().url}>
+                                            <Plus className="h-4 w-4" />
+                                            Add Employee
+                                        </Link>
+                                    </Button>
+                                </>
+                            )}
+                        </>
+                    }
+                />
 
                 {/* Filters */}
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 matte-card elev-2 px-4 py-4 rounded-2xl mb-6">

@@ -1,7 +1,7 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Megaphone, Settings } from 'lucide-react';
 import { AnnouncementCard } from '@/components/Announcements/AnnouncementCard';
-import Heading from '@/components/heading';
+import PageHeader from '@/components/page-header';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { index, manage } from '@/routes/announcements/index';
@@ -24,20 +24,20 @@ export default function Index({ announcements }: Props) {
             <Head title="Announcements" />
 
             <div className="p-4 w-full space-y-6">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <Heading 
-                        title="Announcements" 
-                        description="Stay updated with the latest news and information from the HR and management."
-                    />
-                    {canManage && (
-                        <Button asChild className="btn-ghost-specular border-none px-6">
-                            <Link href={manage().url}>
-                                <Settings className="mr-2 h-4 w-4" />
-                                Manage Announcements
-                            </Link>
-                        </Button>
-                    )}
-                </div>
+                <PageHeader
+                    title="Announcements"
+                    description="Stay updated with the latest news and information from the HR and management."
+                    actions={
+                        canManage && (
+                            <Button asChild className="btn-ghost-specular border-none px-6">
+                                <Link href={manage().url}>
+                                    <Settings className="mr-2 h-4 w-4" />
+                                    Manage Announcements
+                                </Link>
+                            </Button>
+                        )
+                    }
+                />
 
                 {announcements.data.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">

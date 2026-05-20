@@ -85,7 +85,8 @@ export function EmployeeForm({
         }
 
         if (data.profile_picture) {
-            return `/storage/${data.profile_picture}`;
+            const path = data.profile_picture;
+            return path.startsWith('/storage/') ? path : path.startsWith('storage/') ? '/' + path : `/storage/${path}`;
         }
 
         return '/img/pfp_placeholder.png';
