@@ -126,7 +126,6 @@ table {
     @apply tabular-nums;
 }
 
-
 /* ═══════════════════════════════════════════
    Premium Design System (Apple-Grade)
    ═══════════════════════════════════════════ */
@@ -301,11 +300,76 @@ table {
         mix-blend-mode: overlay;
     }
 
-
-
-    /* Technique 02: Specular Highlights */
-    .btn-specular {
+    /* Technique 02: Specular Highlights
+       ─── Shared base ──────────────────────────────────────────── */
+    .btn-specular,
+    .btn-warning-specular,
+    .btn-danger-specular,
+    .btn-ghost-specular,
+    .btn-ghost-danger-specular,
+    .btn-ghost-warning-specular {
         @apply relative overflow-hidden transition-all duration-200 rounded-full;
+    }
+
+    /* Shared :active press for all variants */
+    .btn-specular:active,
+    .btn-warning-specular:active,
+    .btn-danger-specular:active {
+        transform: translateY(1px);
+        filter: brightness(0.95);
+    }
+
+    /* Shared ::before shimmer — always visible on full-colour variants */
+    .btn-specular::before,
+    .btn-warning-specular::before,
+    .btn-danger-specular::before {
+        content: '';
+        @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
+        border-radius: 9999px 9999px 40% 40%;
+    }
+
+    /* Shared ::before shimmer — hidden until hover on ghost variants */
+    .btn-ghost-specular::before,
+    .btn-ghost-danger-specular::before,
+    .btn-ghost-warning-specular::before {
+        content: '';
+        @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none opacity-0 transition-opacity duration-200;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
+        border-radius: 9999px 9999px 40% 40%;
+    }
+
+    .btn-ghost-specular:hover::before,
+    .btn-ghost-danger-specular:hover::before,
+    .btn-ghost-warning-specular:hover::before {
+        @apply opacity-100;
+    }
+
+    /* Ghost shared base surface */
+    .btn-ghost-specular,
+    .btn-ghost-danger-specular,
+    .btn-ghost-warning-specular {
+        background: var(--surface-1);
+        color: var(--foreground);
+        border: 1px solid var(--border-2);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .dark .btn-ghost-specular,
+    .dark .btn-ghost-danger-specular,
+    .dark .btn-ghost-warning-specular {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Ghost shared :active */
+    .btn-ghost-specular:active,
+    .btn-ghost-danger-specular:active,
+    .btn-ghost-warning-specular:active {
+        transform: translateY(1px);
+    }
+
+    /* ─── Variant: Primary (green → yellow) ──────────────────── */
+    .btn-specular {
         background: var(--grad-primary);
         color: #000;
         font-weight: 700;
@@ -324,23 +388,14 @@ table {
     }
 
     .btn-specular:active {
-        transform: translateY(1px);
-        filter: brightness(0.95);
         box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.15) inset,
             0 -1px 0 rgba(0, 0, 0, 0.2) inset,
             0 4px 12px rgba(34, 197, 94, 0.2);
     }
 
-    .btn-specular::before {
-        content: '';
-        @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
-        border-radius: 9999px 9999px 40% 40%;
-    }
-
+    /* ─── Variant: Warning (amber) ───────────────────────────── */
     .btn-warning-specular {
-        @apply relative overflow-hidden transition-all duration-200 rounded-full;
         background: var(--grad-warning-180);
         color: #000;
         font-weight: 700;
@@ -359,23 +414,14 @@ table {
     }
 
     .btn-warning-specular:active {
-        transform: translateY(1px);
-        filter: brightness(0.95);
         box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.15) inset,
             0 -1px 0 rgba(0, 0, 0, 0.2) inset,
             0 4px 12px rgba(245, 158, 11, 0.2);
     }
 
-    .btn-warning-specular::before {
-        content: '';
-        @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
-        border-radius: 9999px 9999px 40% 40%;
-    }
-
+    /* ─── Variant: Danger (red) ──────────────────────────────── */
     .btn-danger-specular {
-        @apply relative overflow-hidden transition-all duration-200 rounded-full;
         background: var(--grad-danger-180);
         color: #fff;
         font-weight: 700;
@@ -394,83 +440,32 @@ table {
     }
 
     .btn-danger-specular:active {
-        transform: translateY(1px);
-        filter: brightness(0.95);
         box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.15) inset,
             0 -1px 0 rgba(0, 0, 0, 0.2) inset,
             0 4px 12px rgba(255, 69, 58, 0.2);
     }
 
-    .btn-danger-specular::before {
-        content: '';
-        @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
-        border-radius: 9999px 9999px 40% 40%;
-    }
-
-    /* Hover-only Ghost Specular */
-    .btn-ghost-specular {
-        @apply relative overflow-hidden transition-all duration-200 rounded-full;
-        background: var(--surface-1);
-        color: var(--foreground);
-        border: 1px solid var(--border-2);
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-
-    .dark .btn-ghost-specular {
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    }
-
-    .btn-ghost-specular:hover {
-        background: var(--grad-primary) !important;
-        color: #000 !important;
-        border-color: transparent !important;
+    /* ─── Ghost variant: Primary ─────────────────────────────── */
+    .btn-ghost-specular:is(:hover) {
+        background: var(--grad-primary);
+        color: #000;
+        border-color: transparent;
         box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.25) inset,
             0 -1px 0 rgba(0, 0, 0, 0.1) inset,
             0 8px 24px rgba(34, 197, 94, 0.35);
     }
 
-    .dark .btn-ghost-specular:hover {
-        background: var(--grad-primary);
-        color: #000;
-        box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35);
-    }
-
     .btn-ghost-specular:active {
-        transform: translateY(1px);
         box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.15) inset,
             0 -1px 0 rgba(0, 0, 0, 0.2) inset,
             0 4px 12px rgba(34, 197, 94, 0.2);
     }
 
-    .btn-ghost-specular::before {
-        content: '';
-        @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none opacity-0 transition-opacity duration-200;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
-        border-radius: 9999px 9999px 40% 40%;
-    }
-
-    .btn-ghost-specular:hover::before {
-        @apply opacity-100;
-    }
-
-    /* Hover-only Danger Specular */
-    .btn-ghost-danger-specular {
-        @apply relative overflow-hidden transition-all duration-200 rounded-full;
-        background: var(--surface-1);
-        color: var(--foreground);
-        border: 1px solid var(--border-2);
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-
-    .dark .btn-ghost-danger-specular {
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    }
-
-    .btn-ghost-danger-specular:hover {
+    /* ─── Ghost variant: Danger ──────────────────────────────── */
+    .btn-ghost-danger-specular:is(:hover) {
         background: var(--grad-danger-180);
         color: #fff;
         border-color: transparent;
@@ -481,39 +476,16 @@ table {
     }
 
     .btn-ghost-danger-specular:active {
-        transform: translateY(1px);
         box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.15) inset,
             0 -1px 0 rgba(0, 0, 0, 0.2) inset,
             0 4px 12px rgba(255, 69, 58, 0.2);
     }
 
-    .btn-ghost-danger-specular::before {
-        content: '';
-        @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none opacity-0 transition-opacity duration-200;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
-        border-radius: 9999px 9999px 40% 40%;
-    }
-
-    .btn-ghost-danger-specular:hover::before {
-        @apply opacity-100;
-    }
-
-    /* Hover-only Warning (Amber) Specular */
-    .btn-ghost-warning-specular {
-        @apply relative overflow-hidden transition-all duration-200 rounded-full;
-        background: var(--surface-1);
-        color: var(--foreground);
-        border: 1px solid var(--border-2);
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-
-    .dark .btn-ghost-warning-specular {
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    }
-
-    .btn-ghost-warning-specular:hover {
-        background: linear-gradient(135deg, #fff100 0%, #fde047 100%);
+    /* ─── Ghost variant: Warning ─────────────────────────────── */
+    .btn-ghost-warning-specular:is(:hover),
+    .dark .btn-ghost-warning-specular:is(:hover) {
+        background: linear-gradient(135deg, var(--yellow-300) 0%, var(--yellow-400) 100%);
         color: #000;
         border-color: transparent;
         box-shadow:
@@ -522,29 +494,11 @@ table {
             0 8px 24px rgba(255, 241, 0, 0.35);
     }
 
-    .dark .btn-ghost-warning-specular:hover {
-        background: linear-gradient(135deg, #fff100 0%, #fde047 100%);
-        color: #000;
-        box-shadow: 0 8px 24px rgba(255, 241, 0, 0.35);
-    }
-
     .btn-ghost-warning-specular:active {
-        transform: translateY(1px);
         box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.15) inset,
             0 -1px 0 rgba(0, 0, 0, 0.2) inset,
             0 4px 12px rgba(255, 241, 0, 0.25);
-    }
-
-    .btn-ghost-warning-specular::before {
-        content: '';
-        @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none opacity-0 transition-opacity duration-200;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
-        border-radius: 9999px 9999px 40% 40%;
-    }
-
-    .btn-ghost-warning-specular:hover::before {
-        @apply opacity-100;
     }
 
     /* Keyboard focus rings — WCAG 2.1 SC 2.4.7 */
