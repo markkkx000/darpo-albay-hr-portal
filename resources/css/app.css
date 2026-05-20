@@ -82,13 +82,13 @@
 @utility item-hover-gradient {
     background: var(--grad-primary) !important;
     color: #000 !important;
-    font-weight: 600 !important;
 
     .dark & {
         background: var(--grad-primary) !important;
         color: #000 !important;
     }
 }
+
 @utility tabular-nums {
     font-variant-numeric: tabular-nums;
 }
@@ -233,7 +233,7 @@ table {
     --sidebar-accent-foreground: #ffffff;
     --sidebar-border: rgba(255, 255, 255, 0.06);
     --sidebar-ring: rgba(34, 197, 94, 0.5);
-    
+
     --grad-warning: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
     --grad-warning-180: linear-gradient(180deg, #f59e0b 0%, #b45309 100%);
     --grad-warning-shadow: 0 8px 24px rgba(245, 158, 11, 0.2), 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -268,6 +268,7 @@ table {
 }
 
 @layer utilities {
+
     /* Technique 01: Noise Texture */
     .matte-card {
         @apply relative overflow-hidden;
@@ -291,7 +292,7 @@ table {
         background: var(--grad-primary);
         color: #000;
         font-weight: 700;
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.25) inset,
             0 -1px 0 rgba(0, 0, 0, 0.1) inset,
             var(--grad-shadow);
@@ -299,7 +300,7 @@ table {
 
     .btn-specular:hover {
         filter: brightness(1.08) saturate(1.1);
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.25) inset,
             0 -1px 0 rgba(0, 0, 0, 0.1) inset,
             0 12px 32px rgba(34, 197, 94, 0.3), 0 6px 16px rgba(250, 204, 21, 0.2);
@@ -308,7 +309,7 @@ table {
     .btn-specular:active {
         transform: translateY(1px);
         filter: brightness(0.95);
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.15) inset,
             0 -1px 0 rgba(0, 0, 0, 0.2) inset,
             0 4px 12px rgba(34, 197, 94, 0.2);
@@ -320,21 +321,21 @@ table {
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
         border-radius: 9999px 9999px 40% 40%;
     }
-    
+
     .btn-warning-specular {
         @apply relative overflow-hidden transition-all duration-200 rounded-full;
         background: var(--grad-warning-180);
         color: #000;
         font-weight: 700;
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.25) inset,
             0 -1px 0 rgba(0, 0, 0, 0.1) inset,
             var(--grad-warning-shadow);
     }
-    
+
     .btn-warning-specular:hover {
         filter: brightness(1.08) saturate(1.1);
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.25) inset,
             0 -1px 0 rgba(0, 0, 0, 0.1) inset,
             0 12px 32px rgba(245, 158, 11, 0.3);
@@ -343,33 +344,33 @@ table {
     .btn-warning-specular:active {
         transform: translateY(1px);
         filter: brightness(0.95);
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.15) inset,
             0 -1px 0 rgba(0, 0, 0, 0.2) inset,
             0 4px 12px rgba(245, 158, 11, 0.2);
     }
-    
+
     .btn-warning-specular::before {
         content: '';
         @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none;
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
         border-radius: 9999px 9999px 40% 40%;
     }
-    
+
     .btn-danger-specular {
         @apply relative overflow-hidden transition-all duration-200 rounded-full;
         background: var(--grad-danger-180);
         color: #fff;
         font-weight: 700;
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.25) inset,
             0 -1px 0 rgba(0, 0, 0, 0.1) inset,
             var(--grad-danger-shadow);
     }
-    
+
     .btn-danger-specular:hover {
         filter: brightness(1.1) saturate(1.1);
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.25) inset,
             0 -1px 0 rgba(0, 0, 0, 0.1) inset,
             0 12px 32px rgba(255, 69, 58, 0.35);
@@ -378,12 +379,12 @@ table {
     .btn-danger-specular:active {
         transform: translateY(1px);
         filter: brightness(0.95);
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.15) inset,
             0 -1px 0 rgba(0, 0, 0, 0.2) inset,
             0 4px 12px rgba(255, 69, 58, 0.2);
     }
-    
+
     .btn-danger-specular::before {
         content: '';
         @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none;
@@ -397,36 +398,44 @@ table {
         background: var(--surface-1);
         color: var(--foreground);
         border: 1px solid var(--border-2);
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
-    .dark .btn-ghost-specular { box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+
+    .dark .btn-ghost-specular {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
     .btn-ghost-specular:hover {
         background: var(--grad-primary) !important;
         color: #000 !important;
         border-color: transparent !important;
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.25) inset,
             0 -1px 0 rgba(0, 0, 0, 0.1) inset,
             0 8px 24px rgba(34, 197, 94, 0.35);
     }
+
     .dark .btn-ghost-specular:hover {
         background: var(--grad-primary);
         color: #000;
         box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35);
     }
+
     .btn-ghost-specular:active {
         transform: translateY(1px);
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.15) inset,
             0 -1px 0 rgba(0, 0, 0, 0.2) inset,
             0 4px 12px rgba(34, 197, 94, 0.2);
     }
+
     .btn-ghost-specular::before {
         content: '';
         @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none opacity-0 transition-opacity duration-200;
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
         border-radius: 9999px 9999px 40% 40%;
     }
+
     .btn-ghost-specular:hover::before {
         @apply opacity-100;
     }
@@ -437,31 +446,38 @@ table {
         background: var(--surface-1);
         color: var(--foreground);
         border: 1px solid var(--border-2);
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
-    .dark .btn-ghost-danger-specular { box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+
+    .dark .btn-ghost-danger-specular {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
     .btn-ghost-danger-specular:hover {
         background: var(--grad-danger-180);
         color: #fff;
         border-color: transparent;
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.25) inset,
             0 -1px 0 rgba(0, 0, 0, 0.1) inset,
             0 8px 24px rgba(255, 69, 58, 0.3);
     }
+
     .btn-ghost-danger-specular:active {
         transform: translateY(1px);
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.15) inset,
             0 -1px 0 rgba(0, 0, 0, 0.2) inset,
             0 4px 12px rgba(255, 69, 58, 0.2);
     }
+
     .btn-ghost-danger-specular::before {
         content: '';
         @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none opacity-0 transition-opacity duration-200;
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
         border-radius: 9999px 9999px 40% 40%;
     }
+
     .btn-ghost-danger-specular:hover::before {
         @apply opacity-100;
     }
@@ -472,43 +488,51 @@ table {
         background: var(--surface-1);
         color: var(--foreground);
         border: 1px solid var(--border-2);
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
-    .dark .btn-ghost-warning-specular { box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+
+    .dark .btn-ghost-warning-specular {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
     .btn-ghost-warning-specular:hover {
         background: linear-gradient(135deg, #fff100 0%, #fde047 100%);
         color: #000;
         border-color: transparent;
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.25) inset,
             0 -1px 0 rgba(0, 0, 0, 0.1) inset,
             0 8px 24px rgba(255, 241, 0, 0.35);
     }
+
     .dark .btn-ghost-warning-specular:hover {
         background: linear-gradient(135deg, #fff100 0%, #fde047 100%);
         color: #000;
         box-shadow: 0 8px 24px rgba(255, 241, 0, 0.35);
     }
+
     .btn-ghost-warning-specular:active {
         transform: translateY(1px);
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.15) inset,
             0 -1px 0 rgba(0, 0, 0, 0.2) inset,
             0 4px 12px rgba(255, 241, 0, 0.25);
     }
+
     .btn-ghost-warning-specular::before {
         content: '';
         @apply absolute top-0 left-0 right-0 h-1/2 pointer-events-none opacity-0 transition-opacity duration-200;
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
         border-radius: 9999px 9999px 40% 40%;
     }
+
     .btn-ghost-warning-specular:hover::before {
         @apply opacity-100;
     }
 
     .sidebar-active-gradient {
         background: var(--grad-primary);
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.25) inset,
             var(--grad-shadow);
     }
@@ -518,6 +542,7 @@ table {
     .sidebar-active-text {
         color: #000 !important;
     }
+
     .sidebar-active-text svg {
         color: #000 !important;
     }
@@ -528,35 +553,62 @@ table {
         border: 1px solid var(--border-1);
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     }
-    .dark .elev-1 { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+
+    .dark .elev-1 {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
 
     .elev-2 {
         background: var(--surface-2);
         border: 1px solid var(--border-2);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
     }
-    .dark .elev-2 { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3); }
+
+    .dark .elev-2 {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
 
     .elev-3 {
         background: var(--surface-3);
         border: 1px solid var(--border-3);
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
     }
-    .dark .elev-3 { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3); }
+
+    .dark .elev-3 {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
 
     .elev-4 {
         background: var(--surface-4);
-        border: 1px solid var(--border-3); /* using border-3 as max */
+        border: 1px solid var(--border-3);
+        /* using border-3 as max */
         box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0, 0, 0, 0.1);
     }
-    .dark .elev-4 { box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.5); }
+
+    .dark .elev-4 {
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
 
     /* Hover rules: elevate by one level */
-    .elev-1:hover { background: var(--surface-2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04); }
-    .dark .elev-1:hover { background: var(--surface-2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3); }
-    
-    .elev-2:hover { background: var(--surface-3); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08); }
-    .dark .elev-2:hover { background: var(--surface-3); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3); }
+    .elev-1:hover {
+        background: var(--surface-2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .dark .elev-1:hover {
+        background: var(--surface-2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .elev-2:hover {
+        background: var(--surface-3);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .dark .elev-2:hover {
+        background: var(--surface-3);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
 
     /* Technique 04: Mesh Gradients */
     .mesh-container {
@@ -570,22 +622,37 @@ table {
 
     @media (prefers-reduced-motion: no-preference) {
         @keyframes blobFloat {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33%       { transform: translate(20px, -20px) scale(1.1); }
-            66%       { transform: translate(-15px, 10px) scale(0.9); }
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(20px, -20px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-15px, 10px) scale(0.9);
+            }
         }
     }
 
     .mesh-blob-1 {
-        width: 400px; height: 400px;
+        width: 400px;
+        height: 400px;
         background: var(--green-glow);
     }
+
     .mesh-blob-2 {
-        width: 300px; height: 300px;
+        width: 300px;
+        height: 300px;
         background: var(--yellow-glow);
     }
+
     .mesh-blob-3 {
-        width: 250px; height: 250px;
+        width: 250px;
+        height: 250px;
         background: var(--green-tint);
     }
 
@@ -608,7 +675,7 @@ table {
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
-    
+
     .t-display-green {
         @apply font-bold tracking-tight leading-[1.1];
         font-size: clamp(40px, 5vw, 56px);
@@ -641,22 +708,38 @@ table {
         @apply transition-transform duration-200;
         transition-timing-function: var(--spring);
     }
-    .spring-press:active { transform: scale(0.96); }
-    .spring-press:hover { transform: scale(1.02); }
+
+    .spring-press:active {
+        transform: scale(0.96);
+    }
+
+    .spring-press:hover {
+        transform: scale(1.02);
+    }
 
     .spring-hover {
         @apply transition-transform duration-200;
         transition-timing-function: var(--spring);
     }
-    .spring-hover:hover  { transform: scale(1.04); }
-    .spring-hover:active { transform: scale(0.97); }
+
+    .spring-hover:hover {
+        transform: scale(1.04);
+    }
+
+    .spring-hover:active {
+        transform: scale(0.97);
+    }
 
     /* Technique 07: Inset Surfaces */
     .input-etched {
         @apply w-full bg-surface-2 border border-border-1 rounded-2xl px-4 py-2.5 outline-none transition-all duration-200;
         box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
     }
-    .dark .input-etched { box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4); }
+
+    .dark .input-etched {
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
     .input-etched:focus {
         @apply border-primary/50;
         box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05), 0 0 0 3px var(--ring);
@@ -668,8 +751,14 @@ table {
         transition-timing-function: var(--spring);
         border-radius: 12px;
     }
-    .sqicon:hover { transform: scale(1.12); }
-    .sqicon:active { transform: scale(0.96); }
+
+    .sqicon:hover {
+        transform: scale(1.12);
+    }
+
+    .sqicon:active {
+        transform: scale(0.96);
+    }
 
     .sqicon::before {
         content: '';
@@ -712,13 +801,22 @@ table {
     /* Animation Utilities */
     @media (prefers-reduced-motion: no-preference) {
         @keyframes fade-up {
-            from { opacity: 0; transform: translateY(16px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         .animate-fade-up {
             animation: fade-up 0.5s var(--ease-out) forwards;
         }
     }
+
     /* ── Employment Status Gradient Badges v2 ──
        Cohesive Green-Yellow variations for a premium, unified look.
        Enforces black text for maximum legibility on bright gradients. */
@@ -830,7 +928,7 @@ table {
         @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all duration-200;
         background: var(--grad-primary);
         color: #000;
-        box-shadow: 
+        box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.25) inset,
             0 -1px 0 rgba(0, 0, 0, 0.1) inset,
             0 4px 12px rgba(34, 197, 94, 0.25);
@@ -846,7 +944,7 @@ table {
         @apply my-1 leading-relaxed;
     }
 
-    .tiptap.prose ul, 
+    .tiptap.prose ul,
     .tiptap.prose ol {
         @apply my-2;
     }
@@ -863,7 +961,9 @@ table {
         @apply my-1;
     }
 
-    .tiptap.prose h1, .tiptap.prose h2, .tiptap.prose h3 {
+    .tiptap.prose h1,
+    .tiptap.prose h2,
+    .tiptap.prose h3 {
         @apply mt-6 mb-2 font-bold tracking-tight;
     }
 
