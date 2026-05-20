@@ -104,22 +104,22 @@
 }
 
 @utility btn-expand-pill {
-    transition-property: width, transform, background-color, border-color, box-shadow;
-    transition-duration: 300ms;
-    transition-timing-function: ease-in-out;
+    transition-property: width, transform, background-color, border-color, box-shadow !important;
+    transition-duration: 300ms !important;
+    transition-timing-function: ease-in-out !important;
 }
 
 @utility btn-expand-pill-icon {
-    transition-property: rotate, transform;
-    transition-duration: 300ms;
-    transition-timing-function: ease-in-out;
+    transition-property: rotate, transform !important;
+    transition-duration: 300ms !important;
+    transition-timing-function: ease-in-out !important;
 }
 
 @utility btn-expand-pill-label {
-    transition-property: opacity;
-    transition-duration: 500ms;
-    transition-delay: 150ms;
-    transition-timing-function: ease-in-out;
+    transition-property: opacity !important;
+    transition-duration: 500ms !important;
+    transition-delay: 150ms !important;
+    transition-timing-function: ease-in-out !important;
 }
 
 table {
