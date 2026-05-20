@@ -2,7 +2,7 @@ import { Mail, Phone, MapPin, Calendar, Briefcase, Building2, User as UserIcon, 
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
-interface Employee {
+export interface Employee {
     id: number;
     first_name: string;
     middle_name: string | null;

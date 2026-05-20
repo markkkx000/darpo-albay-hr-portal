@@ -66,7 +66,6 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
 
     const isClockedIn = !!attendance;
     const isClockedOut = !!attendance?.clock_out;
-    const isButtonDisabled = processing;
 
     const todayDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     const todayDay = new Date().toLocaleDateString('en-US', { weekday: 'long' });
@@ -92,31 +91,15 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                         >
                             <Button
                                 variant="ghost"
-                                className="group flex h-10 w-10 items-center justify-start overflow-hidden rounded-full border-none bg-background/80 p-0 shadow-md backdrop-blur-sm hover:w-64 btn-ghost-specular"
-                                style={{
-                                    transitionProperty: 'width, transform, background-color, border-color, box-shadow',
-                                    transitionDuration: '300ms',
-                                    transitionTimingFunction: 'ease-in-out'
-                                }}
+                                className="group flex h-10 w-10 items-center justify-start overflow-hidden rounded-full border-none bg-background/80 p-0 shadow-md backdrop-blur-sm hover:w-64 btn-ghost-specular btn-expand-pill"
                             >
                                 <div className="flex h-full w-[38px] shrink-0 items-center justify-center">
                                     <Settings
-                                        className="h-5 w-5 group-hover:rotate-180"
-                                        style={{
-                                            transitionProperty: 'rotate, transform',
-                                            transitionDuration: '300ms',
-                                            transitionTimingFunction: 'ease-in-out'
-                                        }}
+                                        className="h-5 w-5 group-hover:rotate-180 btn-expand-pill-icon"
                                     />
                                 </div>
                                 <span
-                                    className="ml-1 whitespace-nowrap opacity-0 group-hover:opacity-100 font-bold text-xs uppercase tracking-wider"
-                                    style={{
-                                        transitionProperty: 'opacity',
-                                        transitionDuration: '500ms',
-                                        transitionDelay: '150ms',
-                                        transitionTimingFunction: 'ease-in-out'
-                                    }}
+                                    className="ml-1 whitespace-nowrap opacity-0 group-hover:opacity-100 font-bold text-xs uppercase tracking-wider btn-expand-pill-label"
                                 >
                                     Attendance Management
                                 </span>
@@ -190,7 +173,7 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                     {!isClockedIn ? (
                         <Button
                             onClick={handleClockIn}
-                            disabled={isButtonDisabled}
+                            disabled={processing}
                             size="lg"
                             className="w-full h-14 rounded-full text-base font-bold tracking-wide"
                         >
@@ -200,7 +183,7 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                     ) : !isClockedOut ? (
                         <Button
                             onClick={() => setShowConfirmModal(true)}
-                            disabled={isButtonDisabled}
+                            disabled={processing}
                             variant="warning"
                             size="lg"
                             className="w-full h-14 rounded-full text-base font-bold tracking-wide relative overflow-hidden"

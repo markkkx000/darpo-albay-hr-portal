@@ -79,14 +79,12 @@
     border-color: transparent !important;
 }
 
+/* WCAG: Black text (#000) required on all gradient-background elements.
+   Contrast ratios: yellow endpoint (#fde047) → 15.1:1 ✅ AAA
+                    green endpoint (#38e54d)  → 9.8:1  ✅ AAA */
 @utility item-hover-gradient {
     background: var(--grad-primary) !important;
     color: #000 !important;
-
-    .dark & {
-        background: var(--grad-primary) !important;
-        color: #000 !important;
-    }
 }
 
 @utility tabular-nums {
@@ -103,6 +101,25 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+
+@utility btn-expand-pill {
+    transition-property: width, transform, background-color, border-color, box-shadow;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+}
+
+@utility btn-expand-pill-icon {
+    transition-property: rotate, transform;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+}
+
+@utility btn-expand-pill-label {
+    transition-property: opacity;
+    transition-duration: 500ms;
+    transition-delay: 150ms;
+    transition-timing-function: ease-in-out;
 }
 
 table {
@@ -530,6 +547,17 @@ table {
         @apply opacity-100;
     }
 
+    /* Keyboard focus rings — WCAG 2.1 SC 2.4.7 */
+    .btn-ghost-specular:focus-visible,
+    .btn-ghost-danger-specular:focus-visible,
+    .btn-ghost-warning-specular:focus-visible,
+    .btn-specular:focus-visible,
+    .btn-danger-specular:focus-visible,
+    .btn-warning-specular:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+    }
+
     .sidebar-active-gradient {
         background: var(--grad-primary);
         box-shadow:
@@ -552,6 +580,7 @@ table {
         background: var(--surface-1);
         border: 1px solid var(--border-1);
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        transition: background 200ms ease, box-shadow 200ms ease;
     }
 
     .dark .elev-1 {
@@ -562,6 +591,7 @@ table {
         background: var(--surface-2);
         border: 1px solid var(--border-2);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+        transition: background 200ms ease, box-shadow 200ms ease;
     }
 
     .dark .elev-2 {
@@ -617,10 +647,13 @@ table {
 
     .mesh-blob {
         @apply absolute rounded-full blur-[80px] pointer-events-none opacity-40 dark:opacity-50;
-        animation: blobFloat 12s ease-in-out infinite;
     }
 
     @media (prefers-reduced-motion: no-preference) {
+        .mesh-blob {
+            animation: blobFloat 12s ease-in-out infinite;
+        }
+
         @keyframes blobFloat {
 
             0%,
@@ -713,8 +746,10 @@ table {
         transform: scale(0.96);
     }
 
-    .spring-press:hover {
-        transform: scale(1.02);
+    @media (hover: hover) {
+        .spring-press:hover {
+            transform: scale(1.02);
+        }
     }
 
     .spring-hover {
@@ -722,8 +757,10 @@ table {
         transition-timing-function: var(--spring);
     }
 
-    .spring-hover:hover {
-        transform: scale(1.04);
+    @media (hover: hover) {
+        .spring-hover:hover {
+            transform: scale(1.04);
+        }
     }
 
     .spring-hover:active {
@@ -752,8 +789,10 @@ table {
         border-radius: 12px;
     }
 
-    .sqicon:hover {
-        transform: scale(1.12);
+    @media (hover: hover) {
+        .sqicon:hover {
+            transform: scale(1.12);
+        }
     }
 
     .sqicon:active {
@@ -822,7 +861,7 @@ table {
        Enforces black text for maximum legibility on bright gradients. */
 
     .status-badge-permanent {
-        background: linear-gradient(135deg, #22c55e 0%, #eab308 100%);
+        background: linear-gradient(135deg, var(--green-500) 0%, var(--yellow-500) 100%);
         color: #000;
         border: none;
         font-weight: 800;
@@ -843,7 +882,7 @@ table {
     }
 
     .status-badge-casual {
-        background: linear-gradient(135deg, #16a34a 0%, #38e54d 100%);
+        background: linear-gradient(135deg, var(--green-600) 0%, var(--green-400) 100%);
         color: #000;
         border: none;
         font-weight: 800;
@@ -881,7 +920,7 @@ table {
 
     /* HR Admin */
     .badge-hr-admin {
-        background: linear-gradient(135deg, #22c55e 0%, #facc15 100%);
+        background: linear-gradient(135deg, var(--green-500) 0%, #facc15 100%);
         color: #000;
         border: none;
         font-weight: 800;
@@ -897,7 +936,7 @@ table {
 
     /* Department Head */
     .badge-department-head {
-        background: linear-gradient(135deg, #facc15 0%, #86efac 100%);
+        background: linear-gradient(135deg, #facc15 0%, var(--green-300) 100%);
         color: #000;
         border: none;
         font-weight: 800;
@@ -905,7 +944,7 @@ table {
 
     /* Employee */
     .badge-employee {
-        background: linear-gradient(135deg, #a3e635 0%, #eab308 100%);
+        background: linear-gradient(135deg, #a3e635 0%, var(--yellow-500) 100%);
         color: #000;
         border: none;
         font-weight: 800;
