@@ -257,6 +257,7 @@ function SidebarTrigger({
     <Button
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
+      variant="ghost"
       size="icon"
       className={cn("btn-ghost-specular h-8 w-8 border-none shadow-none hover:scale-110 transition-transform", className)}
       onClick={(event) => {

@@ -63,6 +63,7 @@ export default function NotificationBell() {
             <DropdownMenuTrigger asChild>
                 <div className="relative inline-flex group spring-press cursor-pointer">
                     <Button
+                        variant="ghost"
                         size="icon"
                         className="btn-ghost-specular relative h-9 w-9 border-none shadow-none pointer-events-none"
                         aria-label="Notifications"

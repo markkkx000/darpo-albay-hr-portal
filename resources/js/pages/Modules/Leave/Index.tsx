@@ -194,6 +194,7 @@ export default function LeaveDashboard({
                         canEncode && (
                             <Button
                                 asChild
+                                variant="ghost"
                                 className="btn-ghost-specular border-none px-6"
                             >
                                 <Link href={LeaveRoutes.create().url}>

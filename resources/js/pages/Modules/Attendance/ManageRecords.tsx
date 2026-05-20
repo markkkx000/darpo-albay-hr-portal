@@ -383,6 +383,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                                         </Button>
                                                                         {canDelete && (
                                                                             <Button
+                                                                                variant="ghost-destructive"
                                                                                 size="sm"
                                                                                 onClick={() =>
                                                                                     confirmDelete(
@@ -455,6 +456,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                             Cancel
                         </Button>
                         <Button
+                            variant="ghost-destructive"
                             onClick={handleDelete}
                             className="btn-ghost-danger-specular border-none px-6"
                             disabled={isProcessing}

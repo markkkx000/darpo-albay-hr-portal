@@ -338,11 +338,11 @@ export function EmployeeTable({
                     </DialogHeader>
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setEmployeeToDelete(null)} className="btn-ghost-specular px-6 border-none">Cancel</Button>
-                        <Button onClick={handleDelete} className="btn-ghost-danger-specular px-6 border-none">Archive Employee</Button>
+                        <Button variant="ghost-destructive" onClick={handleDelete} className="btn-ghost-danger-specular px-6 border-none">Archive Employee</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-
+ 
             {/* Restore Confirmation Dialog */}
             <Dialog open={!!employeeToRestore} onOpenChange={(open) => !open && setEmployeeToRestore(null)}>
                 <DialogContent>
@@ -354,11 +354,11 @@ export function EmployeeTable({
                     </DialogHeader>
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setEmployeeToRestore(null)} className="btn-ghost-specular px-6 border-none">Cancel</Button>
-                        <Button onClick={handleRestore} className="btn-ghost-specular px-6 border-none">Restore Employee</Button>
+                        <Button variant="ghost" onClick={handleRestore} className="btn-ghost-specular px-6 border-none">Restore Employee</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-
+ 
             {/* Reset Password Confirmation Dialog */}
             <Dialog open={!!employeeToReset} onOpenChange={(open) => !open && setEmployeeToReset(null)}>
                 <DialogContent>
@@ -371,7 +371,7 @@ export function EmployeeTable({
                     </DialogHeader>
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setEmployeeToReset(null)} disabled={isResetting} className="btn-ghost-specular px-6 border-none">Cancel</Button>
-                        <Button onClick={handleResetPassword} disabled={isResetting} className="btn-ghost-specular px-6 border-none gap-2 text-amber-600 hover:text-black group">
+                        <Button variant="ghost" onClick={handleResetPassword} disabled={isResetting} className="btn-ghost-specular px-6 border-none gap-2 text-amber-600 hover:text-black group">
                             {isResetting ? <RefreshCcw className="h-4 w-4 animate-spin" /> : <Key className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />}
                             Reset Password
                         </Button>

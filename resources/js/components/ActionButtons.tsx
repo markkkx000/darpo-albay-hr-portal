@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
-import type { ComponentType } from 'react';
 import { Edit, Eye, Trash2, RotateCcw } from 'lucide-react';
+import type { ComponentType } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -12,7 +12,7 @@ interface ActionButtonProps {
 
 interface GenericActionButtonProps extends ActionButtonProps {
     icon: ComponentType<{ className?: string }>;
-    variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+    variant?: React.ComponentProps<typeof Button>['variant'];
     className?: string;
     disabled?: boolean;
 }
@@ -45,7 +45,7 @@ export const EditActionButton = (props: ActionButtonProps) => (
 );
 
 export const DeleteActionButton = (props: ActionButtonProps) => (
-    <ActionButton {...props} icon={Trash2} className="btn-ghost-danger-specular border-none rounded-full hover:scale-110 transition-transform" />
+    <ActionButton {...props} icon={Trash2} variant="ghost-destructive" className="btn-ghost-danger-specular border-none rounded-full hover:scale-110 transition-transform" />
 );
 
 export const RestoreActionButton = (props: ActionButtonProps) => (

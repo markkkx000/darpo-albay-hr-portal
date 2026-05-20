@@ -20,6 +20,7 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:item-hover-gradient hover:text-black",
         ghost: "hover:item-hover-gradient hover:text-black",
+        "ghost-destructive": "hover:bg-destructive hover:text-destructive-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         warning:
           "btn-warning-specular",

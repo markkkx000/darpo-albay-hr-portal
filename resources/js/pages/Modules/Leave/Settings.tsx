@@ -399,6 +399,7 @@ export default function LeaveSettings({
                                             </span>
                                         </div>
                                         <Button
+                                            variant="ghost-destructive"
                                             className="btn-ghost-danger-specular border-none px-4"
                                             size="sm"
                                             onClick={() =>
@@ -582,7 +583,7 @@ export default function LeaveSettings({
                                                 </div>
                                             </div>
                                             <Button
-                                                variant="ghost"
+                                                variant={t.is_active ? "ghost-destructive" : "ghost"}
                                                 size="sm"
                                                 onClick={() =>
                                                     handleToggleType(t)
@@ -650,7 +651,7 @@ export default function LeaveSettings({
                                                 {s.name}
                                             </span>
                                             <Button
-                                                variant="ghost"
+                                                variant={s.is_active ? "ghost-destructive" : "ghost"}
                                                 size="sm"
                                                 onClick={() =>
                                                     handleToggleStatus(s)

@@ -80,8 +80,8 @@
 }
 
 /* WCAG: Black text (#000) required on all gradient-background elements.
-   Contrast ratios: yellow endpoint (#fde047) → 15.1:1 ✅ AAA
-                    green endpoint (#38e54d)  → 9.8:1  ✅ AAA */
+   Contrast ratios: yellow endpoint (#fde047) → 15.1:1 ✓ AAA
+                    green endpoint (#38e54d)  → 9.8:1  ✓ AAA */
 @utility item-hover-gradient {
     background: var(--grad-primary) !important;
     color: #000 !important;
@@ -348,16 +348,23 @@ table {
     /* Ghost shared base surface */
     .btn-ghost-specular,
     .btn-ghost-danger-specular,
-    .btn-ghost-warning-specular {
-        background: var(--surface-1);
+    .btn-ghost-warning-specular,
+    .btn-ghost-specular.btn-specular,
+    .btn-ghost-danger-specular.btn-danger-specular,
+    .btn-ghost-warning-specular.btn-warning-specular {
+        background: var(--surface-3);
         color: var(--foreground);
         border: 1px solid var(--border-2);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        font-weight: 500;
     }
 
     .dark .btn-ghost-specular,
     .dark .btn-ghost-danger-specular,
-    .dark .btn-ghost-warning-specular {
+    .dark .btn-ghost-warning-specular,
+    .dark .btn-ghost-specular.btn-specular,
+    .dark .btn-ghost-danger-specular.btn-danger-specular,
+    .dark .btn-ghost-warning-specular.btn-warning-specular {
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
 

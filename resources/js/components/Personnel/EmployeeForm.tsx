@@ -86,6 +86,7 @@ export function EmployeeForm({
 
         if (data.profile_picture) {
             const path = data.profile_picture;
+
             return path.startsWith('/storage/') ? path : path.startsWith('storage/') ? '/' + path : `/storage/${path}`;
         }
 
@@ -434,7 +435,7 @@ export function EmployeeForm({
                                             {data.positions.length > 1 && (
                                                 <Button
                                                     type="button"
-                                                    variant="outline"
+                                                    variant="ghost-destructive"
                                                     size="icon"
                                                     className="btn-ghost-danger-specular border-border/20 h-9 w-9 p-0 rounded-full hover:scale-110 transition-all duration-300 group"
                                                     onClick={() => handleRemovePosition(index)}

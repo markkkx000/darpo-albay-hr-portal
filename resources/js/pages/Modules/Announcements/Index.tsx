@@ -29,7 +29,7 @@ export default function Index({ announcements }: Props) {
                     description="Stay updated with the latest news and information from the HR and management."
                     actions={
                         canManage && (
-                            <Button asChild className="btn-ghost-specular border-none px-6">
+                            <Button asChild variant="ghost" className="btn-ghost-specular border-none px-6">
                                 <Link href={manage().url}>
                                     <Settings className="mr-2 h-4 w-4" />
                                     Manage Announcements

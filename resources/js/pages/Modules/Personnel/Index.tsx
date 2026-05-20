@@ -95,7 +95,7 @@ export default function Index({ employees, filters, divisions = [], appointmentS
                     description="Manage and view all employee records across the agency."
                     actions={
                         <>
-                            <Button asChild className="btn-ghost-specular gap-2 border-none">
+                            <Button asChild variant="ghost" className="btn-ghost-specular gap-2 border-none">
                                 <Link href={archivedRoute().url}>
                                     <Archive className="h-4 w-4" />
                                     View Archived
@@ -103,12 +103,12 @@ export default function Index({ employees, filters, divisions = [], appointmentS
                             </Button>
                             {canCreate && (
                                 <>
-                                    <Button asChild className="btn-ghost-specular border-none">
+                                    <Button asChild variant="ghost" className="btn-ghost-specular border-none">
                                         <Link href={PersonnelRoutes.organization.index().url}>
                                             Manage Organization
                                         </Link>
                                     </Button>
-                                    <Button asChild className="btn-ghost-specular px-6 border-none">
+                                    <Button asChild variant="ghost" className="btn-ghost-specular px-6 border-none">
                                         <Link href={createRoute().url}>
                                             <Plus className="h-4 w-4" />
                                             Add Employee

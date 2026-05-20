@@ -220,7 +220,7 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                         </DialogHeader>
                         <DialogFooter>
                             <Button variant="ghost" onClick={() => setShowConfirmModal(false)} className="btn-ghost-specular px-6 border-none">Cancel</Button>
-                            <Button onClick={handleClockOut} disabled={processing} className="btn-ghost-danger-specular px-6 border-none">
+                            <Button variant="ghost-destructive" onClick={handleClockOut} disabled={processing} className="btn-ghost-danger-specular px-6 border-none">
                                 {processing ? 'Processing...' : 'Confirm Clock Out'}
                             </Button>
                         </DialogFooter>
