@@ -4,6 +4,7 @@ import { Plus, Power, PowerOff } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { DatePicker } from '@/components/date-picker';
+import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ColorPicker } from '@/components/ui/color-picker';
@@ -24,16 +25,61 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { store as holidays_store, destroy as holidays_destroy } from '@/routes/leave/holidays/index';
+import {
+    store as holidays_store,
+    destroy as holidays_destroy,
+} from '@/routes/leave/holidays/index';
 import { settings, index as leave_index } from '@/routes/leave/index';
-import { store as statuses_store, update as statuses_update, destroy as statuses_destroy } from '@/routes/leave/statuses/index';
-import { store as types_store, update as types_update, destroy as types_destroy } from '@/routes/leave/types/index';
+import {
+    store as statuses_store,
+    update as statuses_update,
+    destroy as statuses_destroy,
+} from '@/routes/leave/statuses/index';
+import {
+    store as types_store,
+    update as types_update,
+    destroy as types_destroy,
+} from '@/routes/leave/types/index';
 import LeaveNavigation from './Components/LeaveNavigation';
 
+interface Holiday {
+    id: number;
+    name: string;
+    date: string;
+    [key: string]: any;
+}
 
-export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, currentYear }: any) {
+interface LeaveType {
+    id: number;
+    name: string;
+    abbreviation: string | null;
+    description: string | null;
+    color_code?: string;
+    is_cumulative: boolean | null;
+    is_active: boolean;
+}
+
+interface LeaveStatus {
+    id: number;
+    name: string;
+    is_active: boolean;
+}
+
+interface Props {
+    holidays: Holiday[];
+    leaveTypes: LeaveType[];
+    leaveStatuses: LeaveStatus[];
+    currentYear: number;
+}
+
+export default function LeaveSettings({
+    holidays,
+    leaveTypes,
+    leaveStatuses,
+    currentYear,
+}: Props) {
     const [year, setYear] = useState(currentYear);
     const [holidayName, setHolidayName] = useState('');
     const [holidayDate, setHolidayDate] = useState('');
@@ -55,20 +101,24 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
 
     const handleAddHoliday = (e: React.FormEvent) => {
         e.preventDefault();
-        router.post(holidays_store().url, {
-            name: holidayName,
-            date: holidayDate,
-        }, {
-            preserveScroll: true,
-            onStart: () => setProcessing(true),
-            onFinish: () => setProcessing(false),
-            onSuccess: () => {
-                toast.success('Holiday added successfully');
-                setHolidayName('');
-                setHolidayDate('');
-                router.clearHistory();
-            }
-        });
+        router.post(
+            holidays_store().url,
+            {
+                name: holidayName,
+                date: holidayDate,
+            },
+            {
+                preserveScroll: true,
+                onStart: () => setProcessing(true),
+                onFinish: () => setProcessing(false),
+                onSuccess: () => {
+                    toast.success('Holiday added successfully');
+                    setHolidayName('');
+                    setHolidayDate('');
+                    router.clearHistory();
+                },
+            },
+        );
     };
 
     const handleDeleteHoliday = (id: number) => {
@@ -85,36 +135,45 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                     onSuccess: () => {
                         toast.success('Holiday deleted successfully');
                         router.clearHistory();
-                    }
+                    },
                 });
-            }
+            },
         });
         setConfirmOpen(true);
     };
 
     const handleAddType = (e: React.FormEvent) => {
         e.preventDefault();
-        router.post(types_store().url, {
-            name: typeName,
-            abbreviation: typeAbbreviation,
-            is_cumulative: typeIsCumulative === 'true' ? true : (typeIsCumulative === 'false' ? false : null),
-            description: typeDescription,
-            color_code: typeColor,
-            is_active: true,
-        }, {
-            preserveScroll: true,
-            onStart: () => setProcessing(true),
-            onFinish: () => setProcessing(false),
-            onSuccess: () => {
-                toast.success('Leave type added successfully');
-                setTypeName('');
-                setTypeAbbreviation('');
-                setTypeIsCumulative('null');
-                setTypeDescription('');
-                setTypeColor('#3b82f6');
-                router.clearHistory();
-            }
-        });
+        router.post(
+            types_store().url,
+            {
+                name: typeName,
+                abbreviation: typeAbbreviation,
+                is_cumulative:
+                    typeIsCumulative === 'true'
+                        ? true
+                        : typeIsCumulative === 'false'
+                          ? false
+                          : null,
+                description: typeDescription,
+                color_code: typeColor,
+                is_active: true,
+            },
+            {
+                preserveScroll: true,
+                onStart: () => setProcessing(true),
+                onFinish: () => setProcessing(false),
+                onSuccess: () => {
+                    toast.success('Leave type added successfully');
+                    setTypeName('');
+                    setTypeAbbreviation('');
+                    setTypeIsCumulative('null');
+                    setTypeDescription('');
+                    setTypeColor('#3b82f6');
+                    router.clearHistory();
+                },
+            },
+        );
     };
 
     const handleToggleType = (type: any) => {
@@ -134,39 +193,49 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                         onSuccess: () => {
                             toast.success(`Leave type ${action}d successfully`);
                             router.clearHistory();
-                        }
+                        },
                     });
                 } else {
-                    router.put(types_update(type.id).url, { ...type, is_active: true }, {
-                        preserveScroll: true,
-                        onStart: () => setProcessing(true),
-                        onFinish: () => setProcessing(false),
-                        onSuccess: () => {
-                            toast.success(`Leave type ${action}d successfully`);
-                            router.clearHistory();
-                        }
-                    });
+                    router.put(
+                        types_update(type.id).url,
+                        { ...type, is_active: true },
+                        {
+                            preserveScroll: true,
+                            onStart: () => setProcessing(true),
+                            onFinish: () => setProcessing(false),
+                            onSuccess: () => {
+                                toast.success(
+                                    `Leave type ${action}d successfully`,
+                                );
+                                router.clearHistory();
+                            },
+                        },
+                    );
                 }
-            }
+            },
         });
         setConfirmOpen(true);
     };
 
     const handleAddStatus = (e: React.FormEvent) => {
         e.preventDefault();
-        router.post(statuses_store().url, {
-            name: statusName,
-            is_active: true,
-        }, {
-            preserveScroll: true,
-            onStart: () => setProcessing(true),
-            onFinish: () => setProcessing(false),
-            onSuccess: () => {
-                toast.success('Leave status added successfully');
-                setStatusName('');
-                router.clearHistory();
-            }
-        });
+        router.post(
+            statuses_store().url,
+            {
+                name: statusName,
+                is_active: true,
+            },
+            {
+                preserveScroll: true,
+                onStart: () => setProcessing(true),
+                onFinish: () => setProcessing(false),
+                onSuccess: () => {
+                    toast.success('Leave status added successfully');
+                    setStatusName('');
+                    router.clearHistory();
+                },
+            },
+        );
     };
 
     const handleToggleStatus = (status: any) => {
@@ -184,22 +253,30 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                         onStart: () => setProcessing(true),
                         onFinish: () => setProcessing(false),
                         onSuccess: () => {
-                            toast.success(`Leave status ${action}d successfully`);
+                            toast.success(
+                                `Leave status ${action}d successfully`,
+                            );
                             router.clearHistory();
-                        }
+                        },
                     });
                 } else {
-                    router.put(statuses_update(status.id).url, { ...status, is_active: true }, {
-                        preserveScroll: true,
-                        onStart: () => setProcessing(true),
-                        onFinish: () => setProcessing(false),
-                        onSuccess: () => {
-                            toast.success(`Leave status ${action}d successfully`);
-                            router.clearHistory();
-                        }
-                    });
+                    router.put(
+                        statuses_update(status.id).url,
+                        { ...status, is_active: true },
+                        {
+                            preserveScroll: true,
+                            onStart: () => setProcessing(true),
+                            onFinish: () => setProcessing(false),
+                            onSuccess: () => {
+                                toast.success(
+                                    `Leave status ${action}d successfully`,
+                                );
+                                router.clearHistory();
+                            },
+                        },
+                    );
                 }
-            }
+            },
         });
         setConfirmOpen(true);
     };
@@ -208,10 +285,11 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
         <>
             <Head title="Leave Settings" />
             <div className="w-full p-4 md:p-6">
-                <div className="mb-6">
-                    <h1 className="t-title">Leave Settings</h1>
-                    <p className="text-muted-foreground">Manage holidays, leave types, and leave statuses.</p>
-                </div>
+                <Heading
+                    as="h1"
+                    title="Leave Settings"
+                    description="Manage holidays, leave types, and leave statuses."
+                />
 
                 <LeaveNavigation />
 
@@ -219,57 +297,124 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                     {/* Holidays */}
                     <div className="matte-card elev-2">
                         <div className="p-6">
-                            <h2 className="t-headline mb-4">Holidays ({year})</h2>
+                            <h2 className="t-headline mb-4">
+                                Holidays ({year})
+                            </h2>
 
-                            <div className="mb-4 matte-card elev-1 border border-border-2 p-4 rounded-xl">
+                            <div className="matte-card elev-1 mb-4 rounded-xl border border-border-2 p-4">
                                 <p className="text-sm text-muted-foreground">
-                                    <strong className="text-foreground">Official Reference:</strong> Please verify dates with the
-                                    <a href="https://www.officialgazette.gov.ph/nationwide-holidays/" target="_blank" rel="noreferrer" className="text-primary hover:underline ml-1">
-                                        Official List of Regular Holidays and Special Non-Working Days
-                                    </a>.
+                                    <strong className="text-foreground">
+                                        Official Reference:
+                                    </strong>{' '}
+                                    Please verify dates with the
+                                    <a
+                                        href="https://www.officialgazette.gov.ph/nationwide-holidays/"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="ml-1 text-primary hover:underline"
+                                    >
+                                        Official List of Regular Holidays and
+                                        Special Non-Working Days
+                                    </a>
+                                    .
                                 </p>
                             </div>
 
-                            <div className="flex space-x-2 mb-6">
+                            <div className="mb-6 flex space-x-2">
                                 <Input
                                     type="number"
                                     value={year}
-                                    onChange={(e) => setYear(Number(e.target.value))}
+                                    onChange={(e) =>
+                                        setYear(Number(e.target.value))
+                                    }
                                     className="w-32"
                                 />
-                                <Button variant="ghost" className="btn-ghost-specular border-none" onClick={() => router.get(settings().url, { year })}>
+                                <Button
+                                    variant="ghost"
+                                    className="btn-ghost-specular border-none"
+                                    onClick={() =>
+                                        router.get(settings().url, { year })
+                                    }
+                                >
                                     Filter Year
                                 </Button>
                             </div>
 
-                            <form onSubmit={handleAddHoliday} className="flex space-x-2 mb-6 items-end">
-                                <div className="space-y-1 flex-1">
+                            <form
+                                onSubmit={handleAddHoliday}
+                                className="mb-6 flex items-end space-x-2"
+                            >
+                                <div className="flex-1 space-y-1">
                                     <Label>Date</Label>
-                                    <DatePicker value={holidayDate} onChange={val => setHolidayDate(val || '')} />
+                                    <DatePicker
+                                        value={holidayDate}
+                                        onChange={(val) =>
+                                            setHolidayDate(val || '')
+                                        }
+                                    />
                                 </div>
-                                <div className="space-y-1 flex-1">
+                                <div className="flex-1 space-y-1">
                                     <Label>Name</Label>
-                                    <Input type="text" value={holidayName} onChange={e => setHolidayName(e.target.value)} required />
+                                    <Input
+                                        type="text"
+                                        value={holidayName}
+                                        onChange={(e) =>
+                                            setHolidayName(e.target.value)
+                                        }
+                                        required
+                                    />
                                 </div>
-                                <Button type="submit" className="btn-specular px-5" disabled={processing}>Add</Button>
+                                <Button
+                                    type="submit"
+                                    className="btn-specular px-5"
+                                    disabled={processing}
+                                >
+                                    Add
+                                </Button>
                             </form>
 
                             <div className="space-y-2">
                                 {holidays.map((h: any) => (
-                                    <div key={h.id} className="flex justify-between items-center p-3 matte-card elev-1">
+                                    <div
+                                        key={h.id}
+                                        className="matte-card elev-1 flex items-center justify-between p-3"
+                                    >
                                         <div>
-                                            <span className="font-medium block">{h.name}</span>
+                                            <span className="block font-medium">
+                                                {h.name}
+                                            </span>
                                             <span className="text-sm text-muted-foreground">
-                                                {h.date ? format(new Date(h.date.includes('T') ? h.date : h.date + 'T00:00:00'), 'MMMM d, yyyy') : ''}
+                                                {h.date
+                                                    ? format(
+                                                          new Date(
+                                                              h.date.includes(
+                                                                  'T',
+                                                              )
+                                                                  ? h.date
+                                                                  : h.date +
+                                                                        'T00:00:00',
+                                                          ),
+                                                          'MMMM d, yyyy',
+                                                      )
+                                                    : ''}
                                             </span>
                                         </div>
-                                        <Button className="btn-ghost-danger-specular border-none px-4" size="sm" onClick={() => handleDeleteHoliday(h.id)} disabled={processing}>
+                                        <Button
+                                            className="btn-ghost-danger-specular border-none px-4"
+                                            size="sm"
+                                            onClick={() =>
+                                                handleDeleteHoliday(h.id)
+                                            }
+                                            disabled={processing}
+                                        >
                                             Delete
                                         </Button>
                                     </div>
                                 ))}
                                 {holidays.length === 0 && (
-                                    <p className="text-sm text-muted-foreground">No holidays found for this year.</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        No holidays found for this year.
+                                    </p>
                                 )}
                             </div>
                         </div>
@@ -280,33 +425,70 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
                             <div className="p-6">
                                 <h2 className="t-headline mb-4">Leave Types</h2>
 
-                                <form onSubmit={handleAddType} className="space-y-4 mb-6 p-4 matte-card elev-1 bg-muted/30">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <form
+                                    onSubmit={handleAddType}
+                                    className="matte-card elev-1 mb-6 space-y-4 bg-muted/30 p-4"
+                                >
+                                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                         <div className="space-y-1">
                                             <Label>Name</Label>
-                                            <Input value={typeName} onChange={e => setTypeName(e.target.value)} placeholder="e.g. Vacation Leave" required />
+                                            <Input
+                                                value={typeName}
+                                                onChange={(e) =>
+                                                    setTypeName(e.target.value)
+                                                }
+                                                placeholder="e.g. Vacation Leave"
+                                                required
+                                            />
                                         </div>
                                         <div className="space-y-1">
                                             <Label>Abbreviation</Label>
-                                            <Input value={typeAbbreviation} onChange={e => setTypeAbbreviation(e.target.value)} placeholder="e.g. VL" />
+                                            <Input
+                                                value={typeAbbreviation}
+                                                onChange={(e) =>
+                                                    setTypeAbbreviation(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                placeholder="e.g. VL"
+                                            />
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                         <div>
                                             <Label>Color</Label>
-                                            <ColorPicker value={typeColor} onChange={setTypeColor} />
+                                            <ColorPicker
+                                                value={typeColor}
+                                                onChange={setTypeColor}
+                                            />
                                         </div>
                                         <div>
-                                            <Label htmlFor="cumulative">Credit Behavior</Label>
-                                            <Select value={typeIsCumulative} onValueChange={setTypeIsCumulative}>
-                                                <SelectTrigger id="cumulative" className="bg-background">
+                                            <Label htmlFor="cumulative">
+                                                Credit Behavior
+                                            </Label>
+                                            <Select
+                                                value={typeIsCumulative}
+                                                onValueChange={
+                                                    setTypeIsCumulative
+                                                }
+                                            >
+                                                <SelectTrigger
+                                                    id="cumulative"
+                                                    className="bg-background"
+                                                >
                                                     <SelectValue placeholder="Select behavior" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="true">Cumulative</SelectItem>
-                                                    <SelectItem value="false">Non-Cumulative</SelectItem>
-                                                    <SelectItem value="null">N/A </SelectItem>
+                                                    <SelectItem value="true">
+                                                        Cumulative
+                                                    </SelectItem>
+                                                    <SelectItem value="false">
+                                                        Non-Cumulative
+                                                    </SelectItem>
+                                                    <SelectItem value="null">
+                                                        N/A{' '}
+                                                    </SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
@@ -314,37 +496,110 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
 
                                     <div className="space-y-1">
                                         <Label>Description (Optional)</Label>
-                                        <Input value={typeDescription} onChange={e => setTypeDescription(e.target.value)} placeholder="Short description..." />
+                                        <Input
+                                            value={typeDescription}
+                                            onChange={(e) =>
+                                                setTypeDescription(
+                                                    e.target.value,
+                                                )
+                                            }
+                                            placeholder="Short description..."
+                                        />
                                     </div>
-                                    <Button type="submit" className="btn-specular w-full" disabled={processing}>
-                                        <Plus className="mr-2 h-4 w-4" /> Add Leave Type
+                                    <Button
+                                        type="submit"
+                                        className="btn-specular w-full"
+                                        disabled={processing}
+                                    >
+                                        <Plus className="mr-2 h-4 w-4" /> Add
+                                        Leave Type
                                     </Button>
                                 </form>
 
                                 <div className="space-y-2">
                                     {leaveTypes.map((t: any) => (
-                                        <div key={t.id} className={cn("flex items-center justify-between p-3 matte-card elev-1", !t.is_active && "opacity-50 grayscale bg-muted")}>
+                                        <div
+                                            key={t.id}
+                                            className={cn(
+                                                'matte-card elev-1 flex items-center justify-between p-3',
+                                                !t.is_active &&
+                                                    'bg-muted opacity-50 grayscale',
+                                            )}
+                                        >
                                             <div className="flex items-center space-x-3">
-                                                <div className="w-4 h-4 rounded-full shrink-0" style={{ backgroundColor: t.color_code }}></div>
+                                                <div
+                                                    className="h-4 w-4 shrink-0 rounded-full"
+                                                    style={{
+                                                        backgroundColor:
+                                                            t.color_code,
+                                                    }}
+                                                ></div>
                                                 <div>
                                                     <div className="flex items-center gap-2">
-                                                        <span className="font-bold block">{t.name}</span>
-                                                        {t.abbreviation && <Badge variant="outline" className="text-[10px] font-mono px-1.5 py-0 h-4 bg-muted/50">{t.abbreviation}</Badge>}
-                                                        {t.is_cumulative === true && <Badge variant="secondary" className="text-[9px] uppercase tracking-tighter px-1 py-0 h-4 bg-primary/10 text-primary border-none">Cumulative</Badge>}
-                                                        {t.is_cumulative === false && <Badge variant="outline" className="text-[9px] uppercase tracking-tighter px-1 py-0 h-4 border-muted-foreground/30 text-muted-foreground">Non-Cumulative</Badge>}
-                                                        {t.is_cumulative === null && <Badge variant="outline" className="text-[9px] uppercase tracking-tighter px-1 py-0 h-4 text-muted-foreground/50 border-muted-foreground/20 border-dashed italic">N/A</Badge>}
+                                                        <span className="block font-bold">
+                                                            {t.name}
+                                                        </span>
+                                                        {t.abbreviation && (
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="h-4 bg-muted/50 px-1.5 py-0 font-mono text-[10px]"
+                                                            >
+                                                                {t.abbreviation}
+                                                            </Badge>
+                                                        )}
+                                                        {t.is_cumulative ===
+                                                            true && (
+                                                            <Badge
+                                                                variant="secondary"
+                                                                className="h-4 border-none bg-primary/10 px-1 py-0 text-[9px] tracking-tighter text-primary uppercase"
+                                                            >
+                                                                Cumulative
+                                                            </Badge>
+                                                        )}
+                                                        {t.is_cumulative ===
+                                                            false && (
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="h-4 border-muted-foreground/30 px-1 py-0 text-[9px] tracking-tighter text-muted-foreground uppercase"
+                                                            >
+                                                                Non-Cumulative
+                                                            </Badge>
+                                                        )}
+                                                        {t.is_cumulative ===
+                                                            null && (
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="h-4 border-dashed border-muted-foreground/20 px-1 py-0 text-[9px] tracking-tighter text-muted-foreground/50 uppercase italic"
+                                                            >
+                                                                N/A
+                                                            </Badge>
+                                                        )}
                                                     </div>
-                                                    {t.description && <span className="text-xs text-muted-foreground">{t.description}</span>}
+                                                    {t.description && (
+                                                        <span className="text-xs text-muted-foreground">
+                                                            {t.description}
+                                                        </span>
+                                                    )}
                                                 </div>
                                             </div>
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                onClick={() => handleToggleType(t)}
-                                                className={t.is_active ? 'btn-ghost-danger-specular border-none' : 'btn-ghost-specular border-none'}
+                                                onClick={() =>
+                                                    handleToggleType(t)
+                                                }
+                                                className={
+                                                    t.is_active
+                                                        ? 'btn-ghost-danger-specular border-none'
+                                                        : 'btn-ghost-specular border-none'
+                                                }
                                                 disabled={processing}
                                             >
-                                                {t.is_active ? <PowerOff className="h-4 w-4" /> : <Power className="h-4 w-4" />}
+                                                {t.is_active ? (
+                                                    <PowerOff className="h-4 w-4" />
+                                                ) : (
+                                                    <Power className="h-4 w-4" />
+                                                )}
                                             </Button>
                                         </div>
                                     ))}
@@ -354,30 +609,65 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
 
                         <div className="matte-card elev-2">
                             <div className="p-6">
-                                <h2 className="t-headline mb-4">Leave Statuses</h2>
+                                <h2 className="t-headline mb-4">
+                                    Leave Statuses
+                                </h2>
 
-                                <form onSubmit={handleAddStatus} className="flex space-x-2 mb-6 items-end">
-                                    <div className="space-y-1 flex-1">
+                                <form
+                                    onSubmit={handleAddStatus}
+                                    className="mb-6 flex items-end space-x-2"
+                                >
+                                    <div className="flex-1 space-y-1">
                                         <Label>Status Name</Label>
-                                        <Input value={statusName} onChange={e => setStatusName(e.target.value)} placeholder="e.g. Approved" required />
+                                        <Input
+                                            value={statusName}
+                                            onChange={(e) =>
+                                                setStatusName(e.target.value)
+                                            }
+                                            placeholder="e.g. Approved"
+                                            required
+                                        />
                                     </div>
-                                    <Button type="submit" className="btn-specular px-5" disabled={processing}>
+                                    <Button
+                                        type="submit"
+                                        className="btn-specular px-5"
+                                        disabled={processing}
+                                    >
                                         <Plus className="h-4 w-4" />
                                     </Button>
                                 </form>
 
                                 <div className="space-y-2">
                                     {leaveStatuses.map((s: any) => (
-                                        <div key={s.id} className={cn("flex items-center justify-between p-3 matte-card elev-1", !s.is_active && "opacity-50 grayscale bg-muted")}>
-                                            <span className="font-medium">{s.name}</span>
+                                        <div
+                                            key={s.id}
+                                            className={cn(
+                                                'matte-card elev-1 flex items-center justify-between p-3',
+                                                !s.is_active &&
+                                                    'bg-muted opacity-50 grayscale',
+                                            )}
+                                        >
+                                            <span className="font-medium">
+                                                {s.name}
+                                            </span>
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                onClick={() => handleToggleStatus(s)}
-                                                className={s.is_active ? 'btn-ghost-danger-specular border-none' : 'btn-ghost-specular border-none'}
+                                                onClick={() =>
+                                                    handleToggleStatus(s)
+                                                }
+                                                className={
+                                                    s.is_active
+                                                        ? 'btn-ghost-danger-specular border-none'
+                                                        : 'btn-ghost-specular border-none'
+                                                }
                                                 disabled={processing}
                                             >
-                                                {s.is_active ? <PowerOff className="h-4 w-4" /> : <Power className="h-4 w-4" />}
+                                                {s.is_active ? (
+                                                    <PowerOff className="h-4 w-4" />
+                                                ) : (
+                                                    <Power className="h-4 w-4" />
+                                                )}
                                             </Button>
                                         </div>
                                     ))}
@@ -389,27 +679,30 @@ export default function LeaveSettings({ holidays, leaveTypes, leaveStatuses, cur
             </div>
 
             <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-                <DialogContent className="matte-card border border-border-2 rounded-2xl max-w-md p-6 !fixed">
+                <DialogContent className="matte-card !fixed max-w-md rounded-2xl border border-border-2 p-6">
                     <DialogHeader>
                         <DialogTitle className="t-headline">
                             {confirmConfig?.title}
                         </DialogTitle>
-                        <DialogDescription className="text-muted-foreground text-sm">
+                        <DialogDescription className="text-sm text-muted-foreground">
                             {confirmConfig?.description}
                         </DialogDescription>
                     </DialogHeader>
-                    <DialogFooter className="flex justify-end gap-2 mt-4">
+                    <DialogFooter className="mt-4 flex justify-end gap-2">
                         <DialogClose asChild>
-                            <Button variant="ghost" className="btn-ghost-specular border-none">
+                            <Button
+                                variant="ghost"
+                                className="btn-ghost-specular border-none"
+                            >
                                 Cancel
                             </Button>
                         </DialogClose>
                         <Button
                             className={cn(
-                                "border-none px-5",
-                                confirmConfig?.isDestructive 
-                                    ? "btn-danger-specular" 
-                                    : "btn-specular"
+                                'border-none px-5',
+                                confirmConfig?.isDestructive
+                                    ? 'btn-danger-specular'
+                                    : 'btn-specular',
                             )}
                             onClick={() => {
                                 confirmConfig?.onConfirm();
