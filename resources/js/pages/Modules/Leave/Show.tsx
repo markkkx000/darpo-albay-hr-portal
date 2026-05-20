@@ -30,7 +30,7 @@ export default function LeaveShow({ leaveRequest }: any) {
             <div className="container mx-auto py-6 max-w-4xl px-4 lg:px-0">
                 <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h1 className="t-display-green !text-4xl lg:!text-5xl">Leave Details</h1>
+                        <h1 className="t-display !text-4xl lg:!text-5xl">Leave Details</h1>
                         <p className="text-muted-foreground mt-1">Detailed view of the leave request.</p>
                     </div>
                     <Button variant="outline" asChild className="btn-ghost-specular border-none">
