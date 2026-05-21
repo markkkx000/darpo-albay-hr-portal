@@ -35,8 +35,10 @@ interface AttendanceRecord {
     id: number;
     user_id: number;
     date: string;
-    clock_in: string;
-    clock_out: string | null;
+    am_clock_in: string | null;
+    am_clock_out: string | null;
+    pm_clock_in: string | null;
+    pm_clock_out: string | null;
     user?: User;
 }
 
@@ -76,8 +78,10 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
     const { data, setData, post, put, processing, errors, reset, clearErrors, transform } = useForm({
         user_id: record?.user_id?.toString() || '',
         date: record?.date || new Date().toISOString().split('T')[0],
-        clock_in: record?.clock_in ? extractTime(record.clock_in) : '08:00:00',
-        clock_out: record?.clock_out ? extractTime(record.clock_out) : '',
+        am_clock_in: record?.am_clock_in ? extractTime(record.am_clock_in) : '',
+        am_clock_out: record?.am_clock_out ? extractTime(record.am_clock_out) : '',
+        pm_clock_in: record?.pm_clock_in ? extractTime(record.pm_clock_in) : '',
+        pm_clock_out: record?.pm_clock_out ? extractTime(record.pm_clock_out) : '',
     });
 
     const filteredEmployees = useMemo(() => {
@@ -118,15 +122,19 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
                 setData({
                     user_id: record.user_id.toString(),
                     date: record.date,
-                    clock_in: extractTime(record.clock_in),
-                    clock_out: record.clock_out ? extractTime(record.clock_out) : '',
+                    am_clock_in: record.am_clock_in ? extractTime(record.am_clock_in) : '',
+                    am_clock_out: record.am_clock_out ? extractTime(record.am_clock_out) : '',
+                    pm_clock_in: record.pm_clock_in ? extractTime(record.pm_clock_in) : '',
+                    pm_clock_out: record.pm_clock_out ? extractTime(record.pm_clock_out) : '',
                 });
             } else {
                 setData({
                     user_id: '',
                     date: new Date().toISOString().split('T')[0],
-                    clock_in: '08:00:00',
-                    clock_out: '',
+                    am_clock_in: '',
+                    am_clock_out: '',
+                    pm_clock_in: '',
+                    pm_clock_out: '',
                 });
             }
 
@@ -137,8 +145,10 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
     // Transform date and time into the expected backend format before submission
     transform((data) => ({
         ...data,
-        clock_in: `${data.date} ${data.clock_in}`,
-        clock_out: data.clock_out ? `${data.date} ${data.clock_out}` : null,
+        am_clock_in: data.am_clock_in ? `${data.date} ${data.am_clock_in}` : null,
+        am_clock_out: data.am_clock_out ? `${data.date} ${data.am_clock_out}` : null,
+        pm_clock_in: data.pm_clock_in ? `${data.date} ${data.pm_clock_in}` : null,
+        pm_clock_out: data.pm_clock_out ? `${data.date} ${data.pm_clock_out}` : null,
     }));
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -263,27 +273,53 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="clock_in">Clock In Time</Label>
+                            <Label htmlFor="am_clock_in">AM Clock In</Label>
                             <Input
-                                id="clock_in"
+                                id="am_clock_in"
                                 type="time"
                                 step="1"
-                                value={data.clock_in}
-                                onChange={(e) => setData('clock_in', e.target.value)}
+                                value={data.am_clock_in}
+                                onChange={(e) => setData('am_clock_in', e.target.value)}
                             />
-                            {errors.clock_in && <p className="text-xs text-red-500">{errors.clock_in}</p>}
+                            {errors.am_clock_in && <p className="text-xs text-red-500">{errors.am_clock_in}</p>}
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="clock_out">Clock Out Time</Label>
+                            <Label htmlFor="am_clock_out">AM Clock Out</Label>
                             <Input
-                                id="clock_out"
+                                id="am_clock_out"
                                 type="time"
                                 step="1"
-                                value={data.clock_out}
-                                onChange={(e) => setData('clock_out', e.target.value)}
+                                value={data.am_clock_out}
+                                onChange={(e) => setData('am_clock_out', e.target.value)}
                             />
-                            {errors.clock_out && <p className="text-xs text-red-500">{errors.clock_out}</p>}
+                            {errors.am_clock_out && <p className="text-xs text-red-500">{errors.am_clock_out}</p>}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="pm_clock_in">PM Clock In</Label>
+                            <Input
+                                id="pm_clock_in"
+                                type="time"
+                                step="1"
+                                value={data.pm_clock_in}
+                                onChange={(e) => setData('pm_clock_in', e.target.value)}
+                            />
+                            {errors.pm_clock_in && <p className="text-xs text-red-500">{errors.pm_clock_in}</p>}
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="pm_clock_out">PM Clock Out</Label>
+                            <Input
+                                id="pm_clock_out"
+                                type="time"
+                                step="1"
+                                value={data.pm_clock_out}
+                                onChange={(e) => setData('pm_clock_out', e.target.value)}
+                            />
+                            {errors.pm_clock_out && <p className="text-xs text-red-500">{errors.pm_clock_out}</p>}
                         </div>
                     </div>
 

@@ -145,14 +145,27 @@ class DashboardController extends Controller
                 ->get()
                 ->map(function ($att) {
                     $name = $att->user ? "{$att->user->first_name} {$att->user->last_name}" : 'Unknown';
-                    $isClockOut = ! is_null($att->clock_out);
-                    $activityTime = $isClockOut ? $att->updated_at : $att->created_at;
+                    $clocks = [
+                        'in (AM)' => $att->am_clock_in,
+                        'out (AM)' => $att->am_clock_out,
+                        'in (PM)' => $att->pm_clock_in,
+                        'out (PM)' => $att->pm_clock_out,
+                    ];
+                    $latestClockTime = null;
+                    $action = 'in (AM)';
+                    foreach ($clocks as $key => $time) {
+                        if ($time && (is_null($latestClockTime) || $time->gt($latestClockTime))) {
+                            $latestClockTime = $time;
+                            $action = $key;
+                        }
+                    }
+                    $activityTime = $latestClockTime ?? $att->updated_at;
 
                     return [
-                        'id' => 'att_'.$att->id.($isClockOut ? '_out' : '_in'),
+                        'id' => 'att_'.$att->id.'_'.$action,
                         'type' => 'attendance_clock',
                         'title' => 'Attendance Log',
-                        'description' => "{$name} clocked ".($isClockOut ? 'out.' : 'in.'),
+                        'description' => "{$name} clocked {$action}.",
                         'time' => $activityTime ? $activityTime->diffForHumans() : 'Just now',
                         'timestamp' => $activityTime ? $activityTime->timestamp : now()->timestamp,
                     ];
@@ -182,12 +195,18 @@ class DashboardController extends Controller
         $todayStatus = 'Not Clocked In';
         $todayTime = '--:-- --';
         if ($todayAttendance) {
-            if ($todayAttendance->clock_out) {
+            if ($todayAttendance->pm_clock_out) {
                 $todayStatus = 'Completed';
-                $todayTime = $todayAttendance->clock_out->timezone('Asia/Manila')->format('h:i A');
-            } else {
-                $todayStatus = 'Clocked In';
-                $todayTime = $todayAttendance->clock_in->timezone('Asia/Manila')->format('h:i A');
+                $todayTime = $todayAttendance->pm_clock_out->timezone('Asia/Manila')->format('h:i A');
+            } elseif ($todayAttendance->pm_clock_in) {
+                $todayStatus = 'Clocked In (PM)';
+                $todayTime = $todayAttendance->pm_clock_in->timezone('Asia/Manila')->format('h:i A');
+            } elseif ($todayAttendance->am_clock_out) {
+                $todayStatus = 'Clocked Out (AM)';
+                $todayTime = $todayAttendance->am_clock_out->timezone('Asia/Manila')->format('h:i A');
+            } elseif ($todayAttendance->am_clock_in) {
+                $todayStatus = 'Clocked In (AM)';
+                $todayTime = $todayAttendance->am_clock_in->timezone('Asia/Manila')->format('h:i A');
             }
         }
 
@@ -236,14 +255,27 @@ class DashboardController extends Controller
             ->take(3)
             ->get()
             ->map(function ($att) {
-                $isClockOut = ! is_null($att->clock_out);
-                $activityTime = $isClockOut ? $att->updated_at : $att->created_at;
+                $clocks = [
+                    'in (AM)' => $att->am_clock_in,
+                    'out (AM)' => $att->am_clock_out,
+                    'in (PM)' => $att->pm_clock_in,
+                    'out (PM)' => $att->pm_clock_out,
+                ];
+                $latestClockTime = null;
+                $action = 'in (AM)';
+                foreach ($clocks as $key => $time) {
+                    if ($time && (is_null($latestClockTime) || $time->gt($latestClockTime))) {
+                        $latestClockTime = $time;
+                        $action = $key;
+                    }
+                }
+                $activityTime = $latestClockTime ?? $att->updated_at;
 
                 return [
-                    'id' => 'my_att_'.$att->id.($isClockOut ? '_out' : '_in'),
+                    'id' => 'my_att_'.$att->id.'_'.$action,
                     'type' => 'my_attendance',
                     'title' => 'Attendance log',
-                    'description' => 'Clocked '.($isClockOut ? 'out.' : 'in.'),
+                    'description' => 'Clocked '.$action.'.',
                     'time' => $activityTime ? $activityTime->diffForHumans() : 'Just now',
                     'timestamp' => $activityTime ? $activityTime->timestamp : now()->timestamp,
                 ];

@@ -21,8 +21,10 @@ interface Attendance {
     id: number;
     user_id: number;
     date: string;
-    clock_in: string;
-    clock_out: string | null;
+    am_clock_in: string | null;
+    am_clock_out: string | null;
+    pm_clock_in: string | null;
+    pm_clock_out: string | null;
 }
 
 interface Props {
@@ -64,19 +66,50 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
         });
     };
 
-    const isClockedIn = !!attendance;
-    const isClockedOut = !!attendance?.clock_out;
+    let currentAction: 'am_in' | 'am_out' | 'pm_in' | 'pm_out' | 'done' = 'am_in';
+
+    if (!attendance || !attendance.am_clock_in) {
+        currentAction = 'am_in';
+    } else if (!attendance.am_clock_out) {
+        currentAction = 'am_out';
+    } else if (!attendance.pm_clock_in) {
+        currentAction = 'pm_in';
+    } else if (!attendance.pm_clock_out) {
+        currentAction = 'pm_out';
+    } else {
+        currentAction = 'done';
+    }
+
+    const modalDescription = currentAction === 'am_out'
+        ? "Are you sure you want to clock out for the morning session? You can clock in again for the afternoon session later."
+        : "Are you sure you want to clock out for the afternoon session? This will complete your attendance for today.";
 
     const todayDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     const todayDay = new Date().toLocaleDateString('en-US', { weekday: 'long' });
     const historyCount = history.length;
 
-    const timelineItems = history.slice(0, 5).map(record => ({
-        id: record.id,
-        date: new Date(record.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'long' }),
-        timeStr: `${new Date(record.clock_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${record.clock_out ? new Date(record.clock_out).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Active'}`,
-        status: record.clock_out ? 'complete' : 'active'
-    }));
+    const timelineItems = history.slice(0, 5).map(record => {
+        const formatTime = (timeStr: string | null) => {
+            if (!timeStr) {
+return '--:--';
+}
+
+            return new Date(timeStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        };
+        const parts = [
+            `AM In: ${formatTime(record.am_clock_in)}`,
+            `AM Out: ${formatTime(record.am_clock_out)}`,
+            `PM In: ${formatTime(record.pm_clock_in)}`,
+            `PM Out: ${formatTime(record.pm_clock_out)}`
+        ];
+
+        return {
+            id: record.id,
+            date: new Date(record.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'long' }),
+            timeStr: parts.join(' | '),
+            status: record.pm_clock_out ? 'complete' : 'active'
+        };
+    });
 
     return (
         <>
@@ -170,7 +203,7 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
 
                 {/* Clock Action Button — full-width, below the card */}
                 <div className="w-full max-w-xl flex flex-col items-stretch gap-3">
-                    {!isClockedIn ? (
+                    {currentAction === 'am_in' && (
                         <Button
                             onClick={handleClockIn}
                             disabled={processing}
@@ -178,9 +211,10 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                             className="w-full h-14 rounded-full text-base font-bold tracking-wide"
                         >
                             <LogIn className="mr-2 h-5 w-5" />
-                            {processing ? 'Processing...' : 'Clock In'}
+                            {processing ? 'Processing...' : 'Clock In (AM)'}
                         </Button>
-                    ) : !isClockedOut ? (
+                    )}
+                    {currentAction === 'am_out' && (
                         <Button
                             onClick={() => setShowConfirmModal(true)}
                             disabled={processing}
@@ -189,9 +223,33 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                             className="w-full h-14 rounded-full text-base font-bold tracking-wide relative overflow-hidden"
                         >
                             <LogOut className="mr-2 h-5 w-5 relative z-10" />
-                            <span className="relative z-10">{processing ? 'Processing...' : 'Clock Out'}</span>
+                            <span className="relative z-10">{processing ? 'Processing...' : 'Clock Out (AM)'}</span>
                         </Button>
-                    ) : (
+                    )}
+                    {currentAction === 'pm_in' && (
+                        <Button
+                            onClick={handleClockIn}
+                            disabled={processing}
+                            size="lg"
+                            className="w-full h-14 rounded-full text-base font-bold tracking-wide"
+                        >
+                            <LogIn className="mr-2 h-5 w-5" />
+                            {processing ? 'Processing...' : 'Clock In (PM)'}
+                        </Button>
+                    )}
+                    {currentAction === 'pm_out' && (
+                        <Button
+                            onClick={() => setShowConfirmModal(true)}
+                            disabled={processing}
+                            variant="warning"
+                            size="lg"
+                            className="w-full h-14 rounded-full text-base font-bold tracking-wide relative overflow-hidden"
+                        >
+                            <LogOut className="mr-2 h-5 w-5 relative z-10" />
+                            <span className="relative z-10">{processing ? 'Processing...' : 'Clock Out (PM)'}</span>
+                        </Button>
+                    )}
+                    {currentAction === 'done' && (
                         <div className="w-full h-14 rounded-full flex items-center justify-center gap-2 border border-border bg-muted/20 text-muted-foreground text-sm font-semibold tracking-wide">
                             <CheckCircle2 className="h-5 w-5" />
                             Done for Today
@@ -215,7 +273,7 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                         <DialogHeader>
                             <DialogTitle>Clock Out?</DialogTitle>
                             <DialogDescription>
-                                Are you sure you want to clock out for today? This will record your finish time and you won't be able to clock back in until tomorrow.
+                                {modalDescription}
                             </DialogDescription>
                         </DialogHeader>
                         <DialogFooter>

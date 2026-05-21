@@ -28,14 +28,15 @@ class OjtAttendanceSeeder extends Seeder
         );
 
         // Assign the employee role
-        if (!$user->hasRole('employee')) {
+        if (! $user->hasRole('employee')) {
             $user->assignRole('employee');
         }
 
         $jsonPath = base_path('ojt-temp-file/updated_ojt_backup_2026-05-20.json');
 
-        if (!file_exists($jsonPath)) {
+        if (! file_exists($jsonPath)) {
             $this->command->error("JSON file not found at: {$jsonPath}");
+
             return;
         }
 
@@ -49,35 +50,22 @@ class OjtAttendanceSeeder extends Seeder
 
             $date = $record['date'];
 
-            // "only take the first clock-in and the last clock-out"
-            // Earliest available time (morIn if present, else aftIn)
-            $clockInTime = null;
-            if (!empty($record['morIn'])) {
-                $clockInTime = $record['morIn'];
-            } elseif (!empty($record['aftIn'])) {
-                $clockInTime = $record['aftIn'];
-            }
+            $amIn = ! empty($record['morIn']) ? Carbon::parse("{$date} {$record['morIn']}") : null;
+            $amOut = ! empty($record['morOut']) ? Carbon::parse("{$date} {$record['morOut']}") : null;
+            $pmIn = ! empty($record['aftIn']) ? Carbon::parse("{$date} {$record['aftIn']}") : null;
+            $pmOut = ! empty($record['aftOut']) ? Carbon::parse("{$date} {$record['aftOut']}") : null;
 
-            // Latest available time (aftOut if present, else morOut)
-            $clockOutTime = null;
-            if (!empty($record['aftOut'])) {
-                $clockOutTime = $record['aftOut'];
-            } elseif (!empty($record['morOut'])) {
-                $clockOutTime = $record['morOut'];
-            }
-
-            if (!$clockInTime || !$clockOutTime) {
+            if (! $amIn && ! $amOut && ! $pmIn && ! $pmOut) {
                 continue;
             }
-
-            $clockIn = Carbon::parse("{$date} {$clockInTime}");
-            $clockOut = Carbon::parse("{$date} {$clockOutTime}");
 
             Attendance::updateOrCreate(
                 ['user_id' => $user->id, 'date' => $date],
                 [
-                    'clock_in' => $clockIn,
-                    'clock_out' => $clockOut,
+                    'am_clock_in' => $amIn,
+                    'am_clock_out' => $amOut,
+                    'pm_clock_in' => $pmIn,
+                    'pm_clock_out' => $pmOut,
                 ]
             );
             $count++;

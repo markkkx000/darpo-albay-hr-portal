@@ -12,14 +12,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['user_id', 'date', 'clock_in', 'clock_out'])]
+#[Fillable(['user_id', 'date', 'am_clock_in', 'am_clock_out', 'pm_clock_in', 'pm_clock_out'])]
 class Attendance extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $casts = [
-        'clock_in' => 'datetime',
-        'clock_out' => 'datetime',
+        'am_clock_in' => 'datetime',
+        'am_clock_out' => 'datetime',
+        'pm_clock_in' => 'datetime',
+        'pm_clock_out' => 'datetime',
     ];
 
     public function scopeFilter(Builder $query, array $filters): void
@@ -42,13 +44,13 @@ class Attendance extends Model
 
         if ($status = $filters['status'] ?? null) {
             if ($status === 'working') {
-                $query->whereNull('clock_out')
+                $query->whereNull('pm_clock_out')
                     ->whereDate('date', Carbon::today());
             } elseif ($status === 'incomplete') {
-                $query->whereNull('clock_out')
+                $query->whereNull('pm_clock_out')
                     ->whereDate('date', '<', Carbon::today());
             } elseif ($status === 'completed') {
-                $query->whereNotNull('clock_out');
+                $query->whereNotNull('pm_clock_out');
             } elseif ($status === 'archived') {
                 $query->onlyTrashed();
             }

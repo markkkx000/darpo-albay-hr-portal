@@ -50,27 +50,11 @@ class DTRService
             $pmIn = null;
             $pmOut = null;
 
-            if ($record && $record->clock_in) {
-                $clockIn = $record->clock_in;
-                $clockOut = $record->clock_out;
-
-                if ($clockIn->format('H') >= 12) {
-                    $pmIn = $clockIn->format('h:i A');
-                    if ($clockOut) {
-                        $pmOut = $clockOut->format('h:i A');
-                    }
-                } else {
-                    $amIn = $clockIn->format('h:i A');
-                    if ($clockOut) {
-                        if ($clockOut->format('H') <= 12) {
-                            $amOut = $clockOut->format('h:i A');
-                        } else {
-                            $amOut = '12:00 PM';
-                            $pmIn = '01:00 PM';
-                            $pmOut = $clockOut->format('h:i A');
-                        }
-                    }
-                }
+            if ($record) {
+                $amIn = $record->am_clock_in ? $record->am_clock_in->format('h:i A') : null;
+                $amOut = $record->am_clock_out ? $record->am_clock_out->format('h:i A') : null;
+                $pmIn = $record->pm_clock_in ? $record->pm_clock_in->format('h:i A') : null;
+                $pmOut = $record->pm_clock_out ? $record->pm_clock_out->format('h:i A') : null;
             } else {
                 $isHoliday = Holiday::whereDate('date', $dateString)->exists();
 
