@@ -301,20 +301,20 @@ return '--:--';
                     )}
                     {currentAction === 'half_day_am' && (
                         <>
-                            <div className="w-full h-14 rounded-full flex items-center justify-center gap-2 border border-sky-500/30 bg-sky-500/10 text-sky-600 dark:text-sky-400 text-sm font-semibold tracking-wide">
-                                <CalendarCheck className="h-5 w-5" />
-                                Half Day (AM) — Done
-                            </div>
                             <Button
                                 onClick={handleClockIn}
                                 disabled={processing}
                                 variant="ghost"
                                 size="lg"
-                                className="w-full h-10 rounded-full text-xs font-semibold tracking-wide text-muted-foreground btn-ghost-specular border-none"
+                                className="w-full h-14 rounded-full text-xs font-semibold tracking-wide text-muted-foreground btn-ghost-specular border-none"
                             >
                                 <LogIn className="mr-2 h-4 w-4" />
                                 {processing ? 'Processing...' : 'Clock In for PM Session'}
                             </Button>
+                            <div className="w-full h-10 rounded-full flex items-center justify-center gap-2 border border-sky-500/30 bg-sky-500/10 text-sky-600 dark:text-sky-400 text-sm font-semibold tracking-wide">
+                                <CalendarCheck className="h-5 w-5" />
+                                Half Day (AM) — Done
+                            </div>
                         </>
                     )}
                     {currentAction === 'incomplete' && (

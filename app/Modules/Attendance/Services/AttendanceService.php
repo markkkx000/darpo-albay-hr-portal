@@ -77,32 +77,35 @@ class AttendanceService
             ]);
         }
 
-        if (is_null($attendance->am_clock_in)) {
-            throw ValidationException::withMessages([
-                'attendance' => 'You must clock in before you can clock out.',
-            ]);
-        }
-
-        if (is_null($attendance->am_clock_out)) {
-            $attendance->update(['am_clock_out' => Carbon::now()]);
-
-            return $attendance;
-        }
-
-        if (is_null($attendance->pm_clock_in)) {
-            throw ValidationException::withMessages([
-                'attendance' => 'You cannot clock out for the afternoon until you clock in.',
-            ]);
-        }
-
-        if (is_null($attendance->pm_clock_out)) {
+        if (! is_null($attendance->pm_clock_in) && is_null($attendance->pm_clock_out)) {
             $attendance->update(['pm_clock_out' => Carbon::now()]);
 
             return $attendance;
         }
 
+        if (! is_null($attendance->am_clock_in) && is_null($attendance->am_clock_out)) {
+            $attendance->update(['am_clock_out' => Carbon::now()]);
+
+            return $attendance;
+        }
+
+        if (! is_null($attendance->am_clock_out) && is_null($attendance->pm_clock_in)) {
+            throw ValidationException::withMessages([
+                'attendance' => 'You cannot clock out for the afternoon until you clock in.',
+            ]);
+        }
+
+        if (
+            (! is_null($attendance->am_clock_out) && ! is_null($attendance->pm_clock_out)) ||
+            (is_null($attendance->am_clock_in) && is_null($attendance->am_clock_out) && ! is_null($attendance->pm_clock_out))
+        ) {
+            throw ValidationException::withMessages([
+                'attendance' => 'You have already clocked out for today.',
+            ]);
+        }
+
         throw ValidationException::withMessages([
-            'attendance' => 'You have already clocked out for today.',
+            'attendance' => 'You must clock in before you can clock out.',
         ]);
     }
 
