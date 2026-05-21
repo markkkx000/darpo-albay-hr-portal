@@ -36,7 +36,7 @@ export function AnnouncementCard({ announcement, defaultExpanded = false }: Prop
             className={cn(
                 "matte-card elev-2 overflow-hidden transition-all duration-300 group cursor-pointer",
                 announcement.priority === 'high' ? "border-red-500/40 ring-1 ring-red-500/10" : "",
-                isExpanded ? "ring-2 ring-primary/20" : "hover:translate-x-1"
+                isExpanded ? "border-primary/40 shadow-lg shadow-primary/5" : "hover:translate-x-1"
             )}
             onClick={() => setIsExpanded(!isExpanded)}
         >
