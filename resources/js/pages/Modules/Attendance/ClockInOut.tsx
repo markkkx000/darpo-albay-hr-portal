@@ -143,11 +143,23 @@ return '--:--';
                     || (!pm_clock_in && !!pm_clock_out)
                     || (!!am_clock_in && !am_clock_out && !!pm_clock_in);
 
-                if (isSkipped) return 'incomplete';
-                if (am_clock_in && am_clock_out && pm_clock_in && pm_clock_out) return 'complete';
+                if (isSkipped) {
+return 'incomplete';
+}
+
+                if (am_clock_in && am_clock_out && pm_clock_in && pm_clock_out) {
+return 'complete';
+}
+
                 // Single-session complete = half day
-                if (!am_clock_in && !am_clock_out && pm_clock_in && pm_clock_out) return 'half_day';
-                if (am_clock_in && am_clock_out && !pm_clock_in && !pm_clock_out) return 'half_day';
+                if (!am_clock_in && !am_clock_out && pm_clock_in && pm_clock_out) {
+return 'half_day';
+}
+
+                if (am_clock_in && am_clock_out && !pm_clock_in && !pm_clock_out) {
+return 'half_day';
+}
+
                 return 'active';
             })()
         };
