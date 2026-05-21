@@ -30,6 +30,7 @@ interface User {
     id: number;
     first_name: string;
     last_name: string;
+    avatar?: string | null;
 }
 
 interface AttendanceRecord {
@@ -262,17 +263,13 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                     >
                                                         <td className="px-6 py-4 font-medium">
                                                             <div className="flex items-center gap-3">
-                                                                <div className="sqicon sqicon-green flex h-8 w-8 items-center justify-center !rounded-[8px] text-[10px] font-bold uppercase">
-                                                                    {
-                                                                        record
-                                                                            .user
-                                                                            ?.first_name[0]
-                                                                    }
-                                                                    {
-                                                                        record
-                                                                            .user
-                                                                            ?.last_name[0]
-                                                                    }
+                                                                <div className="sqicon h-8 w-8 !rounded-[8px] shrink-0 border border-border/30">
+                                                                    <img
+                                                                        src={record.user?.avatar || '/img/pfp_placeholder.png'}
+                                                                        alt={`${record.user?.first_name} ${record.user?.last_name}`}
+                                                                        className="h-full w-full object-cover"
+                                                                        loading="lazy"
+                                                                    />
                                                                 </div>
                                                                 <div className="flex flex-col">
                                                                     <span className="font-semibold text-foreground">
