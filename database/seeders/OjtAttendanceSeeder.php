@@ -32,7 +32,7 @@ class OjtAttendanceSeeder extends Seeder
             $user->assignRole('employee');
         }
 
-        $jsonPath = base_path('ojt-temp-file/updated_ojt_backup_2026-05-20.json');
+        $jsonPath = base_path('ojt-temp-file/ojt_backup_2026-05-21.json');
 
         if (!file_exists($jsonPath)) {
             $this->command->error("JSON file not found at: {$jsonPath}");
