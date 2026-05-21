@@ -1,5 +1,5 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { AlertCircle, CheckCircle2, LogIn, LogOut, Settings } from 'lucide-react';
+import { AlertCircle, CalendarCheck, CheckCircle2, LogIn, LogOut, Settings } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -66,18 +66,45 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
         });
     };
 
-    let currentAction: 'am_in' | 'am_out' | 'pm_in' | 'pm_out' | 'done' = 'am_in';
+    /**
+     * Determine the next clock action based on the last-filled slot.
+     * Half-day patterns (only AM in+out, or only PM in+out, or PM-only in progress)
+     * are valid and not considered incomplete.
+     *
+     * Truly broken (incomplete): am_out without am_in, pm_out without pm_in,
+     * or jumping from am_in straight to pm_in (skipping am_out).
+     */
+    let currentAction: 'am_in' | 'am_out' | 'pm_in' | 'pm_out' | 'done' | 'half_day_am' | 'half_day_pm' | 'incomplete' = 'am_in';
 
-    if (!attendance || !attendance.am_clock_in) {
+    if (!attendance) {
         currentAction = 'am_in';
-    } else if (!attendance.am_clock_out) {
-        currentAction = 'am_out';
-    } else if (!attendance.pm_clock_in) {
-        currentAction = 'pm_in';
-    } else if (!attendance.pm_clock_out) {
-        currentAction = 'pm_out';
     } else {
-        currentAction = 'done';
+        const { am_clock_in, am_clock_out, pm_clock_in, pm_clock_out } = attendance;
+
+        const isSkipped =
+            (!am_clock_in && !!am_clock_out)               // am out without am in
+            || (!pm_clock_in && !!pm_clock_out)            // pm out without pm in
+            || (!!am_clock_in && !am_clock_out && !!pm_clock_in); // jumped am_in → pm_in, skipped am_out
+
+        if (isSkipped) {
+            currentAction = 'incomplete';
+        } else if (am_clock_in && am_clock_out && pm_clock_in && pm_clock_out) {
+            currentAction = 'done';
+        } else if (!am_clock_in && !am_clock_out && pm_clock_in && pm_clock_out) {
+            // PM-only half-day: both pm slots filled, no AM at all
+            currentAction = 'half_day_pm';
+        } else if (am_clock_in && am_clock_out && !pm_clock_in && !pm_clock_out) {
+            // AM-only half-day: both am slots filled, no PM at all
+            // Still offer PM clock-in in case the employee is just on their lunch break
+            currentAction = 'half_day_am';
+        } else if (pm_clock_in && !pm_clock_out) {
+            // PM in progress (full-day or PM half-day in progress)
+            currentAction = 'pm_out';
+        } else if (am_clock_in && !am_clock_out) {
+            currentAction = 'am_out';
+        } else {
+            currentAction = 'am_in';
+        }
     }
 
     const modalDescription = currentAction === 'am_out'
@@ -107,7 +134,22 @@ return '--:--';
             id: record.id,
             date: new Date(record.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'long' }),
             timeStr: parts.join(' | '),
-            status: record.pm_clock_out ? 'complete' : 'active'
+            status: (() => {
+                const { am_clock_in, am_clock_out, pm_clock_in, pm_clock_out } = record;
+
+                // Truly broken sequences
+                const isSkipped =
+                    (!am_clock_in && !!am_clock_out)
+                    || (!pm_clock_in && !!pm_clock_out)
+                    || (!!am_clock_in && !am_clock_out && !!pm_clock_in);
+
+                if (isSkipped) return 'incomplete';
+                if (am_clock_in && am_clock_out && pm_clock_in && pm_clock_out) return 'complete';
+                // Single-session complete = half day
+                if (!am_clock_in && !am_clock_out && pm_clock_in && pm_clock_out) return 'half_day';
+                if (am_clock_in && am_clock_out && !pm_clock_in && !pm_clock_out) return 'half_day';
+                return 'active';
+            })()
         };
     });
 
@@ -185,7 +227,13 @@ return '--:--';
                                             return (
                                                 <div key={item.id} className="group flex items-center gap-3 px-2 py-2.5 rounded-xl hover:bg-surface-2 transition-colors">
                                                     <div
-                                                        className={cn("w-[3px] h-10 rounded-full shrink-0 spring-physics", item.status === 'active' ? 'bg-primary animate-pulse shadow-[0_0_8px_var(--green-glow)]' : 'bg-muted')}
+                                                        className={cn(
+                                                            "w-[3px] h-10 rounded-full shrink-0 spring-physics",
+                                                            item.status === 'active'     ? 'bg-primary animate-pulse shadow-[0_0_8px_var(--green-glow)]'
+                                                            : item.status === 'incomplete' ? 'bg-amber-500'
+                                                            : item.status === 'half_day'   ? 'bg-sky-400'
+                                                            : 'bg-muted'
+                                                        )}
                                                     />
                                                     <div className="flex flex-col min-w-0">
                                                         <p className="text-[13px] font-semibold text-foreground/90 truncate">{item.date}</p>
@@ -226,17 +274,7 @@ return '--:--';
                             <span className="relative z-10">{processing ? 'Processing...' : 'Clock Out (AM)'}</span>
                         </Button>
                     )}
-                    {currentAction === 'pm_in' && (
-                        <Button
-                            onClick={handleClockIn}
-                            disabled={processing}
-                            size="lg"
-                            className="w-full h-14 rounded-full text-base font-bold tracking-wide"
-                        >
-                            <LogIn className="mr-2 h-5 w-5" />
-                            {processing ? 'Processing...' : 'Clock In (PM)'}
-                        </Button>
-                    )}
+
                     {currentAction === 'pm_out' && (
                         <Button
                             onClick={() => setShowConfirmModal(true)}
@@ -253,6 +291,39 @@ return '--:--';
                         <div className="w-full h-14 rounded-full flex items-center justify-center gap-2 border border-border bg-muted/20 text-muted-foreground text-sm font-semibold tracking-wide">
                             <CheckCircle2 className="h-5 w-5" />
                             Done for Today
+                        </div>
+                    )}
+                    {currentAction === 'half_day_pm' && (
+                        <div className="w-full h-14 rounded-full flex items-center justify-center gap-2 border border-sky-500/30 bg-sky-500/10 text-sky-600 dark:text-sky-400 text-sm font-semibold tracking-wide">
+                            <CalendarCheck className="h-5 w-5" />
+                            Half Day (PM) — Done
+                        </div>
+                    )}
+                    {currentAction === 'half_day_am' && (
+                        <>
+                            <div className="w-full h-14 rounded-full flex items-center justify-center gap-2 border border-sky-500/30 bg-sky-500/10 text-sky-600 dark:text-sky-400 text-sm font-semibold tracking-wide">
+                                <CalendarCheck className="h-5 w-5" />
+                                Half Day (AM) — Done
+                            </div>
+                            <Button
+                                onClick={handleClockIn}
+                                disabled={processing}
+                                variant="ghost"
+                                size="lg"
+                                className="w-full h-10 rounded-full text-xs font-semibold tracking-wide text-muted-foreground btn-ghost-specular border-none"
+                            >
+                                <LogIn className="mr-2 h-4 w-4" />
+                                {processing ? 'Processing...' : 'Clock In for PM Session'}
+                            </Button>
+                        </>
+                    )}
+                    {currentAction === 'incomplete' && (
+                        <div className="w-full rounded-2xl flex items-center gap-3 border border-amber-500/30 bg-amber-500/10 px-5 py-4 text-sm">
+                            <AlertCircle className="h-5 w-5 shrink-0 text-amber-500" />
+                            <div className="flex flex-col">
+                                <span className="font-bold text-amber-600 dark:text-amber-400 text-xs uppercase tracking-widest">Record Incomplete</span>
+                                <span className="text-muted-foreground text-xs mt-0.5">Today's record has missing time slots. Please contact HR to correct the entry.</span>
+                            </div>
                         </div>
                     )}
 

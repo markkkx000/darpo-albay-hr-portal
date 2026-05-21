@@ -47,8 +47,29 @@ class Attendance extends Model
                 $query->whereNull('pm_clock_out')
                     ->whereDate('date', Carbon::today());
             } elseif ($status === 'incomplete') {
-                $query->whereNull('pm_clock_out')
-                    ->whereDate('date', '<', Carbon::today());
+                // Truly broken: output without corresponding input, or
+                // am_in + pm_in present but am_out is missing (jumped sessions).
+                // Also includes past-day records where am_in was logged but am_out was never recorded.
+                // Valid half-day patterns (AM-only or PM-only complete) are excluded.
+                $query->where(function (Builder $q) {
+                    // am_out without am_in
+                    $q->whereNull('am_clock_in')->whereNotNull('am_clock_out');
+                })->orWhere(function (Builder $q) {
+                    // pm_out without pm_in
+                    $q->whereNull('pm_clock_in')->whereNotNull('pm_clock_out');
+                })->orWhere(function (Builder $q) {
+                    // Jumped from am_in straight to pm_in, skipping am_out
+                    $q->whereNotNull('am_clock_in')
+                        ->whereNull('am_clock_out')
+                        ->whereNotNull('pm_clock_in');
+                })->orWhere(function (Builder $q) {
+                    // Past-day record where am_in was logged but am_out was never recorded
+                    // (employee forgot to clock out) — only applies to past days, not today
+                    $q->whereNotNull('am_clock_in')
+                        ->whereNull('am_clock_out')
+                        ->whereNull('pm_clock_in')
+                        ->whereDate('date', '<', Carbon::today());
+                });
             } elseif ($status === 'completed') {
                 $query->whereNotNull('pm_clock_out');
             } elseif ($status === 'archived') {
