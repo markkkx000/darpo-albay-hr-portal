@@ -167,7 +167,15 @@ class PersonnelSeeder extends Seeder
         }
 
         // 3. Create appointment statuses
-        $statuses = ['Permanent', 'Temporary', 'Coterminous', 'Contractual', 'Casual'];
+        $statuses = [
+            'Permanent',
+            'Contract of Service (COS)',
+            'Job Order',
+            'Resigned',
+            'Retired',
+            'AWOL',
+            'Terminated',
+        ];
         foreach ($statuses as $name) {
             AppointmentStatus::updateOrCreate(['name' => $name], ['is_active' => true]);
         }

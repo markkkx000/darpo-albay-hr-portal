@@ -254,16 +254,20 @@ export function EmployeeTable({
                                                         return 'status-badge-permanent';
                                                     }
 
-                                                    if (name.includes('co-terminous') || name.includes('coterminous') || name.includes('co terminous')) {
-                                                        return 'status-badge-coterminous';
-                                                    }
-
-                                                    if (name.includes('contractual')) {
+                                                    if (name.includes('contract') || name.includes('cos')) {
                                                         return 'status-badge-contractual';
                                                     }
 
-                                                    if (name.includes('casual')) {
+                                                    if (name.includes('job order') || name.includes('jo')) {
                                                         return 'status-badge-casual';
+                                                    }
+
+                                                    if (name.includes('resigned') || name.includes('retired')) {
+                                                        return 'status-badge-warning';
+                                                    }
+
+                                                    if (name.includes('awol') || name.includes('terminated')) {
+                                                        return 'status-badge-danger';
                                                     }
 
                                                     return 'status-badge-unknown';
