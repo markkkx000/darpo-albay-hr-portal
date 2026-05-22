@@ -24,46 +24,46 @@ class AttendanceService
             ->withTrashed()
             ->first();
 
+        $now = Carbon::now();
+        $isPm = $now->hour >= 12;
+
         if ($attendance) {
             if ($attendance->trashed()) {
                 $attendance->restore();
                 $attendance->update([
-                    'am_clock_in' => Carbon::now(),
+                    'am_clock_in' => $isPm ? null : $now,
                     'am_clock_out' => null,
-                    'pm_clock_in' => null,
+                    'pm_clock_in' => $isPm ? $now : null,
                     'pm_clock_out' => null,
                 ]);
 
                 return $attendance;
             }
 
-            if (is_null($attendance->am_clock_in)) {
-                $attendance->update(['am_clock_in' => Carbon::now()]);
-
-                return $attendance;
-            }
-
-            if (is_null($attendance->am_clock_out)) {
+            if (! $isPm) {
+                if (is_null($attendance->am_clock_in)) {
+                    $attendance->update(['am_clock_in' => $now]);
+                    return $attendance;
+                }
                 throw ValidationException::withMessages([
                     'attendance' => 'You are already clocked in for the morning session.',
                 ]);
+            } else {
+                if (is_null($attendance->pm_clock_in)) {
+                    $attendance->update(['pm_clock_in' => $now]);
+                    return $attendance;
+                }
+                throw ValidationException::withMessages([
+                    'attendance' => 'You have already clocked in for the afternoon session.',
+                ]);
             }
-
-            if (is_null($attendance->pm_clock_in)) {
-                $attendance->update(['pm_clock_in' => Carbon::now()]);
-
-                return $attendance;
-            }
-
-            throw ValidationException::withMessages([
-                'attendance' => 'You have already clocked in for the afternoon session.',
-            ]);
         }
 
         return Attendance::create([
             'user_id' => $user->id,
             'date' => Carbon::today()->toDateString(),
-            'am_clock_in' => Carbon::now(),
+            'am_clock_in' => $isPm ? null : $now,
+            'pm_clock_in' => $isPm ? $now : null,
         ]);
     }
 
