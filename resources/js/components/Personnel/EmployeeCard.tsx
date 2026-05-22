@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Calendar, Briefcase, Building2, User as UserIcon, BadgeInfo, Building, FileText, CreditCard } from 'lucide-react';
+import { Mail, Phone, MapPin, Calendar, Briefcase, Building2, User as UserIcon, Building } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
@@ -82,8 +82,9 @@ export function EmployeeCard({ employee }: Props) {
                             <h2 className="text-3xl font-black tracking-tighter text-foreground">
                                 {`${employee.last_name.toUpperCase()}, ${employee.first_name}${employee.middle_name ? ' ' + employee.middle_name : ''}`}
                             </h2>
-                            <Badge variant="outline" className="font-mono bg-surface-2 border-border-2 px-3 py-1 rounded-xl w-fit mx-auto md:mx-0">
-                                {employee.employee_number || 'NO-ID'}
+                            <Badge variant="outline" className="font-mono bg-surface-2 border-border-2 px-3 py-1 rounded-xl w-fit mx-auto md:mx-0 flex items-center gap-1.5">
+                                <span className="text-[10px] text-muted-foreground uppercase font-sans tracking-wider font-black">ID No.</span>
+                                <span>{employee.employee_number || 'NO-ID'}</span>
                             </Badge>
                         </div>
                         <div className="flex items-center justify-center md:justify-start gap-2 text-foreground font-bold">
@@ -99,11 +100,15 @@ export function EmployeeCard({ employee }: Props) {
                                 <Building2 className="h-4 w-4" />
                                 <span>{employee.division?.name || 'Division Not Set'}</span>
                             </div>
-                            <span className="hidden md:inline">&bull;</span>
-                            <div className="flex items-center gap-1">
-                                <Building className="h-4 w-4" />
-                                <span>{employee.unit?.name || 'Unit Not Set'}</span>
-                            </div>
+                            {employee.unit?.name && (
+                                <>
+                                    <span className="hidden md:inline">&bull;</span>
+                                    <div className="flex items-center gap-1">
+                                        <Building className="h-4 w-4" />
+                                        <span>{employee.unit.name}</span>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -198,9 +203,6 @@ export function EmployeeCard({ employee }: Props) {
                     </div>
                     <div className="space-y-4">
                         <div className="flex items-center gap-4 group">
-                            <div className={iconContainerClass}>
-                                <Calendar className={iconClass} />
-                            </div>
                             <div className="grid grid-cols-3 w-full gap-2">
                                 <div className="flex flex-col">
                                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Date of Hire</span>
@@ -214,9 +216,6 @@ export function EmployeeCard({ employee }: Props) {
                         </div>
 
                         <div className="flex items-center gap-4 group">
-                            <div className={iconContainerClass}>
-                                <Briefcase className={iconClass} />
-                            </div>
                             <div className="grid grid-cols-2 w-full gap-2">
                                 <div className="flex flex-col">
                                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Appointment Status</span>
@@ -235,9 +234,6 @@ export function EmployeeCard({ employee }: Props) {
                         </div>
 
                         <div className="flex items-center gap-4 group">
-                            <div className={iconContainerClass}>
-                                <FileText className={iconClass} />
-                            </div>
                             <div className="grid grid-cols-2 w-full gap-2">
                                 <div className="flex flex-col">
                                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Plantilla Number</span>
@@ -251,9 +247,6 @@ export function EmployeeCard({ employee }: Props) {
                         </div>
 
                         <div className="flex items-center gap-4 group">
-                            <div className={iconContainerClass}>
-                                <Briefcase className={iconClass} />
-                            </div>
                             <div className="grid grid-cols-2 w-full gap-2">
                                 <div className="flex flex-col">
                                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Plantilla Position</span>
@@ -267,9 +260,6 @@ export function EmployeeCard({ employee }: Props) {
                         </div>
 
                         <div className="flex items-center gap-4 group">
-                            <div className={iconContainerClass}>
-                                <Calendar className={iconClass} />
-                            </div>
                             <div className="grid grid-cols-2 w-full gap-2">
                                 <div className="flex flex-col">
                                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Orig Appointment</span>
@@ -283,9 +273,6 @@ export function EmployeeCard({ employee }: Props) {
                         </div>
 
                         <div className="flex items-center gap-4 group">
-                            <div className={iconContainerClass}>
-                                <Calendar className={iconClass} />
-                            </div>
                             <div className="grid grid-cols-2 w-full gap-2">
                                 <div className="flex flex-col">
                                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Assumption Date</span>
@@ -299,9 +286,6 @@ export function EmployeeCard({ employee }: Props) {
                         </div>
 
                         <div className="flex items-center gap-4 group">
-                            <div className={iconContainerClass}>
-                                <FileText className={iconClass} />
-                            </div>
                             <div className="grid grid-cols-2 w-full gap-2">
                                 <div className="flex flex-col">
                                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Fund Code</span>
@@ -315,9 +299,6 @@ export function EmployeeCard({ employee }: Props) {
                         </div>
 
                         <div className="flex items-center gap-4 group">
-                            <div className={iconContainerClass}>
-                                <CreditCard className={iconClass} />
-                            </div>
                             <div className="grid grid-cols-3 w-full gap-2">
                                 <div className="flex flex-col">
                                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Salary Grade</span>
@@ -345,54 +326,36 @@ export function EmployeeCard({ employee }: Props) {
                         <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">Government IDs & Credentials</h3>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
-                            <BadgeInfo className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
-                            <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">GSIS BP No.</span>
-                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.gsis_bp_number || 'N/A'}</span>
-                            </div>
+                        <div className="flex flex-col p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
+                            <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">GSIS BP No.</span>
+                            <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.gsis_bp_number || 'N/A'}</span>
                         </div>
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
-                            <CreditCard className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
-                            <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PhilHealth</span>
-                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.philhealth || 'N/A'}</span>
-                            </div>
+                        <div className="flex flex-col p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
+                            <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PRC ID No.</span>
+                            <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.prc_id_no || 'N/A'}</span>
                         </div>
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
-                            <BadgeInfo className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
-                            <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PAGIBIG No.</span>
-                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.hdmf_pagibig_no || 'N/A'}</span>
-                            </div>
+                        <div className="flex flex-col p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
+                            <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PRC Expiration</span>
+                            <span className="text-sm font-bold group-hover:text-black transition-colors">{formatDate(employee.prc_expiration)}</span>
                         </div>
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
-                            <CreditCard className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
-                            <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">TIN Number</span>
-                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.tin_number || 'N/A'}</span>
-                            </div>
+
+                        <div className="flex flex-col p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
+                            <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PhilHealth</span>
+                            <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.philhealth || 'N/A'}</span>
                         </div>
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
-                            <CreditCard className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
-                            <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">LBP Account No.</span>
-                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.lbp_account_number || 'N/A'}</span>
-                            </div>
+                        <div className="flex flex-col p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
+                            <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">LBP Account No.</span>
+                            <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.lbp_account_number || 'N/A'}</span>
                         </div>
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200 col-span-1">
-                            <BadgeInfo className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
-                            <div className="flex flex-col flex-1">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PRC ID No.</span>
-                                <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.prc_id_no || 'N/A'}</span>
-                            </div>
+                        <div className="hidden md:block"></div>
+
+                        <div className="flex flex-col p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
+                            <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PAGIBIG No.</span>
+                            <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.hdmf_pagibig_no || 'N/A'}</span>
                         </div>
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200 col-span-1 md:col-span-3">
-                            <Calendar className="h-5 w-5 text-muted-foreground group-hover:text-black transition-colors duration-200" />
-                            <div className="flex flex-col">
-                                <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">PRC Expiration</span>
-                                <span className="text-sm font-bold group-hover:text-black transition-colors">{formatDate(employee.prc_expiration)}</span>
-                            </div>
+                        <div className="flex flex-col p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
+                            <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">TIN Number</span>
+                            <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.tin_number || 'N/A'}</span>
                         </div>
                     </div>
                 </div>
