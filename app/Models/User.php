@@ -82,15 +82,18 @@ class User extends Authenticatable
             return asset('img/pfp_placeholder.png');
         }
 
-        if (str_starts_with($this->profile_picture, '/storage/')) {
-            return asset(substr($this->profile_picture, 1));
+        if (str_starts_with($this->profile_picture, 'http')) {
+            return $this->profile_picture;
         }
 
-        if (str_starts_with($this->profile_picture, 'storage/')) {
-            return asset($this->profile_picture);
+        $path = $this->profile_picture;
+        if (str_starts_with($path, '/storage/')) {
+            $path = substr($path, 9);
+        } elseif (str_starts_with($path, 'storage/')) {
+            $path = substr($path, 8);
         }
 
-        return asset('storage/'.$this->profile_picture);
+        return \Illuminate\Support\Facades\Storage::url($path);
     }
 
     public function division(): BelongsTo

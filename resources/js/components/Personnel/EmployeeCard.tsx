@@ -42,6 +42,7 @@ export interface Employee {
     fund_code: string | null;
     func_activity_code: string | null;
     profile_picture: string | null;
+    avatar?: string | null;
     salary_grade: number | null;
     salary_step: number | null;
     monthly_salary: string | number | null;
@@ -69,7 +70,7 @@ export function EmployeeCard({ employee }: Props) {
                 <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                     <div className="relative h-24 w-24 rounded-[24px] overflow-hidden shadow-2xl ring-4 ring-surface-1 bg-surface-2">
                         <img 
-                            src={employee.profile_picture ? (employee.profile_picture.startsWith('/storage/') ? employee.profile_picture : employee.profile_picture.startsWith('storage/') ? '/' + employee.profile_picture : `/storage/${employee.profile_picture}`) : '/img/pfp_placeholder.png'} 
+                            src={employee.avatar || '/img/pfp_placeholder.png'} 
                             alt="Profile" 
                             className="h-full w-full object-cover"
                             onError={(e) => {
