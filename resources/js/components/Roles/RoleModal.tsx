@@ -156,9 +156,8 @@ acc[module] = [];
                                                     <label
                                                         htmlFor={`perm-${permission.id}`}
                                                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                                                        title={permission.name}
                                                     >
-                                                        {permission.name.split('.').slice(1).join(' ')}
+                                                        {permission.name}
                                                     </label>
                                                 </div>
                                             ))}
