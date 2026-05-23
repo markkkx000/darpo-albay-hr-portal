@@ -95,6 +95,51 @@ export default function LeaveForm({
     );
 
     const lastFetched = useRef<string | null>(null);
+    const sessionUploadedUrls = useRef<string[]>([]);
+
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            const urlsToDelete = sessionUploadedUrls.current;
+
+            if (urlsToDelete.length > 0) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                urlsToDelete.forEach((url) => {
+                    fetch('/leave/delete-attachment', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken || '',
+                        },
+                        body: JSON.stringify({ url }),
+                        keepalive: true,
+                    });
+                });
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+
+            // Clean up files on component unmount (e.g. Cancel button clicked)
+            const urlsToDelete = sessionUploadedUrls.current;
+
+            if (urlsToDelete.length > 0) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                urlsToDelete.forEach((url) => {
+                    fetch('/leave/delete-attachment', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken || '',
+                        },
+                        body: JSON.stringify({ url }),
+                    }).catch(err => console.error('Failed to clean up attachment on unmount:', err));
+                });
+            }
+        };
+    }, []);
 
     useEffect(() => {
         if (!data.user_id) {
@@ -347,6 +392,7 @@ export default function LeaveForm({
             put(LeaveRoutes.update({ leaveRequest: leaveRequest.id }).url, {
                 preserveScroll: true,
                 onSuccess: () => {
+                    sessionUploadedUrls.current = [];
                     toast.success('Leave request updated successfully');
                     router.clearHistory();
                 },
@@ -354,6 +400,7 @@ export default function LeaveForm({
         } else {
             post(LeaveRoutes.store().url, {
                 onSuccess: () => {
+                    sessionUploadedUrls.current = [];
                     toast.success('Leave request created successfully');
                     router.clearHistory();
                 },
@@ -449,6 +496,7 @@ export default function LeaveForm({
                             data={data}
                             errors={errors}
                             setData={setData}
+                            sessionUploadedUrls={sessionUploadedUrls}
                         />
 
                         <SupportingDocsSection

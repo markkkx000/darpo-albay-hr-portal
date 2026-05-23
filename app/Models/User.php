@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['employee_number', 'first_name', 'middle_name', 'last_name', 'email', 'password', 'is_active', 'division_id', 'unit_id', 'appointment_status_id', 'hire_date', 'contact_number', 'address', 'sex', 'date_of_birth', 'years_in_service', 'plantilla_number', 'gsis_bp_number', 'philhealth', 'hdmf_pagibig_no', 'tin_number', 'prc_id_no', 'prc_expiration', 'orig_date_of_appointment', 'date_of_latest_appointment', 'date_of_assumption', 'date_of_separation', 'date_hired_government', 'present_address', 'civil_status', 'fund_code', 'func_activity_code', 'item_number', 'office_per_appointment', 'plantilla_position', 'lbp_account_number', 'profile_picture', 'salary_grade', 'salary_step', 'monthly_salary'])]
@@ -93,7 +94,7 @@ class User extends Authenticatable
             $path = substr($path, 8);
         }
 
-        return \Illuminate\Support\Facades\Storage::url($path);
+        return Storage::url($path);
     }
 
     public function division(): BelongsTo

@@ -43,6 +43,7 @@ class AttendanceService
             if (! $isPm) {
                 if (is_null($attendance->am_clock_in)) {
                     $attendance->update(['am_clock_in' => $now]);
+
                     return $attendance;
                 }
                 throw ValidationException::withMessages([
@@ -51,6 +52,7 @@ class AttendanceService
             } else {
                 if (is_null($attendance->pm_clock_in)) {
                     $attendance->update(['pm_clock_in' => $now]);
+
                     return $attendance;
                 }
                 throw ValidationException::withMessages([

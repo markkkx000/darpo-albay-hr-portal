@@ -13,6 +13,10 @@ Route::middleware(['web', 'auth', 'permission:leave.view'])->group(function () {
     // Dashboard (Index) - Accessible to both employees and HR
     Route::get('/', [LeaveController::class, 'index'])->name('index');
 
+    // Attachment uploads
+    Route::post('/upload-attachment', [LeaveController::class, 'uploadAttachment'])->name('upload-attachment');
+    Route::delete('/delete-attachment', [LeaveController::class, 'deleteAttachment'])->name('delete-attachment');
+
     // Credits routes
     Route::get('/credits', [LeaveCreditController::class, 'index'])->name('credits.index')->middleware('permission:leave.credits.view|leave.credits.manage');
 

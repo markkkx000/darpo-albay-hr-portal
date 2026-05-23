@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             'AWOL',
             'Terminated',
         ];
-        
+
         foreach ($statuses as $name) {
             AppointmentStatus::updateOrCreate(['name' => $name], ['is_active' => true]);
         }

@@ -141,4 +141,47 @@ class LeaveController extends Controller
             'currentYear' => $year,
         ]);
     }
+
+    /**
+     * Upload an attachment and optimize if it is an image.
+     */
+    public function uploadAttachment(Request $request)
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:pdf,jpeg,png,webp', 'max:10240'],
+        ]);
+
+        try {
+            $url = $this->leaveService->storeAttachment($request->file('file'));
+
+            return response()->json(['url' => $url]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
+    }
+
+    /**
+     * Delete an uploaded attachment.
+     */
+    public function deleteAttachment(Request $request)
+    {
+        $request->validate([
+            'url' => ['required', 'string'],
+        ]);
+
+        $url = $request->input('url');
+
+        // Security check: ensure path belongs to leaves/attachments
+        if (! str_contains($url, 'leaves/attachments/')) {
+            return response()->json(['error' => 'Invalid attachment path.'], 403);
+        }
+
+        $deleted = $this->leaveService->deleteAttachment($url);
+
+        if ($deleted) {
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['error' => 'File not found or already deleted.'], 404);
+    }
 }

@@ -1,7 +1,7 @@
+import { Node, mergeAttributes } from '@tiptap/core';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import { useEditor, EditorContent, ReactNodeViewRenderer, NodeViewWrapper } from '@tiptap/react';
-import { Node, mergeAttributes } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import {
     Bold,
@@ -32,6 +32,7 @@ interface Props {
 
 const UploadPlaceholderView = (props: any) => {
     const { fileName } = props.node.attrs;
+
     return (
         <NodeViewWrapper className="upload-placeholder-wrapper my-4">
             <div className="upload-placeholder border-2 border-dashed border-primary/30 rounded-xl p-6 flex flex-col items-center justify-center gap-2 bg-muted/20 animate-pulse">
@@ -112,14 +113,19 @@ const MenuBar = ({ editor }: { editor: any }) => {
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (!file) return;
+
+        if (!file) {
+return;
+}
 
         if (file.size > 5 * 1024 * 1024) {
             toast.error('Image size must be less than 5MB.');
+
             return;
         }
 
         setUploading(true);
+
         try {
             const formData = new FormData();
             formData.append('image', file);
@@ -134,6 +140,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
 
             if (!response.ok) {
                 const errData = await response.json().catch(() => ({}));
+
                 throw new Error(errData.message || 'Failed to upload image');
             }
 
@@ -376,10 +383,13 @@ export function RichTextEditor({ content, onChange, error }: Props) {
     });
 
     const uploadImageFile = useCallback(async (file: File) => {
-        if (!editor) return;
+        if (!editor) {
+return;
+}
 
         if (file.size > 5 * 1024 * 1024) {
             toast.error(`Image ${file.name} size must be less than 5MB.`);
+
             return;
         }
 
@@ -405,6 +415,7 @@ export function RichTextEditor({ content, onChange, error }: Props) {
 
             if (!response.ok) {
                 const errData = await response.json().catch(() => ({}));
+
                 throw new Error(errData.message || 'Failed to upload image');
             }
 
@@ -415,6 +426,7 @@ export function RichTextEditor({ content, onChange, error }: Props) {
             editor.state.doc.descendants((node, pos) => {
                 if (node.type.name === 'uploadPlaceholder' && node.attrs.id === uploadId) {
                     foundPos = pos;
+
                     return false; // Stop iterating
                 }
             });
@@ -437,9 +449,11 @@ export function RichTextEditor({ content, onChange, error }: Props) {
             editor.state.doc.descendants((node, pos) => {
                 if (node.type.name === 'uploadPlaceholder' && node.attrs.id === uploadId) {
                     foundPos = pos;
+
                     return false;
                 }
             });
+
             if (foundPos !== -1) {
                 editor.chain()
                     .focus()
@@ -457,32 +471,42 @@ export function RichTextEditor({ content, onChange, error }: Props) {
     }, [content, editor]);
 
     useEffect(() => {
-        if (!editor) return;
+        if (!editor) {
+return;
+}
 
         editor.setOptions({
             editorProps: {
                 handleDrop(view, event) {
                     const files = event.dataTransfer?.files;
+
                     if (files && files.length > 0) {
                         const images = Array.from(files).filter(file => file.type.startsWith('image/'));
+
                         if (images.length > 0) {
                             event.preventDefault();
                             images.forEach(uploadImageFile);
+
                             return true;
                         }
                     }
+
                     return false;
                 },
                 handlePaste(view, event) {
                     const files = event.clipboardData?.files;
+
                     if (files && files.length > 0) {
                         const images = Array.from(files).filter(file => file.type.startsWith('image/'));
+
                         if (images.length > 0) {
                             event.preventDefault();
                             images.forEach(uploadImageFile);
+
                             return true;
                         }
                     }
+
                     return false;
                 }
             }
