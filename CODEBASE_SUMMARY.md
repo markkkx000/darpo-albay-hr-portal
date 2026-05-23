@@ -17,6 +17,7 @@ Currently implemented modules: **Announcements, Attendance, DTR Export, Leave Tr
 - `app/Core/Services/NotificationService.php` — cross-cutting notification infrastructure. Any module can import this service to dispatch notifications. See Notifications Infrastructure below.
 - `app/Observers/UserObserver.php` — listens for User model `password` changes and auto-dismisses the default password notification via `NotificationService::dismissBySubtype()`.
 - `app/Providers/ModuleServiceProvider.php` — bootstraps modules by automatically scanning for and registering `routes.php` and `navigation.php` files in each module directory under `app/Modules/`.
+- `app/Providers/AppServiceProvider.php` — configures app defaults, including globally enabling `Model::preventLazyLoading(!app()->isProduction())` to catch N+1 queries during development.
 - `app/Http/Middleware/HandleInertiaRequests.php` — shares common Inertia props. Navigation is filtered by role/permission here.
   - **Lazy Loading**: Heavy props like `appNotifications.unread_count` are lazy-loaded via closures for performance.
 - `spatie/laravel-permission` — used for all role and permission management via `config/permission.php`.

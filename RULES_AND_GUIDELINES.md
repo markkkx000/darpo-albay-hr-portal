@@ -45,9 +45,12 @@
 ## Backend Rules
 - Module controllers go in `app/Modules/{ModuleName}/Controllers/` — never in `app/Http/Controllers/`.
 - Module routes go in `app/Modules/{ModuleName}/routes.php` — auto-registered by `ModuleServiceProvider`.
+- **Route Security**: Always wrap internal module routes in the `auth` middleware inside `routes.php` (e.g., `Route::middleware('auth')->group(...)`). Do not rely solely on `$this->authorize()` in controllers, as unauthenticated guests will trigger fatal 500 errors if the middleware is missing.
+- **Rate Limiting**: Always apply the `throttle` middleware to authentication, login, or sensitive endpoints to prevent brute-force attacks.
 - **Never** manually `require` module routes in `web.php`. `routes/web.php` contains core auth and dashboard routes only.
 - Business logic goes in a Service class under `app/Modules/{ModuleName}/Services/` — keep controllers thin.
 - Validation goes in Form Request classes under `app/Modules/{ModuleName}/Requests/` — never validate inside controllers.
+- **Performance**: `Model::preventLazyLoading(!app()->isProduction())` is enabled. You must use eager loading (`->with()`) to prevent N+1 queries; otherwise, the app will throw exceptions in local development.
 - **Model Definition**: Use Laravel 13 PHP attributes (`#[Fillable]`, `#[Hidden]`) instead of protected properties.
 - Real-world entity tables must use `softDeletes()`.
 - Each module that needs a sidebar link must include `app/Modules/{ModuleName}/navigation.php`. Read `ModuleServiceProvider.php` and an existing `navigation.php` (e.g. Attendance) before writing a new one to match the expected format.
@@ -56,6 +59,7 @@
 
 ## Migration Guidelines
 - **PostgreSQL for all environments.** Local development uses PostgreSQL via Docker Compose (Laravel Sail). Production uses PostgreSQL via Supabase. Tests run against PostgreSQL (`phpunit.xml` sets `DB_CONNECTION=pgsql`).
+- **Supabase / Database Security**: Keep RLS (Row Level Security) enabled with NO policies for Laravel backend-only setups. This default-denies all external/public PostgREST API access while allowing the Laravel backend (which connects via connection string) full access. Ignore "RLS Enabled No Policy" lint warnings. Never grant `EXECUTE` on `SECURITY DEFINER` functions to the `anon` or `public` roles unless intentionally exposing an unauthenticated endpoint.
 - All migrations must be PostgreSQL-compatible. Never use SQLite-only column types or syntax.
 - Safe column types: `string()`, `text()`, `boolean()`, `date()`, `timestamp()`, `json()`, `unsignedBigInteger()`.
 - Always define foreign key constraints explicitly — do not rely on naming conventions.
