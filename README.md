@@ -147,14 +147,24 @@ For production, we use a cloud-hosted PostgreSQL database on Supabase:
     php artisan db:seed --force
     ```
 
-### 3. File & Avatar Storage (Cloudflare R2)
+### 3. File & Avatar Storage (Cloudflare R2 or Supabase Storage)
 
-To persist user uploads (such as employee avatars and documents) across serverless deployments, we use Cloudflare R2 configured as an S3 disk.
+To persist user uploads (such as employee avatars and documents) across serverless deployments, we configure an S3-compatible disk. You can use either **Cloudflare R2** or **Supabase Storage**:
 
 *   **Required Package:** The Laravel S3 Flysystem driver (`league/flysystem-aws-s3-v3`) is pre-installed.
-*   **Bucket Settings:** The Cloudflare R2 bucket must be set to **Public** access. You should map either a Custom Domain or enable R2's default public URL (`pub-*.r2.dev`) to serve files.
-*   **Access Credentials:** Ensure the R2 API Token has at least `Object Read & Write` permissions.
+*   **Bucket Settings:** The storage bucket must have **Public** access enabled.
 *   **Safe Code Handling:** Deletions of profiles bypass missing cloud-file errors gracefully, ensuring that database updates finish even if physical assets are not present on the disk.
+
+#### Option A: Cloudflare R2
+Configure R2 using the standard S3 credentials. Set `AWS_DEFAULT_REGION=auto`, `AWS_USE_PATH_STYLE_ENDPOINT=true`, and provide your account endpoint URL.
+
+#### Option B: Supabase Storage (Alternative)
+Supabase Storage is S3-compatible. To use it:
+1. Enable the S3 protocol in the Supabase Dashboard under **Storage > Settings**.
+2. Generate S3 Access Keys (Access Key ID and Secret Access Key) in the same settings page.
+3. Configure `AWS_ENDPOINT` to `https://<your-project-ref>.supabase.co/storage/v1/s3`.
+4. Configure `AWS_URL` to `https://<your-project-ref>.supabase.co/storage/v1/object/public/<bucket-name>`.
+5. Set `AWS_DEFAULT_REGION` to match your Supabase region (e.g. `ap-southeast-1`).
 
 ### 4. Lean Architecture Drivers
 
@@ -190,16 +200,27 @@ SESSION_DRIVER=database
 SESSION_LIFETIME=120
 CACHE_STORE=database
 QUEUE_CONNECTION=database
+BCRYPT_ROUNDS=10
 
-# Cloudflare R2 Object Storage Configuration
-FILESYSTEM_DISK=s3
-AWS_ACCESS_KEY_ID=your_r2_access_key_id
-AWS_SECRET_ACCESS_KEY=your_r2_secret_access_key
-AWS_DEFAULT_REGION=auto
-AWS_BUCKET=your_r2_bucket_name
-AWS_ENDPOINT=https://your_cloudflare_account_id.r2.cloudflarestorage.com
-AWS_USE_PATH_STYLE_ENDPOINT=true
-AWS_URL=https://your-public-r2-domain-or-subdomain.r2.dev
+# Cloud Storage: Option A (Cloudflare R2)
+# FILESYSTEM_DISK=s3
+# AWS_ACCESS_KEY_ID=your_r2_access_key_id
+# AWS_SECRET_ACCESS_KEY=your_r2_secret_access_key
+# AWS_DEFAULT_REGION=auto
+# AWS_BUCKET=your_r2_bucket_name
+# AWS_ENDPOINT=https://your_cloudflare_account_id.r2.cloudflarestorage.com
+# AWS_USE_PATH_STYLE_ENDPOINT=true
+# AWS_URL=https://your-public-r2-domain-or-subdomain.r2.dev
+
+# Cloud Storage: Option B (Supabase Storage)
+# FILESYSTEM_DISK=s3
+# AWS_ACCESS_KEY_ID=your_supabase_s3_access_key_id
+# AWS_SECRET_ACCESS_KEY=your_supabase_s3_secret_access_key
+# AWS_DEFAULT_REGION=ap-southeast-1
+# AWS_BUCKET=your_supabase_bucket_name
+# AWS_ENDPOINT=https://your_project_id.supabase.co/storage/v1/s3
+# AWS_USE_PATH_STYLE_ENDPOINT=true
+# AWS_URL=https://your_project_id.supabase.co/storage/v1/object/public/your_supabase_bucket_name
 ```
 
 ---
@@ -209,3 +230,4 @@ AWS_URL=https://your-public-r2-domain-or-subdomain.r2.dev
 Once deployed live:
 1.  **Cache Configuration & Routes:** Optimize startup speeds by running `php artisan config:cache` and `php artisan route:cache` as part of your deployment workflow (handled automatically by Laravel Cloud).
 2.  **HTTPS Enforcement:** Laravel Cloud automatically routes requests over HTTPS. Ensure the `APP_URL` environment variable starts with `https://` to generate correct asset and route URLs.
+3.  **Bcrypt Hashing Work Factor (Slow Logins):** Bcrypt is CPU-bound by design. On serverless containers with restricted CPU allocation (like starter tiers), high round values can result in multi-second login latencies (5-8 seconds). To resolve this, specify `BCRYPT_ROUNDS=10` in your production environment variables to keep verification times sub-second while maintaining standard security.
