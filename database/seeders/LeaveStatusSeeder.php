@@ -12,7 +12,6 @@ class LeaveStatusSeeder extends Seeder
         $statuses = [
             'Approved',
             'For Signature',
-            'No Filed Leave',
             'Cancelled',
         ];
 
@@ -21,3 +20,4 @@ class LeaveStatusSeeder extends Seeder
         }
     }
 }
+ 
