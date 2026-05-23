@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Modules\Announcements\Models\Announcement;
 use DomainException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AnnouncementService
@@ -118,5 +120,91 @@ class AnnouncementService
             'user' => $this->notificationService->notifyUser(User::findOrFail($announcement->target_id), $notificationData),
             default => null,
         };
+    }
+
+    /**
+     * Store and optimize an announcement asset.
+     */
+    public function storeAsset(UploadedFile $file): string
+    {
+        $extension = strtolower($file->getClientOriginalExtension());
+        $mime = $file->getMimeType();
+
+        // 1. Load image resource
+        $image = null;
+        if ($mime === 'image/jpeg' || $extension === 'jpg' || $extension === 'jpeg') {
+            $image = @imagecreatefromjpeg($file->getRealPath());
+            if ($image && function_exists('exif_read_data')) {
+                try {
+                    $exif = @exif_read_data($file->getRealPath());
+                    if ($exif && isset($exif['Orientation'])) {
+                        switch ($exif['Orientation']) {
+                            case 3:
+                                $image = imagerotate($image, 180, 0);
+                                break;
+                            case 6:
+                                $image = imagerotate($image, -90, 0);
+                                break;
+                            case 8:
+                                $image = imagerotate($image, 90, 0);
+                                break;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Ignore EXIF errors
+                }
+            }
+        } elseif ($mime === 'image/png' || $extension === 'png') {
+            $image = @imagecreatefrompng($file->getRealPath());
+            if ($image) {
+                imagealphablending($image, false);
+                imagesavealpha($image, true);
+            }
+        } elseif ($mime === 'image/webp' || $extension === 'webp') {
+            $image = @imagecreatefromwebp($file->getRealPath());
+        }
+
+        if (! $image) {
+            throw new \InvalidArgumentException('Unsupported or invalid image format.');
+        }
+
+        // 2. Resize maintaining aspect ratio (max 1200px width)
+        $origWidth = imagesx($image);
+        $origHeight = imagesy($image);
+        $maxWidth = 1200;
+
+        if ($origWidth > $maxWidth) {
+            $newWidth = $maxWidth;
+            $newHeight = (int) round(($origHeight / $origWidth) * $maxWidth);
+
+            $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+            if ($mime === 'image/png' || $extension === 'png') {
+                imagealphablending($resizedImage, false);
+                imagesavealpha($resizedImage, true);
+            } else {
+                $transparent = imagecolorallocatealpha($resizedImage, 0, 0, 0, 127);
+                imagefill($resizedImage, 0, 0, $transparent);
+                imagesavealpha($resizedImage, true);
+            }
+
+            imagecopyresampled($resizedImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $origWidth, $origHeight);
+            imagedestroy($image);
+            $image = $resizedImage;
+        }
+
+        // 3. Save as WebP
+        $filename = uniqid('asset_').'.webp';
+        $year = date('Y');
+        $month = date('m');
+        $path = "announcements/assets/{$year}/{$month}/{$filename}";
+
+        ob_start();
+        imagewebp($image, null, 80);
+        $imageContent = ob_get_clean();
+        imagedestroy($image);
+
+        Storage::put($path, $imageContent);
+
+        return $path;
     }
 }

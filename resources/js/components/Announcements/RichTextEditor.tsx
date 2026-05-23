@@ -1,6 +1,7 @@
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
-import { useEditor, EditorContent } from '@tiptap/react';
+import { useEditor, EditorContent, ReactNodeViewRenderer, NodeViewWrapper } from '@tiptap/react';
+import { Node, mergeAttributes } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import {
     Bold,
@@ -15,6 +16,7 @@ import {
     Unlink,
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -28,10 +30,51 @@ interface Props {
     error?: string;
 }
 
+const UploadPlaceholderView = (props: any) => {
+    const { fileName } = props.node.attrs;
+    return (
+        <NodeViewWrapper className="upload-placeholder-wrapper my-4">
+            <div className="upload-placeholder border-2 border-dashed border-primary/30 rounded-xl p-6 flex flex-col items-center justify-center gap-2 bg-muted/20 animate-pulse">
+                <svg className="animate-spin h-5 w-5 text-primary" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span className="text-xs font-semibold text-muted-foreground">Uploading and optimizing {fileName}...</span>
+            </div>
+        </NodeViewWrapper>
+    );
+};
+
+const UploadPlaceholder = Node.create({
+    name: 'uploadPlaceholder',
+    group: 'block',
+    atom: true,
+
+    addAttributes() {
+        return {
+            id: { default: null },
+            fileName: { default: 'file' },
+        };
+    },
+
+    parseHTML() {
+        return [{ tag: 'div[data-upload-placeholder]' }];
+    },
+
+    renderHTML({ HTMLAttributes }) {
+        return ['div', mergeAttributes(HTMLAttributes, { 'data-upload-placeholder': '' })];
+    },
+
+    addNodeView() {
+        return ReactNodeViewRenderer(UploadPlaceholderView);
+    },
+});
+
 const MenuBar = ({ editor }: { editor: any }) => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogType, setDialogType] = useState<'link' | 'image'>('link');
     const [url, setUrl] = useState('');
+    const [uploading, setUploading] = useState(false);
 
     const openLinkDialog = useCallback(() => {
         const previousUrl = editor.getAttributes('link').href;
@@ -58,13 +101,52 @@ const MenuBar = ({ editor }: { editor: any }) => {
                 editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
             }
         } else {
-            if (url) {
+            if (url && url !== 'https://') {
                 editor.chain().focus().setImage({ src: url }).run();
             }
         }
         
         setDialogOpen(false);
         setUrl('');
+    };
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error('Image size must be less than 5MB.');
+            return;
+        }
+
+        setUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const response = await fetch('/announcements/upload-asset', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                },
+                body: formData,
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.message || 'Failed to upload image');
+            }
+
+            const data = await response.json();
+            editor.chain().focus().setImage({ src: data.url }).run();
+            setDialogOpen(false);
+            toast.success('Image uploaded and embedded successfully.');
+        } catch (error: any) {
+            toast.error(error.message || 'Image upload failed. Please try again.');
+        } finally {
+            setUploading(false);
+            e.target.value = '';
+        }
     };
 
     if (!editor) {
@@ -190,7 +272,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
                         <DialogDescription>
                             {dialogType === 'link' 
                                 ? 'Enter the URL for this link.' 
-                                : 'Enter the URL for the image you want to embed.'}
+                                : 'Enter the URL or upload a file for the image.'}
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
@@ -203,6 +285,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
                                 placeholder="https://example.com"
                                 autoFocus
                                 className="input-etched"
+                                disabled={uploading}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
                                         e.preventDefault();
@@ -212,12 +295,30 @@ const MenuBar = ({ editor }: { editor: any }) => {
                                 }}
                             />
                         </div>
+                        {dialogType === 'image' && (
+                            <div className="space-y-2 pt-4 border-t border-muted/20">
+                                <Label htmlFor="file">Or Upload Image File</Label>
+                                <Input
+                                    id="file"
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/webp"
+                                    onChange={handleFileUpload}
+                                    disabled={uploading}
+                                    className="file:text-foreground cursor-pointer"
+                                />
+                                {uploading && (
+                                    <p className="text-xs text-muted-foreground animate-pulse">
+                                        Uploading and optimizing image...
+                                    </p>
+                                )}
+                            </div>
+                        )}
                     </div>
                     <DialogFooter>
-                        <Button type="button" variant="ghost" onClick={() => setDialogOpen(false)} className="btn-ghost-specular px-6">
+                        <Button type="button" variant="ghost" onClick={() => setDialogOpen(false)} disabled={uploading} className="btn-ghost-specular px-6">
                             Cancel
                         </Button>
-                        <Button type="button" onClick={handleConfirm} className="btn-specular px-8">
+                        <Button type="button" onClick={handleConfirm} disabled={uploading || (dialogType === 'image' && (!url || url === 'https://'))} className="btn-specular px-8">
                             {dialogType === 'link' ? 'Set Link' : 'Insert Image'}
                         </Button>
                     </DialogFooter>
@@ -230,6 +331,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
 export function RichTextEditor({ content, onChange, error }: Props) {
     const editor = useEditor({
         extensions: [
+            UploadPlaceholder,
             StarterKit.configure({
                 link: false,
                 bulletList: {
@@ -258,7 +360,7 @@ export function RichTextEditor({ content, onChange, error }: Props) {
             }),
             Image.configure({
                 HTMLAttributes: {
-                    class: 'max-w-full h-auto rounded-xl my-2 border border-border/50',
+                    class: 'max-w-full max-h-[500px] object-contain rounded-xl my-2 border border-border/50',
                 },
             }),
         ],
@@ -273,11 +375,119 @@ export function RichTextEditor({ content, onChange, error }: Props) {
         },
     });
 
+    const uploadImageFile = useCallback(async (file: File) => {
+        if (!editor) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error(`Image ${file.name} size must be less than 5MB.`);
+            return;
+        }
+
+        const uploadId = Math.random().toString(36).substring(7);
+
+        // Insert the placeholder node at current cursor position
+        editor.chain().focus().insertContent({
+            type: 'uploadPlaceholder',
+            attrs: { id: uploadId, fileName: file.name }
+        }).run();
+
+        try {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const response = await fetch('/announcements/upload-asset', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                },
+                body: formData,
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.message || 'Failed to upload image');
+            }
+
+            const data = await response.json();
+
+            // Find the position of the placeholder node with this ID
+            let foundPos = -1;
+            editor.state.doc.descendants((node, pos) => {
+                if (node.type.name === 'uploadPlaceholder' && node.attrs.id === uploadId) {
+                    foundPos = pos;
+                    return false; // Stop iterating
+                }
+            });
+
+            if (foundPos !== -1) {
+                editor.chain()
+                    .focus()
+                    .setTextSelection({ from: foundPos, to: foundPos + 1 })
+                    .deleteSelection()
+                    .setImage({ src: data.url })
+                    .run();
+            } else {
+                editor.chain().focus().setImage({ src: data.url }).run();
+            }
+        } catch (error: any) {
+            toast.error(error.message || `Failed to upload ${file.name}`);
+            
+            // Remove placeholder on error
+            let foundPos = -1;
+            editor.state.doc.descendants((node, pos) => {
+                if (node.type.name === 'uploadPlaceholder' && node.attrs.id === uploadId) {
+                    foundPos = pos;
+                    return false;
+                }
+            });
+            if (foundPos !== -1) {
+                editor.chain()
+                    .focus()
+                    .setTextSelection({ from: foundPos, to: foundPos + 1 })
+                    .deleteSelection()
+                    .run();
+            }
+        }
+    }, [editor]);
+
     useEffect(() => {
         if (editor && content !== editor.getHTML()) {
             editor.commands.setContent(content);
         }
     }, [content, editor]);
+
+    useEffect(() => {
+        if (!editor) return;
+
+        editor.setOptions({
+            editorProps: {
+                handleDrop(view, event) {
+                    const files = event.dataTransfer?.files;
+                    if (files && files.length > 0) {
+                        const images = Array.from(files).filter(file => file.type.startsWith('image/'));
+                        if (images.length > 0) {
+                            event.preventDefault();
+                            images.forEach(uploadImageFile);
+                            return true;
+                        }
+                    }
+                    return false;
+                },
+                handlePaste(view, event) {
+                    const files = event.clipboardData?.files;
+                    if (files && files.length > 0) {
+                        const images = Array.from(files).filter(file => file.type.startsWith('image/'));
+                        if (images.length > 0) {
+                            event.preventDefault();
+                            images.forEach(uploadImageFile);
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            }
+        });
+    }, [editor, uploadImageFile]);
 
     return (
         <div className={cn('border rounded-xl overflow-hidden matte-card elev-1 transition-all duration-200 focus-within:ring-2 focus-within:ring-primary/20', error ? 'border-destructive' : 'border-input')}>
