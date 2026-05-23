@@ -4,7 +4,7 @@ A modern, high-performance Human Resource Information System (HRIS) tailored for
 
 ---
 
-## 🚀 Core Technology Stack
+## Core Technology Stack
 
 This application utilizes a modern, optimized tech stack built for responsiveness, type safety, and clean maintainability:
 
@@ -17,7 +17,7 @@ This application utilizes a modern, optimized tech stack built for responsivenes
 
 ---
 
-## 💻 Local Development Setup (WSL2 / Linux / macOS)
+## Local Development Setup (WSL2 / Linux / macOS)
 
 For the best experience and zero permission or filesystem speed issues, this project is designed to run in a **Linux environment** (Native Linux, macOS, or Windows WSL2).
 
@@ -71,7 +71,7 @@ The script will automatically:
 
 ---
 
-## 🛠️ Development Workflow (Sail)
+## Development Workflow (Sail)
 
 Manage your local Docker environment using **Laravel Sail**:
 
@@ -108,7 +108,7 @@ Manage your local Docker environment using **Laravel Sail**:
 
 ---
 
-## 👤 Default Test Accounts
+## Default Test Accounts
 
 Initial accounts created by the database seeders:
 
@@ -122,7 +122,7 @@ Initial accounts created by the database seeders:
 
 ---
 
-## 🌐 Production Deployment Guide
+## Production Deployment Guide
 
 This guide details how to deploy the HR Portal to a production environment using **Laravel Cloud** with **Supabase** (Database) and **Cloudflare R2** (Object Storage).
 
@@ -204,7 +204,7 @@ AWS_URL=https://your-public-r2-domain-or-subdomain.r2.dev
 
 ---
 
-## 🔒 Security & Performance Tuning
+## Security & Performance Tuning
 
 Once deployed live:
 1.  **Cache Configuration & Routes:** Optimize startup speeds by running `php artisan config:cache` and `php artisan route:cache` as part of your deployment workflow (handled automatically by Laravel Cloud).
