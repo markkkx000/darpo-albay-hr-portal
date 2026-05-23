@@ -1,5 +1,6 @@
 import { Head, router } from '@inertiajs/react';
 import { format } from 'date-fns';
+import { motion } from 'framer-motion';
 import { Plus, Power, PowerOff, Pencil } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
@@ -125,16 +126,19 @@ export default function LeaveSettings({
         });
 
         const container = scrollContainerRef.current;
+
         if (container) {
             container.querySelectorAll('section[id]').forEach(section => observer.observe(section));
         } else {
             document.querySelectorAll('section[id]').forEach(section => observer.observe(section));
         }
+
         return () => observer.disconnect();
     }, []);
 
     const scrollTo = (id: string) => {
         const el = document.getElementById(id);
+
         if (el) {
             el.scrollIntoView({ behavior: 'smooth' });
         }
@@ -220,7 +224,10 @@ export default function LeaveSettings({
 
     const handleEditType = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!editingType) return;
+
+        if (!editingType) {
+return;
+}
 
         router.put(
             types_update(editingType.id).url,
@@ -464,29 +471,45 @@ export default function LeaveSettings({
 
                 <div className="flex flex-col md:flex-row gap-6 items-start mt-6 h-[calc(100vh-16rem)] min-h-[500px]">
                     {/* Sidebar Table of Contents */}
-                    <div className="w-full md:w-64 shrink-0 space-y-1 overflow-y-auto overflow-x-hidden max-h-[200px] md:h-full">
-                        <Button
-                            variant={activeSection === 'holidays' ? 'secondary' : 'ghost'}
-                            className={cn('w-full justify-start', activeSection === 'holidays' ? 'bg-muted' : 'text-muted-foreground')}
-                            onClick={() => scrollTo('holidays')}
-                        >
-                            Holidays
-                        </Button>
-                        <Button
-                            variant={activeSection === 'leave-types' ? 'secondary' : 'ghost'}
-                            className={cn('w-full justify-start', activeSection === 'leave-types' ? 'bg-muted' : 'text-muted-foreground')}
-                            onClick={() => scrollTo('leave-types')}
-                        >
-                            Leave Types
-                        </Button>
-                        <Button
-                            variant={activeSection === 'leave-statuses' ? 'secondary' : 'ghost'}
-                            className={cn('w-full justify-start', activeSection === 'leave-statuses' ? 'bg-muted' : 'text-muted-foreground')}
-                            onClick={() => scrollTo('leave-statuses')}
-                        >
-                            Leave Statuses
-                        </Button>
-                    </div>
+                    <nav className="w-full md:w-64 shrink-0 space-y-1 overflow-y-auto overflow-x-hidden max-h-[200px] md:h-full flex flex-col">
+                        {[
+                            { id: 'holidays', label: 'Holidays' },
+                            { id: 'leave-types', label: 'Leave Types' },
+                            { id: 'leave-statuses', label: 'Leave Statuses' },
+                        ].map((section) => {
+                            const active = activeSection === section.id;
+
+                            return (
+                                <div key={section.id} className={cn('relative', active && 'z-20')}>
+                                    {active && (
+                                        <motion.div
+                                            layoutId="settings-active-pill"
+                                            className="sidebar-active-gradient pointer-events-none absolute inset-0 rounded-xl"
+                                            transition={{
+                                                type: 'spring',
+                                                stiffness: 400,
+                                                damping: 30,
+                                            }}
+                                        />
+                                    )}
+                                    <button
+                                        type="button"
+                                        onClick={() => scrollTo(section.id)}
+                                        className={cn(
+                                            'relative z-10 flex w-full items-center rounded-xl px-2.5 py-2 text-sm transition-none focus-visible:outline-none focus-visible:ring-0',
+                                            active
+                                                ? 'sidebar-active-text font-bold sidebar-transparent-hover'
+                                                : 'text-sidebar-foreground/80 hover:bg-sidebar-accent'
+                                        )}
+                                    >
+                                        <span className="flex w-full items-center px-2">
+                                            {section.label}
+                                        </span>
+                                    </button>
+                                </div>
+                            );
+                        })}
+                    </nav>
 
                     {/* Main Content Areas */}
                     <div
