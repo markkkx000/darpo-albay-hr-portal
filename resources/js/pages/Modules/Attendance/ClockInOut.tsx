@@ -114,26 +114,22 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
     const todayDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     const todayDay = new Date().toLocaleDateString('en-US', { weekday: 'long' });
     const historyCount = history.length;
-
     const timelineItems = history.slice(0, 5).map(record => {
         const formatTime = (timeStr: string | null) => {
             if (!timeStr) {
-return '--:--';
-}
+                return '--:--';
+            }
 
             return new Date(timeStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         };
-        const parts = [
-            `AM In: ${formatTime(record.am_clock_in)}`,
-            `AM Out: ${formatTime(record.am_clock_out)}`,
-            `PM In: ${formatTime(record.pm_clock_in)}`,
-            `PM Out: ${formatTime(record.pm_clock_out)}`
-        ];
+        const morningStr = `${formatTime(record.am_clock_in)} - ${formatTime(record.am_clock_out)}`;
+        const afternoonStr = `${formatTime(record.pm_clock_in)} - ${formatTime(record.pm_clock_out)}`;
 
         return {
             id: record.id,
             date: new Date(record.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'long' }),
-            timeStr: parts.join(' | '),
+            morningStr,
+            afternoonStr,
             status: (() => {
                 const { am_clock_in, am_clock_out, pm_clock_in, pm_clock_out } = record;
 
@@ -144,21 +140,21 @@ return '--:--';
                     || (!!am_clock_in && !am_clock_out && !!pm_clock_in);
 
                 if (isSkipped) {
-return 'incomplete';
-}
+                    return 'incomplete';
+                }
 
                 if (am_clock_in && am_clock_out && pm_clock_in && pm_clock_out) {
-return 'complete';
-}
+                    return 'complete';
+                }
 
                 // Single-session complete = half day
                 if (!am_clock_in && !am_clock_out && pm_clock_in && pm_clock_out) {
-return 'half_day';
-}
+                    return 'half_day';
+                }
 
                 if (am_clock_in && am_clock_out && !pm_clock_in && !pm_clock_out) {
-return 'half_day';
-}
+                    return 'half_day';
+                }
 
                 return 'active';
             })()
@@ -228,7 +224,7 @@ return 'half_day';
                             <div className="flex-1 py-2 px-1 flex flex-col overflow-hidden">
                                 <p className="t-caption mb-4">Recent History</p>
 
-                                <div className="space-y-1 overflow-y-auto max-h-[160px] pr-2 scrollbar-thin">
+                                <div className="space-y-1 overflow-y-auto max-h-[200px] pr-2 scrollbar-thin">
                                     {timelineItems.length === 0 ? (
                                         <div className="flex flex-col items-start gap-1 py-4">
                                             <p className="text-sm text-muted-foreground italic">No records yet.</p>
@@ -240,16 +236,25 @@ return 'half_day';
                                                 <div key={item.id} className="group flex items-center gap-3 px-2 py-2.5 rounded-xl hover:bg-surface-2 transition-colors">
                                                     <div
                                                         className={cn(
-                                                            "w-[3px] h-10 rounded-full shrink-0 spring-physics",
+                                                            "w-[3px] self-stretch my-1 rounded-full shrink-0 spring-physics",
                                                             item.status === 'active'     ? 'bg-primary animate-pulse shadow-[0_0_8px_var(--green-glow)]'
                                                             : item.status === 'incomplete' ? 'bg-amber-500'
                                                             : item.status === 'half_day'   ? 'bg-sky-400'
                                                             : 'bg-muted'
                                                         )}
                                                     />
-                                                    <div className="flex flex-col min-w-0">
-                                                        <p className="text-[13px] font-semibold text-foreground/90 truncate">{item.date}</p>
-                                                        <p className="text-[11px] text-muted-foreground mt-0.5 font-mono tabular-nums tracking-wide">{item.timeStr}</p>
+                                                    <div className="flex flex-col min-w-0 flex-1">
+                                                        <p className="text-[13px] font-semibold text-foreground/90">{item.date}</p>
+                                                        <div className="text-[11px] text-muted-foreground mt-1 font-mono tabular-nums tracking-wide space-y-0.5">
+                                                            <div className="flex items-center">
+                                                                <span className="w-20 text-[10px] font-sans font-medium uppercase tracking-wider text-muted-foreground/70">Morning:</span>
+                                                                <span>{item.morningStr}</span>
+                                                            </div>
+                                                            <div className="flex items-center">
+                                                                <span className="w-20 text-[10px] font-sans font-medium uppercase tracking-wider text-muted-foreground/70">Afternoon:</span>
+                                                                <span>{item.afternoonStr}</span>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             );
@@ -318,9 +323,9 @@ return 'half_day';
                                 disabled={processing}
                                 variant="ghost"
                                 size="lg"
-                                className="w-full h-14 rounded-full text-xs font-semibold tracking-wide text-muted-foreground btn-ghost-specular border-none"
+                                className="w-full h-14 rounded-full text-base font-bold tracking-wide text-muted-foreground btn-ghost-specular border-none"
                             >
-                                <LogIn className="mr-2 h-4 w-4" />
+                                <LogIn className="mr-2 h-5 w-5" />
                                 {processing ? 'Processing...' : 'Clock In for PM Session'}
                             </Button>
                             <div className="w-full h-10 rounded-full flex items-center justify-center gap-2 border border-sky-500/30 bg-sky-500/10 text-sky-600 dark:text-sky-400 text-sm font-semibold tracking-wide">
