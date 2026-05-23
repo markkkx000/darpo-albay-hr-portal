@@ -171,15 +171,40 @@ export default function LeaveTardiness({
                 <div className="matte-card elev-2 p-6">
                     <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row">
                         <div className="flex items-center space-x-4">
-                            <div className="w-24">
-                                <Input
-                                    type="number"
-                                    value={year}
-                                    onChange={(e) =>
-                                        setYear(Number(e.target.value))
-                                    }
-                                    placeholder="Year"
-                                />
+                            <div className="w-28">
+                                <Select
+                                    value={year.toString()}
+                                    onValueChange={(v) => {
+                                        const newYear = parseInt(v);
+                                        setYear(newYear);
+                                        router.get(
+                                            LeaveRoutes.tardiness.index().url,
+                                            {
+                                                year: newYear,
+                                                month,
+                                                search: filters?.search,
+                                            },
+                                            { preserveState: true },
+                                        );
+                                    }}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Year" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {Array.from(
+                                            { length: 11 },
+                                            (_, i) => currentYear - 5 + i,
+                                        ).map((y) => (
+                                            <SelectItem
+                                                key={y}
+                                                value={y.toString()}
+                                            >
+                                                {y}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div className="w-40">
                                 <Select

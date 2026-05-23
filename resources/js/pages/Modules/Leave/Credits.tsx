@@ -1,5 +1,5 @@
 import { Head, router } from '@inertiajs/react';
-import { ChevronRight, Filter, Settings2 } from 'lucide-react';
+import { ChevronRight, Settings2 } from 'lucide-react';
 import { useState, useMemo, useEffect } from 'react';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import PageHeader from '@/components/page-header';
@@ -14,7 +14,13 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import LeaveRoutes from '@/routes/leave';
 import CreditDetailSheet from './Components/CreditDetailSheet';
 import LeaveNavigation from './Components/LeaveNavigation';
@@ -157,18 +163,28 @@ export default function LeaveCredits({
                     <div className="matte-card elev-2 p-6">
                         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row">
                             <div className="flex items-center space-x-2">
-                                <div className="relative">
-                                    <Input
-                                        type="number"
-                                        value={year}
-                                        onChange={(e) =>
-                                            handleYearChange(
-                                                Number(e.target.value),
-                                            )
-                                        }
-                                        className="w-24 pl-8"
-                                    />
-                                    <Filter className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+                                <div className="w-28">
+                                    <Select
+                                        value={year.toString()}
+                                        onValueChange={(v) => handleYearChange(parseInt(v))}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Year" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {Array.from(
+                                                { length: 11 },
+                                                (_, i) => currentYear - 5 + i,
+                                            ).map((y) => (
+                                                <SelectItem
+                                                    key={y}
+                                                    value={y.toString()}
+                                                >
+                                                    {y}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                                 <span className="text-sm font-medium text-muted-foreground">
                                     Fiscal Year
@@ -251,11 +267,9 @@ export default function LeaveCredits({
                                             className="group border-b transition-colors hover:bg-muted/50"
                                         >
                                             <td className="border-r p-4 font-medium">
-                                                <div className="text-base font-bold">
-                                                    {user.first_name}{' '}
-                                                    {user.last_name}
-                                                </div>
-                                                <div className="text-xs font-medium text-muted-foreground">
+                                                {user.first_name}{' '}
+                                                {user.last_name}
+                                                <div className="text-xs text-muted-foreground">
                                                     {user.employee_number}
                                                 </div>
                                             </td>
@@ -272,7 +286,7 @@ export default function LeaveCredits({
                                                             const balance =
                                                                 parseFloat(
                                                                     credit?.balance ||
-                                                                        '0',
+                                                                    '0',
                                                                 );
 
                                                             return (
@@ -346,16 +360,28 @@ export default function LeaveCredits({
                     /* EMPLOYEE VIEW: Simple Read-Only Table */
                     <div className="space-y-6">
                         <div className="mb-2 flex items-center space-x-3">
-                            <div className="relative">
-                                <Input
-                                    type="number"
-                                    value={year}
-                                    onChange={(e) =>
-                                        handleYearChange(Number(e.target.value))
-                                    }
-                                    className="w-28 pl-8"
-                                />
-                                <Filter className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+                            <div className="w-28">
+                                <Select
+                                    value={year.toString()}
+                                    onValueChange={(v) => handleYearChange(parseInt(v))}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Year" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {Array.from(
+                                            { length: 11 },
+                                            (_, i) => currentYear - 5 + i,
+                                        ).map((y) => (
+                                            <SelectItem
+                                                key={y}
+                                                value={y.toString()}
+                                            >
+                                                {y}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <span className="text-sm font-semibold tracking-widest text-muted-foreground uppercase">
                                 Select Fiscal Year
