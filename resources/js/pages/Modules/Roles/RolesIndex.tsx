@@ -49,7 +49,7 @@ export default function RolesIndex({ roles, permissions }: Props) {
         const availableWidth = windowWidth - 700;
         
         // Assume an average badge width of 130px
-        let count = Math.floor(availableWidth / 130);
+        const count = Math.floor(availableWidth / 130);
         
         // Ensure we always show at least 1 badge if there are any
         return Math.max(1, count);
