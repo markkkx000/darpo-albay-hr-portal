@@ -83,17 +83,17 @@ export default function LeaveSettings({
     const [year, setYear] = useState(currentYear);
     const [holidayName, setHolidayName] = useState('');
     const [holidayDate, setHolidayDate] = useState('');
-    
+
     // Add form states
     const [typeName, setTypeName] = useState('');
     const [typeAbbreviation, setTypeAbbreviation] = useState('');
     const [typeIsCumulative, setTypeIsCumulative] = useState<string>('null');
     const [typeDescription, setTypeDescription] = useState('');
     const [typeColor, setTypeColor] = useState('#3b82f6');
-    
+
     const [statusName, setStatusName] = useState('');
     const [processing, setProcessing] = useState(false);
-    
+
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [confirmConfig, setConfirmConfig] = useState<{
         title: string;
@@ -119,11 +119,11 @@ export default function LeaveSettings({
                     setActiveSection(entry.target.id);
                 }
             });
-        }, { 
+        }, {
             root: scrollContainerRef.current,
-            rootMargin: '-20% 0px -60% 0px' 
+            rootMargin: '-10px 0px -80% 0px'
         });
-        
+
         const container = scrollContainerRef.current;
         if (container) {
             container.querySelectorAll('section[id]').forEach(section => observer.observe(section));
@@ -194,8 +194,8 @@ export default function LeaveSettings({
                     typeIsCumulative === 'true'
                         ? true
                         : typeIsCumulative === 'false'
-                          ? false
-                          : null,
+                            ? false
+                            : null,
                 description: typeDescription,
                 color_code: typeColor,
                 is_active: true,
@@ -221,7 +221,7 @@ export default function LeaveSettings({
     const handleEditType = (e: React.FormEvent) => {
         e.preventDefault();
         if (!editingType) return;
-        
+
         router.put(
             types_update(editingType.id).url,
             {
@@ -359,7 +359,7 @@ export default function LeaveSettings({
             className={cn(
                 'matte-card elev-1 flex items-center justify-between py-2 px-3',
                 !t.is_active &&
-                    'bg-muted opacity-50 grayscale',
+                'bg-muted opacity-50 grayscale',
             )}
         >
             <div className="flex items-center space-x-3">
@@ -385,31 +385,31 @@ export default function LeaveSettings({
                         )}
                         {t.is_cumulative ===
                             true && (
-                            <Badge
-                                variant="secondary"
-                                className="h-4 border-none bg-primary/10 px-1 py-0 text-[9px] tracking-tighter text-primary uppercase"
-                            >
-                                Cumulative
-                            </Badge>
-                        )}
+                                <Badge
+                                    variant="secondary"
+                                    className="h-4 border-none bg-primary/10 px-1 py-0 text-[9px] tracking-tighter text-primary uppercase"
+                                >
+                                    Cumulative
+                                </Badge>
+                            )}
                         {t.is_cumulative ===
                             false && (
-                            <Badge
-                                variant="outline"
-                                className="h-4 border-muted-foreground/30 px-1 py-0 text-[9px] tracking-tighter text-muted-foreground uppercase"
-                            >
-                                Non-Cumulative
-                            </Badge>
-                        )}
+                                <Badge
+                                    variant="outline"
+                                    className="h-4 border-muted-foreground/30 px-1 py-0 text-[9px] tracking-tighter text-muted-foreground uppercase"
+                                >
+                                    Non-Cumulative
+                                </Badge>
+                            )}
                         {t.is_cumulative ===
                             null && (
-                            <Badge
-                                variant="outline"
-                                className="h-4 border-dashed border-muted-foreground/20 px-1 py-0 text-[9px] tracking-tighter text-muted-foreground/50 uppercase italic"
-                            >
-                                N/A
-                            </Badge>
-                        )}
+                                <Badge
+                                    variant="outline"
+                                    className="h-4 border-dashed border-muted-foreground/20 px-1 py-0 text-[9px] tracking-tighter text-muted-foreground/50 uppercase italic"
+                                >
+                                    N/A
+                                </Badge>
+                            )}
                     </div>
                     {t.description && (
                         <span className="text-xs text-muted-foreground">
@@ -464,24 +464,24 @@ export default function LeaveSettings({
 
                 <div className="flex flex-col md:flex-row gap-6 items-start mt-6 h-[calc(100vh-16rem)] min-h-[500px]">
                     {/* Sidebar Table of Contents */}
-                    <div className="w-full md:w-64 shrink-0 space-y-1 overflow-y-auto max-h-[200px] md:max-h-full">
-                        <Button 
-                            variant={activeSection === 'holidays' ? 'secondary' : 'ghost'} 
-                            className={cn('w-full justify-start', activeSection === 'holidays' ? 'bg-muted' : 'text-muted-foreground')} 
+                    <div className="w-full md:w-64 shrink-0 space-y-1 overflow-y-auto overflow-x-hidden max-h-[200px] md:h-full">
+                        <Button
+                            variant={activeSection === 'holidays' ? 'secondary' : 'ghost'}
+                            className={cn('w-full justify-start', activeSection === 'holidays' ? 'bg-muted' : 'text-muted-foreground')}
                             onClick={() => scrollTo('holidays')}
                         >
                             Holidays
                         </Button>
-                        <Button 
-                            variant={activeSection === 'leave-types' ? 'secondary' : 'ghost'} 
-                            className={cn('w-full justify-start', activeSection === 'leave-types' ? 'bg-muted' : 'text-muted-foreground')} 
+                        <Button
+                            variant={activeSection === 'leave-types' ? 'secondary' : 'ghost'}
+                            className={cn('w-full justify-start', activeSection === 'leave-types' ? 'bg-muted' : 'text-muted-foreground')}
                             onClick={() => scrollTo('leave-types')}
                         >
                             Leave Types
                         </Button>
-                        <Button 
-                            variant={activeSection === 'leave-statuses' ? 'secondary' : 'ghost'} 
-                            className={cn('w-full justify-start', activeSection === 'leave-statuses' ? 'bg-muted' : 'text-muted-foreground')} 
+                        <Button
+                            variant={activeSection === 'leave-statuses' ? 'secondary' : 'ghost'}
+                            className={cn('w-full justify-start', activeSection === 'leave-statuses' ? 'bg-muted' : 'text-muted-foreground')}
                             onClick={() => scrollTo('leave-statuses')}
                         >
                             Leave Statuses
@@ -489,12 +489,12 @@ export default function LeaveSettings({
                     </div>
 
                     {/* Main Content Areas */}
-                    <div 
+                    <div
                         ref={scrollContainerRef}
-                        className="flex-1 space-y-12 overflow-y-auto pr-4 pb-24 h-full"
+                        className="flex-1 space-y-12 overflow-y-auto pr-4 pb-[50vh] h-full"
                     >
                         {/* Holidays */}
-                        <section id="holidays" className="scroll-mt-24">
+                        <section id="holidays" className="">
                             <div className="matte-card elev-2">
                                 <div className="p-6">
                                     <h2 className="t-headline mb-4">
@@ -586,16 +586,16 @@ export default function LeaveSettings({
                                                     <span className="text-sm text-muted-foreground">
                                                         {h.date
                                                             ? format(
-                                                                  new Date(
-                                                                      h.date.includes(
-                                                                          'T',
-                                                                      )
-                                                                          ? h.date
-                                                                          : h.date +
-                                                                                'T00:00:00',
-                                                                  ),
-                                                                  'MMMM d, yyyy',
-                                                              )
+                                                                new Date(
+                                                                    h.date.includes(
+                                                                        'T',
+                                                                    )
+                                                                        ? h.date
+                                                                        : h.date +
+                                                                        'T00:00:00',
+                                                                ),
+                                                                'MMMM d, yyyy',
+                                                            )
                                                             : ''}
                                                     </span>
                                                 </div>
@@ -623,7 +623,7 @@ export default function LeaveSettings({
                         </section>
 
                         {/* Leave Types */}
-                        <section id="leave-types" className="scroll-mt-24">
+                        <section id="leave-types" className="">
                             <div className="matte-card elev-2">
                                 <div className="p-6">
                                     <div className="flex items-center justify-between mb-4">
@@ -632,16 +632,16 @@ export default function LeaveSettings({
 
                                     <div className="space-y-2">
                                         {activeLeaveTypes.map(renderLeaveTypeCard)}
-                                        
-                                        <Button 
-                                            variant="ghost" 
+
+                                        <Button
+                                            variant="ghost"
                                             className="w-full btn-ghost-specular border-none py-2 h-auto text-muted-foreground hover:text-foreground"
                                             onClick={() => setAddTypeOpen(true)}
                                         >
                                             <Plus className="h-4 w-4 mr-2" /> Add Leave Type
                                         </Button>
                                     </div>
-                                    
+
                                     {disabledLeaveTypes.length > 0 && (
                                         <div className="mt-8">
                                             <h3 className="t-title mb-3 text-muted-foreground">Disabled</h3>
@@ -655,7 +655,7 @@ export default function LeaveSettings({
                         </section>
 
                         {/* Leave Statuses */}
-                        <section id="leave-statuses" className="scroll-mt-24">
+                        <section id="leave-statuses" className="">
                             <div className="matte-card elev-2">
                                 <div className="p-6">
                                     <h2 className="t-headline mb-4">
@@ -693,7 +693,7 @@ export default function LeaveSettings({
                                                 className={cn(
                                                     'matte-card elev-1 flex items-center justify-between p-3',
                                                     !s.is_active &&
-                                                        'bg-muted opacity-50 grayscale',
+                                                    'bg-muted opacity-50 grayscale',
                                                 )}
                                             >
                                                 <span className="font-medium">
@@ -783,7 +783,7 @@ export default function LeaveSettings({
                                     <Input
                                         value={editingType.name}
                                         onChange={(e) =>
-                                            setEditingType({...editingType, name: e.target.value})
+                                            setEditingType({ ...editingType, name: e.target.value })
                                         }
                                         required
                                     />
@@ -793,7 +793,7 @@ export default function LeaveSettings({
                                     <Input
                                         value={editingType.abbreviation || ''}
                                         onChange={(e) =>
-                                            setEditingType({...editingType, abbreviation: e.target.value})
+                                            setEditingType({ ...editingType, abbreviation: e.target.value })
                                         }
                                     />
                                 </div>
@@ -803,7 +803,7 @@ export default function LeaveSettings({
                                     <Label>Color</Label>
                                     <ColorPicker
                                         value={editingType.color_code || '#000000'}
-                                        onChange={(color) => setEditingType({...editingType, color_code: color})}
+                                        onChange={(color) => setEditingType({ ...editingType, color_code: color })}
                                     />
                                 </div>
                                 <div>
@@ -812,7 +812,7 @@ export default function LeaveSettings({
                                         value={editingType.is_cumulative === true ? 'true' : editingType.is_cumulative === false ? 'false' : 'null'}
                                         onValueChange={(val) =>
                                             setEditingType({
-                                                ...editingType, 
+                                                ...editingType,
                                                 is_cumulative: val === 'true' ? true : val === 'false' ? false : null
                                             })
                                         }
@@ -833,7 +833,7 @@ export default function LeaveSettings({
                                 <Input
                                     value={editingType.description || ''}
                                     onChange={(e) =>
-                                        setEditingType({...editingType, description: e.target.value})
+                                        setEditingType({ ...editingType, description: e.target.value })
                                     }
                                 />
                             </div>
