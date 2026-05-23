@@ -110,7 +110,7 @@ export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
                         </Alert>
                     )}
 
-                    <div className="space-y-6 py-4 overflow-y-auto pr-2">
+                    <div className="space-y-6 py-4 overflow-y-auto px-1 -mx-1 pr-3">
                         <div className="space-y-2">
                             <Label htmlFor="role-name">Role Name</Label>
                             <Input
@@ -118,11 +118,14 @@ export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
                                 value={data.name}
                                 onChange={e => setData('name', e.target.value)}
                                 disabled={isProtected}
-                                placeholder="e.g. Content Moderator"
-                                className="input-etched"
+                                placeholder="e.g. content_moderator"
+                                className="input-etched font-mono"
                             />
                             <InputError message={errors.name} />
-                            {isProtected && <p className="text-xs text-muted-foreground">Core role names are immutable.</p>}
+                            <p className="text-xs text-muted-foreground">
+                                Use snake_case format (all lowercase, underscores instead of spaces).
+                                {isProtected && ' Core role names are immutable.'}
+                            </p>
                         </div>
 
                         <div className="space-y-3">
