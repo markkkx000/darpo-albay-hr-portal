@@ -137,9 +137,9 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                             </SelectTrigger>
                             <SelectContent className="matte-card elev-3 border-white/10">
                                 <SelectItem value="all">All Status</SelectItem>
-                                <SelectItem value="working">Currently Working</SelectItem>
-                                <SelectItem value="completed">Completed</SelectItem>
-                                <SelectItem value="incomplete">Incomplete (Missing Out)</SelectItem>
+                                <SelectItem value="working">Working</SelectItem>
+                                <SelectItem value="incomplete">Incomplete / Missing Logs</SelectItem>
+                                <SelectItem value="half_day">Half Day</SelectItem>
                                 <SelectItem value="archived">Archived</SelectItem>
                             </SelectContent>
                         </Select>

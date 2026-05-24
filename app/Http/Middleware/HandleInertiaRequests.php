@@ -67,6 +67,7 @@ class HandleInertiaRequests extends Middleware
             'appNotifications' => fn () => $request->user() ? [
                 'unread_count' => $request->user()->unreadNotifications()->count(),
             ] : null,
+            'server_time' => now()->toIso8601String(),
         ];
 
     }

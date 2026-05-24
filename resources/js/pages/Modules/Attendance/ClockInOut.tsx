@@ -74,12 +74,22 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
      * Truly broken (incomplete): am_out without am_in, pm_out without pm_in,
      * or jumping from am_in straight to pm_in (skipping am_out).
      */
+    const { server_time } = usePage().props as any;
+    
     let currentAction: 'am_in' | 'am_out' | 'pm_in' | 'pm_out' | 'done' | 'half_day_am' | 'half_day_pm' | 'incomplete' = 'am_in';
 
     if (!attendance) {
-        currentAction = 'am_in';
+        // If no logs, check if server time is past 13:00 to skip AM
+        const currentHour = new Date(server_time).getHours();
+
+        if (currentHour >= 13) {
+            currentAction = 'pm_in';
+        } else {
+            currentAction = 'am_in';
+        }
     } else {
         const { am_clock_in, am_clock_out, pm_clock_in, pm_clock_out } = attendance;
+        const currentHour = new Date(server_time).getHours();
 
         const isSkipped =
             (!am_clock_in && !!am_clock_out)               // am out without am in
@@ -91,19 +101,26 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
         } else if (am_clock_in && am_clock_out && pm_clock_in && pm_clock_out) {
             currentAction = 'done';
         } else if (!am_clock_in && !am_clock_out && pm_clock_in && pm_clock_out) {
-            // PM-only half-day: both pm slots filled, no AM at all
             currentAction = 'half_day_pm';
         } else if (am_clock_in && am_clock_out && !pm_clock_in && !pm_clock_out) {
-            // AM-only half-day: both am slots filled, no PM at all
-            // Still offer PM clock-in in case the employee is just on their lunch break
+            // Wait, if it's past 13:00 and they haven't logged PM IN, what should it be?
+            // They can still log PM IN, so it remains half_day_am, waiting for pm_in interaction.
             currentAction = 'half_day_am';
         } else if (pm_clock_in && !pm_clock_out) {
-            // PM in progress (full-day or PM half-day in progress)
             currentAction = 'pm_out';
         } else if (am_clock_in && !am_clock_out) {
-            currentAction = 'am_out';
-        } else {
-            currentAction = 'am_in';
+            // Cutoff: if they have am_in but no am_out, and it's past 13:00, abandon am_out
+            if (currentHour >= 13) {
+                currentAction = 'pm_in';
+            } else {
+                currentAction = 'am_out';
+            }
+        } else if (!am_clock_in && !am_clock_out && !pm_clock_in && !pm_clock_out) {
+            if (currentHour >= 13) {
+                currentAction = 'pm_in';
+            } else {
+                currentAction = 'am_in';
+            }
         }
     }
 
@@ -244,7 +261,17 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                                                         )}
                                                     />
                                                     <div className="flex flex-col min-w-0 flex-1">
-                                                        <p className="text-[13px] font-semibold text-foreground/90">{item.date}</p>
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <p className="text-[13px] font-semibold text-foreground/90">{item.date}</p>
+                                                            <span className={`px-2 py-0.5 rounded-full text-[8px] font-bold tracking-widest uppercase border shadow-sm
+                                                                ${item.status === 'complete' ? 'bg-green-500/10 border-green-500/20 text-green-600 dark:text-green-400'
+                                                                : item.status === 'incomplete' ? 'bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400'
+                                                                    : item.status === 'half_day' ? 'bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400'
+                                                                        : 'bg-primary/10 border-primary/20 text-primary'}`}
+                                                            >
+                                                                {item.status.replace('_', ' ')}
+                                                            </span>
+                                                        </div>
                                                         <div className="text-[11px] text-muted-foreground mt-1 font-mono tabular-nums tracking-wide space-y-0.5">
                                                             <div className="flex items-center">
                                                                 <span className="w-20 text-[10px] font-sans font-medium uppercase tracking-wider text-muted-foreground/70">Morning:</span>
@@ -289,6 +316,18 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                         >
                             <LogOut className="mr-2 h-5 w-5 relative z-10" />
                             <span className="relative z-10">{processing ? 'Processing...' : 'Clock Out (AM)'}</span>
+                        </Button>
+                    )}
+
+                    {currentAction === 'pm_in' && (
+                        <Button
+                            onClick={handleClockIn}
+                            disabled={processing}
+                            size="lg"
+                            className="w-full h-14 rounded-full text-base font-bold tracking-wide"
+                        >
+                            <LogIn className="mr-2 h-5 w-5" />
+                            {processing ? 'Processing...' : 'Clock In (PM)'}
                         </Button>
                     )}
 

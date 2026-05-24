@@ -44,34 +44,54 @@ class Attendance extends Model
 
         if ($status = $filters['status'] ?? null) {
             if ($status === 'working') {
-                $query->whereNull('pm_clock_out')
-                    ->whereDate('date', Carbon::today());
-            } elseif ($status === 'incomplete') {
-                // Truly broken: output without corresponding input, or
-                // am_in + pm_in present but am_out is missing (jumped sessions).
-                // Also includes past-day records where am_in was logged but am_out was never recorded.
-                // Valid half-day patterns (AM-only or PM-only complete) are excluded.
                 $query->where(function (Builder $q) {
-                    // am_out without am_in
+                    $q->whereNotNull('am_clock_in')->whereNull('am_clock_out')
+                      ->orWhere(function (Builder $inner) {
+                          $inner->whereNotNull('pm_clock_in')->whereNull('pm_clock_out');
+                      });
+                })->whereDate('date', Carbon::today());
+            } elseif ($status === 'incomplete') {
+                $query->where(function (Builder $q) {
+                    // Past days: missing AM OUT (when AM IN exists)
+                    $q->whereNotNull('am_clock_in')
+                      ->whereNull('am_clock_out')
+                      ->whereDate('date', '<', Carbon::today());
+                })->orWhere(function (Builder $q) {
+                    // Past days: missing PM OUT (when PM IN exists)
+                    $q->whereNotNull('pm_clock_in')
+                      ->whereNull('pm_clock_out')
+                      ->whereDate('date', '<', Carbon::today());
+                })->orWhere(function (Builder $q) {
+                    // Any day: missing AM IN (when AM OUT exists)
                     $q->whereNull('am_clock_in')->whereNotNull('am_clock_out');
                 })->orWhere(function (Builder $q) {
-                    // pm_out without pm_in
+                    // Any day: missing PM IN (when PM OUT exists)
                     $q->whereNull('pm_clock_in')->whereNotNull('pm_clock_out');
                 })->orWhere(function (Builder $q) {
-                    // Jumped from am_in straight to pm_in, skipping am_out
+                    // Jumped session (AM IN and PM IN exist, but AM OUT is missing)
                     $q->whereNotNull('am_clock_in')
-                        ->whereNull('am_clock_out')
-                        ->whereNotNull('pm_clock_in');
+                      ->whereNull('am_clock_out')
+                      ->whereNotNull('pm_clock_in');
+                });
+            } elseif ($status === 'half_day') {
+                $query->where(function (Builder $q) {
+                    // AM only
+                    $q->whereNotNull('am_clock_in')
+                      ->whereNotNull('am_clock_out')
+                      ->whereNull('pm_clock_in')
+                      ->whereNull('pm_clock_out');
                 })->orWhere(function (Builder $q) {
-                    // Past-day record where am_in was logged but am_out was never recorded
-                    // (employee forgot to clock out) — only applies to past days, not today
-                    $q->whereNotNull('am_clock_in')
-                        ->whereNull('am_clock_out')
-                        ->whereNull('pm_clock_in')
-                        ->whereDate('date', '<', Carbon::today());
+                    // PM only
+                    $q->whereNull('am_clock_in')
+                      ->whereNull('am_clock_out')
+                      ->whereNotNull('pm_clock_in')
+                      ->whereNotNull('pm_clock_out');
                 });
             } elseif ($status === 'completed') {
-                $query->whereNotNull('pm_clock_out');
+                $query->whereNotNull('am_clock_in')
+                      ->whereNotNull('am_clock_out')
+                      ->whereNotNull('pm_clock_in')
+                      ->whereNotNull('pm_clock_out');
             } elseif ($status === 'archived') {
                 $query->onlyTrashed();
             }

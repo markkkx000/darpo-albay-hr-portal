@@ -148,14 +148,29 @@ export default function ManageRecords({ records, employees, filters }: Props) {
             return { label: 'Archived', variant: 'outline' as const };
         }
 
-        if (record.pm_clock_out) {
+        const hasAmIn = !!record.am_clock_in;
+        const hasAmOut = !!record.am_clock_out;
+        const hasPmIn = !!record.pm_clock_in;
+        const hasPmOut = !!record.pm_clock_out;
+
+        if (hasAmIn && hasAmOut && hasPmIn && hasPmOut) {
             return { label: 'Completed', variant: 'secondary' as const };
+        }
+
+        if ((hasAmIn && hasAmOut && !hasPmIn && !hasPmOut) || (!hasAmIn && !hasAmOut && hasPmIn && hasPmOut)) {
+            return { label: 'Half Day', variant: 'default' as const };
         }
 
         const recordDate = new Date(record.date).setHours(0, 0, 0, 0);
         const today = new Date().setHours(0, 0, 0, 0);
 
-        if (recordDate < today) {
+        // Any missing IN logs when OUT logs exist (manually added), or jumped sessions
+        if ((hasAmOut && !hasAmIn) || (hasPmOut && !hasPmIn) || (hasAmIn && !hasAmOut && hasPmIn)) {
+            return { label: 'Incomplete', variant: 'destructive' as const };
+        }
+
+        // Missing OUT logs on past days
+        if (recordDate < today && ((hasAmIn && !hasAmOut) || (hasPmIn && !hasPmOut))) {
             return { label: 'Incomplete', variant: 'destructive' as const };
         }
 
@@ -367,6 +382,9 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                                     status.label ===
                                                                     'Working' &&
                                                                     'animate-pulse border-primary/20 bg-primary/10 text-primary',
+                                                                    status.label ===
+                                                                    'Half Day' &&
+                                                                    'border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400',
                                                                     status.label ===
                                                                     'Archived' &&
                                                                     'border-zinc-500/20 bg-zinc-500/10 text-zinc-600 dark:text-zinc-400',
