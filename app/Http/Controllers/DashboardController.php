@@ -64,34 +64,24 @@ class DashboardController extends Controller
                 $healthScore += 34;
             }
 
-            // Admin Recent Activities: User registrations and Announcement publications
-            $recentUsers = User::latest()->take(3)->get()->map(function ($u) {
-                return [
-                    'id' => 'user_'.$u->id,
-                    'type' => 'user_registered',
-                    'title' => 'New User Registered',
-                    'description' => "{$u->first_name} {$u->last_name} ({$u->employee_number}) joined the portal.",
-                    'time' => $u->created_at ? $u->created_at->diffForHumans() : 'Just now',
-                    'timestamp' => $u->created_at ? $u->created_at->timestamp : now()->timestamp,
-                ];
-            });
-
-            $recentAnnouncements = Announcement::latest()->take(2)->get()->map(function ($a) {
-                return [
-                    'id' => 'ann_'.$a->id,
-                    'type' => 'announcement_published',
-                    'title' => 'Announcement Published',
-                    'description' => "\"{$a->title}\" was created.",
-                    'time' => $a->created_at ? $a->created_at->diffForHumans() : 'Just now',
-                    'timestamp' => $a->created_at ? $a->created_at->timestamp : now()->timestamp,
-                ];
-            });
-
-            $recentActivity = $recentUsers->concat($recentAnnouncements)
-                ->sortByDesc(function ($item) {
-                    return $item['timestamp'];
+            // Admin Recent Activities: Fetch from Spatie Activitylog
+            $recentActivity = \Spatie\Activitylog\Models\Activity::with('causer')
+                ->latest()
+                ->take(5)
+                ->get()
+                ->map(function ($activity) {
+                    $causer = $activity->causer;
+                    $name = $causer ? "{$causer->first_name} {$causer->last_name}" : 'System';
+                    
+                    return [
+                        'id' => 'act_'.$activity->id,
+                        'type' => 'system_activity',
+                        'title' => 'System Audit',
+                        'description' => "{$name}: {$activity->description}",
+                        'time' => $activity->created_at ? $activity->created_at->diffForHumans() : 'Just now',
+                        'timestamp' => $activity->created_at ? $activity->created_at->timestamp : now()->timestamp,
+                    ];
                 })
-                ->values()
                 ->all();
 
             $adminData = [
