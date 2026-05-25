@@ -1,5 +1,5 @@
 import { Head, router, useForm, useHttp } from '@inertiajs/react';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, ArrowLeft } from 'lucide-react';
 import {
     useState,
     useEffect,
@@ -28,7 +28,6 @@ import {
     StatusSection,
     SupportingDocsSection,
 } from './Components/Form';
-import LeaveNavigation from './Components/LeaveNavigation';
 
 export default function LeaveForm({
     leaveRequest,
@@ -136,6 +135,31 @@ export default function LeaveForm({
         };
     }, []);
 
+    const previousUserId = useRef(data.user_id);
+    useEffect(() => {
+        if (data.user_id && data.user_id !== previousUserId.current) {
+            const selectedUser = users?.find((u: any) => u.id.toString() === data.user_id);
+            if (selectedUser) {
+                setData('salary', selectedUser.monthly_salary || '');
+            }
+        }
+        previousUserId.current = data.user_id;
+    }, [data.user_id, users, setData]);
+
+    const previousLeaveTypeId = useRef(data.leave_type_id);
+    useEffect(() => {
+        if (data.leave_type_id && data.leave_type_id !== previousLeaveTypeId.current) {
+            const selectedLeaveType = leaveTypes?.find((lt: any) => lt.id.toString() === data.leave_type_id);
+            if (selectedLeaveType && selectedLeaveType.name.startsWith('Disapproved')) {
+                const disapprovedStatus = leaveStatuses?.find((ls: any) => ls.name === 'Disapproved');
+                if (disapprovedStatus) {
+                    setData('leave_status_id', disapprovedStatus.id.toString());
+                }
+            }
+        }
+        previousLeaveTypeId.current = data.leave_type_id;
+    }, [data.leave_type_id, leaveTypes, leaveStatuses, setData]);
+
     useEffect(() => {
         if (!data.user_id) {
             lastFetched.current = null;
@@ -192,7 +216,31 @@ export default function LeaveForm({
           )
         : null;
 
-    const available = currentCredit ? parseFloat(currentCredit.balance) : 0;
+    const available = useMemo(() => {
+        if (!currentCredit) {
+return 0;
+}
+
+        let bal = parseFloat(currentCredit.balance) || 0;
+        
+        // When editing an already approved leave, the days_with_pay were already deducted
+        // from the database balance. We must add them back to get the true "available"
+        // balance for this specific edit session, but only if they haven't changed the leave type.
+        if (
+            isEdit && 
+            leaveRequest && 
+            leaveStatuses &&
+            leaveRequest.leave_type_id?.toString() === data.leave_type_id
+        ) {
+            const approvedStatus = leaveStatuses.find((s: any) => s.name === 'Approved');
+
+            if (approvedStatus && leaveRequest.leave_status_id === approvedStatus.id) {
+                bal += parseFloat(leaveRequest.days_with_pay) || 0;
+            }
+        }
+        
+        return bal;
+    }, [currentCredit, isEdit, leaveRequest, leaveStatuses, data.leave_type_id]);
     const requested = parseFloat(data.days_requested) || 0;
     const remaining = available - requested;
 
@@ -414,9 +462,17 @@ export default function LeaveForm({
                         isEdit ? 'Edit Leave Request' : 'Encode Leave Request'
                     }
                     description="CS Form No. 6 digitizer."
+                    actions={
+                        <Button
+                            variant="outline"
+                            onClick={() => router.visit('/leave')}
+                            className="bg-background"
+                        >
+                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            Back to Dashboard
+                        </Button>
+                    }
                 />
-
-                <LeaveNavigation />
 
                 <div className="matte-card elev-2">
                     <form

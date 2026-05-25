@@ -13,6 +13,7 @@ class LeaveStatusSeeder extends Seeder
             'Approved',
             'For Signature',
             'Cancelled',
+            'Disapproved',
         ];
 
         foreach ($statuses as $status) {

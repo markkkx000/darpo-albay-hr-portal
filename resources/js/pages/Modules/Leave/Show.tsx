@@ -11,7 +11,6 @@ import PageHeader from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import LeaveRoutes from '@/routes/leave';
-import LeaveNavigation from './Components/LeaveNavigation';
 
 interface User {
     id: number;
@@ -116,8 +115,6 @@ export default function LeaveShow({ leaveRequest }: Props) {
                         </Button>
                     }
                 />
-
-                <LeaveNavigation />
 
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                     {/* Main Content */}
@@ -391,41 +388,6 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                 </p>
                             </div>
                         )}
-
-                        <div className="matte-card elev-2 p-6">
-                            <h2 className="mb-4 flex items-center text-lg font-bold">
-                                <Clock className="mr-2 h-5 w-5 text-primary" />
-                                Credit Balances at Filing
-                            </h2>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="rounded-xl border border-primary/10 bg-primary/5 p-4">
-                                    <p className="mb-1 text-[10px] font-bold text-muted-foreground uppercase">
-                                        Vacation Leave Balance
-                                    </p>
-                                    <p className="text-2xl font-black">
-                                        {parseFloat(
-                                            String(
-                                                leaveRequest.vl_balance_at_filing ||
-                                                    0,
-                                            ),
-                                        ).toFixed(3)}
-                                    </p>
-                                </div>
-                                <div className="rounded-xl border border-primary/10 bg-primary/5 p-4">
-                                    <p className="mb-1 text-[10px] font-bold text-muted-foreground uppercase">
-                                        Sick Leave Balance
-                                    </p>
-                                    <p className="text-2xl font-black">
-                                        {parseFloat(
-                                            String(
-                                                leaveRequest.sl_balance_at_filing ||
-                                                    0,
-                                            ),
-                                        ).toFixed(3)}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     {/* Sidebar */}

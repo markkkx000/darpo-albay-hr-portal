@@ -102,18 +102,7 @@ class LeaveService
 
         $data['created_by'] = $createdBy;
 
-        // Fetch current VL/SL balances for snapshots (Historical Digitization)
-        $year = Carbon::parse($data['start_date'])->year;
 
-        $data['vl_balance_at_filing'] = LeaveCredit::where('user_id', $data['user_id'])
-            ->where('year', $year)
-            ->whereHas('leaveType', fn ($q) => $q->where('name', 'Vacation Leave'))
-            ->value('balance') ?? 0;
-
-        $data['sl_balance_at_filing'] = LeaveCredit::where('user_id', $data['user_id'])
-            ->where('year', $year)
-            ->whereHas('leaveType', fn ($q) => $q->where('name', 'Sick Leave'))
-            ->value('balance') ?? 0;
 
         return DB::transaction(function () use ($data) {
             $leaveRequest = LeaveRequest::create($data);

@@ -51,8 +51,7 @@ class StoreLeaveRequest extends FormRequest
             'approved_by_official' => ['nullable', 'string', 'max:255'],
             'leave_detail_type' => ['nullable', 'string', 'max:255'],
             'leave_detail_remarks' => ['nullable', 'string'],
-            'vl_balance_at_filing' => ['nullable', 'numeric'],
-            'sl_balance_at_filing' => ['nullable', 'numeric'],
+
             'has_attachments' => ['boolean'],
             'supporting_documents' => ['nullable', 'array'],
             'maternity_allocation_details' => ['nullable', 'string', 'max:255'],

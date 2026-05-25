@@ -59,7 +59,7 @@ class LeaveController extends Controller
 
     public function create()
     {
-        $users = User::select('id', 'first_name', 'last_name', 'employee_number')->orderBy('last_name')->get();
+        $users = User::select('id', 'first_name', 'last_name', 'employee_number', 'monthly_salary')->orderBy('last_name')->get();
         $types = LeaveType::where('is_active', true)->get();
         $statuses = LeaveStatus::where('is_active', true)->get();
         $holidays = Holiday::whereYear('date', now()->year)->get();
@@ -83,7 +83,7 @@ class LeaveController extends Controller
 
     public function edit(LeaveRequest $leaveRequest)
     {
-        $users = User::select('id', 'first_name', 'last_name', 'employee_number')->orderBy('last_name')->get();
+        $users = User::select('id', 'first_name', 'last_name', 'employee_number', 'monthly_salary')->orderBy('last_name')->get();
         $types = LeaveType::where('is_active', true)->get();
         $statuses = LeaveStatus::where('is_active', true)->get();
         $holidays = Holiday::whereYear('date', now()->year)->get();
