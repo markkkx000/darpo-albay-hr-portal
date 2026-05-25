@@ -116,7 +116,7 @@ test('authorized user can update attendance record date', function () {
 
     $response->assertRedirect();
     $attendance->refresh();
-    expect($attendance->date)->toBe($newDate);
+    expect($attendance->date->format('Y-m-d'))->toBe($newDate);
 });
 
 test('updating attendance record date prevents duplicate records', function () {

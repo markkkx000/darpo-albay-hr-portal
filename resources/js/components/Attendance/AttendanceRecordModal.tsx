@@ -77,7 +77,7 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
 
     const { data, setData, post, put, processing, errors, reset, clearErrors, transform } = useForm({
         user_id: record?.user_id?.toString() || '',
-        date: record?.date || new Date().toISOString().split('T')[0],
+        date: record?.date || new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' }),
         am_clock_in: record?.am_clock_in ? extractTime(record.am_clock_in) : '',
         am_clock_out: record?.am_clock_out ? extractTime(record.am_clock_out) : '',
         pm_clock_in: record?.pm_clock_in ? extractTime(record.pm_clock_in) : '',
@@ -130,7 +130,7 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
             } else {
                 setData({
                     user_id: '',
-                    date: new Date().toISOString().split('T')[0],
+                    date: new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' }),
                     am_clock_in: '',
                     am_clock_out: '',
                     pm_clock_in: '',
@@ -143,13 +143,27 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
     }, [record, isOpen, setData, clearErrors]);
 
     // Transform date and time into the expected backend format before submission
-    transform((data) => ({
-        ...data,
-        am_clock_in: data.am_clock_in ? `${data.date} ${data.am_clock_in}` : null,
-        am_clock_out: data.am_clock_out ? `${data.date} ${data.am_clock_out}` : null,
-        pm_clock_in: data.pm_clock_in ? `${data.date} ${data.pm_clock_in}` : null,
-        pm_clock_out: data.pm_clock_out ? `${data.date} ${data.pm_clock_out}` : null,
-    }));
+    transform((data) => {
+        const appendSeconds = (timeStr: string | null) => {
+            if (!timeStr) {
+return null;
+}
+
+            if (timeStr.split(':').length === 2) {
+return `${timeStr}:00`;
+}
+
+            return timeStr;
+        };
+        
+        return {
+            ...data,
+            am_clock_in: data.am_clock_in ? `${data.date} ${appendSeconds(data.am_clock_in)}` : null,
+            am_clock_out: data.am_clock_out ? `${data.date} ${appendSeconds(data.am_clock_out)}` : null,
+            pm_clock_in: data.pm_clock_in ? `${data.date} ${appendSeconds(data.pm_clock_in)}` : null,
+            pm_clock_out: data.pm_clock_out ? `${data.date} ${appendSeconds(data.pm_clock_out)}` : null,
+        };
+    });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

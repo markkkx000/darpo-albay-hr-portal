@@ -18,6 +18,7 @@ class Attendance extends Model
     use HasFactory, SoftDeletes;
 
     protected $casts = [
+        'date' => 'date:Y-m-d',
         'am_clock_in' => 'datetime',
         'am_clock_out' => 'datetime',
         'pm_clock_in' => 'datetime',

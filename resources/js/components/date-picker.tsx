@@ -25,17 +25,22 @@ interface DatePickerProps {
 
 export function DatePicker({ value, onChange, placeholder = "MM-DD-YYYY", className, disabled, id, "aria-invalid": ariaInvalid }: DatePickerProps) {
   const parseValueToDate = (val: string | null | undefined): { date?: Date, formattedStr: string } => {
-    if (!val) return { date: undefined, formattedStr: "" };
+    if (!val) {
+return { date: undefined, formattedStr: "" };
+}
     
     let dateStr = val;
+
     if (val.includes('T')) {
         const d = new Date(val);
+
         if (!isNaN(d.getTime())) {
             dateStr = d.toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
         }
     }
     
     const parsedDate = new Date(dateStr + 'T00:00:00');
+
     if (!isNaN(parsedDate.getTime())) {
         return { date: parsedDate, formattedStr: format(parsedDate, "MM-dd-yyyy") };
     }

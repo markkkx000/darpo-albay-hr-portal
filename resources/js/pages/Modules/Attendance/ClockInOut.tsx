@@ -76,7 +76,8 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
      */
     const { server_time } = usePage().props as any;
     
-    let currentAction: 'am_in' | 'am_out' | 'pm_in' | 'pm_out' | 'done' | 'half_day_am' | 'half_day_pm' | 'incomplete' = 'am_in';
+    let currentAction: 'am_in' | 'am_out' | 'pm_in' | 'pm_out' | 'done' | 'half_day_am' | 'half_day_pm' = 'am_in';
+    let isSkipped = false;
 
     if (!attendance) {
         // If no logs, check if server time is past 13:00 to skip AM
@@ -91,31 +92,30 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
         const { am_clock_in, am_clock_out, pm_clock_in, pm_clock_out } = attendance;
         const currentHour = new Date(server_time).getHours();
 
-        const isSkipped =
+        isSkipped =
             (!am_clock_in && !!am_clock_out)               // am out without am in
             || (!pm_clock_in && !!pm_clock_out)            // pm out without pm in
             || (!!am_clock_in && !am_clock_out && !!pm_clock_in); // jumped am_in → pm_in, skipped am_out
 
-        if (isSkipped) {
-            currentAction = 'incomplete';
-        } else if (am_clock_in && am_clock_out && pm_clock_in && pm_clock_out) {
-            currentAction = 'done';
-        } else if (!am_clock_in && !am_clock_out && pm_clock_in && pm_clock_out) {
-            currentAction = 'half_day_pm';
-        } else if (am_clock_in && am_clock_out && !pm_clock_in && !pm_clock_out) {
-            // Wait, if it's past 13:00 and they haven't logged PM IN, what should it be?
-            // They can still log PM IN, so it remains half_day_am, waiting for pm_in interaction.
-            currentAction = 'half_day_am';
-        } else if (pm_clock_in && !pm_clock_out) {
+        if (pm_clock_out) {
+            if (!am_clock_in && !am_clock_out) {
+                currentAction = 'half_day_pm';
+            } else if (isSkipped) {
+                currentAction = 'half_day_pm';
+            } else {
+                currentAction = 'done';
+            }
+        } else if (pm_clock_in) {
             currentAction = 'pm_out';
-        } else if (am_clock_in && !am_clock_out) {
-            // Cutoff: if they have am_in but no am_out, and it's past 13:00, abandon am_out
+        } else if (am_clock_out) {
+            currentAction = 'half_day_am';
+        } else if (am_clock_in) {
             if (currentHour >= 13) {
                 currentAction = 'pm_in';
             } else {
                 currentAction = 'am_out';
             }
-        } else if (!am_clock_in && !am_clock_out && !pm_clock_in && !pm_clock_out) {
+        } else {
             if (currentHour >= 13) {
                 currentAction = 'pm_in';
             } else {
@@ -373,8 +373,8 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                             </div>
                         </>
                     )}
-                    {currentAction === 'incomplete' && (
-                        <div className="w-full rounded-2xl flex items-center gap-3 border border-amber-500/30 bg-amber-500/10 px-5 py-4 text-sm">
+                    {isSkipped && (
+                        <div className="w-full rounded-2xl flex items-center gap-3 border border-amber-500/30 bg-amber-500/10 px-5 py-4 text-sm mb-4">
                             <AlertCircle className="h-5 w-5 shrink-0 text-amber-500" />
                             <div className="flex flex-col">
                                 <span className="font-bold text-amber-600 dark:text-amber-400 text-xs uppercase tracking-widest">Record Incomplete</span>
