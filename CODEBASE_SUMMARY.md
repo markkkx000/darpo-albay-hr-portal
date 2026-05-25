@@ -194,6 +194,7 @@ tests/
 - **Filtering & Search**: Server-side filtering by status (Working/Incomplete/Completed), date range, and full-text employee name search. 500ms debounce with instant Enter key trigger. Paginated via `paginate(15)`.
 - **Controllers**: `AttendanceController` (clock in/out, index), `AttendanceManagementController` (CRUD for records).
 - **Permissions**: `attendance.clock` (employee, hr_staff, hr_admin, division_head), `attendance.view` (all roles), `attendance.logs.view` (hr_staff, hr_admin, super_admin), `attendance.logs.manage` (hr_admin, super_admin).
+- **Timezone & Safari Compatibility**: Timezone manipulation is handled via `toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' })` on the frontend to prevent day-shifting. iOS Safari's native time picker strips seconds; always pad with `:00` before submitting to satisfy Laravel's `date_format:Y-m-d H:i:s`.
 
 ### Leave Tracking Module (`app/Modules/Leave/`)
 - **Dashboard** (`Index.tsx`): Paginated table of all leave requests with employee search (via `EmployeeSearch` component). Shows employee, leave type (with color dot), dates (specific or range), days requested, status badge, pay status, and who encoded it. "Encode" button to create new leave requests.

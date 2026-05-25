@@ -373,6 +373,7 @@
   - **Flatten shallow component trees.** If a component renders a single child with no added logic or styling, it is not a component — inline it.
   - **One source of truth per visual rule.** If a style is defined in `app.css` as a utility class, do not redefine it inline in JSX. Reference the class; do not copy the declaration.
   - **Dead code is removed immediately.** Commented-out JSX blocks, unused imports, and orphaned CSS classes must be deleted — not left "for reference."
+  - **Avoid Over-engineering Image Cropping:** When displaying user-uploaded images (like avatars), prefer native CSS (`object-fit: cover` on `aspect-square` containers) over complex frontend canvas-cropping or bounding-box workflows. This keeps the application simple, performant, and adheres to standard modern platform behavior.
 
 ---
 
