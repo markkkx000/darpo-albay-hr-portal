@@ -208,6 +208,7 @@ test('soft delete removes announcement from view', function () {
 });
 
 test('hr admin can upload valid announcement assets', function () {
+    config(['filesystems.default' => 's3']);
     Storage::fake('s3');
 
     $file = UploadedFile::fake()->image('announcement_image.png', 800, 600);
@@ -228,6 +229,7 @@ test('hr admin can upload valid announcement assets', function () {
 });
 
 test('non-hr user cannot upload assets', function () {
+    config(['filesystems.default' => 's3']);
     Storage::fake('s3');
 
     $file = UploadedFile::fake()->image('announcement_image.png', 800, 600);
@@ -241,6 +243,7 @@ test('non-hr user cannot upload assets', function () {
 });
 
 test('invalid files are rejected', function () {
+    config(['filesystems.default' => 's3']);
     Storage::fake('s3');
 
     // Test non-image file

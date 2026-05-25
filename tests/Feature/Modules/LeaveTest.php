@@ -56,6 +56,7 @@ it('allows super admin to access leave calendar with holidays', function () {
 });
 
 it('allows users with leave.view to upload valid leave attachments', function () {
+    config(['filesystems.default' => 's3']);
     Storage::fake('s3');
 
     $pdfFile = UploadedFile::fake()->create('attachment.pdf', 500, 'application/pdf');
@@ -85,6 +86,7 @@ it('allows users with leave.view to upload valid leave attachments', function ()
 });
 
 it('rejects unsupported file formats', function () {
+    config(['filesystems.default' => 's3']);
     Storage::fake('s3');
 
     $invalidFile = UploadedFile::fake()->create('script.sh', 500, 'application/x-sh');
@@ -99,6 +101,7 @@ it('rejects unsupported file formats', function () {
 });
 
 it('rejects files exceeding the 10MB limit', function () {
+    config(['filesystems.default' => 's3']);
     Storage::fake('s3');
 
     $largeFile = UploadedFile::fake()->create('huge.pdf', 11000, 'application/pdf'); // ~11MB
@@ -113,6 +116,7 @@ it('rejects files exceeding the 10MB limit', function () {
 });
 
 it('allows users to delete uploaded attachments', function () {
+    config(['filesystems.default' => 's3']);
     Storage::fake('s3');
 
     $imageFile = UploadedFile::fake()->image('document.jpg', 800, 600);
@@ -137,6 +141,7 @@ it('allows users to delete uploaded attachments', function () {
 });
 
 it('prevents directory traversal during deletion', function () {
+    config(['filesystems.default' => 's3']);
     Storage::fake('s3');
 
     // Attempt to delete an unauthorized URL (e.g. not containing leaves/attachments/)
@@ -151,6 +156,7 @@ it('prevents directory traversal during deletion', function () {
 });
 
 it('prunes unreferenced attachments older than 24 hours using schedule command', function () {
+    config(['filesystems.default' => 's3']);
     Storage::fake('s3');
 
     $year = date('Y');
