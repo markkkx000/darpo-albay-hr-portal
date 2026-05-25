@@ -16,7 +16,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import LeaveRoutes from '@/routes/leave';
 import {
-    formatDateForInput,
     parseLocalDate,
     getDetailsOptions,
     getSupportingDocsOptions,
@@ -45,25 +44,21 @@ export default function LeaveForm({
             user_id: leaveRequest?.user_id?.toString() || '',
             leave_type_id: leaveRequest?.leave_type_id?.toString() || '',
             leave_status_id: leaveRequest?.leave_status_id?.toString() || '',
-            start_date: formatDateForInput(leaveRequest?.start_date),
-            end_date: formatDateForInput(leaveRequest?.end_date),
+            start_date: leaveRequest?.start_date || '',
+            end_date: leaveRequest?.end_date || '',
             days_requested: leaveRequest?.days_requested || '',
             dates: '', // Dummy field for backend overlap validation errors
-            date_received: formatDateForInput(leaveRequest?.date_received),
-            date_approved: formatDateForInput(leaveRequest?.date_approved),
+            date_received: leaveRequest?.date_received || '',
+            date_approved: leaveRequest?.date_approved || '',
             approved_by_id: leaveRequest?.approved_by_id?.toString() || '',
             leave_details: leaveRequest?.leave_details || '',
             commutation_requested: leaveRequest?.commutation_requested || false,
             is_filed: leaveRequest?.is_filed || false,
             notes: leaveRequest?.notes || '',
             attachment_urls: leaveRequest?.attachment_urls || [''],
-            specific_dates: (leaveRequest?.specific_dates || []).map(
-                formatDateForInput,
-            ),
+            specific_dates: leaveRequest?.specific_dates || [],
             salary: leaveRequest?.salary || '',
-            date_filed:
-                formatDateForInput(leaveRequest?.date_filed) ||
-                formatDateForInput(new Date().toISOString()),
+            date_filed: leaveRequest?.date_filed || new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' }),
             days_with_pay: leaveRequest?.days_with_pay || '',
             days_without_pay: leaveRequest?.days_without_pay || '',
             others_pay_remarks: leaveRequest?.others_pay_remarks || '',
