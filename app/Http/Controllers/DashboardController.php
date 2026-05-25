@@ -32,12 +32,8 @@ class DashboardController extends Controller
         if ($isSuperAdmin) {
             $totalUsers = User::count();
 
-            // Active sessions (database driver check)
-            $activeSessions = DB::table('sessions')
-                ->whereNotNull('user_id')
-                ->where('last_activity', '>=', now()->subMinutes(15)->getTimestamp())
-                ->distinct('user_id')
-                ->count();
+            // Active sessions (based on last_seen_at timestamp)
+            $activeSessions = User::where('last_seen_at', '>=', now()->subMinutes(15))->count();
 
             // Dynamic System Health Check
             $dbHealth = true;
