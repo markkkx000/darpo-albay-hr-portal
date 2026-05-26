@@ -16,7 +16,7 @@ use Spatie\Activitylog\Support\LogOptions;
 #[Fillable(['title', 'content', 'posted_by', 'status', 'priority', 'published_at', 'target_type', 'target_id'])]
 class Announcement extends Model
 {
-    use HasFactory, SoftDeletes, LogsActivity;
+    use HasFactory, LogsActivity, SoftDeletes;
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -24,7 +24,7 @@ class Announcement extends Model
             ->logFillable()
             ->logOnlyDirty()
             ->dontLogEmptyChanges()
-            ->setDescriptionForEvent(fn(string $eventName) => "Announcement has been {$eventName}");
+            ->setDescriptionForEvent(fn (string $eventName) => "Announcement has been {$eventName}");
     }
 
     /**

@@ -139,10 +139,12 @@ export default function LeaveForm({
     useEffect(() => {
         if (data.user_id && data.user_id !== previousUserId.current) {
             const selectedUser = users?.find((u: any) => u.id.toString() === data.user_id);
+
             if (selectedUser) {
                 setData('salary', selectedUser.monthly_salary || '');
             }
         }
+
         previousUserId.current = data.user_id;
     }, [data.user_id, users, setData]);
 
@@ -150,13 +152,16 @@ export default function LeaveForm({
     useEffect(() => {
         if (data.leave_type_id && data.leave_type_id !== previousLeaveTypeId.current) {
             const selectedLeaveType = leaveTypes?.find((lt: any) => lt.id.toString() === data.leave_type_id);
+
             if (selectedLeaveType && selectedLeaveType.name.startsWith('Disapproved')) {
                 const disapprovedStatus = leaveStatuses?.find((ls: any) => ls.name === 'Disapproved');
+
                 if (disapprovedStatus) {
                     setData('leave_status_id', disapprovedStatus.id.toString());
                 }
             }
         }
+
         previousLeaveTypeId.current = data.leave_type_id;
     }, [data.leave_type_id, leaveTypes, leaveStatuses, setData]);
 

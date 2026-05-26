@@ -171,7 +171,7 @@ export default function Index({ users, isHrAdmin }: Props) {
         <>
             <Head title="DTR Export" />
 
-            <div className="animate-fade-up mx-auto w-full max-w-4xl p-4 md:p-8">
+            <div className="mx-auto w-full max-w-4xl p-4 md:p-8">
                 <PageHeader
                     title="Daily Time Record (DTR) Export"
                     description="Export CS Form 48 (Daily Time Record) or raw attendance data for employee records."

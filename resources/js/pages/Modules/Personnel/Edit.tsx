@@ -74,9 +74,11 @@ export default function Edit({ employee, divisions, units, positions, appointmen
                 ...data,
                 unit_id: data.unit_id === 'none' ? '' : data.unit_id,
             };
+
             if (!(result.profile_picture instanceof File)) {
                 delete result.profile_picture;
             }
+
             return result;
         });
 

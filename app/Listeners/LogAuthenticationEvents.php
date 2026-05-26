@@ -5,7 +5,6 @@ namespace App\Listeners;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
-use Illuminate\Events\Dispatcher;
 
 class LogAuthenticationEvents
 {
@@ -15,7 +14,7 @@ class LogAuthenticationEvents
             ->causedBy($event->user)
             ->withProperties([
                 'ip' => request()->ip(),
-                'user_agent' => request()->userAgent()
+                'user_agent' => request()->userAgent(),
             ])
             ->log('User logged in');
     }
@@ -26,7 +25,7 @@ class LogAuthenticationEvents
             ->causedBy($event->user)
             ->withProperties([
                 'ip' => request()->ip(),
-                'user_agent' => request()->userAgent()
+                'user_agent' => request()->userAgent(),
             ])
             ->log('User logged out');
     }

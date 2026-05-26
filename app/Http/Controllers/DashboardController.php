@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Modules\Announcements\Models\Announcement;
 use App\Modules\Attendance\Models\Attendance;
 use App\Modules\Leave\Models\LeaveCredit;
 use App\Modules\Leave\Models\LeaveRequest;
@@ -12,6 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Activitylog\Models\Activity;
 
 class DashboardController extends Controller
 {
@@ -65,14 +65,14 @@ class DashboardController extends Controller
             }
 
             // Admin Recent Activities: Fetch from Spatie Activitylog
-            $recentActivity = \Spatie\Activitylog\Models\Activity::with('causer')
+            $recentActivity = Activity::with('causer')
                 ->latest()
                 ->take(5)
                 ->get()
                 ->map(function ($activity) {
                     $causer = $activity->causer;
                     $name = $causer ? "{$causer->first_name} {$causer->last_name}" : 'System';
-                    
+
                     return [
                         'id' => 'act_'.$activity->id,
                         'type' => 'system_activity',

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('leave_requests', function (Blueprint $table) {
             $table->dropColumn([
                 'vl_balance_at_filing',
-                'sl_balance_at_filing'
+                'sl_balance_at_filing',
             ]);
         });
     }

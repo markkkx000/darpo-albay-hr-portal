@@ -181,7 +181,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
         <>
             <Head title="Manage Attendance Records" />
 
-            <div className="animate-fade-up relative z-10 w-full space-y-8 p-4">
+            <div className="relative z-10 w-full space-y-8 p-4">
                 <PageHeader
                     title="Attendance Management"
                     description="Systematically manage records and resolve logging anomalies."

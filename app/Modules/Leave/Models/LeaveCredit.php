@@ -21,7 +21,7 @@ class LeaveCredit extends Model
             ->logFillable()
             ->logOnlyDirty()
             ->dontLogEmptyChanges()
-            ->setDescriptionForEvent(fn(string $eventName) => "Leave credit balance has been {$eventName}");
+            ->setDescriptionForEvent(fn (string $eventName) => "Leave credit balance has been {$eventName}");
     }
 
     protected $casts = [
