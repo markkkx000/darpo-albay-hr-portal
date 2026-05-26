@@ -339,16 +339,16 @@ class EmployeeService
 
         // 3. Save as WebP
         $filename = uniqid('avatar_').'.webp';
-        $directory = storage_path('app/public/avatars');
-        if (! file_exists($directory)) {
-            mkdir($directory, 0755, true);
-        }
+        $path = 'avatars/'.$filename;
 
-        $filepath = $directory.'/'.$filename;
-        imagewebp($image, $filepath, 80);
+        ob_start();
+        imagewebp($image, null, 80);
+        $imageContent = ob_get_clean();
         imagedestroy($image);
 
-        return '/storage/avatars/'.$filename;
+        Storage::put($path, $imageContent);
+
+        return $path;
     }
 
     /**
@@ -360,9 +360,20 @@ class EmployeeService
             return;
         }
 
-        $relativePath = str_replace('/storage/', '', $path);
-        if (Storage::disk('public')->exists($relativePath)) {
-            Storage::disk('public')->delete($relativePath);
+        $relativePath = $path;
+        if (str_starts_with($relativePath, '/storage/')) {
+            $relativePath = substr($relativePath, 9);
+        } elseif (str_starts_with($relativePath, 'storage/')) {
+            $relativePath = substr($relativePath, 8);
+        }
+
+        try {
+            if (Storage::exists($relativePath)) {
+                Storage::delete($relativePath);
+            }
+        } catch (\Exception $e) {
+            // S3/R2 throws a 403 Forbidden instead of returning false if a file doesn't exist
+            // and the token lacks ListBucket permissions. We can safely ignore this.
         }
     }
 }

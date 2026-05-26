@@ -8,8 +8,10 @@ use App\Modules\Leave\Models\LeaveCredit;
 use App\Modules\Leave\Models\LeaveRequest;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class LeaveService
@@ -100,18 +102,7 @@ class LeaveService
 
         $data['created_by'] = $createdBy;
 
-        // Fetch current VL/SL balances for snapshots (Historical Digitization)
-        $year = Carbon::parse($data['start_date'])->year;
 
-        $data['vl_balance_at_filing'] = LeaveCredit::where('user_id', $data['user_id'])
-            ->where('year', $year)
-            ->whereHas('leaveType', fn ($q) => $q->where('name', 'Vacation Leave'))
-            ->value('balance') ?? 0;
-
-        $data['sl_balance_at_filing'] = LeaveCredit::where('user_id', $data['user_id'])
-            ->where('year', $year)
-            ->whereHas('leaveType', fn ($q) => $q->where('name', 'Sick Leave'))
-            ->value('balance') ?? 0;
 
         return DB::transaction(function () use ($data) {
             $leaveRequest = LeaveRequest::create($data);
@@ -309,5 +300,148 @@ class LeaveService
                 $credit->save();
             }
         }
+    }
+
+    /**
+     * Store and optimize a leave request attachment.
+     */
+    public function storeAttachment(UploadedFile $file): string
+    {
+        $extension = strtolower($file->getClientOriginalExtension());
+        $mime = $file->getMimeType();
+        $year = now()->format('Y');
+        $month = now()->format('m');
+        $uniqid = uniqid('attachment_');
+
+        // Check if PDF
+        if ($mime === 'application/pdf' || $extension === 'pdf') {
+            $filename = "{$uniqid}.pdf";
+            $path = "leaves/attachments/{$year}/{$month}/{$filename}";
+            Storage::putFileAs("leaves/attachments/{$year}/{$month}", $file, $filename);
+
+            return Storage::url($path);
+        }
+
+        // Handle Image
+        $image = null;
+        if ($mime === 'image/jpeg' || $extension === 'jpg' || $extension === 'jpeg') {
+            $image = @imagecreatefromjpeg($file->getRealPath());
+            if ($image && function_exists('exif_read_data')) {
+                try {
+                    $exif = @exif_read_data($file->getRealPath());
+                    if ($exif && isset($exif['Orientation'])) {
+                        switch ($exif['Orientation']) {
+                            case 3:
+                                $image = imagerotate($image, 180, 0);
+                                break;
+                            case 6:
+                                $image = imagerotate($image, -90, 0);
+                                break;
+                            case 8:
+                                $image = imagerotate($image, 90, 0);
+                                break;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Ignore EXIF errors
+                }
+            }
+        } elseif ($mime === 'image/png' || $extension === 'png') {
+            $image = @imagecreatefrompng($file->getRealPath());
+            if ($image) {
+                imagealphablending($image, false);
+                imagesavealpha($image, true);
+            }
+        } elseif ($mime === 'image/webp' || $extension === 'webp') {
+            $image = @imagecreatefromwebp($file->getRealPath());
+        }
+
+        if (! $image) {
+            throw new \InvalidArgumentException('Unsupported or invalid image format.');
+        }
+
+        // Resize maintaining aspect ratio (max 1200px)
+        $origWidth = imagesx($image);
+        $origHeight = imagesy($image);
+        $maxSize = 1200;
+
+        if ($origWidth > $maxSize || $origHeight > $maxSize) {
+            if ($origWidth > $origHeight) {
+                $newWidth = $maxSize;
+                $newHeight = (int) round(($origHeight / $origWidth) * $maxSize);
+            } else {
+                $newHeight = $maxSize;
+                $newWidth = (int) round(($origWidth / $origHeight) * $maxSize);
+            }
+
+            $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+            if ($mime === 'image/png' || $extension === 'png') {
+                imagealphablending($resizedImage, false);
+                imagesavealpha($resizedImage, true);
+                $transparent = imagecolorallocatealpha($resizedImage, 0, 0, 0, 127);
+                imagefill($resizedImage, 0, 0, $transparent);
+            } else {
+                $white = imagecolorallocate($resizedImage, 255, 255, 255);
+                imagefill($resizedImage, 0, 0, $white);
+            }
+
+            imagecopyresampled($resizedImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $origWidth, $origHeight);
+            imagedestroy($image);
+            $image = $resizedImage;
+        }
+
+        $filename = "{$uniqid}.webp";
+        $path = "leaves/attachments/{$year}/{$month}/{$filename}";
+
+        ob_start();
+        imagewebp($image, null, 80);
+        $imageContent = ob_get_clean();
+        imagedestroy($image);
+
+        Storage::put($path, $imageContent);
+
+        return Storage::url($path);
+    }
+
+    /**
+     * Delete a leave request attachment.
+     */
+    public function deleteAttachment(string $url): bool
+    {
+        $path = $this->extractRelativePath($url);
+
+        if (! $path || ! str_starts_with($path, 'leaves/attachments/')) {
+            return false;
+        }
+
+        try {
+            if (Storage::exists($path)) {
+                return Storage::delete($path);
+            }
+        } catch (\Exception $e) {
+            // S3 throws exception if file is not found, ignore
+        }
+
+        return false;
+    }
+
+    /**
+     * Extract relative S3 path from full URL.
+     */
+    protected function extractRelativePath(string $url): ?string
+    {
+        $s3Url = config('filesystems.disks.s3.url');
+
+        if ($s3Url && str_starts_with($url, $s3Url)) {
+            return ltrim(substr($url, strlen($s3Url)), '/');
+        }
+
+        // Fallback: parse URL and search for "leaves/attachments/"
+        $pathIndex = strpos($url, 'leaves/attachments/');
+        if ($pathIndex !== false) {
+            return substr($url, $pathIndex);
+        }
+
+        return null;
     }
 }

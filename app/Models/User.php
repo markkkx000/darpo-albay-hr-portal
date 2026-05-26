@@ -21,14 +21,26 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 #[Fillable(['employee_number', 'first_name', 'middle_name', 'last_name', 'email', 'password', 'is_active', 'division_id', 'unit_id', 'appointment_status_id', 'hire_date', 'contact_number', 'address', 'sex', 'date_of_birth', 'years_in_service', 'plantilla_number', 'gsis_bp_number', 'philhealth', 'hdmf_pagibig_no', 'tin_number', 'prc_id_no', 'prc_expiration', 'orig_date_of_appointment', 'date_of_latest_appointment', 'date_of_assumption', 'date_of_separation', 'date_hired_government', 'present_address', 'civil_status', 'fund_code', 'func_activity_code', 'item_number', 'office_per_appointment', 'plantilla_position', 'lbp_account_number', 'profile_picture', 'salary_grade', 'salary_step', 'monthly_salary'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, HasRoles, Notifiable, SoftDeletes;
+    use HasFactory, HasRoles, Notifiable, SoftDeletes, LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges()
+            ->setDescriptionForEvent(fn(string $eventName) => "User has been {$eventName}");
+    }
 
     protected $appends = ['name', 'age', 'avatar'];
 
@@ -43,14 +55,14 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
-            'hire_date' => 'date',
-            'date_of_birth' => 'date',
-            'prc_expiration' => 'date',
-            'orig_date_of_appointment' => 'date',
-            'date_of_latest_appointment' => 'date',
-            'date_of_assumption' => 'date',
-            'date_of_separation' => 'date',
-            'date_hired_government' => 'date',
+            'hire_date' => 'date:Y-m-d',
+            'date_of_birth' => 'date:Y-m-d',
+            'prc_expiration' => 'date:Y-m-d',
+            'orig_date_of_appointment' => 'date:Y-m-d',
+            'date_of_latest_appointment' => 'date:Y-m-d',
+            'date_of_assumption' => 'date:Y-m-d',
+            'date_of_separation' => 'date:Y-m-d',
+            'date_hired_government' => 'date:Y-m-d',
             'salary_grade' => 'integer',
             'salary_step' => 'integer',
             'monthly_salary' => 'decimal:2',
@@ -82,15 +94,18 @@ class User extends Authenticatable
             return asset('img/pfp_placeholder.png');
         }
 
-        if (str_starts_with($this->profile_picture, '/storage/')) {
-            return asset(substr($this->profile_picture, 1));
+        if (str_starts_with($this->profile_picture, 'http')) {
+            return $this->profile_picture;
         }
 
-        if (str_starts_with($this->profile_picture, 'storage/')) {
-            return asset($this->profile_picture);
+        $path = $this->profile_picture;
+        if (str_starts_with($path, '/storage/')) {
+            $path = substr($path, 9);
+        } elseif (str_starts_with($path, 'storage/')) {
+            $path = substr($path, 8);
         }
 
-        return asset('storage/'.$this->profile_picture);
+        return Storage::url($path);
     }
 
     public function division(): BelongsTo

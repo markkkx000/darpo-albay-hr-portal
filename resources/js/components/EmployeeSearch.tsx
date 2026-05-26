@@ -21,6 +21,7 @@ interface EmployeeSearchProps {
     returnValue?: 'id' | 'name';
     withAllEmployees?: boolean;
     error?: boolean;
+    disabled?: boolean;
 }
 
 export function EmployeeSearch({ 
@@ -33,6 +34,7 @@ export function EmployeeSearch({
     returnValue = 'name',
     withAllEmployees = false,
     error = false,
+    disabled = false,
 }: EmployeeSearchProps) {
     const [query, setQuery] = useState('');
 
@@ -97,17 +99,19 @@ export function EmployeeSearch({
                 onClose={() => setQuery('')}
                 nullable
                 immediate
+                disabled={disabled}
             >
                 <div className="relative w-full z-10">
                     <div className={cn(
                         "relative w-full cursor-default overflow-hidden rounded-2xl border border-input bg-background text-left shadow-sm focus-within:ring-1 focus-within:ring-ring",
-                        error && "border-destructive focus-within:ring-destructive ring-destructive"
+                        error && "border-destructive focus-within:ring-destructive ring-destructive",
+                        disabled && "opacity-50 cursor-not-allowed bg-muted"
                     )}>
                         <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
                             <Search className="h-4 w-4 text-muted-foreground/60" />
                         </div>
                         <ComboboxInput
-                            className="w-full border-none py-2.5 pl-11 pr-10 text-sm leading-5 text-foreground bg-transparent focus:ring-0 outline-none"
+                            className="w-full border-none py-2.5 pl-11 pr-10 text-sm leading-5 text-foreground bg-transparent focus:ring-0 outline-none disabled:cursor-not-allowed"
                             displayValue={(val: string) => {
                                 if (val === 'all' || !val) {
                                     return '';

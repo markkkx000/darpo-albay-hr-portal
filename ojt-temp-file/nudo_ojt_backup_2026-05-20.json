@@ -1,0 +1,226 @@
+[
+  {
+    "date": "2026-03-05",
+    "status": "present",
+    "morIn": "08:04",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "17:04"
+  },
+  {
+    "date": "2026-03-06",
+    "status": "present",
+    "morIn": "07:56",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "17:06"
+  },
+  {
+    "date": "2026-03-09",
+    "status": "present",
+    "morIn": "08:00",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "17:10"
+  },
+  {
+    "date": "2026-03-10",
+    "status": "present",
+    "morIn": "08:05",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "17:11"
+  },
+  {
+    "date": "2026-03-12",
+    "status": "present",
+    "morIn": "07:14",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:14"
+  },
+  {
+    "date": "2026-03-16",
+    "status": "present",
+    "morIn": "07:02",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "17:00"
+  },
+  {
+    "date": "2026-03-18",
+    "status": "present",
+    "morIn": "08:10",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "17:03"
+  },
+  {
+    "date": "2026-03-19",
+    "status": "present",
+    "morIn": "08:37",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "17:22"
+  },
+  {
+    "date": "2026-03-24",
+    "status": "present",
+    "morIn": "07:16",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:08"
+  },
+  {
+    "date": "2026-03-25",
+    "status": "halfday-pm",
+    "morIn": "",
+    "morOut": "",
+    "aftIn": "13:00",
+    "aftOut": "18:07"
+  },
+  {
+    "date": "2026-03-30",
+    "status": "halfday-am",
+    "morIn": "07:00",
+    "morOut": "12:00",
+    "aftIn": "",
+    "aftOut": ""
+  },
+  {
+    "date": "2026-03-31",
+    "status": "halfday-pm",
+    "morIn": "",
+    "morOut": "",
+    "aftIn": "13:00",
+    "aftOut": "18:00"
+  },
+  {
+    "date": "2026-04-06",
+    "status": "halfday-am",
+    "morIn": "06:57",
+    "morOut": "12:00",
+    "aftIn": "",
+    "aftOut": ""
+  },
+  {
+    "date": "2026-04-14",
+    "status": "present",
+    "morIn": "07:25",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:00"
+  },
+  {
+    "date": "2026-04-15",
+    "status": "present",
+    "morIn": "07:25",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:02"
+  },
+  {
+    "date": "2026-04-16",
+    "status": "present",
+    "morIn": "07:54",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:00"
+  },
+  {
+    "date": "2026-04-20",
+    "status": "present",
+    "morIn": "07:50",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:01"
+  },
+  {
+    "date": "2026-04-21",
+    "status": "present",
+    "morIn": "08:10",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:08"
+  },
+  {
+    "date": "2026-04-27",
+    "status": "present",
+    "morIn": "08:00",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:11"
+  },
+  {
+    "date": "2026-04-29",
+    "status": "present",
+    "morIn": "08:30",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:20"
+  },
+  {
+    "date": "2026-04-30",
+    "status": "present",
+    "morIn": "08:30",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:08"
+  },
+  {
+    "date": "2026-05-04",
+    "status": "present",
+    "morIn": "10:25",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:20"
+  },
+  {
+    "date": "2026-05-06",
+    "status": "present",
+    "morIn": "07:25",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:18"
+  },
+  {
+    "date": "2026-05-07",
+    "status": "present",
+    "morIn": "07:06",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:11"
+  },
+  {
+    "date": "2026-05-12",
+    "status": "present",
+    "morIn": "08:00",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:10"
+  },
+  {
+    "date": "2026-05-13",
+    "status": "present",
+    "morIn": "07:14",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:17"
+  },
+  {
+    "date": "2026-05-14",
+    "status": "present",
+    "morIn": "08:30",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:20"
+  },
+  {
+    "date": "2026-05-19",
+    "status": "present",
+    "morIn": "07:50",
+    "morOut": "12:00",
+    "aftIn": "13:00",
+    "aftOut": "18:15"
+  }
+]

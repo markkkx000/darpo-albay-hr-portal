@@ -11,8 +11,10 @@ use App\Modules\Announcements\Requests\AnnouncementUpdateRequest;
 use App\Modules\Announcements\Services\AnnouncementService;
 use App\Modules\Personnel\Models\Division;
 use App\Modules\Personnel\Models\Position;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -136,6 +138,25 @@ class AnnouncementController extends Controller
         $this->announcementService->delete($announcement);
 
         return back()->with('success', 'Announcement deleted successfully.');
+    }
+
+    /**
+     * Upload and optimize an image asset for announcements.
+     */
+    public function uploadAsset(Request $request): JsonResponse
+    {
+        abort_unless($request->user()->can('announcements.manage'), 403);
+
+        $request->validate([
+            'image' => ['required', 'image', 'mimes:jpeg,png,webp', 'max:5120'],
+        ]);
+
+        $path = $this->announcementService->storeAsset($request->file('image'));
+        $url = Storage::url($path);
+
+        return response()->json([
+            'url' => $url,
+        ]);
     }
 
     /**

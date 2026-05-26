@@ -12,8 +12,8 @@ class LeaveStatusSeeder extends Seeder
         $statuses = [
             'Approved',
             'For Signature',
-            'No Filed Leave',
             'Cancelled',
+            'Disapproved',
         ];
 
         foreach ($statuses as $status) {

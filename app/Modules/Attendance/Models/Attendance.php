@@ -12,14 +12,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['user_id', 'date', 'clock_in', 'clock_out'])]
+#[Fillable(['user_id', 'date', 'am_clock_in', 'am_clock_out', 'pm_clock_in', 'pm_clock_out'])]
 class Attendance extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $casts = [
-        'clock_in' => 'datetime',
-        'clock_out' => 'datetime',
+        'date' => 'date:Y-m-d',
+        'am_clock_in' => 'datetime',
+        'am_clock_out' => 'datetime',
+        'pm_clock_in' => 'datetime',
+        'pm_clock_out' => 'datetime',
     ];
 
     public function scopeFilter(Builder $query, array $filters): void
@@ -42,13 +45,54 @@ class Attendance extends Model
 
         if ($status = $filters['status'] ?? null) {
             if ($status === 'working') {
-                $query->whereNull('clock_out')
-                    ->whereDate('date', Carbon::today());
+                $query->where(function (Builder $q) {
+                    $q->whereNotNull('am_clock_in')->whereNull('am_clock_out')
+                      ->orWhere(function (Builder $inner) {
+                          $inner->whereNotNull('pm_clock_in')->whereNull('pm_clock_out');
+                      });
+                })->whereDate('date', Carbon::today());
             } elseif ($status === 'incomplete') {
-                $query->whereNull('clock_out')
-                    ->whereDate('date', '<', Carbon::today());
+                $query->where(function (Builder $q) {
+                    // Past days: missing AM OUT (when AM IN exists)
+                    $q->whereNotNull('am_clock_in')
+                      ->whereNull('am_clock_out')
+                      ->whereDate('date', '<', Carbon::today());
+                })->orWhere(function (Builder $q) {
+                    // Past days: missing PM OUT (when PM IN exists)
+                    $q->whereNotNull('pm_clock_in')
+                      ->whereNull('pm_clock_out')
+                      ->whereDate('date', '<', Carbon::today());
+                })->orWhere(function (Builder $q) {
+                    // Any day: missing AM IN (when AM OUT exists)
+                    $q->whereNull('am_clock_in')->whereNotNull('am_clock_out');
+                })->orWhere(function (Builder $q) {
+                    // Any day: missing PM IN (when PM OUT exists)
+                    $q->whereNull('pm_clock_in')->whereNotNull('pm_clock_out');
+                })->orWhere(function (Builder $q) {
+                    // Jumped session (AM IN and PM IN exist, but AM OUT is missing)
+                    $q->whereNotNull('am_clock_in')
+                      ->whereNull('am_clock_out')
+                      ->whereNotNull('pm_clock_in');
+                });
+            } elseif ($status === 'half_day') {
+                $query->where(function (Builder $q) {
+                    // AM only
+                    $q->whereNotNull('am_clock_in')
+                      ->whereNotNull('am_clock_out')
+                      ->whereNull('pm_clock_in')
+                      ->whereNull('pm_clock_out');
+                })->orWhere(function (Builder $q) {
+                    // PM only
+                    $q->whereNull('am_clock_in')
+                      ->whereNull('am_clock_out')
+                      ->whereNotNull('pm_clock_in')
+                      ->whereNotNull('pm_clock_out');
+                });
             } elseif ($status === 'completed') {
-                $query->whereNotNull('clock_out');
+                $query->whereNotNull('am_clock_in')
+                      ->whereNotNull('am_clock_out')
+                      ->whereNotNull('pm_clock_in')
+                      ->whereNotNull('pm_clock_out');
             } elseif ($status === 'archived') {
                 $query->onlyTrashed();
             }

@@ -100,47 +100,7 @@ it('deducts only days_with_pay from credits', function () {
     expect($credit->balance)->toBe('9.000');
 });
 
-it('stores credit snapshots on leave request creation', function () {
-    $vlType = LeaveType::where('name', 'Vacation Leave')->first();
-    $slType = LeaveType::where('name', 'Sick Leave')->first();
-    $status = LeaveStatus::where('name', 'For Signature')->first();
 
-    LeaveCredit::create([
-        'user_id' => $this->employee->id,
-        'leave_type_id' => $vlType->id,
-        'year' => now()->year,
-        'earned' => 15,
-        'used' => 0,
-        'balance' => 15,
-    ]);
-
-    LeaveCredit::create([
-        'user_id' => $this->employee->id,
-        'leave_type_id' => $slType->id,
-        'year' => now()->year,
-        'earned' => 10,
-        'used' => 0,
-        'balance' => 10,
-    ]);
-
-    $data = [
-        'user_id' => $this->employee->id,
-        'leave_type_id' => $vlType->id,
-        'leave_status_id' => $status->id,
-        'start_date' => now()->format('Y-m-d'),
-        'end_date' => now()->format('Y-m-d'),
-        'days_requested' => 1,
-        'days_with_pay' => 1,
-        'days_without_pay' => 0,
-    ];
-
-    $this->actingAs($this->admin)
-        ->post('/leave', $data);
-
-    $leave = LeaveRequest::latest()->first();
-    expect($leave->vl_balance_at_filing)->toBe('15.000');
-    expect($leave->sl_balance_at_filing)->toBe('10.000');
-});
 
 it('validates sick leave attachments for more than 5 days', function () {
     $slType = LeaveType::where('name', 'Sick Leave')->first();

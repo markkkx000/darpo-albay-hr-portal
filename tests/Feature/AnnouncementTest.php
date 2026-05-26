@@ -8,6 +8,8 @@ use App\Modules\Personnel\Models\Division;
 use App\Modules\Personnel\Models\Position;
 use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -203,4 +205,66 @@ test('soft delete removes announcement from view', function () {
         ->get("/announcements/{$announcement->id}");
 
     $response->assertNotFound();
+});
+
+test('hr admin can upload valid announcement assets', function () {
+    config(['filesystems.default' => 's3']);
+    Storage::fake('s3');
+
+    $file = UploadedFile::fake()->image('announcement_image.png', 800, 600);
+
+    $response = $this->actingAs($this->hrAdmin)
+        ->postJson('/announcements/upload-asset', [
+            'image' => $file,
+        ]);
+
+    $response->assertOk();
+    $response->assertJsonStructure(['url']);
+
+    $year = date('Y');
+    $month = date('m');
+
+    // S3 driver should have the optimized file stored
+    Storage::disk('s3')->assertExists("announcements/assets/{$year}/{$month}/".basename($response->json('url')));
+});
+
+test('non-hr user cannot upload assets', function () {
+    config(['filesystems.default' => 's3']);
+    Storage::fake('s3');
+
+    $file = UploadedFile::fake()->image('announcement_image.png', 800, 600);
+
+    $response = $this->actingAs($this->employee)
+        ->postJson('/announcements/upload-asset', [
+            'image' => $file,
+        ]);
+
+    $response->assertForbidden();
+});
+
+test('invalid files are rejected', function () {
+    config(['filesystems.default' => 's3']);
+    Storage::fake('s3');
+
+    // Test non-image file
+    $file = UploadedFile::fake()->create('document.pdf', 500, 'application/pdf');
+
+    $response = $this->actingAs($this->hrAdmin)
+        ->postJson('/announcements/upload-asset', [
+            'image' => $file,
+        ]);
+
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors('image');
+
+    // Test file size exceeding limit (5MB)
+    $largeFile = UploadedFile::fake()->create('large_image.png', 6000, 'image/png'); // ~6MB
+
+    $response = $this->actingAs($this->hrAdmin)
+        ->postJson('/announcements/upload-asset', [
+            'image' => $largeFile,
+        ]);
+
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors('image');
 });

@@ -1,13 +1,7 @@
-import {
-    Combobox,
-    ComboboxInput,
-    ComboboxOption,
-    ComboboxOptions,
-    ComboboxButton,
-} from '@headlessui/react';
 import { Head, router } from '@inertiajs/react';
-import { ChevronLeft, ChevronRight, Check, ChevronsUpDown } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useMemo } from 'react';
+import { EmployeeSearch } from '@/components/EmployeeSearch';
 import PageHeader from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import {
@@ -87,8 +81,6 @@ export default function LeaveCalendar({
     const month = parseInt(currentMonth, 10);
     const userId = currentUserId;
 
-    const [query, setQuery] = useState('');
-
     // Normalize dates to Manila time once to avoid loop overhead and timezone bugs
     const getManilaDateStr = (isoString: string) => {
         if (!isoString) {
@@ -112,45 +104,6 @@ export default function LeaveCalendar({
             })),
         [leaves],
     );
-
-    const filteredUsers = useMemo(() => {
-        const usersArray = Array.isArray(users) ? users : [];
-
-        // Identify selected user name to prevent dropdown truncation when clicking
-        let selectedName = '';
-
-        if (userId) {
-            const found = usersArray.find(
-                (u: any) => u.id.toString() === userId.toString(),
-            );
-
-            if (found) {
-                selectedName = `${found.last_name}, ${found.first_name}`;
-            }
-        }
-
-        // If query is empty or matches the selected display name exactly, show all employees
-        if (
-            query === '' ||
-            query.toLowerCase() === selectedName.toLowerCase()
-        ) {
-            return usersArray;
-        }
-
-        return usersArray.filter((u: any) => {
-            const fullName = `${u.first_name} ${u.last_name}`.toLowerCase();
-            const lastNameFirst =
-                `${u.last_name}, ${u.first_name}`.toLowerCase();
-            const employeeNum = (u.employee_number || '').toLowerCase();
-            const search = query.toLowerCase();
-
-            return (
-                fullName.includes(search) ||
-                lastNameFirst.includes(search) ||
-                employeeNum.includes(search)
-            );
-        });
-    }, [query, users, userId]);
 
     const changeMonth = (delta: number) => {
         let newMonth = month + delta;
@@ -300,163 +253,13 @@ export default function LeaveCalendar({
 
                         {/* 25% - Employee Selector */}
                         <div className="col-span-1 flex items-center justify-center lg:justify-start">
-                            <Combobox
-                                value={userId ? userId.toString() : 'all'}
-                                onChange={changeUser}
-                                onClose={() => setQuery('')}
-                            >
-                                <div className="relative z-50 w-full">
-                                    <div className="relative w-full cursor-default overflow-hidden rounded-xl border border-input bg-background text-left shadow-sm focus-within:ring-1 focus-within:ring-ring">
-                                        <ComboboxInput
-                                            className="w-full border-none bg-transparent py-2 pr-10 pl-3 text-sm leading-5 text-foreground outline-none focus:ring-0"
-                                            displayValue={(val: string) => {
-                                                if (val === 'all' || !val) {
-                                                    return 'All Employees';
-                                                }
-
-                                                const found = users.find(
-                                                    (u: any) =>
-                                                        u.id.toString() === val,
-                                                );
-
-                                                return found
-                                                    ? `${found.last_name}, ${found.first_name}`
-                                                    : '';
-                                            }}
-                                            placeholder="Search employee..."
-                                            onChange={(event) =>
-                                                setQuery(event.target.value)
-                                            }
-                                        />
-                                        <ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2">
-                                            <ChevronsUpDown
-                                                className="h-4 w-4 text-muted-foreground"
-                                                aria-hidden="true"
-                                            />
-                                        </ComboboxButton>
-                                    </div>
-                                        <ComboboxOptions 
-                                            anchor={{ to: 'bottom start', gap: 4 }}
-                                            portal
-                                            transition
-                                            className="ring-opacity-5 max-h-60 w-[var(--input-width)] overflow-auto rounded-xl border bg-popover px-1.5 py-1 text-base shadow-lg ring-1 ring-black focus:outline-none sm:text-sm transition duration-100 ease-in data-[leave]:opacity-0 z-50"
-                                        >
-                                            {filteredUsers.length === 0 &&
-                                            query !== '' ? (
-                                                <div className="relative cursor-default px-4 py-2 text-muted-foreground select-none">
-                                                    Nothing found.
-                                                </div>
-                                            ) : (
-                                                <>
-                                                    <ComboboxOption
-                                                        className={({
-                                                            focus,
-                                                        }) =>
-                                                            cn(
-                                                                'relative cursor-default py-2 pr-4 pl-10 select-none',
-                                                                focus
-                                                                    ? 'mx-1.5 my-0.5 rounded-[16px] item-hover-gradient'
-                                                                    : 'mx-1.5 my-0.5 text-popover-foreground',
-                                                            )
-                                                        }
-                                                        value="all"
-                                                    >
-                                                        {({
-                                                            selected,
-                                                            focus,
-                                                        }) => (
-                                                            <>
-                                                                <span
-                                                                    className={cn(
-                                                                        'block truncate',
-                                                                        selected
-                                                                            ? 'font-medium'
-                                                                            : 'font-normal',
-                                                                    )}
-                                                                >
-                                                                    All
-                                                                    Employees
-                                                                </span>
-                                                                {selected ? (
-                                                                    <span
-                                                                        className={cn(
-                                                                            'absolute inset-y-0 left-0 flex items-center pl-3',
-                                                                            focus
-                                                                                ? 'font-extrabold text-black'
-                                                                                : 'text-primary',
-                                                                        )}
-                                                                    >
-                                                                        <Check
-                                                                            className="h-4 w-4"
-                                                                            aria-hidden="true"
-                                                                        />
-                                                                    </span>
-                                                                ) : null}
-                                                            </>
-                                                        )}
-                                                    </ComboboxOption>
-                                                    {filteredUsers.map(
-                                                        (person: any) => (
-                                                            <ComboboxOption
-                                                                key={person.id}
-                                                                className={({
-                                                                    focus,
-                                                                }) =>
-                                                                    cn(
-                                                                        'relative cursor-default py-2 pr-4 pl-10 select-none',
-                                                                        focus
-                                                                            ? 'mx-1.5 my-0.5 rounded-[16px] item-hover-gradient'
-                                                                            : 'mx-1.5 my-0.5 text-popover-foreground',
-                                                                    )
-                                                                }
-                                                                value={person.id.toString()}
-                                                            >
-                                                                {({
-                                                                    selected,
-                                                                    focus,
-                                                                }) => (
-                                                                    <>
-                                                                        <span
-                                                                            className={cn(
-                                                                                'block truncate',
-                                                                                selected
-                                                                                    ? 'font-medium'
-                                                                                    : 'font-normal',
-                                                                            )}
-                                                                        >
-                                                                            {
-                                                                                person.last_name
-                                                                            }
-                                                                            ,{' '}
-                                                                            {
-                                                                                person.first_name
-                                                                            }
-                                                                        </span>
-                                                                        {selected ? (
-                                                                            <span
-                                                                                className={cn(
-                                                                                    'absolute inset-y-0 left-0 flex items-center pl-3',
-                                                                                    focus
-                                                                                        ? 'font-extrabold text-black'
-                                                                                        : 'text-primary',
-                                                                                )}
-                                                                            >
-                                                                                <Check
-                                                                                    className="h-4 w-4"
-                                                                                    aria-hidden="true"
-                                                                                />
-                                                                            </span>
-                                                                        ) : null}
-                                                                    </>
-                                                                )}
-                                                            </ComboboxOption>
-                                                        ),
-                                                    )}
-                                                </>
-                                            )}
-                                        </ComboboxOptions>
-                                </div>
-                            </Combobox>
+                            <EmployeeSearch
+                                users={users}
+                                selectedId={userId ? userId.toString() : 'all'}
+                                onSelect={(val) => changeUser(val === 'all' ? null : val)}
+                                withAllEmployees
+                                returnValue="id"
+                            />
                         </div>
 
                         {/* 50% - Legends */}
@@ -539,7 +342,7 @@ export default function LeaveCalendar({
                                     className={cn(
                                         'min-h-[120px] border-t bg-background p-2',
                                         holiday &&
-                                            'bg-yellow-500/10 dark:bg-yellow-500/5',
+                                        'bg-yellow-500/10 dark:bg-yellow-500/5',
                                     )}
                                 >
                                     <div className="mb-1 flex items-start justify-between">
@@ -568,7 +371,7 @@ export default function LeaveCalendar({
                                             const isHalfDay =
                                                 leave.days_requested < 1.0 &&
                                                 leave.start_date ===
-                                                    leave.end_date;
+                                                leave.end_date;
 
                                             return (
                                                 <div

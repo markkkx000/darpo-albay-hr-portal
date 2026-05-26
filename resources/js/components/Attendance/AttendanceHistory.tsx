@@ -6,8 +6,10 @@ import { cn } from '@/lib/utils';
 interface AttendanceRecord {
     id: number;
     date: string;
-    clock_in: string;
-    clock_out: string | null;
+    am_clock_in: string | null;
+    am_clock_out: string | null;
+    pm_clock_in: string | null;
+    pm_clock_out: string | null;
 }
 
 interface AttendanceHistoryProps {
@@ -49,8 +51,10 @@ export function AttendanceHistory({ history }: AttendanceHistoryProps) {
                         <thead className="text-xs text-muted-foreground uppercase bg-surface-2">
                             <tr>
                                 <th className="px-4 py-3 font-bold border-b border-border-1">Date</th>
-                                <th className="px-4 py-3 font-bold border-b border-border-1">Clock In</th>
-                                <th className="px-4 py-3 font-bold border-b border-border-1">Clock Out</th>
+                                <th className="px-4 py-3 font-bold border-b border-border-1">AM In</th>
+                                <th className="px-4 py-3 font-bold border-b border-border-1">AM Out</th>
+                                <th className="px-4 py-3 font-bold border-b border-border-1">PM In</th>
+                                <th className="px-4 py-3 font-bold border-b border-border-1">PM Out</th>
                                 <th className="px-4 py-3 font-bold border-b border-border-1 text-right">Status</th>
                             </tr>
                         </thead>
@@ -61,30 +65,54 @@ export function AttendanceHistory({ history }: AttendanceHistoryProps) {
                                         {formatDate(record.date)}
                                     </td>
                                     <td className="px-4 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <LogIn className="h-3 w-3 text-green-500" />
-                                            {formatTime(record.clock_in)}
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-4">
-                                        {record.clock_out ? (
+                                        {record.am_clock_in ? (
                                             <div className="flex items-center gap-2">
-                                                <LogOut className="h-3 w-3 text-amber-500" />
-                                                {formatTime(record.clock_out)}
+                                                <LogIn className="h-3 w-3 text-green-500" />
+                                                {formatTime(record.am_clock_in)}
                                             </div>
                                         ) : (
-                                            <span className="text-xs text-muted-foreground italic">Not clocked out</span>
+                                            <span className="text-xs text-muted-foreground italic">--:--</span>
+                                        )}
+                                    </td>
+                                    <td className="px-4 py-4">
+                                        {record.am_clock_out ? (
+                                            <div className="flex items-center gap-2">
+                                                <LogOut className="h-3 w-3 text-amber-500" />
+                                                {formatTime(record.am_clock_out)}
+                                            </div>
+                                        ) : (
+                                            <span className="text-xs text-muted-foreground italic">--:--</span>
+                                        )}
+                                    </td>
+                                    <td className="px-4 py-4">
+                                        {record.pm_clock_in ? (
+                                            <div className="flex items-center gap-2">
+                                                <LogIn className="h-3 w-3 text-green-500" />
+                                                {formatTime(record.pm_clock_in)}
+                                            </div>
+                                        ) : (
+                                            <span className="text-xs text-muted-foreground italic">--:--</span>
+                                        )}
+                                    </td>
+                                    <td className="px-4 py-4">
+                                        {record.pm_clock_out ? (
+                                            <div className="flex items-center gap-2">
+                                                <LogOut className="h-3 w-3 text-amber-500" />
+                                                {formatTime(record.pm_clock_out)}
+                                            </div>
+                                        ) : (
+                                            <span className="text-xs text-muted-foreground italic">--:--</span>
                                         )}
                                     </td>
                                     <td className="px-4 py-4 text-right">
                                         <Badge 
-                                            variant={record.clock_out ? 'secondary' : 'default'}
+                                            variant={record.pm_clock_out ? 'secondary' : 'default'}
                                             className={cn(
                                                 "text-[10px] px-2 py-0 uppercase tracking-wider font-bold",
-                                                !record.clock_out && "bg-primary/20 hover:bg-primary/30 text-primary border-primary/30 animate-pulse"
+                                                !record.pm_clock_out && "bg-primary/20 hover:bg-primary/30 text-primary border-primary/30 animate-pulse"
                                             )}
                                         >
-                                            {record.clock_out ? 'Completed' : 'Working'}
+                                            {record.pm_clock_out ? 'Completed' : 'Working'}
                                         </Badge>
                                     </td>
                                 </tr>

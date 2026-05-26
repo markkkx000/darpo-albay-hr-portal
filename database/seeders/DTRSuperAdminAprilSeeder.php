@@ -59,16 +59,19 @@ class DTRSuperAdminAprilSeeder extends Seeder
 
             // Compressed schedule: 7:00 AM to 6:00 PM
             // Randomize arrival between 6:45 AM and 6:58 AM
-            $clockIn = $date->copy()->setTime(6, rand(45, 58), rand(0, 59));
-
+            $amIn = $date->copy()->setTime(6, rand(45, 58), rand(0, 59));
+            $amOut = $date->copy()->setTime(12, 0, 0);
+            $pmIn = $date->copy()->setTime(13, 0, 0);
             // Randomize departure between 6:00 PM and 6:15 PM (18:00 - 18:15)
-            $clockOut = $date->copy()->setTime(18, rand(0, 15), rand(0, 59));
+            $pmOut = $date->copy()->setTime(18, rand(0, 15), rand(0, 59));
 
             Attendance::create([
                 'user_id' => $superAdmin->id,
                 'date' => $dateString,
-                'clock_in' => $clockIn,
-                'clock_out' => $clockOut,
+                'am_clock_in' => $amIn,
+                'am_clock_out' => $amOut,
+                'pm_clock_in' => $pmIn,
+                'pm_clock_out' => $pmOut,
             ]);
         }
 

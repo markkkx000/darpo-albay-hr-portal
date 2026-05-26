@@ -23,31 +23,37 @@ beforeEach(function () {
     Attendance::factory()->create([
         'user_id' => $this->employee1->id,
         'date' => Carbon::today()->toDateString(),
-        'clock_in' => Carbon::now()->subHours(2),
-        'clock_out' => null,
+        'am_clock_in' => Carbon::now()->subHours(2),
+        'am_clock_out' => null,
+        'pm_clock_in' => null,
+        'pm_clock_out' => null,
     ]);
 
     // Past record (Incomplete)
     Attendance::factory()->create([
         'user_id' => $this->employee2->id,
         'date' => Carbon::yesterday()->toDateString(),
-        'clock_in' => Carbon::yesterday()->setHour(8),
-        'clock_out' => null,
+        'am_clock_in' => Carbon::yesterday()->setHour(8),
+        'am_clock_out' => null,
+        'pm_clock_in' => null,
+        'pm_clock_out' => null,
     ]);
 
     // Completed record
     Attendance::factory()->create([
         'user_id' => $this->employee1->id,
         'date' => Carbon::yesterday()->subDay()->toDateString(),
-        'clock_in' => Carbon::yesterday()->subDay()->setHour(8),
-        'clock_out' => Carbon::yesterday()->subDay()->setHour(17),
+        'am_clock_in' => Carbon::yesterday()->subDay()->setHour(8),
+        'am_clock_out' => Carbon::yesterday()->subDay()->setHour(12),
+        'pm_clock_in' => Carbon::yesterday()->subDay()->setHour(13),
+        'pm_clock_out' => Carbon::yesterday()->subDay()->setHour(17),
     ]);
 });
 
 it('can filter attendance by search name', function () {
     $response = $this->get(route('attendance.manage.records.index', ['search' => 'John']));
 
-    $response->assertStatus(200);
+    $response->assertOk();
     $records = $response->viewData('page')['props']['records']['data'];
 
     expect($records)->toHaveCount(2); // John has 2 records (Working today, Completed 2 days ago)
@@ -59,33 +65,33 @@ it('can filter attendance by search name', function () {
 it('can filter attendance by working status', function () {
     $response = $this->get(route('attendance.manage.records.index', ['status' => 'working']));
 
-    $response->assertStatus(200);
+    $response->assertOk();
     $records = $response->viewData('page')['props']['records']['data'];
 
     expect($records)->toHaveCount(1);
-    expect($records[0]['clock_out'])->toBeNull();
+    expect($records[0]['pm_clock_out'])->toBeNull();
     expect($records[0]['date'])->toBe(Carbon::today()->toDateString());
 });
 
 it('can filter attendance by incomplete status', function () {
     $response = $this->get(route('attendance.manage.records.index', ['status' => 'incomplete']));
 
-    $response->assertStatus(200);
+    $response->assertOk();
     $records = $response->viewData('page')['props']['records']['data'];
 
     expect($records)->toHaveCount(1);
-    expect($records[0]['clock_out'])->toBeNull();
+    expect($records[0]['pm_clock_out'])->toBeNull();
     expect($records[0]['date'])->toBe(Carbon::yesterday()->toDateString());
 });
 
 it('can filter attendance by completed status', function () {
     $response = $this->get(route('attendance.manage.records.index', ['status' => 'completed']));
 
-    $response->assertStatus(200);
+    $response->assertOk();
     $records = $response->viewData('page')['props']['records']['data'];
 
     expect($records)->toHaveCount(1);
-    expect($records[0]['clock_out'])->not->toBeNull();
+    expect($records[0]['pm_clock_out'])->not->toBeNull();
 });
 
 it('can filter attendance by date range', function () {
@@ -97,7 +103,7 @@ it('can filter attendance by date range', function () {
         'to_date' => $toDate,
     ]));
 
-    $response->assertStatus(200);
+    $response->assertOk();
     $records = $response->viewData('page')['props']['records']['data'];
 
     expect($records)->toHaveCount(2); // Today and Yesterday
@@ -106,7 +112,7 @@ it('can filter attendance by date range', function () {
 it('returns full pagination metadata', function () {
     $response = $this->get(route('attendance.manage.records.index'));
 
-    $response->assertStatus(200);
+    $response->assertOk();
     $records = $response->viewData('page')['props']['records'];
 
     expect($records)->toHaveKeys(['data', 'links', 'current_page', 'last_page', 'total']);

@@ -16,7 +16,7 @@ export default function PageHeader({ title, description, actions, className }: P
                 <Heading title={title} description={description} as="h1" variant="small" />
             </div>
             {actions && (
-                <div className="flex w-full items-center gap-2 sm:w-auto">
+                <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
                     {actions}
                 </div>
             )}

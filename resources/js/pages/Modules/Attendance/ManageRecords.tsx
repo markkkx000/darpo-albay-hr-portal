@@ -1,5 +1,5 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { Plus, Edit, Trash2, Clock, X, RefreshCw } from 'lucide-react';
+import { Plus, Edit, Trash2, Clock, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { AttendanceFilters } from '@/components/Attendance/AttendanceFilters';
@@ -30,14 +30,17 @@ interface User {
     id: number;
     first_name: string;
     last_name: string;
+    avatar?: string | null;
 }
 
 interface AttendanceRecord {
     id: number;
     user_id: number;
     date: string;
-    clock_in: string;
-    clock_out: string | null;
+    am_clock_in: string | null;
+    am_clock_out: string | null;
+    pm_clock_in: string | null;
+    pm_clock_out: string | null;
     user?: User;
     deleted_at?: string | null;
 }
@@ -145,14 +148,29 @@ export default function ManageRecords({ records, employees, filters }: Props) {
             return { label: 'Archived', variant: 'outline' as const };
         }
 
-        if (record.clock_out) {
+        const hasAmIn = !!record.am_clock_in;
+        const hasAmOut = !!record.am_clock_out;
+        const hasPmIn = !!record.pm_clock_in;
+        const hasPmOut = !!record.pm_clock_out;
+
+        if (hasAmIn && hasAmOut && hasPmIn && hasPmOut) {
             return { label: 'Completed', variant: 'secondary' as const };
+        }
+
+        if ((hasAmIn && hasAmOut && !hasPmIn && !hasPmOut) || (!hasAmIn && !hasAmOut && hasPmIn && hasPmOut)) {
+            return { label: 'Half Day', variant: 'default' as const };
         }
 
         const recordDate = new Date(record.date).setHours(0, 0, 0, 0);
         const today = new Date().setHours(0, 0, 0, 0);
 
-        if (recordDate < today) {
+        // Any missing IN logs when OUT logs exist (manually added), or jumped sessions
+        if ((hasAmOut && !hasAmIn) || (hasPmOut && !hasPmIn) || (hasAmIn && !hasAmOut && hasPmIn)) {
+            return { label: 'Incomplete', variant: 'destructive' as const };
+        }
+
+        // Missing OUT logs on past days
+        if (recordDate < today && ((hasAmIn && !hasAmOut) || (hasPmIn && !hasPmOut))) {
             return { label: 'Incomplete', variant: 'destructive' as const };
         }
 
@@ -212,10 +230,16 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                 Date
                                             </th>
                                             <th className="border-b border-border-1 px-6 py-4">
-                                                Clock In
+                                                AM In
                                             </th>
                                             <th className="border-b border-border-1 px-6 py-4">
-                                                Clock Out
+                                                AM Out
+                                            </th>
+                                            <th className="border-b border-border-1 px-6 py-4">
+                                                PM In
+                                            </th>
+                                            <th className="border-b border-border-1 px-6 py-4">
+                                                PM Out
                                             </th>
                                             <th className="border-b border-border-1 px-6 py-4">
                                                 Status
@@ -229,7 +253,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                         {records.data.length === 0 ? (
                                             <tr>
                                                 <td
-                                                    colSpan={6}
+                                                    colSpan={8}
                                                     className="py-20 text-center text-muted-foreground"
                                                 >
                                                     <div className="flex flex-col items-center gap-2">
@@ -254,17 +278,13 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                     >
                                                         <td className="px-6 py-4 font-medium">
                                                             <div className="flex items-center gap-3">
-                                                                <div className="sqicon sqicon-green flex h-8 w-8 items-center justify-center !rounded-[8px] text-[10px] font-bold uppercase">
-                                                                    {
-                                                                        record
-                                                                            .user
-                                                                            ?.first_name[0]
-                                                                    }
-                                                                    {
-                                                                        record
-                                                                            .user
-                                                                            ?.last_name[0]
-                                                                    }
+                                                                <div className="sqicon h-8 w-8 !rounded-[8px] shrink-0 border border-border/30">
+                                                                    <img
+                                                                        src={record.user?.avatar || '/img/pfp_placeholder.png'}
+                                                                        alt={`${record.user?.first_name} ${record.user?.last_name}`}
+                                                                        className="h-full w-full object-cover"
+                                                                        loading="lazy"
+                                                                    />
                                                                 </div>
                                                                 <div className="flex flex-col">
                                                                     <span className="font-semibold text-foreground">
@@ -299,30 +319,51 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4">
-                                                            <Badge
-                                                                variant="outline"
-                                                                className="border-transparent bg-surface-2 font-mono text-foreground"
-                                                            >
-                                                                {formatTime(
-                                                                    record.clock_in,
-                                                                )}
-                                                            </Badge>
-                                                        </td>
-                                                        <td className="px-6 py-4">
-                                                            {record.clock_out ? (
+                                                            {record.am_clock_in ? (
                                                                 <Badge
                                                                     variant="outline"
                                                                     className="border-transparent bg-surface-2 font-mono text-foreground"
                                                                 >
-                                                                    {formatTime(
-                                                                        record.clock_out,
-                                                                    )}
+                                                                    {formatTime(record.am_clock_in)}
                                                                 </Badge>
                                                             ) : (
-                                                                <span className="flex items-center gap-1 text-xs text-muted-foreground italic">
-                                                                    <X className="h-3 w-3" />
-                                                                    Missed
-                                                                </span>
+                                                                <span className="text-xs text-muted-foreground italic">-</span>
+                                                            )}
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            {record.am_clock_out ? (
+                                                                <Badge
+                                                                    variant="outline"
+                                                                    className="border-transparent bg-surface-2 font-mono text-foreground"
+                                                                >
+                                                                    {formatTime(record.am_clock_out)}
+                                                                </Badge>
+                                                            ) : (
+                                                                <span className="text-xs text-muted-foreground italic">-</span>
+                                                            )}
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            {record.pm_clock_in ? (
+                                                                <Badge
+                                                                    variant="outline"
+                                                                    className="border-transparent bg-surface-2 font-mono text-foreground"
+                                                                >
+                                                                    {formatTime(record.pm_clock_in)}
+                                                                </Badge>
+                                                            ) : (
+                                                                <span className="text-xs text-muted-foreground italic">-</span>
+                                                            )}
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            {record.pm_clock_out ? (
+                                                                <Badge
+                                                                    variant="outline"
+                                                                    className="border-transparent bg-surface-2 font-mono text-foreground"
+                                                                >
+                                                                    {formatTime(record.pm_clock_out)}
+                                                                </Badge>
+                                                            ) : (
+                                                                <span className="text-xs text-muted-foreground italic">-</span>
                                                             )}
                                                         </td>
                                                         <td className="px-6 py-4">
@@ -333,17 +374,20 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                                 className={cn(
                                                                     'px-2 py-0.5 text-[9px] font-bold tracking-tight uppercase shadow-sm',
                                                                     status.label ===
-                                                                        'Completed' &&
-                                                                        'border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400',
+                                                                    'Completed' &&
+                                                                    'border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400',
                                                                     status.label ===
-                                                                        'Incomplete' &&
-                                                                        'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400',
+                                                                    'Incomplete' &&
+                                                                    'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400',
                                                                     status.label ===
-                                                                        'Working' &&
-                                                                        'animate-pulse border-primary/20 bg-primary/10 text-primary',
+                                                                    'Working' &&
+                                                                    'animate-pulse border-primary/20 bg-primary/10 text-primary',
                                                                     status.label ===
-                                                                        'Archived' &&
-                                                                        'border-zinc-500/20 bg-zinc-500/10 text-zinc-600 dark:text-zinc-400',
+                                                                    'Half Day' &&
+                                                                    'border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400',
+                                                                    status.label ===
+                                                                    'Archived' &&
+                                                                    'border-zinc-500/20 bg-zinc-500/10 text-zinc-600 dark:text-zinc-400',
                                                                 )}
                                                             >
                                                                 {status.label}

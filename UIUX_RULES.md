@@ -373,6 +373,7 @@
   - **Flatten shallow component trees.** If a component renders a single child with no added logic or styling, it is not a component — inline it.
   - **One source of truth per visual rule.** If a style is defined in `app.css` as a utility class, do not redefine it inline in JSX. Reference the class; do not copy the declaration.
   - **Dead code is removed immediately.** Commented-out JSX blocks, unused imports, and orphaned CSS classes must be deleted — not left "for reference."
+  - **Avoid Over-engineering Image Cropping:** When displaying user-uploaded images (like avatars), prefer native CSS (`object-fit: cover` on `aspect-square` containers) over complex frontend canvas-cropping or bounding-box workflows. This keeps the application simple, performant, and adheres to standard modern platform behavior.
 
 ---
 
@@ -399,9 +400,12 @@
 ### Interactive Elements & Branding
 - **Rule:** Enforce the "Premium UI" brand identity across all interactive components to ensure a cohesive and high-end agency experience.
 - **Apply:**
-  - **Dropdowns & Lists:** All dropdown menus, select items, and interactive lists must utilize the `item-hover-gradient` utility. Hover states must feature the "floating bubble" effect with precisely centered text and indicators.
+  - **Dropdowns & Selects:** Dropdown menus and select items should utilize the `item-hover-gradient` utility. Hover states must feature the "floating bubble" effect with precisely centered text and indicators.
+  - **Navigation & Sidebars:** For continuous navigation lists like sidebars, use a subtle neutral hover (`var(--sidebar-accent)` via `sidebar-neutral-hover`) for inactive items to avoid visual fatigue. Reserve the bright green-yellow gradient exclusively for the active state (often implemented as a fluidly sliding `motion.div` pill).
+  - **Form Controls & Triggers:** Do not use the master `<Button>` component for `<SelectTrigger>` or Combobox triggers. Use standard semantic HTML `<button>` or form control styling. Using the master `<Button>` component improperly applies heavy hover gradients (`item-hover-gradient`) and bouncy spring-press physics to standard form inputs, which breaks UI consistency. Form inputs should remain visually neutral.
   - **Buttons:** Primary call-to-action buttons should have the iconic fully rounded shape (`rounded-full`) and the signature green-yellow gradient (`btn-specular`).
-  - **Interactive Hover Specification:** The default interactive hover gradient is green-yellow (`var(--grad-primary)`) unless explicitly stated otherwise. All brand-gradient interactive elements must use black-colored icons (`text-black`) when hovered to ensure optimal high-contrast accessibility on the gradient background. For text/label elements:
+  - **CSS over JS for Interaction:** Never over-engineer simple hover states (like sliding backgrounds) using complex JavaScript coordinate tracking or `useRef` maps if native CSS utilities or simple Framer Motion layout animations (`layoutId`) can achieve the same effect natively and performantly.
+  - **Interactive Hover Specification:** The default interactive hover gradient is green-yellow (`var(--grad-primary)`) unless explicitly stated otherwise (like in sidebars). All brand-gradient interactive elements must use black-colored icons (`text-black`) when hovered to ensure optimal high-contrast accessibility on the gradient background. For text/label elements:
     - **Element Covered by Gradient Hover:** When the element itself is covered by the green-yellow gradient hover background, all text and icons inside it MUST be black (`text-black`) to contrast with the bright gradient.
     - **Element NOT Covered by Gradient Hover (Offset Hover):** When only a sibling container (e.g., an icon container) gets the gradient hover while the text area remains on the card background, the hovered text must transition to white (`text-white`) in dark mode, and black (`text-black`) in light mode.
 

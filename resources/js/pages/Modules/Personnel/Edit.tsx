@@ -21,7 +21,7 @@ export default function Edit({ employee, divisions, units, positions, appointmen
         last_name: employee?.last_name || '',
         email: employee?.email || '',
         sex: employee?.sex || '',
-        date_of_birth: employee?.date_of_birth ? String(employee.date_of_birth).split('T')[0] : '',
+        date_of_birth: employee?.date_of_birth || '',
         civil_status: employee?.civil_status || '',
         
         positions: employee?.positions?.length > 0
@@ -34,17 +34,17 @@ export default function Edit({ employee, divisions, units, positions, appointmen
         division_id: employee?.division_id?.toString() || '',
         unit_id: employee?.unit_id?.toString() || '',
         appointment_status_id: employee?.appointment_status_id?.toString() || '',
-        hire_date: employee?.hire_date ? String(employee.hire_date).split('T')[0] : '',
-        date_hired_government: employee?.date_hired_government ? String(employee.date_hired_government).split('T')[0] : '',
+        hire_date: employee?.hire_date || '',
+        date_hired_government: employee?.date_hired_government || '',
         years_in_service: employee?.years_in_service || '',
         plantilla_number: employee?.plantilla_number || '',
         plantilla_position: employee?.plantilla_position || '',
         item_number: employee?.item_number || '',
         office_per_appointment: employee?.office_per_appointment || '',
-        orig_date_of_appointment: employee?.orig_date_of_appointment ? String(employee.orig_date_of_appointment).split('T')[0] : '',
-        date_of_latest_appointment: employee?.date_of_latest_appointment ? String(employee.date_of_latest_appointment).split('T')[0] : '',
-        date_of_assumption: employee?.date_of_assumption ? String(employee.date_of_assumption).split('T')[0] : '',
-        date_of_separation: employee?.date_of_separation ? String(employee.date_of_separation).split('T')[0] : '',
+        orig_date_of_appointment: employee?.orig_date_of_appointment || '',
+        date_of_latest_appointment: employee?.date_of_latest_appointment || '',
+        date_of_assumption: employee?.date_of_assumption || '',
+        date_of_separation: employee?.date_of_separation || '',
         
         contact_number: employee?.contact_number || '',
         present_address: employee?.present_address || '',
@@ -56,7 +56,7 @@ export default function Edit({ employee, divisions, units, positions, appointmen
         tin_number: employee?.tin_number || '',
         lbp_account_number: employee?.lbp_account_number || '',
         prc_id_no: employee?.prc_id_no || '',
-        prc_expiration: employee?.prc_expiration ? String(employee.prc_expiration).split('T')[0] : '',
+        prc_expiration: employee?.prc_expiration || '',
         
         fund_code: employee?.fund_code || '',
         func_activity_code: employee?.func_activity_code || '',
@@ -69,10 +69,16 @@ export default function Edit({ employee, divisions, units, positions, appointmen
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
-        transform((data) => ({
-            ...data,
-            unit_id: data.unit_id === 'none' ? '' : data.unit_id,
-        }));
+        transform((data) => {
+            const result = {
+                ...data,
+                unit_id: data.unit_id === 'none' ? '' : data.unit_id,
+            };
+            if (!(result.profile_picture instanceof File)) {
+                delete result.profile_picture;
+            }
+            return result;
+        });
 
         // Send POST request with spoofed method to support file upload on update
         post(updateRoute({ user: employee.id }).url, {

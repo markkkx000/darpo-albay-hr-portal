@@ -24,28 +24,40 @@ interface DatePickerProps {
 }
 
 export function DatePicker({ value, onChange, placeholder = "MM-DD-YYYY", className, disabled, id, "aria-invalid": ariaInvalid }: DatePickerProps) {
-  const [date, setDate] = React.useState<Date | undefined>(
-    value ? new Date(value + 'T00:00:00') : undefined
-  )
-  const [inputValue, setInputValue] = React.useState(value || "")
-  const [open, setOpen] = React.useState(false)
+  const parseValueToDate = (val: string | null | undefined): { date?: Date, formattedStr: string } => {
+    if (!val) {
+return { date: undefined, formattedStr: "" };
+}
+    
+    let dateStr = val;
+
+    if (val.includes('T')) {
+        const d = new Date(val);
+
+        if (!isNaN(d.getTime())) {
+            dateStr = d.toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
+        }
+    }
+    
+    const parsedDate = new Date(dateStr + 'T00:00:00');
+
+    if (!isNaN(parsedDate.getTime())) {
+        return { date: parsedDate, formattedStr: format(parsedDate, "MM-dd-yyyy") };
+    }
+    
+    return { date: undefined, formattedStr: val };
+  };
+
+  const initialParsed = parseValueToDate(value);
+  const [date, setDate] = React.useState<Date | undefined>(initialParsed.date);
+  const [inputValue, setInputValue] = React.useState(initialParsed.formattedStr);
+  const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
-    if (value) {
-      const parsedDate = new Date(value + 'T00:00:00')
-
-      if (!isNaN(parsedDate.getTime())) {
-        setDate(parsedDate)
-        setInputValue(format(parsedDate, "MM-dd-yyyy"))
-      } else {
-        setDate(undefined)
-        setInputValue(value)
-      }
-    } else {
-      setDate(undefined)
-      setInputValue("")
-    }
-  }, [value])
+    const parsed = parseValueToDate(value);
+    setDate(parsed.date);
+    setInputValue(parsed.formattedStr);
+  }, [value]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;

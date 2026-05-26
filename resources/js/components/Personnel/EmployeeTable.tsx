@@ -30,6 +30,7 @@ interface User {
     appointment_status?: { name: string };
     hire_date: string | null;
     deleted_at: string | null;
+    avatar?: string | null;
 }
 
 interface Props {
@@ -213,8 +214,13 @@ export function EmployeeTable({
                                     <tr key={employee.id} className="hover:bg-muted/40 transition-colors group">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="sqicon sqicon-green h-10 w-10 !rounded-[10px] flex items-center justify-center font-black text-xs uppercase">
-                                                    {(employee.first_name?.[0] || '')}{(employee.last_name?.[0] || '') || <UserIcon className="h-4 w-4" />}
+                                                <div className="sqicon h-10 w-10 !rounded-[10px] shrink-0 border border-border/30">
+                                                    <img
+                                                        src={employee.avatar || '/img/pfp_placeholder.png'}
+                                                        alt={fullName(employee)}
+                                                        className="h-full w-full object-cover"
+                                                        loading="lazy"
+                                                    />
                                                 </div>
                                                 <div className="flex flex-col">
                                                     <span className="font-bold text-foreground transition-colors">
@@ -248,16 +254,20 @@ export function EmployeeTable({
                                                         return 'status-badge-permanent';
                                                     }
 
-                                                    if (name.includes('co-terminous') || name.includes('coterminous') || name.includes('co terminous')) {
-                                                        return 'status-badge-coterminous';
-                                                    }
-
-                                                    if (name.includes('contractual')) {
+                                                    if (name.includes('contract') || name.includes('cos')) {
                                                         return 'status-badge-contractual';
                                                     }
 
-                                                    if (name.includes('casual')) {
+                                                    if (name.includes('job order') || name.includes('jo')) {
                                                         return 'status-badge-casual';
+                                                    }
+
+                                                    if (name.includes('resigned') || name.includes('retired')) {
+                                                        return 'status-badge-warning';
+                                                    }
+
+                                                    if (name.includes('awol') || name.includes('terminated')) {
+                                                        return 'status-badge-danger';
                                                     }
 
                                                     return 'status-badge-unknown';

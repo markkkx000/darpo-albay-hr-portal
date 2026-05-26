@@ -104,7 +104,7 @@ export function RoleAssignmentModal({ open, onOpenChange, user, roles, onSuccess
                                 <ShieldAlert className="h-5 w-5 text-warning mt-0.5" />
                                 <div className="space-y-1">
                                     <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Current Role</p>
-                                    <p className="text-sm font-medium capitalize">{currentRole.replaceAll('_', ' ')}</p>
+                                    <p className="text-sm font-medium font-mono">{currentRole}</p>
                                 </div>
                             </div>
 
@@ -120,7 +120,7 @@ export function RoleAssignmentModal({ open, onOpenChange, user, roles, onSuccess
                                     <SelectContent>
                                         {roles.map((role) => (
                                             <SelectItem key={role.id} value={role.name}>
-                                                <span className="capitalize">{role.name.replaceAll('_', ' ')}</span>
+                                                <span className="font-mono">{role.name}</span>
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -131,7 +131,7 @@ export function RoleAssignmentModal({ open, onOpenChange, user, roles, onSuccess
                             <Alert className="border-border/50 bg-muted/50">
                                 <AlertCircle className="h-4 w-4 text-muted-foreground" />
                                 <AlertDescription className="text-muted-foreground text-xs">
-                                    <p><strong>Reassignment Confirmation:</strong> This will replace the user's current role of <span className="font-bold capitalize">{currentRole.replaceAll('_', ' ')}</span> with <span className="font-bold capitalize">{data.role ? data.role.replaceAll('_', ' ') : '...'}</span>.</p>
+                                    <p><strong>Reassignment Confirmation:</strong> This will replace the user's current role of <span className="font-bold font-mono">{currentRole}</span> with <span className="font-bold font-mono">{data.role || '...'}</span>.</p>
                                 </AlertDescription>
                             </Alert>
                         </div>

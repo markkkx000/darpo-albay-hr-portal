@@ -4,8 +4,10 @@ import { cn } from '@/lib/utils';
 
 interface AttendanceStatusProps {
     attendance: {
-        clock_in: string | null;
-        clock_out: string | null;
+        am_clock_in: string | null;
+        am_clock_out: string | null;
+        pm_clock_in: string | null;
+        pm_clock_out: string | null;
     } | null;
 }
 
@@ -25,42 +27,79 @@ export function AttendanceStatus({ attendance }: AttendanceStatusProps) {
         return new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
     };
 
+    const isCompleted = !!attendance.pm_clock_out;
+    const isActive = (!!attendance.am_clock_in && !attendance.am_clock_out) || (!!attendance.pm_clock_in && !attendance.pm_clock_out);
+    const statusText = isCompleted ? 'Shift Finalized' : (isActive ? 'Currently Active' : 'On Break / Idle');
+
     return (
-        <div className="flex flex-col items-center gap-6">
-            <div className="flex flex-wrap justify-center gap-8">
+        <div className="flex flex-col items-center gap-6 w-full">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 justify-center w-full max-w-2xl px-4">
+                {/* AM Clock In */}
                 <div className="flex items-center gap-3">
-                    <div className="sqicon sqicon-green h-10 w-10 !rounded-[10px]">
+                    <div className={cn("sqicon h-10 w-10 !rounded-[10px]", attendance.am_clock_in ? "sqicon-green" : "bg-muted/10 text-muted-foreground")}>
                         <LogIn className="h-5 w-5" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Clock In</span>
-                        <span className="text-base font-extrabold text-foreground">{formatTime(attendance.clock_in!)}</span>
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">AM In</span>
+                        <span className="text-sm md:text-base font-extrabold text-foreground">
+                            {attendance.am_clock_in ? formatTime(attendance.am_clock_in) : '--:-- --'}
+                        </span>
                     </div>
                 </div>
 
-                {attendance.clock_out && (
-                    <div className="flex items-center gap-3">
-                        <div className="sqicon sqicon-yellow h-10 w-10 !rounded-[10px]">
-                            <LogOut className="h-5 w-5" />
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Clock Out</span>
-                            <span className="text-base font-extrabold text-foreground">{formatTime(attendance.clock_out)}</span>
-                        </div>
+                {/* AM Clock Out */}
+                <div className="flex items-center gap-3">
+                    <div className={cn("sqicon h-10 w-10 !rounded-[10px]", attendance.am_clock_out ? "sqicon-yellow" : "bg-muted/10 text-muted-foreground")}>
+                        <LogOut className="h-5 w-5" />
                     </div>
-                )}
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">AM Out</span>
+                        <span className="text-sm md:text-base font-extrabold text-foreground">
+                            {attendance.am_clock_out ? formatTime(attendance.am_clock_out) : '--:-- --'}
+                        </span>
+                    </div>
+                </div>
+
+                {/* PM Clock In */}
+                <div className="flex items-center gap-3">
+                    <div className={cn("sqicon h-10 w-10 !rounded-[10px]", attendance.pm_clock_in ? "sqicon-green" : "bg-muted/10 text-muted-foreground")}>
+                        <LogIn className="h-5 w-5" />
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">PM In</span>
+                        <span className="text-sm md:text-base font-extrabold text-foreground">
+                            {attendance.pm_clock_in ? formatTime(attendance.pm_clock_in) : '--:-- --'}
+                        </span>
+                    </div>
+                </div>
+
+                {/* PM Clock Out */}
+                <div className="flex items-center gap-3">
+                    <div className={cn("sqicon h-10 w-10 !rounded-[10px]", attendance.pm_clock_out ? "sqicon-yellow" : "bg-muted/10 text-muted-foreground")}>
+                        <LogOut className="h-5 w-5" />
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">PM Out</span>
+                        <span className="text-sm md:text-base font-extrabold text-foreground">
+                            {attendance.pm_clock_out ? formatTime(attendance.pm_clock_out) : '--:-- --'}
+                        </span>
+                    </div>
+                </div>
             </div>
 
             <Badge 
-                variant={attendance.clock_out ? 'outline' : 'default'} 
+                variant={isCompleted ? 'outline' : 'default'} 
                 className={cn(
                     "px-6 py-1.5 uppercase text-xs font-black tracking-widest",
-                    attendance.clock_out 
+                    isCompleted 
                         ? 'bg-muted/10 text-muted-foreground border-muted-foreground/20' 
-                        : 'bg-primary/20 text-foreground border-primary/30 shadow-[0_0_20px_rgba(56,229,77,0.3)] animate-pulse'
+                        : (isActive 
+                            ? 'bg-primary/20 text-foreground border-primary/30 shadow-[0_0_20px_rgba(56,229,77,0.3)] animate-pulse'
+                            : 'bg-amber-500/10 text-amber-600 border-amber-500/20'
+                          )
                 )}
             >
-                {attendance.clock_out ? 'Shift Finalized' : 'Currently Active'}
+                {statusText}
             </Badge>
         </div>
     );

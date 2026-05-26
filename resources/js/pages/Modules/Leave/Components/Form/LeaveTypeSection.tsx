@@ -111,7 +111,7 @@ export const LeaveTypeSection: React.FC<LeaveTypeSectionProps> = ({
                 </div>
             </div>
 
-            {!isEdit && data.user_id && data.leave_type_id && (
+            {!isEdit && data.user_id && data.leave_type_id && selectedLeaveType?.is_cumulative && (
                 <div className="bg-muted/30 p-4 rounded-xl border border-border/50">
                     <CreditPreview
                         available={available}

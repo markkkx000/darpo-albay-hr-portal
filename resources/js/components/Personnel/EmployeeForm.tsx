@@ -84,10 +84,8 @@ export function EmployeeForm({
             return filePreview || '/img/pfp_placeholder.png';
         }
 
-        if (data.profile_picture) {
-            const path = data.profile_picture;
-
-            return path.startsWith('/storage/') ? path : path.startsWith('storage/') ? '/' + path : `/storage/${path}`;
+        if (employee?.avatar) {
+            return employee.avatar;
         }
 
         return '/img/pfp_placeholder.png';

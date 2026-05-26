@@ -25,8 +25,10 @@ beforeEach(function () {
     Attendance::factory()->create([
         'user_id' => $this->employee->id,
         'date' => now()->startOfMonth()->toDateString(),
-        'clock_in' => now()->startOfMonth()->setHour(8),
-        'clock_out' => now()->startOfMonth()->setHour(17),
+        'am_clock_in' => now()->startOfMonth()->setHour(8),
+        'am_clock_out' => now()->startOfMonth()->setHour(12),
+        'pm_clock_in' => now()->startOfMonth()->setHour(13),
+        'pm_clock_out' => now()->startOfMonth()->setHour(17),
     ]);
 });
 

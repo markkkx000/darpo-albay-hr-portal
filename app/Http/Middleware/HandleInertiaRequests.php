@@ -38,6 +38,14 @@ class HandleInertiaRequests extends Middleware
     {
         $registry = app(ModuleRegistry::class);
 
+        if ($user = $request->user()) {
+            // Only update database if last_seen_at is null or older than 5 minutes to avoid DB spam
+            if (! $user->last_seen_at || $user->last_seen_at < now()->subMinutes(5)) {
+                // saveQuietly prevents firing Model events (like updating the main updated_at column unnecessarily)
+                $user->forceFill(['last_seen_at' => now()])->saveQuietly();
+            }
+        }
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -67,6 +75,7 @@ class HandleInertiaRequests extends Middleware
             'appNotifications' => fn () => $request->user() ? [
                 'unread_count' => $request->user()->unreadNotifications()->count(),
             ] : null,
+            'server_time' => now()->toIso8601String(),
         ];
 
     }

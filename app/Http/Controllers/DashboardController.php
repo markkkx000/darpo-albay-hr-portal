@@ -32,12 +32,8 @@ class DashboardController extends Controller
         if ($isSuperAdmin) {
             $totalUsers = User::count();
 
-            // Active sessions (database driver check)
-            $activeSessions = DB::table('sessions')
-                ->whereNotNull('user_id')
-                ->where('last_activity', '>=', now()->subMinutes(15)->getTimestamp())
-                ->distinct('user_id')
-                ->count();
+            // Active sessions (based on last_seen_at timestamp)
+            $activeSessions = User::where('last_seen_at', '>=', now()->subMinutes(15))->count();
 
             // Dynamic System Health Check
             $dbHealth = true;
@@ -68,34 +64,24 @@ class DashboardController extends Controller
                 $healthScore += 34;
             }
 
-            // Admin Recent Activities: User registrations and Announcement publications
-            $recentUsers = User::latest()->take(3)->get()->map(function ($u) {
-                return [
-                    'id' => 'user_'.$u->id,
-                    'type' => 'user_registered',
-                    'title' => 'New User Registered',
-                    'description' => "{$u->first_name} {$u->last_name} ({$u->employee_number}) joined the portal.",
-                    'time' => $u->created_at ? $u->created_at->diffForHumans() : 'Just now',
-                    'timestamp' => $u->created_at ? $u->created_at->timestamp : now()->timestamp,
-                ];
-            });
-
-            $recentAnnouncements = Announcement::latest()->take(2)->get()->map(function ($a) {
-                return [
-                    'id' => 'ann_'.$a->id,
-                    'type' => 'announcement_published',
-                    'title' => 'Announcement Published',
-                    'description' => "\"{$a->title}\" was created.",
-                    'time' => $a->created_at ? $a->created_at->diffForHumans() : 'Just now',
-                    'timestamp' => $a->created_at ? $a->created_at->timestamp : now()->timestamp,
-                ];
-            });
-
-            $recentActivity = $recentUsers->concat($recentAnnouncements)
-                ->sortByDesc(function ($item) {
-                    return $item['timestamp'];
+            // Admin Recent Activities: Fetch from Spatie Activitylog
+            $recentActivity = \Spatie\Activitylog\Models\Activity::with('causer')
+                ->latest()
+                ->take(5)
+                ->get()
+                ->map(function ($activity) {
+                    $causer = $activity->causer;
+                    $name = $causer ? "{$causer->first_name} {$causer->last_name}" : 'System';
+                    
+                    return [
+                        'id' => 'act_'.$activity->id,
+                        'type' => 'system_activity',
+                        'title' => 'System Audit',
+                        'description' => "{$name}: {$activity->description}",
+                        'time' => $activity->created_at ? $activity->created_at->diffForHumans() : 'Just now',
+                        'timestamp' => $activity->created_at ? $activity->created_at->timestamp : now()->timestamp,
+                    ];
                 })
-                ->values()
                 ->all();
 
             $adminData = [
@@ -145,14 +131,27 @@ class DashboardController extends Controller
                 ->get()
                 ->map(function ($att) {
                     $name = $att->user ? "{$att->user->first_name} {$att->user->last_name}" : 'Unknown';
-                    $isClockOut = ! is_null($att->clock_out);
-                    $activityTime = $isClockOut ? $att->updated_at : $att->created_at;
+                    $clocks = [
+                        'in (AM)' => $att->am_clock_in,
+                        'out (AM)' => $att->am_clock_out,
+                        'in (PM)' => $att->pm_clock_in,
+                        'out (PM)' => $att->pm_clock_out,
+                    ];
+                    $latestClockTime = null;
+                    $action = 'in (AM)';
+                    foreach ($clocks as $key => $time) {
+                        if ($time && (is_null($latestClockTime) || $time->gt($latestClockTime))) {
+                            $latestClockTime = $time;
+                            $action = $key;
+                        }
+                    }
+                    $activityTime = $latestClockTime ?? $att->updated_at;
 
                     return [
-                        'id' => 'att_'.$att->id.($isClockOut ? '_out' : '_in'),
+                        'id' => 'att_'.$att->id.'_'.$action,
                         'type' => 'attendance_clock',
                         'title' => 'Attendance Log',
-                        'description' => "{$name} clocked ".($isClockOut ? 'out.' : 'in.'),
+                        'description' => "{$name} clocked {$action}.",
                         'time' => $activityTime ? $activityTime->diffForHumans() : 'Just now',
                         'timestamp' => $activityTime ? $activityTime->timestamp : now()->timestamp,
                     ];
@@ -182,12 +181,18 @@ class DashboardController extends Controller
         $todayStatus = 'Not Clocked In';
         $todayTime = '--:-- --';
         if ($todayAttendance) {
-            if ($todayAttendance->clock_out) {
+            if ($todayAttendance->pm_clock_out) {
                 $todayStatus = 'Completed';
-                $todayTime = $todayAttendance->clock_out->timezone('Asia/Manila')->format('h:i A');
-            } else {
-                $todayStatus = 'Clocked In';
-                $todayTime = $todayAttendance->clock_in->timezone('Asia/Manila')->format('h:i A');
+                $todayTime = $todayAttendance->pm_clock_out->timezone('Asia/Manila')->format('h:i A');
+            } elseif ($todayAttendance->pm_clock_in) {
+                $todayStatus = 'Clocked In (PM)';
+                $todayTime = $todayAttendance->pm_clock_in->timezone('Asia/Manila')->format('h:i A');
+            } elseif ($todayAttendance->am_clock_out) {
+                $todayStatus = 'Clocked Out (AM)';
+                $todayTime = $todayAttendance->am_clock_out->timezone('Asia/Manila')->format('h:i A');
+            } elseif ($todayAttendance->am_clock_in) {
+                $todayStatus = 'Clocked In (AM)';
+                $todayTime = $todayAttendance->am_clock_in->timezone('Asia/Manila')->format('h:i A');
             }
         }
 
@@ -236,14 +241,27 @@ class DashboardController extends Controller
             ->take(3)
             ->get()
             ->map(function ($att) {
-                $isClockOut = ! is_null($att->clock_out);
-                $activityTime = $isClockOut ? $att->updated_at : $att->created_at;
+                $clocks = [
+                    'in (AM)' => $att->am_clock_in,
+                    'out (AM)' => $att->am_clock_out,
+                    'in (PM)' => $att->pm_clock_in,
+                    'out (PM)' => $att->pm_clock_out,
+                ];
+                $latestClockTime = null;
+                $action = 'in (AM)';
+                foreach ($clocks as $key => $time) {
+                    if ($time && (is_null($latestClockTime) || $time->gt($latestClockTime))) {
+                        $latestClockTime = $time;
+                        $action = $key;
+                    }
+                }
+                $activityTime = $latestClockTime ?? $att->updated_at;
 
                 return [
-                    'id' => 'my_att_'.$att->id.($isClockOut ? '_out' : '_in'),
+                    'id' => 'my_att_'.$att->id.'_'.$action,
                     'type' => 'my_attendance',
                     'title' => 'Attendance log',
-                    'description' => 'Clocked '.($isClockOut ? 'out.' : 'in.'),
+                    'description' => 'Clocked '.$action.'.',
                     'time' => $activityTime ? $activityTime->diffForHumans() : 'Just now',
                     'timestamp' => $activityTime ? $activityTime->timestamp : now()->timestamp,
                 ];

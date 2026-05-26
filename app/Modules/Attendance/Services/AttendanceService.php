@@ -24,26 +24,48 @@ class AttendanceService
             ->withTrashed()
             ->first();
 
+        $now = Carbon::now();
+        $isPm = $now->hour >= 12;
+
         if ($attendance) {
             if ($attendance->trashed()) {
                 $attendance->restore();
                 $attendance->update([
-                    'clock_in' => Carbon::now(),
-                    'clock_out' => null,
+                    'am_clock_in' => $isPm ? null : $now,
+                    'am_clock_out' => null,
+                    'pm_clock_in' => $isPm ? $now : null,
+                    'pm_clock_out' => null,
                 ]);
 
                 return $attendance;
             }
 
-            throw ValidationException::withMessages([
-                'attendance' => 'You have already clocked in for today.',
-            ]);
+            if (! $isPm) {
+                if (is_null($attendance->am_clock_in)) {
+                    $attendance->update(['am_clock_in' => $now]);
+
+                    return $attendance;
+                }
+                throw ValidationException::withMessages([
+                    'attendance' => 'You are already clocked in for the morning session.',
+                ]);
+            } else {
+                if (is_null($attendance->pm_clock_in)) {
+                    $attendance->update(['pm_clock_in' => $now]);
+
+                    return $attendance;
+                }
+                throw ValidationException::withMessages([
+                    'attendance' => 'You have already clocked in for the afternoon session.',
+                ]);
+            }
         }
 
         return Attendance::create([
             'user_id' => $user->id,
             'date' => Carbon::today()->toDateString(),
-            'clock_in' => Carbon::now(),
+            'am_clock_in' => $isPm ? null : $now,
+            'pm_clock_in' => $isPm ? $now : null,
         ]);
     }
 
@@ -57,17 +79,36 @@ class AttendanceService
             ]);
         }
 
-        if ($attendance->clock_out) {
+        if (! is_null($attendance->pm_clock_in) && is_null($attendance->pm_clock_out)) {
+            $attendance->update(['pm_clock_out' => Carbon::now()]);
+
+            return $attendance;
+        }
+
+        if (! is_null($attendance->am_clock_in) && is_null($attendance->am_clock_out)) {
+            $attendance->update(['am_clock_out' => Carbon::now()]);
+
+            return $attendance;
+        }
+
+        if (! is_null($attendance->am_clock_out) && is_null($attendance->pm_clock_in)) {
+            throw ValidationException::withMessages([
+                'attendance' => 'You cannot clock out for the afternoon until you clock in.',
+            ]);
+        }
+
+        if (
+            (! is_null($attendance->am_clock_out) && ! is_null($attendance->pm_clock_out)) ||
+            (is_null($attendance->am_clock_in) && is_null($attendance->am_clock_out) && ! is_null($attendance->pm_clock_out))
+        ) {
             throw ValidationException::withMessages([
                 'attendance' => 'You have already clocked out for today.',
             ]);
         }
 
-        $attendance->update([
-            'clock_out' => Carbon::now(),
+        throw ValidationException::withMessages([
+            'attendance' => 'You must clock in before you can clock out.',
         ]);
-
-        return $attendance;
     }
 
     /**
@@ -91,7 +132,7 @@ class AttendanceService
         return Attendance::with('user')
             ->filter($filters)
             ->orderBy('date', 'desc')
-            ->orderBy('clock_in', 'desc')
+            ->orderBy('am_clock_in', 'desc')
             ->paginate(15)
             ->withQueryString();
     }
@@ -111,8 +152,10 @@ class AttendanceService
         return Attendance::create([
             'user_id' => $data['user_id'],
             'date' => $data['date'],
-            'clock_in' => $data['clock_in'],
-            'clock_out' => $data['clock_out'] ?? null,
+            'am_clock_in' => $data['am_clock_in'] ?? null,
+            'am_clock_out' => $data['am_clock_out'] ?? null,
+            'pm_clock_in' => $data['pm_clock_in'] ?? null,
+            'pm_clock_out' => $data['pm_clock_out'] ?? null,
         ]);
     }
 
@@ -137,8 +180,10 @@ class AttendanceService
 
         $attendance->update([
             'date' => $data['date'] ?? $attendance->date,
-            'clock_in' => $data['clock_in'],
-            'clock_out' => $data['clock_out'] ?? null,
+            'am_clock_in' => $data['am_clock_in'] ?? null,
+            'am_clock_out' => $data['am_clock_out'] ?? null,
+            'pm_clock_in' => $data['pm_clock_in'] ?? null,
+            'pm_clock_out' => $data['pm_clock_out'] ?? null,
         ]);
 
         return $attendance;

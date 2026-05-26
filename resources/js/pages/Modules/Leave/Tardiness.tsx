@@ -1,6 +1,6 @@
 import { Head, router } from '@inertiajs/react';
 import { Plus, Minus } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 
 import { EmployeeSearch } from '@/components/EmployeeSearch';
@@ -56,6 +56,101 @@ interface Props {
     };
 }
 
+const Counter = ({
+    value,
+    onChange,
+}: {
+    value: number;
+    onChange: (val: number) => void;
+}) => {
+    const [localValue, setLocalValue] = useState(value);
+    const [isDirty, setIsDirty] = useState(false);
+    const debouncedValue = useDebounce(localValue, 500);
+    const pendingValueRef = useRef<number | null>(null);
+    const onChangeRef = useRef(onChange);
+
+    // Keep onChangeRef up to date
+    useEffect(() => {
+        onChangeRef.current = onChange;
+    }, [onChange]);
+
+    // Sync with external value only if we are not currently typing/clicking
+    useEffect(() => {
+        if (!isDirty) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setLocalValue(value);
+        }
+    }, [value, isDirty]);
+
+    // Clear dirty state when server value catches up
+    useEffect(() => {
+        if (value === pendingValueRef.current) {
+            if (localValue === pendingValueRef.current) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
+                setIsDirty(false);
+            }
+
+            pendingValueRef.current = null;
+        } else if (value === localValue) {
+             
+            setIsDirty(false);
+        }
+    }, [value, localValue]);
+
+    // Debounce update
+    useEffect(() => {
+        if (
+            isDirty && 
+            debouncedValue === localValue && 
+            pendingValueRef.current !== debouncedValue
+        ) {
+            pendingValueRef.current = debouncedValue;
+            onChangeRef.current(debouncedValue);
+        }
+    }, [debouncedValue, localValue, isDirty]);
+
+    const updateValue = (val: number) => {
+        const next = Math.max(0, val);
+
+        if (next !== localValue) {
+            setLocalValue(next);
+            setIsDirty(true);
+        }
+    };
+
+    return (
+        <div className="flex items-center justify-center space-x-3">
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => updateValue(localValue - 1)}
+                className="btn-ghost-specular h-9 w-9 rounded-full border-none shadow-sm"
+            >
+                <Minus className="h-4 w-4" />
+            </Button>
+            <Input
+                type="text"
+                inputMode="numeric"
+                className="h-9 w-16 rounded-full border-2 border-muted-foreground/20 text-center font-mono font-bold focus:border-primary/50"
+                value={localValue}
+                onChange={(e) =>
+                    updateValue(
+                        parseInt(e.target.value.replace(/\D/g, '')) || 0,
+                    )
+                }
+            />
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => updateValue(localValue + 1)}
+                className="btn-ghost-specular h-9 w-9 rounded-full border-none shadow-sm"
+            >
+                <Plus className="h-4 w-4" />
+            </Button>
+        </div>
+    );
+};
+
 export default function LeaveTardiness({
     users,
     currentYear,
@@ -79,83 +174,27 @@ export default function LeaveTardiness({
             [field]: value,
         };
 
-        router.put(
-            LeaveRoutes.tardiness.update({ user_id: userId }).url,
-            payload,
-            {
-                preserveScroll: true,
-                onSuccess: () => toast.success('Record updated successfully'),
+        fetch(LeaveRoutes.tardiness.update({ user_id: userId }).url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                'Accept': 'application/json',
             },
-        );
+            body: JSON.stringify(payload),
+        }).then((res) => {
+            if (res.ok) {
+                toast.success('Record updated successfully');
+                router.reload({ 
+                    only: ['users']
+                });
+            } else {
+                toast.error('Failed to update record');
+            }
+        });
     };
 
-    const Counter = ({
-        value,
-        onChange,
-    }: {
-        value: number;
-        onChange: (val: number) => void;
-    }) => {
-        const [localValue, setLocalValue] = useState(value);
-        const [isDirty, setIsDirty] = useState(false);
-        const debouncedValue = useDebounce(localValue, 500);
 
-        // Sync with external value only if we are not currently typing/clicking
-        useEffect(() => {
-            if (!isDirty) {
-                setLocalValue(value);
-            }
-        }, [value, isDirty]);
-
-        // Debounce update
-        useEffect(() => {
-            if (isDirty) {
-                onChange(debouncedValue);
-                setIsDirty(false);
-            }
-        }, [debouncedValue, isDirty, onChange]);
-
-        const updateValue = (val: number) => {
-            const next = Math.max(0, val);
-
-            if (next !== localValue) {
-                setLocalValue(next);
-                setIsDirty(true);
-            }
-        };
-
-        return (
-            <div className="flex items-center justify-center space-x-3">
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => updateValue(localValue - 1)}
-                    className="btn-ghost-specular h-9 w-9 rounded-full border-none shadow-sm"
-                >
-                    <Minus className="h-4 w-4" />
-                </Button>
-                <Input
-                    type="text"
-                    inputMode="numeric"
-                    className="h-9 w-16 rounded-full border-2 border-muted-foreground/20 text-center font-mono font-bold focus:border-primary/50"
-                    value={localValue}
-                    onChange={(e) =>
-                        updateValue(
-                            parseInt(e.target.value.replace(/\D/g, '')) || 0,
-                        )
-                    }
-                />
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => updateValue(localValue + 1)}
-                    className="btn-ghost-specular h-9 w-9 rounded-full border-none shadow-sm"
-                >
-                    <Plus className="h-4 w-4" />
-                </Button>
-            </div>
-        );
-    };
 
     return (
         <>
@@ -171,15 +210,40 @@ export default function LeaveTardiness({
                 <div className="matte-card elev-2 p-6">
                     <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row">
                         <div className="flex items-center space-x-4">
-                            <div className="w-24">
-                                <Input
-                                    type="number"
-                                    value={year}
-                                    onChange={(e) =>
-                                        setYear(Number(e.target.value))
-                                    }
-                                    placeholder="Year"
-                                />
+                            <div className="w-28">
+                                <Select
+                                    value={year.toString()}
+                                    onValueChange={(v) => {
+                                        const newYear = parseInt(v);
+                                        setYear(newYear);
+                                        router.get(
+                                            LeaveRoutes.tardiness.index().url,
+                                            {
+                                                year: newYear,
+                                                month,
+                                                search: filters?.search,
+                                            },
+                                            { preserveState: true },
+                                        );
+                                    }}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Year" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {Array.from(
+                                            { length: 11 },
+                                            (_, i) => currentYear - 5 + i,
+                                        ).map((y) => (
+                                            <SelectItem
+                                                key={y}
+                                                value={y.toString()}
+                                            >
+                                                {y}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div className="w-40">
                                 <Select

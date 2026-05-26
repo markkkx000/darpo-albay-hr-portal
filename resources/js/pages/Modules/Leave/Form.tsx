@@ -1,5 +1,5 @@
 import { Head, router, useForm, useHttp } from '@inertiajs/react';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, ArrowLeft } from 'lucide-react';
 import {
     useState,
     useEffect,
@@ -16,7 +16,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import LeaveRoutes from '@/routes/leave';
 import {
-    formatDateForInput,
     parseLocalDate,
     getDetailsOptions,
     getSupportingDocsOptions,
@@ -29,7 +28,6 @@ import {
     StatusSection,
     SupportingDocsSection,
 } from './Components/Form';
-import LeaveNavigation from './Components/LeaveNavigation';
 
 export default function LeaveForm({
     leaveRequest,
@@ -45,25 +43,21 @@ export default function LeaveForm({
             user_id: leaveRequest?.user_id?.toString() || '',
             leave_type_id: leaveRequest?.leave_type_id?.toString() || '',
             leave_status_id: leaveRequest?.leave_status_id?.toString() || '',
-            start_date: formatDateForInput(leaveRequest?.start_date),
-            end_date: formatDateForInput(leaveRequest?.end_date),
+            start_date: leaveRequest?.start_date || '',
+            end_date: leaveRequest?.end_date || '',
             days_requested: leaveRequest?.days_requested || '',
             dates: '', // Dummy field for backend overlap validation errors
-            date_received: formatDateForInput(leaveRequest?.date_received),
-            date_approved: formatDateForInput(leaveRequest?.date_approved),
+            date_received: leaveRequest?.date_received || '',
+            date_approved: leaveRequest?.date_approved || '',
             approved_by_id: leaveRequest?.approved_by_id?.toString() || '',
             leave_details: leaveRequest?.leave_details || '',
             commutation_requested: leaveRequest?.commutation_requested || false,
             is_filed: leaveRequest?.is_filed || false,
             notes: leaveRequest?.notes || '',
             attachment_urls: leaveRequest?.attachment_urls || [''],
-            specific_dates: (leaveRequest?.specific_dates || []).map(
-                formatDateForInput,
-            ),
+            specific_dates: leaveRequest?.specific_dates || [],
             salary: leaveRequest?.salary || '',
-            date_filed:
-                formatDateForInput(leaveRequest?.date_filed) ||
-                formatDateForInput(new Date().toISOString()),
+            date_filed: leaveRequest?.date_filed || new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' }),
             days_with_pay: leaveRequest?.days_with_pay || '',
             days_without_pay: leaveRequest?.days_without_pay || '',
             others_pay_remarks: leaveRequest?.others_pay_remarks || '',
@@ -95,6 +89,76 @@ export default function LeaveForm({
     );
 
     const lastFetched = useRef<string | null>(null);
+    const sessionUploadedUrls = useRef<string[]>([]);
+
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            const urlsToDelete = sessionUploadedUrls.current;
+
+            if (urlsToDelete.length > 0) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                urlsToDelete.forEach((url) => {
+                    fetch('/leave/delete-attachment', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken || '',
+                        },
+                        body: JSON.stringify({ url }),
+                        keepalive: true,
+                    });
+                });
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+
+            // Clean up files on component unmount (e.g. Cancel button clicked)
+            const urlsToDelete = sessionUploadedUrls.current;
+
+            if (urlsToDelete.length > 0) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                urlsToDelete.forEach((url) => {
+                    fetch('/leave/delete-attachment', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken || '',
+                        },
+                        body: JSON.stringify({ url }),
+                    }).catch(err => console.error('Failed to clean up attachment on unmount:', err));
+                });
+            }
+        };
+    }, []);
+
+    const previousUserId = useRef(data.user_id);
+    useEffect(() => {
+        if (data.user_id && data.user_id !== previousUserId.current) {
+            const selectedUser = users?.find((u: any) => u.id.toString() === data.user_id);
+            if (selectedUser) {
+                setData('salary', selectedUser.monthly_salary || '');
+            }
+        }
+        previousUserId.current = data.user_id;
+    }, [data.user_id, users, setData]);
+
+    const previousLeaveTypeId = useRef(data.leave_type_id);
+    useEffect(() => {
+        if (data.leave_type_id && data.leave_type_id !== previousLeaveTypeId.current) {
+            const selectedLeaveType = leaveTypes?.find((lt: any) => lt.id.toString() === data.leave_type_id);
+            if (selectedLeaveType && selectedLeaveType.name.startsWith('Disapproved')) {
+                const disapprovedStatus = leaveStatuses?.find((ls: any) => ls.name === 'Disapproved');
+                if (disapprovedStatus) {
+                    setData('leave_status_id', disapprovedStatus.id.toString());
+                }
+            }
+        }
+        previousLeaveTypeId.current = data.leave_type_id;
+    }, [data.leave_type_id, leaveTypes, leaveStatuses, setData]);
 
     useEffect(() => {
         if (!data.user_id) {
@@ -152,7 +216,31 @@ export default function LeaveForm({
           )
         : null;
 
-    const available = currentCredit ? parseFloat(currentCredit.balance) : 0;
+    const available = useMemo(() => {
+        if (!currentCredit) {
+return 0;
+}
+
+        let bal = parseFloat(currentCredit.balance) || 0;
+        
+        // When editing an already approved leave, the days_with_pay were already deducted
+        // from the database balance. We must add them back to get the true "available"
+        // balance for this specific edit session, but only if they haven't changed the leave type.
+        if (
+            isEdit && 
+            leaveRequest && 
+            leaveStatuses &&
+            leaveRequest.leave_type_id?.toString() === data.leave_type_id
+        ) {
+            const approvedStatus = leaveStatuses.find((s: any) => s.name === 'Approved');
+
+            if (approvedStatus && leaveRequest.leave_status_id === approvedStatus.id) {
+                bal += parseFloat(leaveRequest.days_with_pay) || 0;
+            }
+        }
+        
+        return bal;
+    }, [currentCredit, isEdit, leaveRequest, leaveStatuses, data.leave_type_id]);
     const requested = parseFloat(data.days_requested) || 0;
     const remaining = available - requested;
 
@@ -347,6 +435,7 @@ export default function LeaveForm({
             put(LeaveRoutes.update({ leaveRequest: leaveRequest.id }).url, {
                 preserveScroll: true,
                 onSuccess: () => {
+                    sessionUploadedUrls.current = [];
                     toast.success('Leave request updated successfully');
                     router.clearHistory();
                 },
@@ -354,6 +443,7 @@ export default function LeaveForm({
         } else {
             post(LeaveRoutes.store().url, {
                 onSuccess: () => {
+                    sessionUploadedUrls.current = [];
                     toast.success('Leave request created successfully');
                     router.clearHistory();
                 },
@@ -372,9 +462,17 @@ export default function LeaveForm({
                         isEdit ? 'Edit Leave Request' : 'Encode Leave Request'
                     }
                     description="CS Form No. 6 digitizer."
+                    actions={
+                        <Button
+                            variant="outline"
+                            onClick={() => router.visit('/leave')}
+                            className="bg-background"
+                        >
+                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            Back to Dashboard
+                        </Button>
+                    }
                 />
-
-                <LeaveNavigation />
 
                 <div className="matte-card elev-2">
                     <form
@@ -449,6 +547,7 @@ export default function LeaveForm({
                             data={data}
                             errors={errors}
                             setData={setData}
+                            sessionUploadedUrls={sessionUploadedUrls}
                         />
 
                         <SupportingDocsSection

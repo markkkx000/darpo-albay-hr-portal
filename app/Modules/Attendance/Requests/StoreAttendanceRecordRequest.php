@@ -16,8 +16,10 @@ class StoreAttendanceRecordRequest extends FormRequest
         return [
             'user_id' => ['required', 'exists:users,id'],
             'date' => ['required', 'date'],
-            'clock_in' => ['required', 'date_format:Y-m-d H:i:s'],
-            'clock_out' => ['nullable', 'date_format:Y-m-d H:i:s', 'after_or_equal:clock_in'],
+            'am_clock_in' => ['nullable', 'date_format:Y-m-d H:i:s'],
+            'am_clock_out' => ['nullable', 'date_format:Y-m-d H:i:s', 'after_or_equal:am_clock_in'],
+            'pm_clock_in' => ['nullable', 'date_format:Y-m-d H:i:s', 'after_or_equal:am_clock_out'],
+            'pm_clock_out' => ['nullable', 'date_format:Y-m-d H:i:s', 'after_or_equal:pm_clock_in'],
         ];
     }
 }

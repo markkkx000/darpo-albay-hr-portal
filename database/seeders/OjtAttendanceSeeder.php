@@ -14,8 +14,8 @@ class OjtAttendanceSeeder extends Seeder
      */
     public function run(): void
     {
-        // Find or create the OJT user
-        $user = User::updateOrCreate(
+        // Find or create the OJT user 1 (Allan Paul II)
+        $user1 = User::updateOrCreate(
             ['employee_number' => 'OJT-4220719'],
             [
                 'first_name' => 'Allan Paul II',
@@ -27,15 +27,44 @@ class OjtAttendanceSeeder extends Seeder
             ]
         );
 
-        // Assign the employee role
-        if (!$user->hasRole('employee')) {
-            $user->assignRole('employee');
+        if (! $user1->hasRole('employee')) {
+            $user1->assignRole('employee');
         }
 
-        $jsonPath = base_path('ojt-temp-file/ojt_backup_2026-05-21.json');
+        // Find or create the OJT user 2 (OJT-4220386)
+        $user2 = User::updateOrCreate(
+            ['employee_number' => 'OJT-4220386'],
+            [
+                'first_name' => 'Mark Kenneth',
+                'middle_name' => 'Sulibaga',
+                'last_name' => 'Nudo',
+                'email' => 'kennethnudo27@gmail.com',
+                'password' => bcrypt('password'),
+                'is_active' => true,
+            ]
+        );
 
-        if (!file_exists($jsonPath)) {
+        if (! $user2->hasRole('employee')) {
+            $user2->assignRole('employee');
+        }
+
+        // Seed records for OJT-4220719 from JSON backup
+        $this->seedFromJson($user1, 'updated_ojt_backup_2026-05-20.json');
+
+        // Seed records for OJT-4220386 from JSON backup
+        $this->seedFromJson($user2, 'nudo_ojt_backup_2026-05-20.json');
+    }
+
+    /**
+     * Seed attendance records for a user from a JSON file.
+     */
+    private function seedFromJson(User $user, string $filename): void
+    {
+        $jsonPath = base_path("ojt-temp-file/{$filename}");
+
+        if (! file_exists($jsonPath)) {
             $this->command->error("JSON file not found at: {$jsonPath}");
+
             return;
         }
 
@@ -43,41 +72,28 @@ class OjtAttendanceSeeder extends Seeder
         $count = 0;
 
         foreach ($records as $record) {
-            if ($record['status'] === 'absent') {
+            if (isset($record['status']) && $record['status'] === 'absent') {
                 continue;
             }
 
             $date = $record['date'];
 
-            // "only take the first clock-in and the last clock-out"
-            // Earliest available time (morIn if present, else aftIn)
-            $clockInTime = null;
-            if (!empty($record['morIn'])) {
-                $clockInTime = $record['morIn'];
-            } elseif (!empty($record['aftIn'])) {
-                $clockInTime = $record['aftIn'];
-            }
+            $amIn = ! empty($record['morIn']) ? Carbon::parse("{$date} {$record['morIn']}") : null;
+            $amOut = ! empty($record['morOut']) ? Carbon::parse("{$date} {$record['morOut']}") : null;
+            $pmIn = ! empty($record['aftIn']) ? Carbon::parse("{$date} {$record['aftIn']}") : null;
+            $pmOut = ! empty($record['aftOut']) ? Carbon::parse("{$date} {$record['aftOut']}") : null;
 
-            // Latest available time (aftOut if present, else morOut)
-            $clockOutTime = null;
-            if (!empty($record['aftOut'])) {
-                $clockOutTime = $record['aftOut'];
-            } elseif (!empty($record['morOut'])) {
-                $clockOutTime = $record['morOut'];
-            }
-
-            if (!$clockInTime || !$clockOutTime) {
+            if (! $amIn && ! $amOut && ! $pmIn && ! $pmOut) {
                 continue;
             }
-
-            $clockIn = Carbon::parse("{$date} {$clockInTime}");
-            $clockOut = Carbon::parse("{$date} {$clockOutTime}");
 
             Attendance::updateOrCreate(
                 ['user_id' => $user->id, 'date' => $date],
                 [
-                    'clock_in' => $clockIn,
-                    'clock_out' => $clockOut,
+                    'am_clock_in' => $amIn,
+                    'am_clock_out' => $amOut,
+                    'pm_clock_in' => $pmIn,
+                    'pm_clock_out' => $pmOut,
                 ]
             );
             $count++;
