@@ -15,7 +15,7 @@ export default function Create({ divisions, positions, users }: Props) {
         <>
             <Head title="Create Announcement" />
 
-            <div className="p-6 lg:p-10 w-full flex flex-col items-center animate-fade-up">
+            <div className="p-6 lg:p-10 w-full flex flex-col items-center">
                 <div className="w-full max-w-4xl space-y-8">
                     <Heading 
                         title="Create Announcement" 

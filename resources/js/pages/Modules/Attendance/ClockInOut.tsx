@@ -182,7 +182,7 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
         <>
             <Head title="Attendance Registry" />
 
-            <div className="relative z-10 flex min-h-[calc(100vh-12rem)] flex-col items-center justify-start p-4 pt-4 gap-4 animate-fade-up">
+            <div className="relative z-10 flex min-h-[calc(100vh-12rem)] flex-col items-center justify-start p-4 pt-4 gap-4">
                 <div className="relative w-full max-w-xl">
                     {canManage && (
                         <Link
