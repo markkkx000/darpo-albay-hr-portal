@@ -69,10 +69,16 @@ export default function Edit({ employee, divisions, units, positions, appointmen
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
-        transform((data) => ({
-            ...data,
-            unit_id: data.unit_id === 'none' ? '' : data.unit_id,
-        }));
+        transform((data) => {
+            const result = {
+                ...data,
+                unit_id: data.unit_id === 'none' ? '' : data.unit_id,
+            };
+            if (!(result.profile_picture instanceof File)) {
+                delete result.profile_picture;
+            }
+            return result;
+        });
 
         // Send POST request with spoofed method to support file upload on update
         post(updateRoute({ user: employee.id }).url, {
