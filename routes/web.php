@@ -27,4 +27,6 @@ Route::inertia('/', 'welcome', [
     'canRegister' => false,
 ])->name('home');
 
+Route::get('ping', fn () => response()->json(['status' => 'ok']))->name('ping');
+
 require __DIR__.'/settings.php';
