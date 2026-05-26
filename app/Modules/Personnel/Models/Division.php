@@ -21,7 +21,7 @@ class Division extends Model
             ->logFillable()
             ->logOnlyDirty()
             ->dontLogEmptyChanges()
-            ->setDescriptionForEvent(fn(string $eventName) => "Division has been {$eventName}");
+            ->setDescriptionForEvent(fn (string $eventName) => "Division has been {$eventName}");
     }
 
     protected static function newFactory()

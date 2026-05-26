@@ -102,8 +102,6 @@ class LeaveService
 
         $data['created_by'] = $createdBy;
 
-
-
         return DB::transaction(function () use ($data) {
             $leaveRequest = LeaveRequest::create($data);
 

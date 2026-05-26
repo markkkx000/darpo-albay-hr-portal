@@ -2,7 +2,6 @@
 
 use App\Models\User;
 use App\Modules\Leave\Models\LeaveCredit;
-use App\Modules\Leave\Models\LeaveRequest;
 use App\Modules\Leave\Models\LeaveStatus;
 use App\Modules\Leave\Models\LeaveType;
 use Database\Seeders\LeaveStatusSeeder;
@@ -99,8 +98,6 @@ it('deducts only days_with_pay from credits', function () {
 
     expect($credit->balance)->toBe('9.000');
 });
-
-
 
 it('validates sick leave attachments for more than 5 days', function () {
     $slType = LeaveType::where('name', 'Sick Leave')->first();
