@@ -96,37 +96,40 @@ export default function LeaveShow({ leaveRequest }: Props) {
     };
 
     const isHalfDay =
-        leaveRequest.days_requested < 1.0 &&
+        Number(leaveRequest.days_requested) < 1.0 &&
         leaveRequest.start_date === leaveRequest.end_date;
 
     return (
         <>
             <Head title={`Leave Details - ${leaveRequest.user?.last_name}`} />
-            <div className="mx-auto w-full max-w-4xl p-4 md:p-6">
+            <div className="relative mx-auto w-full max-w-4xl p-4 md:p-8">
+                {/* Visual Depth Component */}
+                <div className="mesh-halo pointer-events-none" />
+
                 <PageHeader
                     title="Leave Details"
-                    description="Detailed view of the leave request."
+                    description="Archival record of the employee's application, including leave credit certification and authorization timeline."
                     actions={
-                        <Button variant="outline" asChild>
+                        <Button variant="ghost" className="btn-ghost-specular" asChild>
                             <Link href={LeaveRoutes.index().url}>
-                                <ArrowLeft className="mr-2 h-4 w-4" />
+                                <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
                                 Back to Dashboard
                             </Link>
                         </Button>
                     }
                 />
 
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                <div className="relative z-10 grid grid-cols-1 gap-6 md:grid-cols-3">
                     {/* Main Content */}
                     <div className="space-y-6 md:col-span-2">
-                        <div className="matte-card elev-2 p-6">
-                            <h2 className="mb-4 flex items-center text-lg font-bold">
+                        <div className="matte-card elev-2 p-6 md:p-8">
+                            <h2 className="t-headline mb-6 flex items-center">
                                 <FileText className="mr-2 h-5 w-5 text-primary" />
                                 Leave Information (Section 6)
                             </h2>
                             <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
                                 <div className="col-span-2 space-y-1">
-                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Type of Leave
                                     </p>
                                     <div className="flex items-center space-x-2">
@@ -144,35 +147,47 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                     </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Status
                                     </p>
-                                    <span className="inline-flex items-center rounded-full border bg-secondary px-2.5 py-0.5 text-xs font-semibold text-secondary-foreground">
+                                    <span
+                                        className={cn(
+                                            'inline-flex items-center rounded-full px-3 py-1 text-xs shadow-sm',
+                                            leaveRequest.leave_status?.name
+                                                ?.toLowerCase()
+                                                .includes('approve')
+                                                ? 'status-badge-permanent'
+                                                : leaveRequest.leave_status?.name
+                                                        ?.toLowerCase()
+                                                        .includes('disapprove') ||
+                                                  leaveRequest.leave_status?.name
+                                                        ?.toLowerCase()
+                                                        .includes('cancel')
+                                                ? 'status-badge-danger'
+                                                : 'status-badge-warning',
+                                        )}
+                                    >
                                         {leaveRequest.leave_status?.name}
                                     </span>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Pay Status
                                     </p>
                                     <div className="flex flex-col gap-1.5">
-                                        <span
+                                         <span
                                             className={cn(
-                                                'inline-flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold',
-                                                leaveRequest.pay_status ===
-                                                    'with_pay'
-                                                    ? 'border-green-500/20 bg-green-500/10 text-green-600'
-                                                    : leaveRequest.pay_status ===
-                                                        'partial'
-                                                      ? 'border-blue-500/20 bg-blue-500/10 text-blue-600'
-                                                      : 'border-red-500/20 bg-red-500/10 text-red-600',
+                                                'inline-flex w-fit items-center rounded-full px-3 py-1 text-xs font-bold tracking-tight shadow-sm',
+                                                leaveRequest.pay_status === 'with_pay'
+                                                    ? 'status-badge-permanent'
+                                                    : leaveRequest.pay_status === 'partial'
+                                                      ? 'status-badge-contractual'
+                                                      : 'status-badge-danger',
                                             )}
                                         >
-                                            {leaveRequest.pay_status ===
-                                            'with_pay'
+                                            {leaveRequest.pay_status === 'with_pay'
                                                 ? 'Full Pay'
-                                                : leaveRequest.pay_status ===
-                                                    'partial'
+                                                : leaveRequest.pay_status === 'partial'
                                                   ? 'Partial Pay'
                                                   : 'Without Pay'}
                                         </span>
@@ -182,11 +197,11 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                             parseFloat(
                                                 leaveRequest.days_without_pay,
                                             ) > 0) && (
-                                            <div className="flex gap-2 text-[10px] font-medium text-muted-foreground">
+                                            <div className="flex gap-2 text-[10px] font-bold tabular-nums text-muted-foreground uppercase tracking-wider">
                                                 {parseFloat(
                                                     leaveRequest.days_with_pay,
                                                 ) > 0 && (
-                                                    <span className="flex items-center text-green-600/80">
+                                                    <span className="flex items-center text-green-600 dark:text-green-400">
                                                         {
                                                             leaveRequest.days_with_pay
                                                         }{' '}
@@ -196,7 +211,7 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                                 {parseFloat(
                                                     leaveRequest.days_without_pay,
                                                 ) > 0 && (
-                                                    <span className="flex items-center text-red-600/80">
+                                                    <span className="flex items-center text-red-600 dark:text-red-400">
                                                         {
                                                             leaveRequest.days_without_pay
                                                         }{' '}
@@ -209,15 +224,15 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                 </div>
 
                                 <div className="space-y-1">
-                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Properly Filed
                                     </p>
                                     <span
                                         className={cn(
-                                            'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold',
+                                            'inline-flex items-center rounded-full px-3 py-1 text-xs shadow-sm',
                                             leaveRequest.is_filed
-                                                ? 'border-blue-500/20 bg-blue-500/10 text-blue-600'
-                                                : 'border-amber-500/20 bg-amber-500/10 text-amber-600',
+                                                ? 'status-badge-permanent'
+                                                : 'status-badge-warning',
                                         )}
                                     >
                                         {leaveRequest.is_filed
@@ -227,35 +242,35 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                 </div>
 
                                 <div className="space-y-1">
-                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Salary
                                     </p>
-                                    <p className="font-medium">
+                                    <p className="font-semibold tabular-nums text-foreground">
                                         {formatCurrency(leaveRequest.salary)}
                                     </p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Date Filed
                                     </p>
-                                    <p className="font-medium">
+                                    <p className="font-semibold tabular-nums text-foreground">
                                         {formatDate(leaveRequest.date_filed)}
                                     </p>
                                 </div>
                                 <div className="col-span-2 space-y-1">
-                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Details Type
                                     </p>
-                                    <p className="font-medium">
-                                        {leaveRequest.leave_detail_type || ''}
+                                    <p className="font-semibold text-foreground">
+                                        {leaveRequest.leave_detail_type || 'N/A'}
                                     </p>
                                 </div>
 
                                 <div className="space-y-1">
-                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Commutation
                                     </p>
-                                    <p className="font-medium">
+                                    <p className="font-semibold text-foreground">
                                         {leaveRequest.commutation_requested
                                             ? 'Requested'
                                             : 'Not Requested'}
@@ -263,49 +278,49 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                 </div>
 
                                 <div className="col-span-4 space-y-1">
-                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Remarks / Specifics
                                     </p>
-                                    <p className="rounded-xl bg-muted/30 p-3 text-sm italic">
+                                    <p className="rounded-xl bg-muted/30 p-4 text-sm italic leading-relaxed text-foreground/80">
                                         {leaveRequest.leave_detail_remarks ||
                                             leaveRequest.leave_details ||
-                                            ''}
+                                            'No additional remarks provided.'}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="matte-card elev-2 p-6">
-                            <h2 className="mb-4 flex items-center text-lg font-bold">
+                        <div className="matte-card elev-2 p-6 md:p-8">
+                            <h2 className="t-headline mb-6 flex items-center">
                                 <Calendar className="mr-2 h-5 w-5 text-primary" />
                                 Schedule & Duration
                             </h2>
-                            <div className="grid grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                                 <div className="space-y-1">
-                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Duration
                                     </p>
-                                    <p className="text-2xl font-black text-foreground">
+                                    <p className="t-title tabular-nums">
                                         {leaveRequest.days_requested}{' '}
-                                        {leaveRequest.days_requested == 1
+                                        {Number(leaveRequest.days_requested) === 1
                                             ? 'Day'
                                             : 'Days'}
                                         {isHalfDay && (
-                                            <span className="ml-2 text-sm font-normal text-muted-foreground">
+                                            <span className="ml-2 t-headline font-normal text-muted-foreground">
                                                 (Half Day)
                                             </span>
                                         )}
                                     </p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Dates Requested
                                     </p>
-                                    <div className="text-sm font-medium">
+                                    <div className="font-semibold text-foreground">
                                         {leaveRequest.specific_dates &&
                                         leaveRequest.specific_dates.length >
                                             0 ? (
-                                            <ul className="list-inside list-disc">
+                                            <ul className="list-inside list-disc tabular-nums">
                                                 {leaveRequest.specific_dates.map(
                                                     (d: string, i: number) => (
                                                         <li key={i}>
@@ -315,11 +330,11 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                                 )}
                                             </ul>
                                         ) : (
-                                            <p>
+                                            <p className="tabular-nums">
                                                 {formatDate(
                                                     leaveRequest.start_date,
                                                 )}{' '}
-                                                to{' '}
+                                                <span className="mx-1 text-muted-foreground">to</span>{' '}
                                                 {formatDate(
                                                     leaveRequest.end_date,
                                                 )}
@@ -327,37 +342,47 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                         )}
                                     </div>
                                 </div>
-                                <div className="col-span-2 mt-2 space-y-1 border-t pt-4">
-                                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                                <div className="mt-4 space-y-4 border-t pt-6 sm:col-span-2">
+                                    <p className="t-caption">
                                         Pay Status Breakdown
                                     </p>
-                                    <div className="mt-1 flex flex-wrap gap-6">
-                                        <div className="flex items-center gap-2 text-sm">
-                                            <span className="font-black text-green-600">
-                                                {leaveRequest.days_with_pay}
-                                            </span>
-                                            <span className="font-medium text-muted-foreground">
-                                                Days with pay
-                                            </span>
+                                    <div className="flex flex-wrap gap-x-8 gap-y-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/10 text-green-600 dark:text-green-400">
+                                                <CheckCircle className="h-4 w-4" />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="t-headline tabular-nums leading-none">
+                                                    {leaveRequest.days_with_pay}
+                                                </span>
+                                                <span className="t-caption lowercase tracking-normal">
+                                                    Days with pay
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-2 text-sm">
-                                            <span className="font-black text-amber-600">
-                                                {leaveRequest.days_without_pay}
-                                            </span>
-                                            <span className="font-medium text-muted-foreground">
-                                                Days without pay
-                                            </span>
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                                                <Clock className="h-4 w-4" />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="t-headline tabular-nums leading-none">
+                                                    {leaveRequest.days_without_pay}
+                                                </span>
+                                                <span className="t-caption lowercase tracking-normal">
+                                                    Days without pay
+                                                </span>
+                                            </div>
                                         </div>
                                         {leaveRequest.others_pay_remarks && (
-                                            <div className="flex items-center gap-2 text-sm">
-                                                <span className="font-medium text-muted-foreground">
-                                                    Others:
-                                                </span>
-                                                <span className="italic">
-                                                    {
-                                                        leaveRequest.others_pay_remarks
-                                                    }
-                                                </span>
+                                            <div className="flex items-center gap-3 border-l pl-8">
+                                                <div className="flex flex-col">
+                                                    <span className="text-sm font-semibold text-foreground">
+                                                        {leaveRequest.others_pay_remarks}
+                                                    </span>
+                                                    <span className="t-caption lowercase tracking-normal">
+                                                        Other Remarks
+                                                    </span>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -365,27 +390,97 @@ export default function LeaveShow({ leaveRequest }: Props) {
                             </div>
                         </div>
 
+                        <div className="matte-card elev-2 p-6 md:p-8">
+                            <h2 className="t-headline mb-6 flex items-center">
+                                <FileText className="mr-2 h-5 w-5 text-primary" />
+                                7. Details of Action on Application
+                            </h2>
+                            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                                <div className="space-y-4">
+                                    <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
+                                        7.A Certification of Leave Credits
+                                    </h3>
+                                    <div className="overflow-x-auto rounded-xl border border-border/50 bg-muted/20">
+                                        <table className="w-full text-left text-sm min-w-[320px]">
+                                            <thead>
+                                                <tr className="border-b border-border/50 bg-muted/30">
+                                                    <th className="p-3 t-caption !tracking-normal">Category</th>
+                                                    <th className="p-3 t-caption !tracking-normal text-right">Vacation</th>
+                                                    <th className="p-3 t-caption !tracking-normal text-right">Sick</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="tabular-nums">
+                                                <tr className="border-b border-border/50">
+                                                    <td className="p-3 font-medium whitespace-nowrap">As of Filing</td>
+                                                    <td className="p-3 text-right font-bold text-foreground">
+                                                        {leaveRequest.vl_balance_at_filing || '0.000'}
+                                                    </td>
+                                                    <td className="p-3 text-right font-bold text-foreground">
+                                                        {leaveRequest.sl_balance_at_filing || '0.000'}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="p-3 font-medium whitespace-nowrap">This App.</td>
+                                                    <td className="p-3 text-right text-red-600 dark:text-red-400">
+                                                        {leaveRequest.leave_type?.name?.toLowerCase().includes('vacation') || leaveRequest.leave_type?.name?.toLowerCase().includes('forced')
+                                                            ? Number(leaveRequest.days_requested).toFixed(3)
+                                                            : '0.000'}
+                                                    </td>
+                                                    <td className="p-3 text-right text-red-600 dark:text-red-400">
+                                                        {leaveRequest.leave_type?.name?.toLowerCase().includes('sick')
+                                                            ? Number(leaveRequest.days_requested).toFixed(3)
+                                                            : '0.000'}
+                                                    </td>
+                                               </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div className="space-y-4">
+                                    <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
+                                        7.B Recommendation
+                                    </h3>
+                                    <div className="flex flex-col space-y-4">
+                                        <div className="flex items-center space-x-2">
+                                            <div className={cn(
+                                                "h-2 w-2 rounded-full",
+                                                leaveRequest.leave_status?.name === 'Approved' ? "bg-green-500" : "bg-amber-500"
+                                            )} />
+                                            <span className="font-semibold text-foreground">
+                                                {leaveRequest.leave_status?.name === 'Approved' ? 'Recommended for Approval' : 'Pending Recommendation'}
+                                            </span>
+                                        </div>
+                                        {leaveRequest.leave_detail_remarks && (
+                                            <p className="rounded-lg bg-orange-500/5 p-3 text-xs italic text-orange-700 dark:text-orange-300 border border-orange-500/10">
+                                                Note: {leaveRequest.leave_detail_remarks}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         {leaveRequest.notes && (
-                            <div className="matte-card elev-2 border-l-4 border-l-primary/50 p-6">
-                                <h2 className="mb-2 flex items-center text-lg font-bold">
+                            <div className="matte-card elev-2 border-l-4 border-l-green-500/50 p-6 md:p-8">
+                                <h2 className="t-headline mb-4 flex items-center">
                                     <FileText className="mr-2 h-5 w-5 text-primary" />
-                                    Admin Notes
+                                    Admin Remarks
                                 </h2>
-                                <p className="text-sm text-muted-foreground leading-relaxed">
-                                    {leaveRequest.notes}
+                                <p className="text-sm leading-relaxed text-muted-foreground italic">
+                                    "{leaveRequest.notes}"
                                 </p>
                             </div>
                         )}
 
                         {leaveRequest.maternity_allocation_details && (
-                            <div className="matte-card elev-2 border-l-4 border-l-pink-500/50 p-6">
-                                <h2 className="mb-2 flex items-center text-lg font-bold">
+                            <div className="matte-card elev-2 border-l-4 border-l-pink-500/50 p-6 md:p-8">
+                                <h2 className="t-headline mb-4 flex items-center">
                                     <CheckCircle className="mr-2 h-5 w-5 text-pink-500" />
                                     Maternity Allocation (CS Form 6a)
                                 </h2>
-                                <p className="text-sm text-muted-foreground italic leading-relaxed">
+                                <div className="rounded-xl bg-pink-500/5 p-4 italic text-sm leading-relaxed text-muted-foreground border border-pink-500/10">
                                     {leaveRequest.maternity_allocation_details}
-                                </p>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -393,21 +488,21 @@ export default function LeaveShow({ leaveRequest }: Props) {
                     {/* Sidebar */}
                     <div className="space-y-6">
                         <div className="matte-card elev-2 p-6">
-                            <h2 className="mb-4 flex items-center text-sm font-bold tracking-widest text-muted-foreground uppercase">
+                            <h2 className="t-caption mb-4 flex items-center">
                                 <User className="mr-2 h-4 w-4" />
                                 Employee
                             </h2>
-                            <div className="mb-4 flex items-center space-x-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 font-bold text-primary">
-                                    {leaveRequest.user?.first_name[0]}
-                                    {leaveRequest.user?.last_name[0]}
+                            <div className="flex items-center space-x-3">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 font-bold text-lg text-primary border border-primary/20">
+                                    {leaveRequest.user?.first_name?.[0] || 'U'}
+                                    {leaveRequest.user?.last_name?.[0] || ''}
                                 </div>
-                                <div>
-                                    <p className="font-bold">
+                                <div className="flex flex-col">
+                                    <p className="font-bold text-foreground">
                                         {leaveRequest.user?.first_name}{' '}
                                         {leaveRequest.user?.last_name}
                                     </p>
-                                    <p className="text-xs text-muted-foreground">
+                                    <p className="t-caption lowercase tracking-normal text-muted-foreground">
                                         {leaveRequest.user?.employee_number}
                                     </p>
                                 </div>
@@ -415,62 +510,62 @@ export default function LeaveShow({ leaveRequest }: Props) {
                         </div>
 
                         <div className="matte-card elev-2 p-6">
-                            <h2 className="mb-4 flex items-center text-sm font-bold tracking-widest text-muted-foreground uppercase">
+                            <h2 className="t-caption mb-4 flex items-center">
                                 <Clock className="mr-2 h-4 w-4" />
                                 Timeline
                             </h2>
                             <div className="space-y-4">
                                 <div className="space-y-1">
-                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Filed On
                                     </p>
-                                    <p className="text-xs font-medium">
+                                    <p className="text-sm font-semibold tabular-nums text-foreground">
                                         {formatDate(leaveRequest.created_at)}
                                     </p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Received On
                                     </p>
-                                    <p className="text-xs font-medium">
+                                    <p className="text-sm font-semibold tabular-nums text-foreground">
                                         {formatDate(
                                             leaveRequest.date_received,
-                                        ) || ''}
+                                        ) || 'Not yet received'}
                                     </p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Approved On
                                     </p>
-                                    <p className="text-xs font-medium">
+                                    <p className="text-sm font-semibold tabular-nums text-foreground">
                                         {formatDate(
                                             leaveRequest.date_approved,
-                                        ) || 'Pending'}
+                                        ) || 'Pending approval'}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
                         <div className="matte-card elev-2 p-6">
-                            <h2 className="mb-4 flex items-center text-sm font-bold tracking-widest text-muted-foreground uppercase">
+                            <h2 className="t-caption mb-4 flex items-center">
                                 <CheckCircle className="mr-2 h-4 w-4" />
                                 Authorization
                             </h2>
                             <div className="space-y-4">
                                 <div className="space-y-1">
-                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Encoded By
                                     </p>
-                                    <p className="text-xs font-medium">
+                                    <p className="text-sm font-semibold text-foreground">
                                         {leaveRequest.created_by?.first_name}{' '}
                                         {leaveRequest.created_by?.last_name}
                                     </p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">
+                                    <p className="t-caption">
                                         Approved By
                                     </p>
-                                    <p className="text-xs font-medium">
+                                    <p className="text-sm font-semibold text-foreground">
                                         {leaveRequest.approved_by
                                             ? `${leaveRequest.approved_by.first_name} ${leaveRequest.approved_by.last_name}`
                                             : leaveRequest.approved_by_official ||
@@ -486,7 +581,7 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                 (url: string) => !!url,
                             ) && (
                                 <div className="matte-card elev-2 p-6">
-                                    <h2 className="mb-4 flex items-center text-sm font-bold tracking-widest text-muted-foreground uppercase">
+                                    <h2 className="t-caption mb-4 flex items-center">
                                         <FileText className="mr-2 h-4 w-4" />
                                         Attachment/s
                                     </h2>
@@ -497,7 +592,7 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                                     <Button
                                                         key={i}
                                                         variant="secondary"
-                                                        className="w-full justify-start overflow-hidden text-ellipsis whitespace-nowrap"
+                                                        className="w-full justify-start overflow-hidden text-ellipsis whitespace-nowrap btn-ghost-specular"
                                                         asChild
                                                         title={url}
                                                     >
@@ -526,18 +621,20 @@ export default function LeaveShow({ leaveRequest }: Props) {
                         {leaveRequest.has_attachments &&
                             leaveRequest.supporting_documents?.length > 0 && (
                                 <div className="matte-card elev-2 p-6">
-                                    <h2 className="mb-4 flex items-center text-sm font-bold tracking-widest text-muted-foreground uppercase">
+                                    <h2 className="t-caption mb-4 flex items-center border-b pb-3">
                                         <CheckCircle className="mr-2 h-4 w-4" />
                                         Supporting Docs
                                     </h2>
-                                    <ul className="space-y-2">
+                                    <ul className="space-y-3 mt-4">
                                         {leaveRequest.supporting_documents.map(
                                             (doc: string) => (
                                                 <li
                                                     key={doc}
-                                                    className="flex items-center text-xs"
+                                                    className="flex items-center text-sm font-medium text-foreground"
                                                 >
-                                                    <CheckCircle className="mr-2 h-3 w-3 text-green-500" />
+                                                    <div className="mr-3 flex h-5 w-5 items-center justify-center rounded-full bg-green-500/10 text-green-600">
+                                                        <CheckCircle className="h-3 w-3" />
+                                                    </div>
                                                     {doc}
                                                 </li>
                                             ),
