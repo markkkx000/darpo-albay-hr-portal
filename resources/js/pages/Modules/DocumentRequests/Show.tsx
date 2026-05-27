@@ -1,6 +1,8 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { ArrowLeft, CheckCircle, FileText } from 'lucide-react';
+import { Clock, Send, Box } from 'lucide-react';
 import { useState } from 'react';
+import { EmployeeSearch } from '@/components/EmployeeSearch';
 import PageHeader from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,11 +15,9 @@ import {
 } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { cn } from '@/lib/utils';
 import DocumentRequestsRoutes from '@/routes/documentrequests';
 import { ReleaseModal } from './Components/ReleaseModal';
-import { Clock, Send, Box } from 'lucide-react';
 
 // We import formatting utilities if any.
 function formatDate(dateStr: string | null) {
@@ -425,6 +425,7 @@ export default function DocumentRequestsShow({
                     onOpenAutoFocus={(e) => e.preventDefault()}
                     onInteractOutside={(e) => {
                         const target = e.target as HTMLElement;
+
                         if (
                             target.closest('[data-headlessui-portal]') ||
                             target.closest('ul[role="listbox"]') ||

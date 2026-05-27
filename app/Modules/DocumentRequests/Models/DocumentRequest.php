@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 #[Fillable([
     'user_id',
@@ -51,10 +52,11 @@ class DocumentRequest extends Model
                 if (filter_var($file, FILTER_VALIDATE_URL)) {
                     $urls[] = $file;
                 } else {
-                    $urls[] = \Illuminate\Support\Facades\Storage::url($file);
+                    $urls[] = Storage::url($file);
                 }
             }
         }
+
         return $urls;
     }
 

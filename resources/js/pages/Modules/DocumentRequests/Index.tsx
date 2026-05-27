@@ -10,11 +10,11 @@ import {
     FileText,
 } from 'lucide-react';
 import { useState } from 'react';
+import { EmployeeSearch } from '@/components/EmployeeSearch';
 import PageHeader from '@/components/page-header';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import DocumentRequestsRoutes from '@/routes/documentrequests';
@@ -388,6 +388,7 @@ export default function DocumentRequestsIndex({
                     onOpenAutoFocus={(e) => e.preventDefault()}
                     onInteractOutside={(e) => {
                         const target = e.target as HTMLElement;
+
                         if (
                             target.closest('[data-headlessui-portal]') ||
                             target.closest('ul[role="listbox"]') ||
