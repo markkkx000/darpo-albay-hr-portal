@@ -34,6 +34,8 @@ class RoleAndPermissionSeeder extends Seeder
             'travel_order.create',
             'travel_order.manage',
             'roles.manage',
+            'document_requests.manage',
+            'document_requests.view',
         ];
 
         foreach ($permissions as $permission) {
@@ -65,6 +67,8 @@ class RoleAndPermissionSeeder extends Seeder
             'announcements.view',
             'dtr.manage',
             'travel_order.manage',
+            'document_requests.manage',
+            'document_requests.view',
         ]);
 
         // HR Staff
@@ -82,6 +86,8 @@ class RoleAndPermissionSeeder extends Seeder
             'announcements.view',
             'announcements.manage',
             'travel_order.manage',
+            'document_requests.manage',
+            'document_requests.view',
         ]);
 
         // Division Head
@@ -94,6 +100,7 @@ class RoleAndPermissionSeeder extends Seeder
             'announcements.view',
             'announcements.manage',
             'travel_order.create',
+            'document_requests.view',
         ]);
 
         // Employee
@@ -104,6 +111,7 @@ class RoleAndPermissionSeeder extends Seeder
             'leave.view',
             'leave.credits.view',
             'announcements.view',
+            'document_requests.view',
         ]);
     }
 }

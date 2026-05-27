@@ -33,6 +33,7 @@ class ModuleRegistry
             'Leave Tracking' => 30,
             'Personnel Directory' => 40,
             'Travel Orders' => 50,
+            'Document Requests' => 55,
             'DTR Export' => 60,
             'Roles & Permissions' => 70,
         ];
