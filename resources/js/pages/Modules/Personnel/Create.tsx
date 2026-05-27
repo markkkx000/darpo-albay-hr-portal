@@ -27,6 +27,7 @@ export default function Create({ divisions, units, positions, appointmentStatuse
         sex: '',
         date_of_birth: '',
         civil_status: '',
+        eligibility: '',
         password: generateRandomPassword(),
         
         positions: [{ id: '', name: '', is_primary: true }],

@@ -49,6 +49,7 @@ class EmployeeUpdateRequest extends FormRequest
             'date_hired_government' => ['nullable', 'date'],
             'present_address' => ['nullable', 'string'],
             'civil_status' => ['nullable', 'string', 'in:Single,Married,Widowed,Divorced,Separated'],
+            'eligibility' => ['nullable', 'string', 'max:255'],
             'fund_code' => ['nullable', 'string', 'max:255'],
             'func_activity_code' => ['nullable', 'string', 'max:255'],
             'item_number' => ['nullable', 'string', 'max:255'],

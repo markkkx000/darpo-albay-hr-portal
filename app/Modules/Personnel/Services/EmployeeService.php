@@ -123,6 +123,7 @@ class EmployeeService
                 'date_hired_government' => $data['date_hired_government'] ?? null,
                 'present_address' => $data['present_address'] ?? null,
                 'civil_status' => $data['civil_status'] ?? null,
+                'eligibility' => $data['eligibility'] ?? null,
                 'fund_code' => $data['fund_code'] ?? null,
                 'func_activity_code' => $data['func_activity_code'] ?? null,
                 'item_number' => $data['item_number'] ?? null,
@@ -349,6 +350,22 @@ class EmployeeService
         Storage::put($path, $imageContent);
 
         return $path;
+    }
+
+    public function logPromotion(User $user, array $data): void
+    {
+        DB::transaction(function () use ($user, $data) {
+            $user->promotionHistories()->create([
+                'position_name' => $data['position_name'],
+                'promotion_date' => $data['promotion_date'],
+            ]);
+
+            if (empty($user->date_of_latest_appointment) || $data['promotion_date'] >= $user->date_of_latest_appointment) {
+                $user->update([
+                    'date_of_latest_appointment' => $data['promotion_date']
+                ]);
+            }
+        });
     }
 
     /**

@@ -309,6 +309,18 @@ export function EmployeeForm({
                                 </Select>
                                 {errors.civil_status && <p className="text-xs text-destructive">{errors.civil_status}</p>}
                             </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="eligibility">Eligibility</Label>
+                                <Input
+                                    id="eligibility"
+                                    value={data.eligibility || ''}
+                                    onChange={e => setData('eligibility', e.target.value)}
+                                    aria-invalid={!!errors.eligibility}
+                                    className={cn(errors.eligibility && "border-destructive focus-visible:ring-destructive")}
+                                    placeholder="e.g. CS Professional"
+                                />
+                                {errors.eligibility && <p className="text-xs text-destructive">{errors.eligibility}</p>}
+                            </div>
                         </div>
                     </div>
                 </div>

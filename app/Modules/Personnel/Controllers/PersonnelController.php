@@ -74,7 +74,7 @@ class PersonnelController extends Controller
         $this->authorize('personnel.view');
 
         return Inertia::render('Modules/Personnel/Show', [
-            'employee' => $user->load(['division', 'unit', 'positions', 'appointmentStatus']),
+            'employee' => $user->load(['division', 'unit', 'positions', 'appointmentStatus', 'promotionHistories']),
         ]);
     }
 
@@ -167,5 +167,22 @@ class PersonnelController extends Controller
         return Inertia::render('Modules/Personnel/MyRecord', [
             'employee' => $request->user()->load(['division', 'unit', 'positions', 'appointmentStatus']),
         ]);
+    }
+
+    /**
+     * Store a new promotion history.
+     */
+    public function storePromotion(Request $request, User $user): RedirectResponse
+    {
+        $this->authorize('personnel.manage');
+
+        $validated = $request->validate([
+            'position_name' => ['required', 'string', 'max:255'],
+            'promotion_date' => ['required', 'date'],
+        ]);
+
+        $this->employeeService->logPromotion($user, $validated);
+
+        return back()->with('success', 'Promotion logged successfully.');
     }
 }

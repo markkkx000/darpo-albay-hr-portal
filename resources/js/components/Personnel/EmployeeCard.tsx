@@ -23,6 +23,7 @@ export interface Employee {
     date_of_birth: string | null;
     age: number | null;
     civil_status: string | null;
+    eligibility: string | null;
     years_in_service: number | null;
     plantilla_number: string | null;
     plantilla_position: string | null;
@@ -128,7 +129,7 @@ export function EmployeeCard({ employee }: Props) {
                             <div className={iconContainerClass}>
                                 <UserIcon className={iconClass} />
                             </div>
-                            <div className="grid grid-cols-3 w-full gap-2">
+                            <div className="grid grid-cols-4 w-full gap-2">
                                 <div className="flex flex-col">
                                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Sex</span>
                                     <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.sex || 'Not set'}</span>
@@ -140,6 +141,10 @@ export function EmployeeCard({ employee }: Props) {
                                 <div className="flex flex-col">
                                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Age</span>
                                     <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.age ? `${employee.age} yrs` : 'N/A'}</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Eligibility</span>
+                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.eligibility || 'Not set'}</span>
                                 </div>
                             </div>
                         </div>

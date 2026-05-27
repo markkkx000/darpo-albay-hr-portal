@@ -1,6 +1,7 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Edit, User as UserIcon, ChevronLeft } from 'lucide-react';
 import { EmployeeCard } from '@/components/Personnel/EmployeeCard';
+import { PromotionHistorySection } from '@/components/Personnel/PromotionHistorySection';
 import type { Employee } from '@/components/Personnel/EmployeeCard';
 import { Button } from '@/components/ui/button';
 import { index as indexRoute, edit as editRoute } from '@/routes/personnel';
@@ -41,6 +42,7 @@ export default function Show({ employee }: Props) {
                 </div>
 
                 <EmployeeCard employee={employee} />
+                <PromotionHistorySection employee={employee} />
             </div>
         </>
     );

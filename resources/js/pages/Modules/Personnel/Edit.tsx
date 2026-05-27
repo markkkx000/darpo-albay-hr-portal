@@ -23,6 +23,7 @@ export default function Edit({ employee, divisions, units, positions, appointmen
         sex: employee?.sex || '',
         date_of_birth: employee?.date_of_birth || '',
         civil_status: employee?.civil_status || '',
+        eligibility: employee?.eligibility || '',
         
         positions: employee?.positions?.length > 0
             ? employee.positions.map((p: any) => ({
