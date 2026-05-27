@@ -427,9 +427,12 @@ export default function LeaveShow({ leaveRequest }: Props) {
                             </div>
                             <div className="p-6">
                                 <div className="flex items-center space-x-4">
-                                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 font-bold text-xl text-primary border-2 border-primary/20 shadow-inner">
-                                        {leaveRequest.user?.first_name?.[0] || 'U'}
-                                        {leaveRequest.user?.last_name?.[0] || ''}
+                                    <div className="flex h-14 w-14 overflow-hidden items-center justify-center rounded-full shrink-0">
+                                        <img 
+                                            src={leaveRequest.user?.avatar || '/img/pfp_placeholder.png'} 
+                                            alt={`${leaveRequest.user?.first_name} ${leaveRequest.user?.last_name}`}
+                                            className="h-full w-full object-cover"
+                                        />
                                     </div>
                                     <div className="flex flex-col">
                                         <p className="text-lg font-bold text-foreground leading-tight">
