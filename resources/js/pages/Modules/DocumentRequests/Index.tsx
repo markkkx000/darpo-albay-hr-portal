@@ -352,9 +352,13 @@ export default function DocumentRequestsIndex({
                                             className="group border-b transition-colors hover:bg-muted/50"
                                         >
                                             {isHr && (
-                                                <td className="p-4 align-middle font-medium">
-                                                    {req.user?.first_name}{' '}
-                                                    {req.user?.last_name}
+                                                <td className="p-4 align-middle">
+                                                    <div className="font-medium">
+                                                        {req.user?.first_name} {req.user?.last_name}
+                                                    </div>
+                                                    <div className="text-[11px] text-muted-foreground mt-0.5 font-medium">
+                                                        {req.user?.employee_number || 'N/A'}
+                                                    </div>
                                                 </td>
                                             )}
                                             <td className="p-4 align-middle">

@@ -96,6 +96,7 @@ class DocumentRequestController extends Controller
                 'action_url' => route('documentrequests.index'),
                 'icon' => 'FileText',
                 'color' => 'blue',
+                'type' => 'System',
             ]);
         }
 
@@ -118,6 +119,7 @@ class DocumentRequestController extends Controller
             'message' => 'Your document request is now being processed by HR.',
             'icon' => 'CheckCircle',
             'color' => 'indigo',
+            'type' => 'System',
         ]);
 
         return back()->with('success', 'Request marked as received.');
@@ -148,6 +150,7 @@ class DocumentRequestController extends Controller
                 'action_url' => route('documentrequests.index'),
                 'icon' => 'Send',
                 'color' => 'green',
+                'type' => 'System',
             ]);
         } else {
             $data['status'] = 'Ready for Pickup';
@@ -159,6 +162,7 @@ class DocumentRequestController extends Controller
                 'action_url' => route('documentrequests.index'),
                 'icon' => 'Box',
                 'color' => 'orange',
+                'type' => 'System',
             ]);
         }
 
@@ -210,6 +214,7 @@ class DocumentRequestController extends Controller
                 'message' => 'Your document request has been rejected by HR.',
                 'icon' => 'XCircle',
                 'color' => 'red',
+                'type' => 'System',
             ]);
         }
 
@@ -263,6 +268,7 @@ class DocumentRequestController extends Controller
                 'action_url' => route('documentrequests.show', $documentRequest->id),
                 'icon' => 'CheckCircle',
                 'color' => 'green',
+                'type' => 'System',
             ]);
         }
 
