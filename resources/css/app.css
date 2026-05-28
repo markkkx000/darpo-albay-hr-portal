@@ -1117,11 +1117,11 @@ table {
 
     /* ── Notification Rich Body Fade ── */
     .notification-body-fade {
-        mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+        mask-image: linear-gradient(to bottom, black 4.5rem, transparent 6rem);
         -webkit-mask-image: linear-gradient(
             to bottom,
-            black 50%,
-            transparent 100%
+            black 4.5rem,
+            transparent 6rem
         );
     }
 }
