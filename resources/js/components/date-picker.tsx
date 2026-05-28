@@ -112,20 +112,29 @@ return { date: undefined, formattedStr: "" };
   }
 
   const scrollAccumulator = React.useRef(0);
+  const [calendarContainer, setCalendarContainer] = React.useState<HTMLDivElement | null>(null);
 
-  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    scrollAccumulator.current += e.deltaY;
-    
-    // Use a threshold of 50 to detect a solid scroll tick and debounce trackpads
-    if (Math.abs(scrollAccumulator.current) >= 50) {
-      const isUp = scrollAccumulator.current < 0;
-      // Scroll up goes to previous month, Scroll down goes to next month
-      const newMonth = isUp ? subMonths(displayMonth, 1) : addMonths(displayMonth, 1);
+  React.useEffect(() => {
+    if (!calendarContainer) return;
+
+    const handleNativeWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      scrollAccumulator.current += e.deltaY;
       
-      setDisplayMonth(newMonth);
-      scrollAccumulator.current = 0;
-    }
-  };
+      if (Math.abs(scrollAccumulator.current) >= 50) {
+        const isUp = scrollAccumulator.current < 0;
+        setDisplayMonth(prev => isUp ? subMonths(prev, 1) : addMonths(prev, 1));
+        scrollAccumulator.current = 0;
+      }
+    };
+
+    calendarContainer.addEventListener('wheel', handleNativeWheel, { passive: false });
+    return () => {
+      calendarContainer.removeEventListener('wheel', handleNativeWheel);
+    };
+  }, [calendarContainer]);
 
   return (
     <div className={cn("relative w-full", className)}>
@@ -155,9 +164,8 @@ return { date: undefined, formattedStr: "" };
         <PopoverContent 
           className="w-auto p-0 matte-card elev-3 rounded-2xl border-border/20 shadow-xl overflow-hidden" 
           align="end"
-          onWheel={handleWheel}
         >
-          <div className="flex flex-col relative overflow-hidden">
+          <div className="flex flex-col relative overflow-hidden" ref={setCalendarContainer}>
             <Calendar
               mode="single"
               selected={date}
