@@ -25,13 +25,32 @@ class DocumentRequestController extends Controller
         $user = Auth::user();
         $isHr = $user->can('document_requests.manage');
 
-        $query = DocumentRequest::with(['user', 'requester', 'receiver'])->latest();
+        $filters = $request->only(['status', 'date_from', 'date_to', 'document', 'sort_date']);
+
+        $query = DocumentRequest::with(['user', 'requester', 'receiver'])
+            ->when($request->status && $request->status !== 'all', function ($q) use ($request) {
+                $q->where('status', $request->status);
+            }, function ($q) {
+                $q->whereNotIn('status', ['Cancelled', 'Rejected']);
+            })
+            ->when($request->date_from, function ($q, $dateFrom) {
+                $q->whereDate('created_at', '>=', $dateFrom);
+            })
+            ->when($request->date_to, function ($q, $dateTo) {
+                $q->whereDate('created_at', '<=', $dateTo);
+            })
+            ->when($request->document, function ($q, $document) {
+                if ($document !== 'all') {
+                    $q->whereJsonContains('requests', $document);
+                }
+            })
+            ->orderBy('created_at', $request->sort_date === 'asc' ? 'asc' : 'desc');
 
         if (! $isHr) {
             $query->where('user_id', $user->id);
         }
 
-        $requests = $query->paginate(15);
+        $requests = $query->paginate(15)->withQueryString();
 
         $users = [];
         if ($isHr) {
@@ -45,6 +64,7 @@ class DocumentRequestController extends Controller
             'documentRequests' => $requests,
             'isHr' => $isHr,
             'users' => $users,
+            'filters' => $filters,
         ]);
     }
 

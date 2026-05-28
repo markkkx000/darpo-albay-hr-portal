@@ -1,6 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { ArrowLeft, CheckCircle, FileText } from 'lucide-react';
-import { Clock, Send, Box } from 'lucide-react';
+import { Clock, Send, Box, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import PageHeader from '@/components/page-header';
@@ -112,7 +112,6 @@ export default function DocumentRequestsShow({
                             {isHr && documentRequest.status === 'Pending' && (
                                 <Button
                                     variant="outline"
-                                    size="sm"
                                     className="shadow-sm"
                                     onClick={() =>
                                         router.post(
@@ -122,35 +121,61 @@ export default function DocumentRequestsShow({
                                         )
                                     }
                                 >
-                                    <Clock className="mr-2 h-4 w-4" />
+                                    <Clock className="h-4 w-4" />
                                     Mark Received
+                                </Button>
+                            )}
+                            {isHr && (documentRequest.status === 'Pending' || documentRequest.status === 'Received') && (
+                                <Button
+                                    variant="destructive"
+                                    className="shadow-sm"
+                                    onClick={() => {
+                                        if (confirm('Are you sure you want to reject this request?')) {
+                                            router.post(DocumentRequestsRoutes.status({ documentRequest: documentRequest.id }).url, { status: 'Rejected' }, { preserveScroll: true })
+                                        }
+                                    }}
+                                >
+                                    <XCircle className="h-4 w-4" />
+                                    Reject
                                 </Button>
                             )}
                             {isHr && documentRequest.status === 'Received' && (
                                 <Button
                                     variant="default"
-                                    size="sm"
                                     className="btn-premium shadow-sm"
                                     onClick={() => setIsReleaseModalOpen(true)}
                                 >
-                                    <Send className="mr-2 h-4 w-4" />
+                                    <Send className="h-4 w-4" />
                                     Process / Release
                                 </Button>
                             )}
                             {isHr && documentRequest.status === 'Ready for Pickup' && (
                                 <Button
                                     variant="outline"
-                                    size="sm"
                                     className="shadow-sm"
                                     onClick={() => setIsPickupModalOpen(true)}
                                 >
-                                    <Box className="mr-2 h-4 w-4" />
+                                    <Box className="h-4 w-4" />
                                     Log Pickup
                                 </Button>
                             )}
-                            <Button variant="outline" size="sm" asChild>
+                            {!isHr && documentRequest.status === 'Pending' && (
+                                <Button
+                                    variant="destructive"
+                                    className="shadow-sm"
+                                    onClick={() => {
+                                        if (confirm('Are you sure you want to cancel this request?')) {
+                                            router.post(DocumentRequestsRoutes.status({ documentRequest: documentRequest.id }).url, { status: 'Cancelled' }, { preserveScroll: true })
+                                        }
+                                    }}
+                                >
+                                    <XCircle className="h-4 w-4" />
+                                    Cancel
+                                </Button>
+                            )}
+                            <Button variant="outline" asChild>
                                 <Link href={DocumentRequestsRoutes.index().url}>
-                                    <ArrowLeft className="mr-2 h-4 w-4" />
+                                    <ArrowLeft className="h-4 w-4" />
                                     Back to List
                                 </Link>
                             </Button>

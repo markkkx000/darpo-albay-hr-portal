@@ -8,14 +8,18 @@ import {
     Box,
     Send,
     FileText,
+    ArrowDown,
+    ArrowUp,
 } from 'lucide-react';
 import { useState } from 'react';
+import { DatePicker } from '@/components/date-picker';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import PageHeader from '@/components/page-header';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import DocumentRequestsRoutes from '@/routes/documentrequests';
 import { ReleaseModal } from './Components/ReleaseModal';
@@ -52,6 +56,13 @@ interface Props {
     };
     isHr: boolean;
     users?: User[];
+    filters?: {
+        status?: string;
+        date_from?: string;
+        date_to?: string;
+        document?: string;
+        sort_date?: 'desc' | 'asc';
+    };
 }
 
 function getStatusIcon(status: string) {
@@ -98,6 +109,7 @@ export default function DocumentRequestsIndex({
     documentRequests,
     isHr,
     users,
+    filters = {},
 }: Props) {
     const [isReleaseModalOpen, setIsReleaseModalOpen] = useState(false);
     const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null);
@@ -123,6 +135,39 @@ export default function DocumentRequestsIndex({
         }
     };
 
+    const [filterState, setFilterState] = useState({
+        status: filters.status || 'all',
+        date_from: filters.date_from || '',
+        date_to: filters.date_to || '',
+        document: filters.document || 'all',
+        sort_date: filters.sort_date || 'desc',
+    });
+
+    const toggleSort = () => {
+        const newSort = filterState.sort_date === 'desc' ? 'asc' : 'desc';
+        setFilterState(prev => ({ ...prev, sort_date: newSort }));
+        router.get(
+            DocumentRequestsRoutes.index().url,
+            { ...filterState, sort_date: newSort } as any,
+            { preserveState: true, preserveScroll: true, replace: true }
+        );
+    };
+
+    const updateFilter = (key: keyof typeof filterState, value: any) => {
+        const newState = { ...filterState, [key]: value };
+        setFilterState(newState);
+        router.get(
+            DocumentRequestsRoutes.index().url,
+            newState as any,
+            { preserveState: true, replace: true }
+        );
+    };
+
+    const clearFilters = () => {
+        setFilterState({ status: 'all', date_from: '', date_to: '', document: 'all', sort_date: 'desc' });
+        router.get(DocumentRequestsRoutes.index().url);
+    };
+
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
 
@@ -144,10 +189,10 @@ export default function DocumentRequestsIndex({
                         <Button
                             asChild
                             variant="ghost"
-                            className="btn-ghost-specular border-none px-6"
+                            className="btn-ghost-specular border-none"
                         >
                             <Link href={DocumentRequestsRoutes.create().url}>
-                                <Plus className="mr-2 h-4 w-4" />
+                                <Plus className="h-4 w-4" />
                                 New Request
                             </Link>
                         </Button>
@@ -155,9 +200,76 @@ export default function DocumentRequestsIndex({
                 />
 
                 <div className="matte-card elev-2 mb-6">
-                    <div className="border-b bg-muted/20 p-4">
-                        <div className="text-lg font-semibold">
-                            {isHr ? 'Request Queue' : 'My Requests'}
+                    <div className="border-b bg-muted/20 p-4 space-y-4">
+                        <div className="flex items-center justify-between">
+                            <div className="text-lg font-semibold">
+                                {isHr ? 'Request Queue' : 'My Requests'}
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end xl:w-[85%]">
+                            <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground">Status</Label>
+                                <Select
+                                    value={filterState.status}
+                                    onValueChange={(val) => updateFilter('status', val)}
+                                >
+                                    <SelectTrigger className="w-full h-9 text-xs">
+                                        <SelectValue placeholder="All Status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Status</SelectItem>
+                                        <SelectItem value="Pending">Pending</SelectItem>
+                                        <SelectItem value="Received">Received</SelectItem>
+                                        <SelectItem value="Ready for Pickup">Ready for Pickup</SelectItem>
+                                        <SelectItem value="Released/Sent">Released/Sent</SelectItem>
+                                        <SelectItem value="Completed">Completed</SelectItem>
+                                        <SelectItem value="Rejected">Rejected</SelectItem>
+                                        <SelectItem value="Cancelled">Cancelled</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground">Document Type</Label>
+                                <Select
+                                    value={filterState.document}
+                                    onValueChange={(val) => updateFilter('document', val)}
+                                >
+                                    <SelectTrigger className="w-full h-9 text-xs">
+                                        <SelectValue placeholder="All Documents" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Documents</SelectItem>
+                                        <SelectItem value="Service Record">Service Record</SelectItem>
+                                        <SelectItem value="Certificate of Employment (CE)">CE</SelectItem>
+                                        <SelectItem value="Certificate of Employment with Compensation (CEC)">CEC</SelectItem>
+                                        <SelectItem value="Pay Slip">Pay Slip</SelectItem>
+                                        <SelectItem value="Certificate of Remittance">Remittance</SelectItem>
+                                        <SelectItem value="Certified True Copy of Documents">CTC</SelectItem>
+                                        <SelectItem value="Other">Other</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground">From</Label>
+                                <DatePicker
+                                    className="w-full"
+                                    value={filterState.date_from}
+                                    onChange={(date) => updateFilter('date_from', date || '')}
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground">To</Label>
+                                <DatePicker
+                                    className="w-full"
+                                    value={filterState.date_to}
+                                    onChange={(date) => updateFilter('date_to', date || '')}
+                                />
+                            </div>
+                            <div className="flex items-center gap-2 pb-0.5">
+                                {(filterState.status !== 'all' || filterState.document !== 'all' || filterState.date_from || filterState.date_to) && (
+                                    <Button onClick={clearFilters} variant="ghost" size="sm" className="h-9 text-xs px-3 text-muted-foreground flex-1 md:flex-none">Clear Filters</Button>
+                                )}
+                            </div>
                         </div>
                     </div>
 
@@ -182,9 +294,19 @@ export default function DocumentRequestsIndex({
                                         </th>
                                         <th
                                             scope="col"
-                                            className="px-4 py-4 text-left"
+                                            className="px-4 py-4 text-left cursor-pointer hover:bg-muted/60 transition-colors group"
+                                            onClick={toggleSort}
                                         >
-                                            Date Requested
+                                            <div className="flex items-center gap-1 select-none">
+                                                Date Requested
+                                                <span className="text-muted-foreground/50 group-hover:text-foreground transition-colors">
+                                                    {filterState.sort_date === 'desc' ? (
+                                                        <ArrowDown className="h-3.5 w-3.5" />
+                                                    ) : (
+                                                        <ArrowUp className="h-3.5 w-3.5" />
+                                                    )}
+                                                </span>
+                                            </div>
                                         </th>
                                         <th
                                             scope="col"
@@ -246,7 +368,6 @@ export default function DocumentRequestsIndex({
                                                 {/* Actions like Process / Release / Mark Received */}
                                                 <Button
                                                     variant="outline"
-                                                    size="sm"
                                                     className="shadow-sm"
                                                     asChild
                                                 >
@@ -265,10 +386,9 @@ export default function DocumentRequestsIndex({
                                                 </Button>
                                                 {isHr &&
                                                     req.status ===
-                                                        'Pending' && (
+                                                    'Pending' && (
                                                         <Button
                                                             variant="outline"
-                                                            size="sm"
                                                             className="shadow-sm"
                                                             onClick={() =>
                                                                 router.post(
@@ -281,16 +401,30 @@ export default function DocumentRequestsIndex({
                                                                 )
                                                             }
                                                         >
-                                                            <Clock className="mr-2 h-3.5 w-3.5" />
+                                                            <Clock className="h-4 w-4" />
                                                             Mark Received
                                                         </Button>
                                                     )}
                                                 {isHr &&
+                                                    (req.status === 'Pending' || req.status === 'Received') && (
+                                                        <Button
+                                                            variant="destructive"
+                                                            className="shadow-sm bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground border-transparent"
+                                                            onClick={() => {
+                                                                if (confirm('Are you sure you want to reject this request?')) {
+                                                                    router.post(DocumentRequestsRoutes.status({ documentRequest: req.id }).url, { status: 'Rejected' }, { preserveScroll: true })
+                                                                }
+                                                            }}
+                                                        >
+                                                            <XCircle className="h-4 w-4" />
+                                                            Reject
+                                                        </Button>
+                                                    )}
+                                                {isHr &&
                                                     req.status ===
-                                                        'Received' && (
+                                                    'Received' && (
                                                         <Button
                                                             variant="default"
-                                                            size="sm"
                                                             className="btn-premium shadow-sm"
                                                             onClick={() => {
                                                                 setSelectedRequestId(
@@ -301,24 +435,38 @@ export default function DocumentRequestsIndex({
                                                                 );
                                                             }}
                                                         >
-                                                            <Send className="mr-2 h-3.5 w-3.5" />
+                                                            <Send className="h-4 w-4" />
                                                             Process / Release
                                                         </Button>
                                                     )}
                                                 {isHr &&
                                                     req.status ===
-                                                        'Ready for Pickup' && (
+                                                    'Ready for Pickup' && (
                                                         <Button
                                                             variant="outline"
-                                                            size="sm"
                                                             className="shadow-sm"
                                                             onClick={() => {
                                                                 setSelectedRequestId(req.id);
                                                                 setIsPickupModalOpen(true);
                                                             }}
                                                         >
-                                                            <Box className="mr-2 h-3.5 w-3.5" />
+                                                            <Box className="h-4 w-4" />
                                                             Log Pickup
+                                                        </Button>
+                                                    )}
+                                                {!isHr &&
+                                                    req.status === 'Pending' && (
+                                                        <Button
+                                                            variant="destructive"
+                                                            className="shadow-sm bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground border-transparent"
+                                                            onClick={() => {
+                                                                if (confirm('Are you sure you want to cancel this request?')) {
+                                                                    router.post(DocumentRequestsRoutes.status({ documentRequest: req.id }).url, { status: 'Cancelled' }, { preserveScroll: true })
+                                                                }
+                                                            }}
+                                                        >
+                                                            <XCircle className="h-4 w-4" />
+                                                            Cancel
                                                         </Button>
                                                     )}
                                             </td>
@@ -403,7 +551,7 @@ export default function DocumentRequestsIndex({
                             <DialogTitle>Log Document Pickup</DialogTitle>
                             <DialogDescription>
                                 Enter the name of the person picking up the documents.
-                                <br/><br/>
+                                <br /><br />
                                 <strong className="text-primary font-semibold">Note:</strong> Please remind the receiver to log into their portal and click "Acknowledge Receipt" as soon as possible to complete the two-way verification process.
                             </DialogDescription>
                         </DialogHeader>

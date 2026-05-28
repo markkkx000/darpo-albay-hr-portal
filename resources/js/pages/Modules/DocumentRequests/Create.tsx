@@ -82,9 +82,9 @@ newData.specify_other = '';
                     title="New Document Request"
                     description="Request for HR documents such as Service Record, Certificate of Employment, etc."
                     actions={
-                        <Button asChild variant="ghost" className="btn-ghost-specular border-none px-6">
+                        <Button asChild variant="ghost" className="btn-ghost-specular border-none">
                             <Link href={DocumentRequestsRoutes.index().url}>
-                                <ArrowLeft className="mr-2 h-4 w-4" />
+                                <ArrowLeft className="h-4 w-4" />
                                 Back to Queue
                             </Link>
                         </Button>
