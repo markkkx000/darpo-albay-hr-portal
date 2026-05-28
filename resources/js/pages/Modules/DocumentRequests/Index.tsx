@@ -127,7 +127,9 @@ export default function DocumentRequestsIndex({
     };
 
     const handleConfirmReject = () => {
-        if (!requestToConfirm) return;
+        if (!requestToConfirm) {
+return;
+}
         
         router.post(
             DocumentRequestsRoutes.status({ documentRequest: requestToConfirm }).url,

@@ -58,6 +58,7 @@ return { date: undefined, formattedStr: "" };
     const parsed = parseValueToDate(value);
     setDate(parsed.date);
     setInputValue(parsed.formattedStr);
+
     if (parsed.date) {
         setDisplayMonth(parsed.date);
     }
@@ -115,7 +116,9 @@ return { date: undefined, formattedStr: "" };
   const [calendarContainer, setCalendarContainer] = React.useState<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
-    if (!calendarContainer) return;
+    if (!calendarContainer) {
+return;
+}
 
     const handleNativeWheel = (e: WheelEvent) => {
       e.preventDefault();
@@ -131,6 +134,7 @@ return { date: undefined, formattedStr: "" };
     };
 
     calendarContainer.addEventListener('wheel', handleNativeWheel, { passive: false });
+
     return () => {
       calendarContainer.removeEventListener('wheel', handleNativeWheel);
     };
