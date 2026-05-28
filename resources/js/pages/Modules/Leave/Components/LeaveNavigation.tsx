@@ -63,7 +63,7 @@ export default function LeaveNavigation() {
                         <Icon
                             className={cn("h-4 w-4", isActive && "text-primary")}
                         />
-                        <span className={cn(isActive && "tab-active-gradient-text")}>
+                        <span className={cn(isActive && "text-primary font-bold")}>
                             {tab.name}
                         </span>
                     </Link>
