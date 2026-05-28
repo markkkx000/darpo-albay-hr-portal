@@ -1,12 +1,11 @@
 import { Head, router } from '@inertiajs/react';
-import { Download, CalendarClock } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { useState } from 'react';
 import PageHeader from '@/components/page-header';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 
 interface ResultItem {
     emp_id: number;

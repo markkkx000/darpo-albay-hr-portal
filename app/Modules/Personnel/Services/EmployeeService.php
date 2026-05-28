@@ -358,7 +358,7 @@ class EmployeeService
 
             if (empty($user->date_of_latest_appointment) || $data['promotion_date'] >= $user->date_of_latest_appointment) {
                 $user->update([
-                    'date_of_latest_appointment' => $data['promotion_date']
+                    'date_of_latest_appointment' => $data['promotion_date'],
                 ]);
             }
         });

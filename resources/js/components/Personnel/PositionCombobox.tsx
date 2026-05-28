@@ -40,10 +40,16 @@ export function PositionCombobox({ positions, value, onChange, disabled, placeho
 
   const uniquePositions = React.useMemo(() => {
     const seen = new Set<string>();
+
     return positions.filter(p => {
       const lowerName = p.name.toLowerCase();
-      if (seen.has(lowerName)) return false;
+
+      if (seen.has(lowerName)) {
+return false;
+}
+
       seen.add(lowerName);
+
       return true;
     });
   }, [positions]);

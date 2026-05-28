@@ -1,12 +1,10 @@
-import { useState } from 'react';
 import { useForm, router } from '@inertiajs/react';
+import { Plus, History, Clock, Pencil, Trash2, X, Check } from 'lucide-react';
+import { useState } from 'react';
 import { toast } from 'sonner';
-import { Plus, History, Clock, Pencil, Trash2, X, Check, AlertTriangle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { DatePicker } from '@/components/date-picker';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { PositionCombobox } from './PositionCombobox';
 import {
     Dialog,
     DialogContent,
@@ -15,7 +13,9 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import type { Employee } from './EmployeeCard';
+import { PositionCombobox } from './PositionCombobox';
 
 export function PromotionHistorySection({ employee, positions = [] }: { employee: Employee & { promotion_histories?: any[] }, positions?: any[] }) {
     const [showForm, setShowForm] = useState(false);
@@ -60,7 +60,10 @@ export function PromotionHistorySection({ employee, positions = [] }: { employee
     };
 
     const confirmDelete = () => {
-        if (deleteTargetId === null) return;
+        if (deleteTargetId === null) {
+return;
+}
+
         router.delete(`/personnel/${employee.id}/promotions/${deleteTargetId}`, {
             onSuccess: () => {
                 toast.success('Promotion deleted successfully.');
@@ -193,7 +196,11 @@ export function PromotionHistorySection({ employee, positions = [] }: { employee
         </Card>
 
         {/* Delete Confirmation Dialog */}
-        <Dialog open={deleteTargetId !== null} onOpenChange={(open) => { if (!open) setDeleteTargetId(null); }}>
+        <Dialog open={deleteTargetId !== null} onOpenChange={(open) => {
+ if (!open) {
+setDeleteTargetId(null);
+} 
+}}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Are you absolutely sure?</DialogTitle>

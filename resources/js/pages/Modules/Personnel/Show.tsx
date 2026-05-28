@@ -1,8 +1,8 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Edit, User as UserIcon, ChevronLeft } from 'lucide-react';
 import { EmployeeCard } from '@/components/Personnel/EmployeeCard';
-import { PromotionHistorySection } from '@/components/Personnel/PromotionHistorySection';
 import type { Employee } from '@/components/Personnel/EmployeeCard';
+import { PromotionHistorySection } from '@/components/Personnel/PromotionHistorySection';
 import { Button } from '@/components/ui/button';
 import { index as indexRoute, edit as editRoute } from '@/routes/personnel';
 

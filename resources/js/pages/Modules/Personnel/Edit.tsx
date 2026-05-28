@@ -1,5 +1,7 @@
 import { Head, useForm, router } from '@inertiajs/react';
 import { toast } from 'sonner';
+
+const CURRENT_TIME = Date.now();
 import { EmployeeForm } from '@/components/Personnel/EmployeeForm';
 import { Card, CardContent } from '@/components/ui/card';
 import { update as updateRoute, index as indexRoute } from '@/routes/personnel';
@@ -65,15 +67,22 @@ export default function Edit({ employee, divisions, units, positions, appointmen
         salary_grade: employee?.salary_grade !== undefined && employee?.salary_grade !== null ? employee.salary_grade : '',
         salary_step: employee?.salary_step !== undefined && employee?.salary_step !== null ? employee.salary_step : (() => {
             let stepDate = employee?.hire_date || employee?.date_hired_government || employee?.orig_date_of_appointment || employee?.date_of_latest_appointment;
+
             if (employee?.promotion_histories && employee.promotion_histories.length > 0) {
                 const latestPromo = [...employee.promotion_histories].sort((a, b) => new Date(b.promotion_date).getTime() - new Date(a.promotion_date).getTime())[0];
+
                 if (latestPromo && latestPromo.promotion_date) {
                     stepDate = latestPromo.promotion_date;
                 }
             }
-            if (!stepDate) return '';
+
+            if (!stepDate) {
+return '';
+}
+
             const msInDay = 1000 * 60 * 60 * 24;
-            const yearsWorked = (Date.now() - new Date(stepDate).getTime()) / (msInDay * 365.25);
+            const yearsWorked = (CURRENT_TIME - new Date(stepDate).getTime()) / (msInDay * 365.25);
+
             return Math.floor(yearsWorked / 3) + 1;
         })(),
         monthly_salary: employee?.monthly_salary !== undefined && employee?.monthly_salary !== null ? employee.monthly_salary : '',

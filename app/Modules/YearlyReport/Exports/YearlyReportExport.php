@@ -3,14 +3,15 @@
 namespace App\Modules\YearlyReport\Exports;
 
 use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class YearlyReportExport implements FromArray, WithHeadings, ShouldAutoSize, WithStyles
+class YearlyReportExport implements FromArray, ShouldAutoSize, WithHeadings, WithStyles
 {
     protected $results;
+
     protected $year;
 
     public function __construct(array $results, $year)
@@ -24,8 +25,8 @@ class YearlyReportExport implements FromArray, WithHeadings, ShouldAutoSize, Wit
         $data = [];
         foreach ($this->results as $row) {
             $typeText = $row['type'] === 'salary' ? 'Salary Update' : 'Loyalty Award';
-            $milestoneText = $row['type'] === 'salary' 
-                ? "{$row['milestone']}-year Salary Adjustment" 
+            $milestoneText = $row['type'] === 'salary'
+                ? "{$row['milestone']}-year Salary Adjustment"
                 : "{$row['milestone']}-year Loyalty Award";
 
             $data[] = [
@@ -37,6 +38,7 @@ class YearlyReportExport implements FromArray, WithHeadings, ShouldAutoSize, Wit
                 $typeText,
             ];
         }
+
         return $data;
     }
 
@@ -48,7 +50,7 @@ class YearlyReportExport implements FromArray, WithHeadings, ShouldAutoSize, Wit
             'ID Number',
             'Division',
             'Milestone',
-            'Type'
+            'Type',
         ];
     }
 

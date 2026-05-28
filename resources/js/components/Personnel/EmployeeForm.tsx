@@ -82,8 +82,10 @@ export function EmployeeForm({
     // Auto-calculate salary step when hire dates change
     useEffect(() => {
         let stepDate = data.hire_date || data.date_hired_government || data.orig_date_of_appointment || data.date_of_latest_appointment;
+
         if (employee?.promotion_histories && employee.promotion_histories.length > 0) {
             const latestPromo = [...employee.promotion_histories].sort((a, b) => new Date(b.promotion_date).getTime() - new Date(a.promotion_date).getTime())[0];
+
             if (latestPromo && latestPromo.promotion_date) {
                 stepDate = latestPromo.promotion_date;
             }
@@ -100,7 +102,7 @@ export function EmployeeForm({
         } else {
             setData('salary_step', '');
         }
-    }, [data.hire_date, data.date_hired_government, data.orig_date_of_appointment, data.date_of_latest_appointment, employee?.promotion_histories]);
+    }, [data.hire_date, data.date_hired_government, data.orig_date_of_appointment, data.date_of_latest_appointment, employee?.promotion_histories, setData]);
 
     const previewUrl = (() => {
         if (data.profile_picture instanceof File) {
@@ -661,16 +663,21 @@ export function EmployeeForm({
                                         className="h-6 text-xs px-2 text-muted-foreground hover:text-primary"
                                         onClick={() => {
                                             let stepDate = employee.hire_date || employee.date_hired_government || employee.orig_date_of_appointment || employee.date_of_latest_appointment;
+
                                             if (employee.promotion_histories && employee.promotion_histories.length > 0) {
                                                 const latestPromo = [...employee.promotion_histories].sort((a, b) => new Date(b.promotion_date).getTime() - new Date(a.promotion_date).getTime())[0];
+
                                                 if (latestPromo && latestPromo.promotion_date) {
                                                     stepDate = latestPromo.promotion_date;
                                                 }
                                             }
+
                                             if (!stepDate) {
                                                 setData('salary_step', "");
+
                                                 return;
                                             }
+
                                             const msInDay = 1000 * 60 * 60 * 24;
                                             const yearsWorked = (Date.now() - new Date(stepDate).getTime()) / (msInDay * 365.25);
                                             const calcStep = Math.floor(yearsWorked / 3) + 1;

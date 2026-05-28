@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Modules\Personnel\Models\AppointmentStatus;
 use App\Modules\Personnel\Models\Division;
 use App\Modules\Personnel\Models\Position;
+use App\Modules\Personnel\Models\PromotionHistory;
 use App\Modules\Personnel\Models\Unit;
 use App\Modules\Personnel\Requests\EmployeeCreateRequest;
 use App\Modules\Personnel\Requests\EmployeeRestoreRequest;
@@ -190,7 +191,7 @@ class PersonnelController extends Controller
     /**
      * Update an existing promotion history.
      */
-    public function updatePromotion(Request $request, User $user, \App\Modules\Personnel\Models\PromotionHistory $promotionHistory): RedirectResponse
+    public function updatePromotion(Request $request, User $user, PromotionHistory $promotionHistory): RedirectResponse
     {
         $this->authorize('personnel.manage');
 
@@ -211,7 +212,7 @@ class PersonnelController extends Controller
     /**
      * Delete an existing promotion history.
      */
-    public function destroyPromotion(User $user, \App\Modules\Personnel\Models\PromotionHistory $promotionHistory): RedirectResponse
+    public function destroyPromotion(User $user, PromotionHistory $promotionHistory): RedirectResponse
     {
         $this->authorize('personnel.manage');
 

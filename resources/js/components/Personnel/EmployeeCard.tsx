@@ -2,6 +2,8 @@ import { Mail, Phone, MapPin, Calendar, Briefcase, Building2, User as UserIcon, 
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
+const CURRENT_TIME = Date.now();
+
 export interface Employee {
     id: number;
     first_name: string;
@@ -375,8 +377,13 @@ export function EmployeeCard({ employee }: Props) {
                                 <span className="text-xs text-muted-foreground font-black uppercase">Years Served</span>
                                 <span className="text-sm font-bold">{(() => {
                                     const date = employee.date_hired_government || employee.orig_date_of_appointment || employee.hire_date;
-                                    if (!date) return '0.0';
-                                    const msDiff = Date.now() - new Date(date).getTime();
+
+                                    if (!date) {
+return '0.0';
+}
+
+                                    const msDiff = CURRENT_TIME - new Date(date).getTime();
+
                                     return (msDiff / (1000 * 60 * 60 * 24 * 365.25)).toFixed(1);
                                 })()}</span>
                             </div>
@@ -386,9 +393,17 @@ export function EmployeeCard({ employee }: Props) {
                                     style={{ 
                                         width: `${(() => {
                                             const date = employee.date_hired_government || employee.orig_date_of_appointment || employee.hire_date;
-                                            if (!date) return 0;
-                                            const years = (Date.now() - new Date(date).getTime()) / (1000 * 60 * 60 * 24 * 365.25);
-                                            if (years < 10) return Math.min(100, (years / 10) * 100);
+
+                                            if (!date) {
+return 0;
+}
+
+                                            const years = (CURRENT_TIME - new Date(date).getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+
+                                            if (years < 10) {
+return Math.min(100, (years / 10) * 100);
+}
+
                                             return Math.min(100, ((years - 10) % 5) / 5 * 100);
                                         })()}%` 
                                     }}
@@ -397,9 +412,17 @@ export function EmployeeCard({ employee }: Props) {
                             <span className="text-[10px] text-muted-foreground mt-2 text-right">
                                 {(() => {
                                     const date = employee.date_hired_government || employee.orig_date_of_appointment || employee.hire_date;
-                                    if (!date) return 'No start date set';
-                                    const years = (Date.now() - new Date(date).getTime()) / (1000 * 60 * 60 * 24 * 365.25);
-                                    if (years < 10) return `Target: 10-year Loyalty Award`;
+
+                                    if (!date) {
+return 'No start date set';
+}
+
+                                    const years = (CURRENT_TIME - new Date(date).getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+
+                                    if (years < 10) {
+return `Target: 10-year Loyalty Award`;
+}
+
                                     return `Target: ${(Math.floor((years - 10) / 5) + 1) * 5 + 10}-year Loyalty Award`;
                                 })()}
                             </span>
@@ -423,7 +446,7 @@ export function EmployeeCard({ employee }: Props) {
                                 }
 
                                 const msInDay = 1000 * 60 * 60 * 24;
-                                const nowTime = Date.now();
+                                const nowTime = CURRENT_TIME;
 
                                 // Get all promotion dates sorted chronologically (oldest first)
                                 const sortedPromoDates: string[] = (employee.promotion_histories || [])
@@ -438,10 +461,12 @@ export function EmployeeCard({ employee }: Props) {
 
                                 for (const promoDate of sortedPromoDates) {
                                     const periodEnd = new Date(promoDate).getTime();
+
                                     if (periodEnd > periodStart) {
                                         const periodYears = (periodEnd - periodStart) / (msInDay * 365.25);
                                         totalIncrements += Math.floor(periodYears / 3);
                                     }
+
                                     // Timer resets at each promotion but step carries over
                                     periodStart = new Date(promoDate).getTime();
                                 }
@@ -454,6 +479,7 @@ export function EmployeeCard({ employee }: Props) {
 
                                 // Timer countdown: based only on years since last reset (last promo or hire date)
                                 let timerText = '';
+
                                 if (currentStep >= 8) {
                                     timerText = 'Max Step Reached';
                                 } else {
@@ -471,8 +497,15 @@ export function EmployeeCard({ employee }: Props) {
                                         const d = Math.floor((daysLeft % 365) % 30);
 
                                         const cleanParts = [];
-                                        if (y > 0) cleanParts.push(`${y}y`);
-                                        if (m >= 0 && (y > 0 || m > 0)) cleanParts.push(`${m}m`);
+
+                                        if (y > 0) {
+cleanParts.push(`${y}y`);
+}
+
+                                        if (m >= 0 && (y > 0 || m > 0)) {
+cleanParts.push(`${m}m`);
+}
+
                                         cleanParts.push(`${d}d`);
 
                                         timerText = `In ${cleanParts.join(' ')}`;

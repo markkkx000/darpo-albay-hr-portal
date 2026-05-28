@@ -4,12 +4,12 @@ namespace App\Modules\YearlyReport\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Modules\YearlyReport\Exports\YearlyReportExport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Modules\YearlyReport\Exports\YearlyReportExport;
 
 class YearlyReportController extends Controller
 {
@@ -32,12 +32,12 @@ class YearlyReportController extends Controller
     public function export(Request $request)
     {
         $this->authorize('personnel.view');
-        
+
         $year = $request->query('year', Carbon::now()->year);
         $filter = $request->query('filter', 'all');
 
         $results = $this->calculateMilestones($year, $filter);
-        
+
         return Excel::download(new YearlyReportExport($results, $year), "Yearly_Report_{$year}.xlsx");
     }
 
