@@ -921,7 +921,7 @@ table {
         }
 
         .animate-fade-up {
-            animation: fade-up 0.5s var(--ease-out) forwards;
+            animation: fade-up 0.5s var(--ease-out);
         }
     }
 

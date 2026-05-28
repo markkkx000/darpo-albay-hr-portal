@@ -24,4 +24,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/{id}/restore', [PersonnelController::class, 'restore'])->name('restore');
     Route::post('/{user}/reset-password', [PersonnelController::class, 'resetPassword'])->name('reset-password');
     Route::post('/{user}/promotions', [PersonnelController::class, 'storePromotion'])->name('promotions.store');
+    Route::put('/{user}/promotions/{promotionHistory}', [PersonnelController::class, 'updatePromotion'])->name('promotions.update');
+    Route::delete('/{user}/promotions/{promotionHistory}', [PersonnelController::class, 'destroyPromotion'])->name('promotions.destroy');
 });

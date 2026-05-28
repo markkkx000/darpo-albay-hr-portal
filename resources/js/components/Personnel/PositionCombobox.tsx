@@ -38,8 +38,18 @@ export function PositionCombobox({ positions, value, onChange, disabled, placeho
   const [open, setOpen] = React.useState(false)
   const [inputValue, setInputValue] = React.useState("")
 
+  const uniquePositions = React.useMemo(() => {
+    const seen = new Set<string>();
+    return positions.filter(p => {
+      const lowerName = p.name.toLowerCase();
+      if (seen.has(lowerName)) return false;
+      seen.add(lowerName);
+      return true;
+    });
+  }, [positions]);
+
   const handleSelect = (currentValue: string) => {
-    const existing = positions.find((p) => p.name.toLowerCase() === currentValue.toLowerCase());
+    const existing = uniquePositions.find((p) => p.name.toLowerCase() === currentValue.toLowerCase());
 
     if (existing) {
       onChange({ id: existing.id, name: existing.name });
@@ -53,7 +63,7 @@ export function PositionCombobox({ positions, value, onChange, disabled, placeho
   }
 
   // Exact match check
-  const hasExactMatch = positions.some(p => p.name.toLowerCase() === inputValue.toLowerCase());
+  const hasExactMatch = uniquePositions.some(p => p.name.toLowerCase() === inputValue.toLowerCase());
 
   // Determine display name
   const displayName = value.id === 'new' ? value.name : positions.find((p) => p.id === value.id)?.name || value.name;
@@ -100,7 +110,7 @@ export function PositionCombobox({ positions, value, onChange, disabled, placeho
               ) : "No position found."}
             </CommandEmpty>
             <CommandGroup>
-              {positions.map((position) => (
+              {uniquePositions.map((position) => (
                 <CommandItem
                   key={position.id}
                   value={position.name}

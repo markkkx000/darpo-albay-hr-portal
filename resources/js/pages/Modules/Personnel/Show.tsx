@@ -8,9 +8,10 @@ import { index as indexRoute, edit as editRoute } from '@/routes/personnel';
 
 interface Props {
     employee: Employee;
+    positions: any[];
 }
 
-export default function Show({ employee }: Props) {
+export default function Show({ employee, positions }: Props) {
     const { auth } = usePage().props as any;
     const canEdit = auth.permissions?.includes('personnel.manage');
 
@@ -42,7 +43,7 @@ export default function Show({ employee }: Props) {
                 </div>
 
                 <EmployeeCard employee={employee} />
-                <PromotionHistorySection employee={employee} />
+                <PromotionHistorySection employee={employee} positions={positions} />
             </div>
         </>
     );

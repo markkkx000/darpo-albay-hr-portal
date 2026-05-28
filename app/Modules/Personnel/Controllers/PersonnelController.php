@@ -75,6 +75,7 @@ class PersonnelController extends Controller
 
         return Inertia::render('Modules/Personnel/Show', [
             'employee' => $user->load(['division', 'unit', 'positions', 'appointmentStatus', 'promotionHistories']),
+            'positions' => Position::where('is_active', true)->get(),
         ]);
     }
 
@@ -86,7 +87,7 @@ class PersonnelController extends Controller
         $this->authorize('personnel.manage');
 
         return Inertia::render('Modules/Personnel/Edit', [
-            'employee' => $user->load('positions'),
+            'employee' => $user->load(['positions', 'promotionHistories']),
             'divisions' => Division::where('is_active', true)->get(),
             'units' => Unit::where('is_active', true)->get(),
             'positions' => Position::where('is_active', true)->get(),
@@ -184,5 +185,42 @@ class PersonnelController extends Controller
         $this->employeeService->logPromotion($user, $validated);
 
         return back()->with('success', 'Promotion logged successfully.');
+    }
+
+    /**
+     * Update an existing promotion history.
+     */
+    public function updatePromotion(Request $request, User $user, \App\Modules\Personnel\Models\PromotionHistory $promotionHistory): RedirectResponse
+    {
+        $this->authorize('personnel.manage');
+
+        if ($promotionHistory->user_id !== $user->id) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'position_name' => ['required', 'string', 'max:255'],
+            'promotion_date' => ['required', 'date'],
+        ]);
+
+        $promotionHistory->update($validated);
+
+        return back()->with('success', 'Promotion updated successfully.');
+    }
+
+    /**
+     * Delete an existing promotion history.
+     */
+    public function destroyPromotion(User $user, \App\Modules\Personnel\Models\PromotionHistory $promotionHistory): RedirectResponse
+    {
+        $this->authorize('personnel.manage');
+
+        if ($promotionHistory->user_id !== $user->id) {
+            abort(403);
+        }
+
+        $promotionHistory->delete();
+
+        return back()->with('success', 'Promotion deleted successfully.');
     }
 }

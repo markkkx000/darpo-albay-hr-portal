@@ -14,7 +14,7 @@ export interface Employee {
     present_address: string | null;
     hire_date: string | null;
     date_hired_government: string | null;
-    division?: { name: string };
+    division?: { id: number; name: string };
     unit?: { name: string };
     positions?: Array<{ name: string; pivot: { is_primary: boolean } }>;
     appointment_status?: { name: string };
@@ -44,6 +44,7 @@ export interface Employee {
     func_activity_code: string | null;
     profile_picture: string | null;
     avatar?: string | null;
+    promotion_histories?: any[];
     salary_grade: number | null;
     salary_step: number | null;
     monthly_salary: string | number | null;
@@ -305,14 +306,10 @@ export function EmployeeCard({ employee }: Props) {
                         </div>
 
                         <div className="flex items-center gap-4 group">
-                            <div className="grid grid-cols-3 w-full gap-2">
+                            <div className="grid grid-cols-2 w-full gap-2">
                                 <div className="flex flex-col">
                                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Salary Grade</span>
                                     <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.salary_grade || 'Not set'}</span>
-                                </div>
-                                <div className="flex flex-col">
-                                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Salary Step</span>
-                                    <span className="text-sm font-bold text-foreground/90 group-hover:text-black dark:group-hover:text-white transition-colors">{employee.salary_step || 'Not set'}</span>
                                 </div>
                                 <div className="flex flex-col">
                                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider group-hover:text-black dark:group-hover:text-white transition-colors">Monthly Salary</span>
@@ -362,6 +359,137 @@ export function EmployeeCard({ employee }: Props) {
                         <div className="flex flex-col p-3 rounded-xl bg-muted/20 border border-border/30 group hover:item-hover-gradient transition-all duration-200">
                             <span className="text-[10px] text-muted-foreground font-black uppercase group-hover:text-black transition-colors">TIN Number</span>
                             <span className="text-sm font-bold group-hover:text-black transition-colors">{employee.tin_number || 'N/A'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Progress */}
+                <div className="space-y-6 md:col-span-2">
+                    <div className="flex items-center gap-2">
+                        <div className="h-1 w-8 bg-primary rounded-full" />
+                        <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">Progress</h3>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="flex flex-col p-4 rounded-xl bg-surface-2 border border-border/40 hover:border-primary/50 transition-colors duration-200">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="text-xs text-muted-foreground font-black uppercase">Years Served</span>
+                                <span className="text-sm font-bold">{(() => {
+                                    const date = employee.date_hired_government || employee.orig_date_of_appointment || employee.hire_date;
+                                    if (!date) return '0.0';
+                                    const msDiff = Date.now() - new Date(date).getTime();
+                                    return (msDiff / (1000 * 60 * 60 * 24 * 365.25)).toFixed(1);
+                                })()}</span>
+                            </div>
+                            <div className="h-2.5 w-full bg-slate-200 dark:bg-slate-800/80 rounded-full overflow-hidden">
+                                <div 
+                                    className="h-full bg-green-500 rounded-full transition-all duration-1000 ease-out"
+                                    style={{ 
+                                        width: `${(() => {
+                                            const date = employee.date_hired_government || employee.orig_date_of_appointment || employee.hire_date;
+                                            if (!date) return 0;
+                                            const years = (Date.now() - new Date(date).getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+                                            if (years < 10) return Math.min(100, (years / 10) * 100);
+                                            return Math.min(100, ((years - 10) % 5) / 5 * 100);
+                                        })()}%` 
+                                    }}
+                                />
+                            </div>
+                            <span className="text-[10px] text-muted-foreground mt-2 text-right">
+                                {(() => {
+                                    const date = employee.date_hired_government || employee.orig_date_of_appointment || employee.hire_date;
+                                    if (!date) return 'No start date set';
+                                    const years = (Date.now() - new Date(date).getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+                                    if (years < 10) return `Target: 10-year Loyalty Award`;
+                                    return `Target: ${(Math.floor((years - 10) / 5) + 1) * 5 + 10}-year Loyalty Award`;
+                                })()}
+                            </span>
+                        </div>
+                        
+                        <div className="flex flex-col p-4 rounded-xl bg-surface-2 border border-border/40 hover:border-primary/50 transition-colors duration-200">
+                            {(() => {
+                                const baseDate = employee.hire_date || employee.date_hired_government || employee.orig_date_of_appointment || employee.date_of_latest_appointment;
+
+                                if (!baseDate) {
+                                    return (
+                                        <>
+                                            <span className="text-xs text-muted-foreground font-black uppercase mb-1">Salary Step</span>
+                                            <div className="flex items-end gap-2">
+                                                <span className="text-3xl font-black text-foreground">{employee.salary_step || '0'}</span>
+                                                <span className="text-xs text-muted-foreground mb-1 pb-0.5">/ 8</span>
+                                            </div>
+                                            <span className="text-[10px] text-muted-foreground mt-1">No base date set for salary</span>
+                                        </>
+                                    );
+                                }
+
+                                const msInDay = 1000 * 60 * 60 * 24;
+                                const nowTime = Date.now();
+
+                                // Get all promotion dates sorted chronologically (oldest first)
+                                const sortedPromoDates: string[] = (employee.promotion_histories || [])
+                                    .map((p: any) => p.promotion_date)
+                                    .filter(Boolean)
+                                    .sort();
+
+                                // Accumulate step increments across each service period
+                                // (hire→promo1, promo1→promo2, ..., lastPromo→now)
+                                let totalIncrements = 0;
+                                let periodStart = new Date(baseDate).getTime();
+
+                                for (const promoDate of sortedPromoDates) {
+                                    const periodEnd = new Date(promoDate).getTime();
+                                    if (periodEnd > periodStart) {
+                                        const periodYears = (periodEnd - periodStart) / (msInDay * 365.25);
+                                        totalIncrements += Math.floor(periodYears / 3);
+                                    }
+                                    // Timer resets at each promotion but step carries over
+                                    periodStart = new Date(promoDate).getTime();
+                                }
+
+                                // Add increments from last reset point to now
+                                const yearsWorked = (nowTime - periodStart) / (msInDay * 365.25);
+                                totalIncrements += Math.floor(yearsWorked / 3);
+
+                                const currentStep = Math.min(totalIncrements + 1, 8);
+
+                                // Timer countdown: based only on years since last reset (last promo or hire date)
+                                let timerText = '';
+                                if (currentStep >= 8) {
+                                    timerText = 'Max Step Reached';
+                                } else {
+                                    const nextTargetYears = (Math.floor(yearsWorked / 3) + 1) * 3;
+                                    const targetDate = new Date(periodStart);
+                                    targetDate.setFullYear(targetDate.getFullYear() + nextTargetYears);
+
+                                    const daysLeft = Math.ceil((targetDate.getTime() - nowTime) / msInDay);
+
+                                    if (daysLeft <= 0) {
+                                        timerText = 'Due now!';
+                                    } else {
+                                        const y = Math.floor(daysLeft / 365);
+                                        const m = Math.floor((daysLeft % 365) / 30);
+                                        const d = Math.floor((daysLeft % 365) % 30);
+
+                                        const cleanParts = [];
+                                        if (y > 0) cleanParts.push(`${y}y`);
+                                        if (m >= 0 && (y > 0 || m > 0)) cleanParts.push(`${m}m`);
+                                        cleanParts.push(`${d}d`);
+
+                                        timerText = `In ${cleanParts.join(' ')}`;
+                                    }
+                                }
+
+                                return (
+                                    <>
+                                        <span className="text-xs text-muted-foreground font-black uppercase mb-1">Salary Step</span>
+                                        <div className="flex items-end gap-2">
+                                            <span className="text-3xl font-black text-foreground">{currentStep}</span>
+                                            <span className="text-xs text-muted-foreground mb-1 pb-0.5">/ 8</span>
+                                        </div>
+                                        <span className="text-[10px] text-muted-foreground mt-1">{timerText}</span>
+                                    </>
+                                );
+                            })()}
                         </div>
                     </div>
                 </div>

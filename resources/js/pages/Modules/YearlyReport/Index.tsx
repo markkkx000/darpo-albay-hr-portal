@@ -46,6 +46,9 @@ export default function YearlyReport({ results, year, filter }: Props) {
         return new Date(date).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' });
     };
 
+    const currentYear = new Date().getFullYear();
+    const availableYears = Array.from({ length: 41 }, (_, i) => currentYear - 20 + i);
+
     return (
         <>
             <Head title="Yearly Report" />
@@ -64,18 +67,22 @@ export default function YearlyReport({ results, year, filter }: Props) {
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 matte-card elev-2 px-4 py-4 rounded-2xl mb-6">
                     <div className="md:col-span-3">
-                        <Input 
-                            type="number"
-                            value={selectedYear}
-                            onChange={(e) => {
-                                setSelectedYear(e.target.value);
-                                handleFilterChange(e.target.value, selectedFilter);
+                        <Select 
+                            value={selectedYear} 
+                            onValueChange={(val) => {
+                                setSelectedYear(val);
+                                handleFilterChange(val, selectedFilter);
                             }}
-                            className="input-etched w-full"
-                            placeholder="Year"
-                            min="1900"
-                            max="2100"
-                        />
+                        >
+                            <SelectTrigger className="input-etched w-full">
+                                <SelectValue placeholder="Year" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {availableYears.map(y => (
+                                    <SelectItem key={y} value={y.toString()}>{y}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                     <div className="md:col-span-3">
                         <Select 
@@ -102,11 +109,11 @@ export default function YearlyReport({ results, year, filter }: Props) {
                         <Table>
                             <TableHeader className="bg-surface-2/50 backdrop-blur-sm">
                                 <TableRow className="hover:bg-transparent border-border/40">
-                                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground w-[150px]">Date</TableHead>
-                                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground">Employee Name</TableHead>
-                                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground">Division</TableHead>
-                                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground text-center">Milestone</TableHead>
-                                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground text-right">Type</TableHead>
+                                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground w-[15%]">Date</TableHead>
+                                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground w-[30%]">Employee Name</TableHead>
+                                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground w-[30%]">Division</TableHead>
+                                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground text-center w-[15%]">Milestone</TableHead>
+                                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-muted-foreground text-right w-[10%]">Type</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>

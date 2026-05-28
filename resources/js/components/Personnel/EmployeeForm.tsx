@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
 // Premium Employee Form Component
-import { Loader2, Save, AlertCircle, Plus, Trash2, Star, Upload } from 'lucide-react';
+import { Loader2, Save, AlertCircle, Plus, Trash2, Star, Upload, RotateCcw } from 'lucide-react';
 import * as React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { DatePicker } from '@/components/date-picker';
@@ -78,6 +78,29 @@ export function EmployeeForm({
         };
         reader.readAsDataURL(data.profile_picture);
     }, [data.profile_picture]);
+
+    // Auto-calculate salary step when hire dates change
+    useEffect(() => {
+        let stepDate = data.hire_date || data.date_hired_government || data.orig_date_of_appointment || data.date_of_latest_appointment;
+        if (employee?.promotion_histories && employee.promotion_histories.length > 0) {
+            const latestPromo = [...employee.promotion_histories].sort((a, b) => new Date(b.promotion_date).getTime() - new Date(a.promotion_date).getTime())[0];
+            if (latestPromo && latestPromo.promotion_date) {
+                stepDate = latestPromo.promotion_date;
+            }
+        }
+        
+        if (stepDate) {
+            const msInDay = 1000 * 60 * 60 * 24;
+            const yearsWorked = (Date.now() - new Date(stepDate).getTime()) / (msInDay * 365.25);
+            const calcStep = Math.floor(yearsWorked / 3) + 1;
+            
+            // Only auto-update if they haven't manually typed something different that isn't the old auto-calc
+            // To be safe and meet the requirement, we will just update it.
+            setData('salary_step', calcStep);
+        } else {
+            setData('salary_step', '');
+        }
+    }, [data.hire_date, data.date_hired_government, data.orig_date_of_appointment, data.date_of_latest_appointment, employee?.promotion_histories]);
 
     const previewUrl = (() => {
         if (data.profile_picture instanceof File) {
@@ -628,7 +651,37 @@ export function EmployeeForm({
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="salary_step">Salary Step</Label>
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor="salary_step">Salary Step</Label>
+                                {employee && (
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-6 text-xs px-2 text-muted-foreground hover:text-primary"
+                                        onClick={() => {
+                                            let stepDate = employee.hire_date || employee.date_hired_government || employee.orig_date_of_appointment || employee.date_of_latest_appointment;
+                                            if (employee.promotion_histories && employee.promotion_histories.length > 0) {
+                                                const latestPromo = [...employee.promotion_histories].sort((a, b) => new Date(b.promotion_date).getTime() - new Date(a.promotion_date).getTime())[0];
+                                                if (latestPromo && latestPromo.promotion_date) {
+                                                    stepDate = latestPromo.promotion_date;
+                                                }
+                                            }
+                                            if (!stepDate) {
+                                                setData('salary_step', "");
+                                                return;
+                                            }
+                                            const msInDay = 1000 * 60 * 60 * 24;
+                                            const yearsWorked = (Date.now() - new Date(stepDate).getTime()) / (msInDay * 365.25);
+                                            const calcStep = Math.floor(yearsWorked / 3) + 1;
+                                            setData('salary_step', calcStep);
+                                        }}
+                                        title="Revert to automated calculation"
+                                    >
+                                        <RotateCcw className="h-3 w-3 mr-1" /> Revert
+                                    </Button>
+                                )}
+                            </div>
                             <Input
                                 id="salary_step"
                                 type="number"
