@@ -36,6 +36,17 @@ test('authorized users can access management index', function () {
     $this->actingAs($this->hrAdmin)->get(route('attendance.manage.records.index'))->assertStatus(200);
 });
 
+test('hr_staff cannot manually store attendance record', function () {
+    $data = [
+        'user_id' => $this->employee->id,
+        'date' => Carbon::yesterday()->toDateString(),
+        'am_clock_in' => Carbon::yesterday()->setTime(8, 0, 0)->format('Y-m-d H:i:s'),
+    ];
+
+    $response = $this->actingAs($this->hrStaff)->post(route('attendance.manage.records.store'), $data);
+    $response->assertForbidden();
+});
+
 test('authorized user can manually store attendance record', function () {
     $data = [
         'user_id' => $this->employee->id,
@@ -46,7 +57,7 @@ test('authorized user can manually store attendance record', function () {
         'pm_clock_out' => Carbon::yesterday()->setTime(17, 0, 0)->format('Y-m-d H:i:s'),
     ];
 
-    $response = $this->actingAs($this->hrStaff)->post(route('attendance.manage.records.store'), $data);
+    $response = $this->actingAs($this->hrAdmin)->post(route('attendance.manage.records.store'), $data);
 
     $response->assertRedirect();
     $this->assertDatabaseHas('attendances', [
@@ -68,7 +79,7 @@ test('validation prevents duplicate records for same employee and date', functio
         'am_clock_in' => Carbon::yesterday()->setTime(9, 0, 0)->format('Y-m-d H:i:s'),
     ];
 
-    $response = $this->actingAs($this->hrStaff)->post(route('attendance.manage.records.store'), $data);
+    $response = $this->actingAs($this->hrAdmin)->post(route('attendance.manage.records.store'), $data);
 
     $response->assertSessionHasErrors('user_id');
 });
@@ -88,7 +99,7 @@ test('authorized user can update attendance record', function () {
         'pm_clock_out' => Carbon::today()->setTime(17, 30, 0)->format('Y-m-d H:i:s'),
     ];
 
-    $response = $this->actingAs($this->hrStaff)->put(route('attendance.manage.records.update', $attendance), $data);
+    $response = $this->actingAs($this->hrAdmin)->put(route('attendance.manage.records.update', $attendance), $data);
 
     $response->assertRedirect();
     $attendance->refresh();
@@ -112,7 +123,7 @@ test('authorized user can update attendance record date', function () {
         'pm_clock_out' => Carbon::yesterday()->setTime(17, 30, 0)->format('Y-m-d H:i:s'),
     ];
 
-    $response = $this->actingAs($this->hrStaff)->put(route('attendance.manage.records.update', $attendance), $data);
+    $response = $this->actingAs($this->hrAdmin)->put(route('attendance.manage.records.update', $attendance), $data);
 
     $response->assertRedirect();
     $attendance->refresh();
@@ -139,7 +150,7 @@ test('updating attendance record date prevents duplicate records', function () {
         'am_clock_in' => Carbon::yesterday()->setTime(8, 30, 0)->format('Y-m-d H:i:s'),
     ];
 
-    $response = $this->actingAs($this->hrStaff)->put(route('attendance.manage.records.update', $attendance), $data);
+    $response = $this->actingAs($this->hrAdmin)->put(route('attendance.manage.records.update', $attendance), $data);
 
     $response->assertSessionHasErrors('date');
 });

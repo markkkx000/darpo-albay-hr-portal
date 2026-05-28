@@ -12,7 +12,6 @@ use App\Modules\Personnel\Requests\EmployeeCreateRequest;
 use App\Modules\Personnel\Requests\EmployeeRestoreRequest;
 use App\Modules\Personnel\Requests\EmployeeUpdateRequest;
 use App\Modules\Personnel\Services\EmployeeService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -147,16 +146,17 @@ class PersonnelController extends Controller
     /**
      * Reset an employee's password.
      */
-    public function resetPassword(User $user): JsonResponse
+    public function resetPassword(Request $request, User $user): RedirectResponse
     {
         $this->authorize('roles.manage');
 
-        $newPassword = $this->employeeService->resetPassword($user);
-
-        return response()->json([
-            'message' => 'Password reset successfully.',
-            'new_password' => $newPassword,
+        $request->validate([
+            'password' => ['required', 'string', 'min:8'],
         ]);
+
+        $this->employeeService->resetPassword($user, $request->input('password'));
+
+        return back()->with('success', 'Password reset successfully.');
     }
 
     /**

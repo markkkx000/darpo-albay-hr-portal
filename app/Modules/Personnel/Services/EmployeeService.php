@@ -213,17 +213,13 @@ class EmployeeService
     /**
      * Reset an employee's password to a random string.
      */
-    public function resetPassword(User $user): string
+    public function resetPassword(User $user, string $newPassword): void
     {
-        $temporaryPassword = str()->random(8);
-
         $user->update([
-            'password' => Hash::make($temporaryPassword),
+            'password' => Hash::make($newPassword),
         ]);
 
         $this->sendDefaultPasswordNotification($user);
-
-        return $temporaryPassword;
     }
 
     /**

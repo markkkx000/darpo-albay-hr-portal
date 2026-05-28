@@ -1,4 +1,5 @@
 import { Link, router, usePage, useHttp } from '@inertiajs/react';
+import DOMPurify from 'dompurify';
 import { Bell, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 import * as NotificationActions from '@/actions/App/Modules/Notifications/Controllers/NotificationController';
@@ -145,7 +146,7 @@ export default function NotificationBell() {
                                                     {isHtml ? (
                                                         <div
                                                             className="prose prose-xs dark:prose-invert max-w-none [&_p]:my-0.5 [&_li]:my-0 [&_ul]:my-1 [&_ol]:my-1 [&_blockquote]:my-1 [&_img]:hidden"
-                                                            dangerouslySetInnerHTML={{ __html: body }}
+                                                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(body) }}
                                                         />
                                                     ) : (
                                                         <p className="whitespace-pre-wrap">{body}</p>
