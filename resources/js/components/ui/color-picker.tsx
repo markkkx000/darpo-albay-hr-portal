@@ -163,7 +163,7 @@ export function ColorPicker({ value, onChange, className }: ColorPickerProps) {
 
     return (
         <div className={cn("flex items-center space-x-2 w-full", className)}>
-            <Popover open={open} onOpenChange={setOpen}>
+            <Popover open={open} onOpenChange={setOpen} modal={true}>
                 <PopoverTrigger asChild>
                     <button
                         type="button"
@@ -176,8 +176,13 @@ export function ColorPicker({ value, onChange, className }: ColorPickerProps) {
                 <PopoverContent 
                     align="start" 
                     sideOffset={8}
-                    className="w-80 p-4 matte-card elev-3 border border-border-2 rounded-2xl shadow-2xl space-y-4 focus:outline-none animate-in fade-in-50 zoom-in-95 duration-200"
+                    collisionPadding={16}
+                    className="w-80 p-0 matte-card elev-3 border border-border-2 rounded-2xl shadow-2xl focus:outline-none animate-in fade-in-50 zoom-in-95 duration-200"
                 >
+                  <div 
+                      className="p-4 space-y-4 overflow-y-auto"
+                      style={{ maxHeight: 'calc(var(--radix-popover-content-available-height, 85vh) - 2px)' }}
+                  >
                     {/* Header preview */}
                     <div className="flex items-center justify-between border-b border-border-1 pb-3">
                         <div>
@@ -360,6 +365,7 @@ export function ColorPicker({ value, onChange, className }: ColorPickerProps) {
                             Confirm Selection
                         </Button>
                     </div>
+                  </div>
                 </PopoverContent>
             </Popover>
             <Input 
