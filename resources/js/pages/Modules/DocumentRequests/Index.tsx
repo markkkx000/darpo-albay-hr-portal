@@ -10,6 +10,7 @@ import {
     FileText,
     ArrowDown,
     ArrowUp,
+    Eye,
 } from 'lucide-react';
 import { useState } from 'react';
 import { DatePicker } from '@/components/date-picker';
@@ -115,6 +116,28 @@ export default function DocumentRequestsIndex({
     const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null);
     const [isPickupModalOpen, setIsPickupModalOpen] = useState(false);
     const [pickupName, setPickupName] = useState('');
+    const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+    const [rejectAction, setRejectAction] = useState<'Reject' | 'Cancel'>('Reject');
+    const [requestToConfirm, setRequestToConfirm] = useState<number | null>(null);
+
+    const openRejectConfirm = (id: number, action: 'Reject' | 'Cancel') => {
+        setRequestToConfirm(id);
+        setRejectAction(action);
+        setIsRejectModalOpen(true);
+    };
+
+    const handleConfirmReject = () => {
+        if (!requestToConfirm) return;
+        
+        router.post(
+            DocumentRequestsRoutes.status({ documentRequest: requestToConfirm }).url,
+            { status: rejectAction === 'Reject' ? 'Rejected' : 'Cancelled' },
+            { 
+                preserveScroll: true,
+                onSuccess: () => setIsRejectModalOpen(false)
+            }
+        );
+    };
 
     const handleLogPickup = (e: React.FormEvent) => {
         e.preventDefault();
@@ -365,110 +388,82 @@ export default function DocumentRequestsIndex({
                                                 </span>
                                             </td>
                                             <td className="flex justify-end gap-2 p-4 text-right align-middle">
-                                                {/* Actions like Process / Release / Mark Received */}
-                                                <Button
-                                                    variant="outline"
-                                                    className="shadow-sm"
-                                                    asChild
-                                                >
-                                                    <Link
-                                                        href={
-                                                            DocumentRequestsRoutes.show(
-                                                                {
-                                                                    documentRequest:
-                                                                        req.id,
-                                                                },
-                                                            ).url
+                                                {/* Main Action Buttons */}
+                                                {isHr && req.status === 'Pending' && (
+                                                    <Button
+                                                        variant="outline"
+                                                        className="shadow-sm"
+                                                        onClick={() =>
+                                                            router.post(DocumentRequestsRoutes.receive({ documentRequest: req.id }).url)
                                                         }
                                                     >
-                                                        View Details
+                                                        <Clock className="h-4 w-4" />
+                                                        Mark Received
+                                                    </Button>
+                                                )}
+                                                {isHr && req.status === 'Received' && (
+                                                    <Button
+                                                        variant="default"
+                                                        className="btn-premium shadow-sm"
+                                                        onClick={() => {
+                                                            setSelectedRequestId(req.id);
+                                                            setIsReleaseModalOpen(true);
+                                                        }}
+                                                    >
+                                                        <Send className="h-4 w-4" />
+                                                        Release
+                                                    </Button>
+                                                )}
+                                                {isHr && req.status === 'Ready for Pickup' && (
+                                                    <Button
+                                                        variant="outline"
+                                                        className="shadow-sm"
+                                                        onClick={() => {
+                                                            setSelectedRequestId(req.id);
+                                                            setIsPickupModalOpen(true);
+                                                        }}
+                                                    >
+                                                        <Box className="h-4 w-4" />
+                                                        Log Pickup
+                                                    </Button>
+                                                )}
+
+                                                {/* View Details Button (Eye icon only) */}
+                                                <Button
+                                                    variant="outline"
+                                                    size="icon"
+                                                    className="shadow-sm"
+                                                    asChild
+                                                    title="View Details"
+                                                >
+                                                    <Link href={DocumentRequestsRoutes.show({ documentRequest: req.id }).url}>
+                                                        <Eye className="h-4 w-4" />
                                                     </Link>
                                                 </Button>
-                                                {isHr &&
-                                                    req.status ===
-                                                    'Pending' && (
-                                                        <Button
-                                                            variant="outline"
-                                                            className="shadow-sm"
-                                                            onClick={() =>
-                                                                router.post(
-                                                                    DocumentRequestsRoutes.receive(
-                                                                        {
-                                                                            documentRequest:
-                                                                                req.id,
-                                                                        },
-                                                                    ).url,
-                                                                )
-                                                            }
-                                                        >
-                                                            <Clock className="h-4 w-4" />
-                                                            Mark Received
-                                                        </Button>
-                                                    )}
-                                                {isHr &&
-                                                    (req.status === 'Pending' || req.status === 'Received') && (
-                                                        <Button
-                                                            variant="destructive"
-                                                            className="shadow-sm bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground border-transparent"
-                                                            onClick={() => {
-                                                                if (confirm('Are you sure you want to reject this request?')) {
-                                                                    router.post(DocumentRequestsRoutes.status({ documentRequest: req.id }).url, { status: 'Rejected' }, { preserveScroll: true })
-                                                                }
-                                                            }}
-                                                        >
-                                                            <XCircle className="h-4 w-4" />
-                                                            Reject
-                                                        </Button>
-                                                    )}
-                                                {isHr &&
-                                                    req.status ===
-                                                    'Received' && (
-                                                        <Button
-                                                            variant="default"
-                                                            className="btn-premium shadow-sm"
-                                                            onClick={() => {
-                                                                setSelectedRequestId(
-                                                                    req.id,
-                                                                );
-                                                                setIsReleaseModalOpen(
-                                                                    true,
-                                                                );
-                                                            }}
-                                                        >
-                                                            <Send className="h-4 w-4" />
-                                                            Process / Release
-                                                        </Button>
-                                                    )}
-                                                {isHr &&
-                                                    req.status ===
-                                                    'Ready for Pickup' && (
-                                                        <Button
-                                                            variant="outline"
-                                                            className="shadow-sm"
-                                                            onClick={() => {
-                                                                setSelectedRequestId(req.id);
-                                                                setIsPickupModalOpen(true);
-                                                            }}
-                                                        >
-                                                            <Box className="h-4 w-4" />
-                                                            Log Pickup
-                                                        </Button>
-                                                    )}
-                                                {!isHr &&
-                                                    req.status === 'Pending' && (
-                                                        <Button
-                                                            variant="destructive"
-                                                            className="shadow-sm bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground border-transparent"
-                                                            onClick={() => {
-                                                                if (confirm('Are you sure you want to cancel this request?')) {
-                                                                    router.post(DocumentRequestsRoutes.status({ documentRequest: req.id }).url, { status: 'Cancelled' }, { preserveScroll: true })
-                                                                }
-                                                            }}
-                                                        >
-                                                            <XCircle className="h-4 w-4" />
-                                                            Cancel
-                                                        </Button>
-                                                    )}
+
+                                                {/* Reject/Cancel Button (X icon only) */}
+                                                {isHr && (req.status === 'Pending' || req.status === 'Received') && (
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="icon"
+                                                        className="shadow-sm bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground border-transparent"
+                                                        onClick={() => openRejectConfirm(req.id, 'Reject')}
+                                                        title="Reject"
+                                                    >
+                                                        <XCircle className="h-4 w-4" />
+                                                    </Button>
+                                                )}
+                                                {!isHr && req.status === 'Pending' && (
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="icon"
+                                                        className="shadow-sm bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground border-transparent"
+                                                        onClick={() => openRejectConfirm(req.id, 'Cancel')}
+                                                        title="Cancel"
+                                                    >
+                                                        <XCircle className="h-4 w-4" />
+                                                    </Button>
+                                                )}
                                             </td>
                                         </tr>
                                     ))}
@@ -572,6 +567,26 @@ export default function DocumentRequestsIndex({
                             <Button type="submit" className="btn-premium">Confirm Pickup</Button>
                         </DialogFooter>
                     </form>
+                </DialogContent>
+            </Dialog>
+
+            {/* Custom Confirm Reject/Cancel Dialog */}
+            <Dialog open={isRejectModalOpen} onOpenChange={setIsRejectModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Confirm {rejectAction}</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to {rejectAction.toLowerCase()} this document request? This action cannot be undone.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsRejectModalOpen(false)}>
+                            Keep Request
+                        </Button>
+                        <Button variant="destructive" onClick={handleConfirmReject}>
+                            Yes, {rejectAction}
+                        </Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
         </>
