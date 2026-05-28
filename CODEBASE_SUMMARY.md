@@ -3,7 +3,7 @@
 ## Overview
 This application is a **Laravel 13** backend with an **Inertia.js React** frontend. It strictly requires **PHP 8.4**. Authentication is custom and uses Laravel `Auth::attempt()` instead of Fortify, with role-based redirects to a single dashboard page. The application uses a modular architecture for navigation and feature development.
 
-Currently implemented modules: **Announcements, Attendance, DTR Export, Leave Tracking, Notifications (infra), Personnel Directory, Roles & Permissions, Travel Orders (stub)**.
+Currently implemented modules: **Announcements, Attendance, Document Requests, DTR Export, Leave Tracking, Notifications (infra), Personnel Directory, Roles & Permissions, Travel Orders (stub)**.
 
 ---
 

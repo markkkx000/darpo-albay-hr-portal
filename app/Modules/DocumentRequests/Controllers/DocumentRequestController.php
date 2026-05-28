@@ -208,7 +208,7 @@ class DocumentRequestController extends Controller
 
         $currentStatus = $documentRequest->status;
 
-        if (!isset($allowedTransitions[$currentStatus]) || !in_array($request->status, $allowedTransitions[$currentStatus])) {
+        if (! isset($allowedTransitions[$currentStatus]) || ! in_array($request->status, $allowedTransitions[$currentStatus])) {
             abort(400, "Cannot transition from {$currentStatus} to {$request->status}.");
         }
 

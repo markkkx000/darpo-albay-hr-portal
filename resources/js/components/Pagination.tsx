@@ -41,6 +41,10 @@ export function Pagination({ links, meta }: PaginationProps) {
                         const isNext = link.label.includes('Next');
                         const label = isPrev ? <ChevronLeft className="h-4 w-4" /> : isNext ? <ChevronRight className="h-4 w-4" /> : link.label;
 
+                        const cleanLabel = typeof label === 'string' 
+                            ? label.replace(/&laquo;/g, '«').replace(/&raquo;/g, '»')
+                            : label;
+
                         if (link.url === null) {
                             return (
                                 <span
@@ -50,9 +54,8 @@ export function Pagination({ links, meta }: PaginationProps) {
                                         (isPrev || isNext) && "px-2"
                                     )}
                                     aria-disabled="true"
-                                    dangerouslySetInnerHTML={typeof label === 'string' ? { __html: label } : undefined}
                                 >
-                                    {typeof label !== 'string' ? label : null}
+                                    {cleanLabel}
                                 </span>
                             );
                         }
@@ -73,11 +76,7 @@ export function Pagination({ links, meta }: PaginationProps) {
                                     (isPrev || isNext) && "px-2"
                                 )}
                             >
-                                {typeof label === 'string' ? (
-                                    <span dangerouslySetInnerHTML={{ __html: label }} />
-                                ) : (
-                                    label
-                                )}
+                                {cleanLabel}
                             </Link>
                         );
                     })}

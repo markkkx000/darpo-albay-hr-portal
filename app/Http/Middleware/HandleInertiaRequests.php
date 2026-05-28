@@ -51,7 +51,7 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user() ? $request->user()->only([
-                    'id', 'employee_number', 'first_name', 'middle_name', 'last_name', 
+                    'id', 'employee_number', 'first_name', 'middle_name', 'last_name',
                     'email', 'profile_photo_url', 'name', 'is_active',
                 ]) : null,
                 'roles' => fn () => $request->user()?->roles->pluck('name')->toArray() ?? [],

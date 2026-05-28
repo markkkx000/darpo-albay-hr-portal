@@ -59,6 +59,7 @@ Route::middleware(['web', 'auth', 'permission:leave.view'])->group(function () {
         Route::get('/create', [LeaveController::class, 'create'])->name('create');
         Route::post('/', [LeaveController::class, 'store'])->name('store');
         Route::get('/calendar', [LeaveController::class, 'calendar'])->name('calendar');
+        Route::get('/users/{user}/salary', [LeaveController::class, 'getSalary'])->name('salary');
 
         // Dynamic Leave Request Routes (edit/update/delete)
         Route::get('/{leaveRequest}/edit', [LeaveController::class, 'edit'])->name('edit');

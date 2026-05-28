@@ -2,6 +2,7 @@
 
 namespace App\Modules\DTR\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\DTR\Requests\DTRGenerateRequest;
 use App\Modules\DTR\Services\DTRService;
@@ -10,7 +11,7 @@ use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class DTRController
+class DTRController extends Controller
 {
     public function __construct(public DTRService $dtrService) {}
 
@@ -19,6 +20,8 @@ class DTRController
      */
     public function index(Request $request): InertiaResponse
     {
+        $this->authorize('attendance.view');
+
         $user = $request->user();
         $isHrAdmin = $user && $user->can('dtr.manage');
 

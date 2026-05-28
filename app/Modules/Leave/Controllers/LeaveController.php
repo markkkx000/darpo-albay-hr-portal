@@ -52,7 +52,7 @@ class LeaveController extends Controller
     public function show(LeaveRequest $leaveRequest)
     {
         $user = request()->user();
-        if (!$user->can('leave.manage') && $leaveRequest->user_id !== $user->id) {
+        if (! $user->can('leave.manage') && $leaveRequest->user_id !== $user->id) {
             abort(403, 'Unauthorized to view this leave request.');
         }
 
@@ -65,7 +65,7 @@ class LeaveController extends Controller
 
     public function create()
     {
-        $users = User::select('id', 'first_name', 'last_name', 'employee_number', 'monthly_salary')->orderBy('last_name')->get();
+        $users = User::select('id', 'first_name', 'last_name', 'employee_number')->orderBy('last_name')->get();
         $types = LeaveType::where('is_active', true)->get();
         $statuses = LeaveStatus::where('is_active', true)->get();
         $holidays = Holiday::whereYear('date', now()->year)->get();
@@ -89,7 +89,7 @@ class LeaveController extends Controller
 
     public function edit(LeaveRequest $leaveRequest)
     {
-        $users = User::select('id', 'first_name', 'last_name', 'employee_number', 'monthly_salary')->orderBy('last_name')->get();
+        $users = User::select('id', 'first_name', 'last_name', 'employee_number')->orderBy('last_name')->get();
         $types = LeaveType::where('is_active', true)->get();
         $statuses = LeaveStatus::where('is_active', true)->get();
         $holidays = Holiday::whereYear('date', now()->year)->get();
@@ -184,7 +184,7 @@ class LeaveController extends Controller
 
         // Ownership check
         if (! Auth::user()->can('leave.manage')) {
-            $leaveReq = \App\Modules\Leave\Models\LeaveRequest::whereJsonContains('attachments', $url)->first();
+            $leaveReq = LeaveRequest::whereJsonContains('attachments', $url)->first();
             if ($leaveReq && $leaveReq->user_id !== Auth::id()) {
                 return response()->json(['error' => 'Unauthorized to delete this attachment.'], 403);
             }
@@ -197,5 +197,18 @@ class LeaveController extends Controller
         }
 
         return response()->json(['error' => 'File not found or already deleted.'], 404);
+    }
+
+    /**
+     * Get the salary for a specific user.
+     * Accessible only by HR (leave.manage).
+     */
+    public function getSalary(User $user)
+    {
+        $this->authorize('leave.manage');
+
+        return response()->json([
+            'salary' => $user->monthly_salary,
+        ]);
     }
 }

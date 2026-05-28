@@ -30,7 +30,7 @@ use Spatie\Activitylog\Support\LogOptions;
 ])]
 class DocumentRequest extends Model
 {
-    use SoftDeletes, LogsActivity;
+    use LogsActivity, SoftDeletes;
 
     public function getActivitylogOptions(): LogOptions
     {
