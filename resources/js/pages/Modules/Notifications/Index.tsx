@@ -1,4 +1,5 @@
 import { Head, Link, router, useHttp } from '@inertiajs/react';
+import DOMPurify from 'dompurify';
 import { Bell, ChevronDown, ChevronUp, CheckCheck, RotateCcw } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -155,7 +156,7 @@ export default function Index({ notifications }: Props) {
                                                                 {isHtml ? (
                                                                     <div
                                                                         className="prose prose-sm dark:prose-invert max-w-none [&_p]:my-1 [&_li]:my-0.5 [&_ul]:my-2 [&_ol]:my-2 [&_blockquote]:my-2 [&_img]:max-w-full [&_img]:rounded-lg"
-                                                                        dangerouslySetInnerHTML={{ __html: body }}
+                                                                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(body) }}
                                                                     />
                                                                 ) : (
                                                                     <p className="whitespace-pre-wrap">{body}</p>

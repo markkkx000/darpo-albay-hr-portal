@@ -2,6 +2,7 @@ import * as React from "react"
 // Premium Apple-Grade Calendar Component
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { DayPicker } from "react-day-picker"
+import { motion, AnimatePresence } from "framer-motion"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -18,8 +19,7 @@ import {
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>
 
-function CalendarCaption({ displayMonth }: { displayMonth: Date }) {
-  const { goToMonth } = useNavigation()
+function CalendarCaption({ displayMonth, onMonthChange }: { displayMonth: Date, onMonthChange: (d: Date) => void }) {
   const currentYear = displayMonth.getFullYear()
   const currentMonth = displayMonth.getMonth()
 
@@ -49,13 +49,13 @@ function CalendarCaption({ displayMonth }: { displayMonth: Date }) {
   const handleMonthChange = (val: string) => {
     const newDate = new Date(displayMonth)
     newDate.setMonth(parseInt(val))
-    goToMonth(newDate)
+    onMonthChange(newDate)
   }
 
   const handleYearChange = (val: string) => {
     const newDate = new Date(displayMonth)
     newDate.setFullYear(parseInt(val))
-    goToMonth(newDate)
+    onMonthChange(newDate)
   }
 
   return (
@@ -100,64 +100,102 @@ function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  month,
+  onMonthChange,
   ...props
 }: CalendarProps) {
+  const [internalMonth, setInternalMonth] = React.useState<Date>(month || new Date());
+  
+  React.useEffect(() => {
+    if (month) setInternalMonth(month);
+  }, [month]);
+  
+  const displayMonth = month || internalMonth;
+  const setDisplayMonth = (d: Date) => {
+    setInternalMonth(d);
+    if (onMonthChange) onMonthChange(d);
+  };
+
+  const [direction, setDirection] = React.useState(1);
+  const [prevMonth, setPrevMonth] = React.useState(displayMonth);
+  
+  if (displayMonth.getTime() !== prevMonth.getTime()) {
+    setDirection(displayMonth > prevMonth ? 1 : -1);
+    setPrevMonth(displayMonth);
+  }
+
   return (
-    <DayPicker
-      showOutsideDays={showOutsideDays}
-      className={cn("p-4", className)}
-      classNames={{
-        months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
-        month: "space-y-4",
-        caption: "flex justify-center pt-1 relative items-center mb-4 px-10",
-        caption_label: "hidden",
-        nav: "space-x-1 flex items-center",
-        nav_button: cn(
-          "h-10 w-10 bg-transparent p-0 opacity-40 hover:opacity-100 rounded-full border-none transition-all flex items-center justify-center text-white"
-        ),
-        nav_button_previous: "absolute left-2",
-        nav_button_next: "absolute right-2",
-        table: "w-full border-collapse space-y-1",
-        head_row: "flex justify-between px-2",
-        head_cell: "text-muted-foreground w-9 font-bold text-[0.75rem] uppercase tracking-widest mb-4 text-center",
-        row: "flex w-full mt-2 justify-between px-1",
-        cell: "h-10 w-10 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
-        day: cn(
-          buttonVariants({ variant: "ghost" }),
-          "h-10 w-10 p-0 font-bold aria-selected:opacity-100 rounded-full transition-all duration-200 hover:bg-[#22c55e]/10"
-        ),
-        day_range_end: "day-range-end",
-        day_selected:
-          "item-hover-gradient text-[#1c1c1e] hover:item-hover-gradient hover:text-[#1c1c1e] focus:item-hover-gradient focus:text-[#1c1c1e] font-bold shadow-md",
-        day_today: "bg-surface-3 text-foreground font-bold",
-        day_outside:
-          "day-outside text-muted-foreground opacity-30 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
-        day_disabled: "text-muted-foreground opacity-50",
-        day_range_middle:
-          "aria-selected:bg-accent aria-selected:text-accent-foreground",
-        day_hidden: "invisible",
-        ...classNames,
-      }}
-      components={{
-        IconLeft: () => <ChevronLeft className="h-5 w-5" />,
-        IconRight: () => <ChevronRight className="h-5 w-5" />,
-        Caption: ({ displayMonth }) => <CalendarCaption displayMonth={displayMonth} />,
-        Head: () => (
-          <thead>
-            <tr className="flex justify-between px-2 mb-2">
-              <th className="text-[#ff3b30] w-9 font-black text-[0.7rem] uppercase tracking-widest">Sun</th>
-              <th className="text-muted-foreground w-9 font-black text-[0.7rem] uppercase tracking-widest opacity-60">Mon</th>
-              <th className="text-muted-foreground w-9 font-black text-[0.7rem] uppercase tracking-widest opacity-60">Tue</th>
-              <th className="text-muted-foreground w-9 font-black text-[0.7rem] uppercase tracking-widest opacity-60">Wed</th>
-              <th className="text-muted-foreground w-9 font-black text-[0.7rem] uppercase tracking-widest opacity-60">Thu</th>
-              <th className="text-muted-foreground w-9 font-black text-[0.7rem] uppercase tracking-widest opacity-60">Fri</th>
-              <th className="text-[#ff3b30] w-9 font-black text-[0.7rem] uppercase tracking-widest">Sat</th>
-            </tr>
-          </thead>
-        )
-      }}
-      {...props}
-    />
+    <div className={cn("p-4", className)}>
+      <CalendarCaption displayMonth={displayMonth} onMonthChange={setDisplayMonth} />
+      
+      {/* Static Weekdays Header */}
+      <div className="flex justify-between px-2 mt-4 mb-2">
+        <div className="text-[#ff3b30] w-9 font-black text-[0.7rem] uppercase tracking-widest text-center">Sun</div>
+        <div className="text-muted-foreground w-9 font-black text-[0.7rem] uppercase tracking-widest opacity-60 text-center">Mon</div>
+        <div className="text-muted-foreground w-9 font-black text-[0.7rem] uppercase tracking-widest opacity-60 text-center">Tue</div>
+        <div className="text-muted-foreground w-9 font-black text-[0.7rem] uppercase tracking-widest opacity-60 text-center">Wed</div>
+        <div className="text-muted-foreground w-9 font-black text-[0.7rem] uppercase tracking-widest opacity-60 text-center">Thu</div>
+        <div className="text-muted-foreground w-9 font-black text-[0.7rem] uppercase tracking-widest opacity-60 text-center">Fri</div>
+        <div className="text-[#ff3b30] w-9 font-black text-[0.7rem] uppercase tracking-widest text-center">Sat</div>
+      </div>
+
+      <div className="relative overflow-hidden">
+        <AnimatePresence mode="popLayout" initial={false} custom={direction}>
+          <motion.div
+            key={displayMonth.toString()}
+            custom={direction}
+            variants={{
+              enter: (dir: number) => ({ y: dir > 0 ? 150 : -150, opacity: 0 }),
+              center: { y: 0, opacity: 1 },
+              exit: (dir: number) => ({ y: dir > 0 ? -150 : 150, opacity: 0 })
+            }}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+          >
+            <DayPicker
+              month={displayMonth}
+              onMonthChange={setDisplayMonth}
+              showOutsideDays={showOutsideDays}
+              fixedWeeks={true}
+              className="p-0"
+              classNames={{
+                months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+                month: "space-y-4",
+                caption: "hidden", // Hide native caption
+                nav: "hidden",
+                table: "w-full border-collapse space-y-1",
+                head_row: "hidden", // Hide native head row completely
+                head_cell: "hidden", 
+                row: "flex w-full mt-2 justify-between px-1",
+                cell: "h-10 w-10 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
+                day: cn(
+                  buttonVariants({ variant: "ghost" }),
+                  "h-10 w-10 p-0 font-bold aria-selected:opacity-100 rounded-full transition-all duration-200 hover:bg-[#22c55e]/10"
+                ),
+                day_range_end: "day-range-end",
+                day_selected:
+                  "item-hover-gradient text-[#1c1c1e] hover:item-hover-gradient hover:text-[#1c1c1e] focus:item-hover-gradient focus:text-[#1c1c1e] font-bold shadow-md",
+                day_today: "bg-surface-3 text-foreground font-bold",
+                day_outside:
+                  "day-outside text-muted-foreground opacity-30 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
+                day_disabled: "text-muted-foreground opacity-50",
+                day_range_middle:
+                  "aria-selected:bg-accent aria-selected:text-accent-foreground",
+                day_hidden: "invisible",
+                ...classNames,
+              }}
+              components={{
+                Caption: () => null,
+                Head: () => null
+              }}
+              {...props}
+            />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
   )
 }
 Calendar.displayName = "Calendar"

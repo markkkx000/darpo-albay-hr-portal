@@ -65,8 +65,7 @@ interface LeaveRequest {
     has_attachments: boolean;
     supporting_documents: string[];
     maternity_allocation_details?: string | null;
-    vl_balance_at_filing: string | number | null;
-    sl_balance_at_filing: string | number | null;
+
 }
 
 interface Props {
@@ -112,7 +111,7 @@ export default function LeaveShow({ leaveRequest }: Props) {
                     actions={
                         <Button variant="ghost" className="btn-ghost-specular" asChild>
                             <Link href={LeaveRoutes.index().url}>
-                                <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                                <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
                                 Back to Dashboard
                             </Link>
                         </Button>
@@ -392,82 +391,6 @@ export default function LeaveShow({ leaveRequest }: Props) {
                             </div>
                         </div>
 
-                        <div className="matte-card elev-2 p-6 md:p-8">
-                            <h2 className="t-headline mb-6 flex items-center">
-                                <FileText className="mr-2 h-5 w-5 text-primary" />
-                                7. Details of Action on Application
-                            </h2>
-                            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-                                <div className="space-y-4">
-                                    <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
-                                        7.A Certification of Leave Credits
-                                    </h3>
-                                    <div className="overflow-x-auto rounded-xl border border-border/50 bg-muted/20">
-                                        <table className="w-full text-left text-sm min-w-[320px] table-fixed">
-                                            <thead>
-                                                <tr className="border-b border-border/50 bg-muted/30">
-                                                    <th className="p-3 t-caption !tracking-tight w-1/2">Category</th>
-                                                    <th className="p-3 t-caption !tracking-tight text-right">Vacation</th>
-                                                    <th className="p-3 t-caption !tracking-tight text-right">Sick</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="tabular-nums">
-                                                <tr className="border-b border-border/50">
-                                                    <td className="p-3 font-bold text-foreground whitespace-nowrap">As of Filing</td>
-                                                    <td className="p-3 text-right font-extra-bold text-foreground text-base">
-                                                        {leaveRequest.vl_balance_at_filing || '0.000'}
-                                                    </td>
-                                                    <td className="p-3 text-right font-extra-bold text-foreground text-base">
-                                                        {leaveRequest.sl_balance_at_filing || '0.000'}
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="p-3 font-bold text-foreground whitespace-nowrap">This App.</td>
-                                                    <td className="p-3 text-right font-bold text-red-600 dark:text-red-400">
-                                                        {leaveRequest.leave_type?.name?.toLowerCase().includes('vacation') || leaveRequest.leave_type?.name?.toLowerCase().includes('forced')
-                                                            ? Number(leaveRequest.days_requested).toFixed(3)
-                                                            : '0.000'}
-                                                    </td>
-                                                    <td className="p-3 text-right font-bold text-red-600 dark:text-red-400">
-                                                        {leaveRequest.leave_type?.name?.toLowerCase().includes('sick')
-                                                            ? Number(leaveRequest.days_requested).toFixed(3)
-                                                            : '0.000'}
-                                                    </td>
-                                               </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div className="space-y-4">
-                                    <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
-                                        7.B Recommendation
-                                    </h3>
-                                    <div className="flex flex-col space-y-4">
-                                        <div className="flex items-center">
-                                            <span
-                                                className={cn(
-                                                    'inline-flex items-center rounded-full px-4 py-1.5 text-xs shadow-sm',
-                                                    leaveRequest.leave_status?.name === 'Approved'
-                                                        ? 'status-badge-permanent'
-                                                        : 'status-badge-warning',
-                                                )}
-                                            >
-                                                {leaveRequest.leave_status?.name === 'Approved'
-                                                    ? 'Recommended for Approval'
-                                                    : 'Pending Recommendation'}
-                                            </span>
-                                        </div>
-                                        {leaveRequest.leave_detail_remarks && (
-                                            <div className="rounded-xl bg-orange-500/5 p-4 italic text-sm text-orange-700 dark:text-orange-300 border border-orange-500/10 backdrop-blur-sm">
-                                                <span className="font-bold uppercase text-[9px] tracking-wider block mb-1">Supervisor Note</span>
-                                                {leaveRequest.leave_detail_remarks}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         {leaveRequest.notes && (
                             <div className="matte-card elev-2 border-l-4 border-l-green-500/50 p-6 md:p-8">
                                 <h2 className="t-headline mb-4 flex items-center">
@@ -504,9 +427,12 @@ export default function LeaveShow({ leaveRequest }: Props) {
                             </div>
                             <div className="p-6">
                                 <div className="flex items-center space-x-4">
-                                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 font-bold text-xl text-primary border-2 border-primary/20 shadow-inner">
-                                        {leaveRequest.user?.first_name?.[0] || 'U'}
-                                        {leaveRequest.user?.last_name?.[0] || ''}
+                                    <div className="flex h-14 w-14 overflow-hidden items-center justify-center rounded-full shrink-0">
+                                        <img 
+                                            src={leaveRequest.user?.avatar || '/img/pfp_placeholder.png'} 
+                                            alt={`${leaveRequest.user?.first_name} ${leaveRequest.user?.last_name}`}
+                                            className="h-full w-full object-cover"
+                                        />
                                     </div>
                                     <div className="flex flex-col">
                                         <p className="text-lg font-bold text-foreground leading-tight">

@@ -50,9 +50,12 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'name' => config('app.name'),
             'auth' => [
-                'user' => $request->user(),
-                'roles' => $request->user()?->roles->pluck('name')->toArray() ?? [],
-                'permissions' => $request->user()?->getAllPermissions()->pluck('name')->toArray() ?? [],
+                'user' => $request->user() ? $request->user()->only([
+                    'id', 'employee_number', 'first_name', 'middle_name', 'last_name',
+                    'email', 'profile_photo_url', 'name', 'is_active',
+                ]) : null,
+                'roles' => fn () => $request->user()?->roles->pluck('name')->toArray() ?? [],
+                'permissions' => fn () => $request->user()?->getAllPermissions()->pluck('name')->toArray() ?? [],
                 'navigation' => array_values(array_filter($registry->getNavigation(), function ($item) use ($request) {
                     if (empty($item['permission'])) {
                         return true;

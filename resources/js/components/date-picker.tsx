@@ -1,4 +1,4 @@
-import { format, isValid, parse } from "date-fns"
+import { format, isValid, parse, addMonths, subMonths } from "date-fns"
 // Premium DatePicker Wrapper
 import { Calendar as CalendarIcon } from "lucide-react"
 import * as React from "react"
@@ -50,6 +50,7 @@ return { date: undefined, formattedStr: "" };
 
   const initialParsed = parseValueToDate(value);
   const [date, setDate] = React.useState<Date | undefined>(initialParsed.date);
+  const [displayMonth, setDisplayMonth] = React.useState<Date>(initialParsed.date || new Date());
   const [inputValue, setInputValue] = React.useState(initialParsed.formattedStr);
   const [open, setOpen] = React.useState(false);
 
@@ -57,7 +58,17 @@ return { date: undefined, formattedStr: "" };
     const parsed = parseValueToDate(value);
     setDate(parsed.date);
     setInputValue(parsed.formattedStr);
+
+    if (parsed.date) {
+        setDisplayMonth(parsed.date);
+    }
   }, [value]);
+
+  React.useEffect(() => {
+    if (open) {
+      setDisplayMonth(date || new Date());
+    }
+  }, [open, date]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -101,6 +112,34 @@ return { date: undefined, formattedStr: "" };
     setOpen(false)
   }
 
+  const scrollAccumulator = React.useRef(0);
+  const [calendarContainer, setCalendarContainer] = React.useState<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    if (!calendarContainer) {
+return;
+}
+
+    const handleNativeWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      scrollAccumulator.current += e.deltaY;
+      
+      if (Math.abs(scrollAccumulator.current) >= 50) {
+        const isUp = scrollAccumulator.current < 0;
+        setDisplayMonth(prev => isUp ? subMonths(prev, 1) : addMonths(prev, 1));
+        scrollAccumulator.current = 0;
+      }
+    };
+
+    calendarContainer.addEventListener('wheel', handleNativeWheel, { passive: false });
+
+    return () => {
+      calendarContainer.removeEventListener('wheel', handleNativeWheel);
+    };
+  }, [calendarContainer]);
+
   return (
     <div className={cn("relative w-full", className)}>
       <Input
@@ -126,12 +165,17 @@ return { date: undefined, formattedStr: "" };
             <CalendarIcon className="h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0 matte-card elev-3 rounded-2xl border-border/20 shadow-xl overflow-hidden" align="end">
-          <div className="flex flex-col">
+        <PopoverContent 
+          className="w-auto p-0 matte-card elev-3 rounded-2xl border-border/20 shadow-xl overflow-hidden" 
+          align="end"
+        >
+          <div className="flex flex-col relative overflow-hidden" ref={setCalendarContainer}>
             <Calendar
               mode="single"
               selected={date}
               onSelect={handleSelect}
+              month={displayMonth}
+              onMonthChange={setDisplayMonth}
               initialFocus
             />
             <div className="p-4 border-t border-border bg-muted/30">

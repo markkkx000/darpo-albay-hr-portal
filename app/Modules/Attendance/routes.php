@@ -10,11 +10,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/clock-out', [AttendanceController::class, 'clockOut'])->name('clock-out');
 
     // Management Routes
-    Route::prefix('manage')->name('manage.')->group(function () {
+    Route::prefix('manage')->name('manage.')->middleware('permission:attendance.logs.view')->group(function () {
         Route::get('/records', [AttendanceManagementController::class, 'index'])->name('records.index');
-        Route::post('/records', [AttendanceManagementController::class, 'store'])->name('records.store');
-        Route::put('/records/{attendance}', [AttendanceManagementController::class, 'update'])->name('records.update');
-        Route::delete('/records/{attendance}', [AttendanceManagementController::class, 'destroy'])->name('records.destroy');
-        Route::post('/records/{id}/restore', [AttendanceManagementController::class, 'restore'])->name('records.restore');
+
+        Route::middleware('permission:attendance.logs.manage')->group(function () {
+            Route::post('/records', [AttendanceManagementController::class, 'store'])->name('records.store');
+            Route::put('/records/{attendance}', [AttendanceManagementController::class, 'update'])->name('records.update');
+            Route::delete('/records/{attendance}', [AttendanceManagementController::class, 'destroy'])->name('records.destroy');
+            Route::post('/records/{id}/restore', [AttendanceManagementController::class, 'restore'])->name('records.restore');
+        });
     });
 });

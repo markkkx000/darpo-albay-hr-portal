@@ -83,7 +83,7 @@ export default function LeaveForm({
     const http = useHttp();
 
     const mounted = useSyncExternalStore(
-        () => () => {},
+        () => () => { },
         () => true,
         () => false,
     );
@@ -138,15 +138,24 @@ export default function LeaveForm({
     const previousUserId = useRef(data.user_id);
     useEffect(() => {
         if (data.user_id && data.user_id !== previousUserId.current) {
-            const selectedUser = users?.find((u: any) => u.id.toString() === data.user_id);
-
-            if (selectedUser) {
-                setData('salary', selectedUser.monthly_salary || '');
-            }
+            const route = LeaveRoutes.salary({ user: data.user_id });
+            fetch(route.url, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(res => res.json())
+                .then(json => {
+                    if (json.salary !== undefined) {
+                        setData('salary', json.salary || '');
+                    }
+                })
+                .catch(err => console.error('Failed to fetch salary:', err));
         }
 
         previousUserId.current = data.user_id;
-    }, [data.user_id, users, setData]);
+    }, [data.user_id, setData]);
 
     const previousLeaveTypeId = useRef(data.leave_type_id);
     useEffect(() => {
@@ -176,8 +185,8 @@ export default function LeaveForm({
         const year = data.start_date
             ? new Date(data.start_date).getFullYear()
             : data.date_filed
-              ? new Date(data.date_filed).getFullYear()
-              : new Date().getFullYear();
+                ? new Date(data.date_filed).getFullYear()
+                : new Date().getFullYear();
 
         const fetchKey = `${data.user_id}-${year}`;
 
@@ -215,25 +224,25 @@ export default function LeaveForm({
 
     const currentCredit = Array.isArray(userCredits)
         ? userCredits.find(
-              (c) =>
-                  c.user_id?.toString() === data.user_id &&
-                  c.leave_type_id?.toString() === data.leave_type_id,
-          )
+            (c) =>
+                c.user_id?.toString() === data.user_id &&
+                c.leave_type_id?.toString() === data.leave_type_id,
+        )
         : null;
 
     const available = useMemo(() => {
         if (!currentCredit) {
-return 0;
-}
+            return 0;
+        }
 
         let bal = parseFloat(currentCredit.balance) || 0;
-        
+
         // When editing an already approved leave, the days_with_pay were already deducted
         // from the database balance. We must add them back to get the true "available"
         // balance for this specific edit session, but only if they haven't changed the leave type.
         if (
-            isEdit && 
-            leaveRequest && 
+            isEdit &&
+            leaveRequest &&
             leaveStatuses &&
             leaveRequest.leave_type_id?.toString() === data.leave_type_id
         ) {
@@ -243,7 +252,7 @@ return 0;
                 bal += parseFloat(leaveRequest.days_with_pay) || 0;
             }
         }
-        
+
         return bal;
     }, [currentCredit, isEdit, leaveRequest, leaveStatuses, data.leave_type_id]);
     const requested = parseFloat(data.days_requested) || 0;
@@ -387,8 +396,8 @@ return 0;
         typeName.includes('sick') || typeName.includes('women')
             ? 'Specify Illness...'
             : typeName.includes('vacation')
-              ? 'Specify Location...'
-              : 'Specify details...';
+                ? 'Specify Location...'
+                : 'Specify details...';
 
     const hideSpecify = [
         'Monetization of Leave Credits',
@@ -473,7 +482,7 @@ return 0;
                             onClick={() => router.visit('/leave')}
                             className="bg-background"
                         >
-                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            <ArrowLeft className="h-4 w-4" />
                             Back to Dashboard
                         </Button>
                     }

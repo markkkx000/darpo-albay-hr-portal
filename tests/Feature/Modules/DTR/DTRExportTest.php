@@ -7,20 +7,24 @@ use App\Modules\Leave\Models\Holiday;
 use Illuminate\Database\Eloquent\Collection;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 beforeEach(function () {
-    Permission::firstOrCreate(['name' => 'dtr.manage']);
+    app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-    $this->hrAdmin = User::factory()->create();
-    $hrRole = Role::firstOrCreate(['name' => 'hr_admin']);
-    $hrRole->syncPermissions(['dtr.manage']);
-    $this->hrAdmin->assignRole($hrRole);
+    $hrRole = Role::create(['name' => 'hr_admin']);
+    Permission::create(['name' => 'dtr.manage']);
+    Permission::create(['name' => 'attendance.view']);
+    $hrRole->givePermissionTo('dtr.manage', 'attendance.view');
 
     $this->employee = User::factory()->create();
-    $this->employee->assignRole(Role::firstOrCreate(['name' => 'employee']));
+    $this->employee->givePermissionTo('attendance.view');
+
+    $this->hrAdmin = User::factory()->create();
+    $this->hrAdmin->assignRole('hr_admin');
 
     $this->otherEmployee = User::factory()->create();
-    $this->otherEmployee->assignRole(Role::firstOrCreate(['name' => 'employee']));
+    $this->otherEmployee->givePermissionTo('attendance.view');
 
     Attendance::factory()->create([
         'user_id' => $this->employee->id,

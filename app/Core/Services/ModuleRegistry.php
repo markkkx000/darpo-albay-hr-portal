@@ -33,8 +33,9 @@ class ModuleRegistry
             'Leave Tracking' => 30,
             'Personnel Directory' => 40,
             'Travel Orders' => 50,
-            'DTR Export' => 60,
-            'Roles & Permissions' => 70,
+            'Document Requests' => 60,
+            'DTR Export' => 70,
+            'Roles & Permissions' => 80,
         ];
 
         usort($this->navigation, function ($a, $b) use ($order) {

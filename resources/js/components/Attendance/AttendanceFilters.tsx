@@ -157,7 +157,6 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                                 setFromDate(val || '');
                                 updateFilters({ from_date: val || '' });
                             }}
-                            className="!pl-11"
                         />
                     </div>
                 </div>
@@ -173,7 +172,6 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                                 setToDate(val || '');
                                 updateFilters({ to_date: val || '' });
                             }}
-                            className="!pl-11"
                         />
                     </div>
                 </div>
