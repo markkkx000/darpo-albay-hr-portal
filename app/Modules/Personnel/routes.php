@@ -8,10 +8,10 @@ Route::middleware(['auth', 'permission:personnel.view'])->group(function () {
     Route::get('/', [PersonnelController::class, 'index'])->name('index');
     Route::get('/archived', [PersonnelController::class, 'archived'])->name('archived');
     Route::get('/organization', [OrganizationController::class, 'index'])->name('organization.index');
-    Route::get('/{user}', [PersonnelController::class, 'show'])->name('show');
 
     Route::middleware('permission:personnel.manage')->group(function () {
         Route::get('/create', [PersonnelController::class, 'create'])->name('create');
+        Route::post('/', [PersonnelController::class, 'store'])->name('store');
         Route::post('/', [PersonnelController::class, 'store'])->name('store');
 
         Route::post('/organization/divisions', [OrganizationController::class, 'storeDivision'])->name('organization.divisions.store');
@@ -26,6 +26,8 @@ Route::middleware(['auth', 'permission:personnel.view'])->group(function () {
         Route::delete('/{user}', [PersonnelController::class, 'destroy'])->name('destroy');
         Route::post('/{id}/restore', [PersonnelController::class, 'restore'])->name('restore');
     });
+
+    Route::get('/{user}', [PersonnelController::class, 'show'])->name('show');
 
     Route::middleware('permission:roles.manage')->group(function () {
         Route::post('/{user}/reset-password', [PersonnelController::class, 'resetPassword'])->name('reset-password');
