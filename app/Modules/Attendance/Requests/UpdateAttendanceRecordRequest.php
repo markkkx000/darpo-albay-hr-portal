@@ -8,7 +8,7 @@ class UpdateAttendanceRecordRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('attendance.logs.view');
+        return $this->user()->can('attendance.logs.manage');
     }
 
     public function rules(): array

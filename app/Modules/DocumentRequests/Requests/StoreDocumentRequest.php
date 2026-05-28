@@ -14,7 +14,7 @@ class StoreDocumentRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        $rules = [
             'user_id' => ['required', 'exists:users,id'],
             'requests' => ['required', 'array', 'min:1'],
             'requests.*' => ['required', 'string'],
@@ -23,5 +23,11 @@ class StoreDocumentRequest extends FormRequest
             'specify_documents' => ['nullable', 'string', Rule::requiredIf(fn () => in_array('Certified True Copy of Documents', $this->requests ?? []))],
             'specify_other' => ['nullable', 'string', Rule::requiredIf(fn () => in_array('Other', $this->requests ?? []))],
         ];
+
+        if (!$this->user()->can('document_requests.manage')) {
+            $rules['user_id'] = ['required', 'integer', Rule::in([$this->user()->id])];
+        }
+
+        return $rules;
     }
 }

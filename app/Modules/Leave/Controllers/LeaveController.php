@@ -12,6 +12,7 @@ use App\Modules\Leave\Requests\StoreLeaveRequest;
 use App\Modules\Leave\Requests\UpdateLeaveRequest;
 use App\Modules\Leave\Services\LeaveService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class LeaveController extends Controller
@@ -50,6 +51,11 @@ class LeaveController extends Controller
 
     public function show(LeaveRequest $leaveRequest)
     {
+        $user = request()->user();
+        if (!$user->can('leave.manage') && $leaveRequest->user_id !== $user->id) {
+            abort(403, 'Unauthorized to view this leave request.');
+        }
+
         $leaveRequest->load(['user', 'leaveType', 'leaveStatus', 'createdBy', 'approvedBy']);
 
         return Inertia::render('Modules/Leave/Show', [
@@ -174,6 +180,14 @@ class LeaveController extends Controller
         // Security check: ensure path belongs to leaves/attachments
         if (! str_contains($url, 'leaves/attachments/')) {
             return response()->json(['error' => 'Invalid attachment path.'], 403);
+        }
+
+        // Ownership check
+        if (! Auth::user()->can('leave.manage')) {
+            $leaveReq = \App\Modules\Leave\Models\LeaveRequest::whereJsonContains('attachments', $url)->first();
+            if ($leaveReq && $leaveReq->user_id !== Auth::id()) {
+                return response()->json(['error' => 'Unauthorized to delete this attachment.'], 403);
+            }
         }
 
         $deleted = $this->leaveService->deleteAttachment($url);

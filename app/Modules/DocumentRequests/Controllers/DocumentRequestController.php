@@ -70,10 +70,17 @@ class DocumentRequestController extends Controller
 
     public function create()
     {
-        $users = User::where('is_active', true)
-            ->select('id', 'first_name', 'last_name', 'employee_number')
-            ->orderBy('first_name')
-            ->get();
+        $user = Auth::user();
+        $isHr = $user->can('document_requests.manage');
+
+        if ($isHr) {
+            $users = User::where('is_active', true)
+                ->select('id', 'first_name', 'last_name', 'employee_number')
+                ->orderBy('first_name')
+                ->get();
+        } else {
+            $users = collect([$user->only(['id', 'first_name', 'last_name', 'employee_number'])]);
+        }
 
         return Inertia::render('Modules/DocumentRequests/Create', [
             'users' => $users,
@@ -193,6 +200,17 @@ class DocumentRequestController extends Controller
         $request->validate([
             'status' => ['required', 'in:Rejected,Cancelled'],
         ]);
+
+        $allowedTransitions = [
+            'Pending' => ['Cancelled', 'Rejected'],
+            'Received' => ['Cancelled', 'Rejected'],
+        ];
+
+        $currentStatus = $documentRequest->status;
+
+        if (!isset($allowedTransitions[$currentStatus]) || !in_array($request->status, $allowedTransitions[$currentStatus])) {
+            abort(400, "Cannot transition from {$currentStatus} to {$request->status}.");
+        }
 
         // Only requester can cancel their own, or HR can cancel/reject
         $isHr = Auth::user()->can('document_requests.manage');
