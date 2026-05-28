@@ -473,7 +473,7 @@ return 0;
                             onClick={() => router.visit('/leave')}
                             className="bg-background"
                         >
-                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            <ArrowLeft className="h-4 w-4" />
                             Back to Dashboard
                         </Button>
                     }

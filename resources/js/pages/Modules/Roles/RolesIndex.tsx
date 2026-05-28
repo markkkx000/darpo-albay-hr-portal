@@ -98,7 +98,7 @@ export default function RolesIndex({ roles, permissions }: Props) {
                     title="Roles & Permissions"
                     description="Manage system roles and their associated capabilities."
                     actions={
-                        <Button onClick={handleCreate} className="btn-specular gap-2 border-none px-6">
+                        <Button onClick={handleCreate} className="btn-specular border-none">
                             <Plus className="h-4 w-4" />
                             Create Role
                         </Button>

@@ -188,10 +188,9 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                     actions={
                         <Button
                             onClick={handleAddNew}
-                            size="lg"
-                            className="btn-ghost-specular border-none px-6"
+                            className="btn-ghost-specular border-none"
                         >
-                            <Plus className="mr-2 h-5 w-5" />
+                            <Plus className="h-4 w-4" />
                             Add Missing Record
                         </Button>
                     }

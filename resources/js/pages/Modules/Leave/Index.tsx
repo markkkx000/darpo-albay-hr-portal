@@ -195,10 +195,10 @@ export default function LeaveDashboard({
                             <Button
                                 asChild
                                 variant="ghost"
-                                className="btn-ghost-specular border-none px-6"
+                                className="btn-ghost-specular border-none"
                             >
                                 <Link href={LeaveRoutes.create().url}>
-                                    <Plus className="mr-2 h-4 w-4" />
+                                    <Plus className="h-4 w-4" />
                                     Encode
                                 </Link>
                             </Button>

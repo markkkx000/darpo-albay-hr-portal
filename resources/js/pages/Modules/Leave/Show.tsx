@@ -111,7 +111,7 @@ export default function LeaveShow({ leaveRequest }: Props) {
                     actions={
                         <Button variant="ghost" className="btn-ghost-specular" asChild>
                             <Link href={LeaveRoutes.index().url}>
-                                <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                                <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
                                 Back to Dashboard
                             </Link>
                         </Button>
