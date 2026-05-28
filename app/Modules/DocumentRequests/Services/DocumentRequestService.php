@@ -32,8 +32,8 @@ class DocumentRequestService
     public function deleteAttachments(array $paths): void
     {
         foreach ($paths as $path) {
-            if (Storage::disk('public')->exists($path)) {
-                Storage::disk('public')->delete($path);
+            if (Storage::exists($path)) {
+                Storage::delete($path);
             }
         }
     }
