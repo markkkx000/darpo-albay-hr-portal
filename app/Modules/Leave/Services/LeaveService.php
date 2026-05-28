@@ -271,9 +271,12 @@ class LeaveService
                 ]
             );
 
-            $credit->used += $leaveRequest->days_with_pay;
-            $credit->balance = $credit->earned - $credit->used;
-            $credit->save();
+            // Re-fetch with a lock to prevent race conditions during updates
+            $lockedCredit = LeaveCredit::where('id', $credit->id)->lockForUpdate()->first();
+
+            $lockedCredit->used += $leaveRequest->days_with_pay;
+            $lockedCredit->balance = $lockedCredit->earned - $lockedCredit->used;
+            $lockedCredit->save();
         }
     }
 
@@ -290,6 +293,7 @@ class LeaveService
             $credit = LeaveCredit::where('user_id', $leaveRequest->user_id)
                 ->where('leave_type_id', $leaveRequest->getOriginal('leave_type_id'))
                 ->where('year', $year)
+                ->lockForUpdate()
                 ->first();
 
             if ($credit) {

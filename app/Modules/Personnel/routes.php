@@ -12,7 +12,6 @@ Route::middleware(['auth', 'permission:personnel.view'])->group(function () {
     Route::middleware('permission:personnel.manage')->group(function () {
         Route::get('/create', [PersonnelController::class, 'create'])->name('create');
         Route::post('/', [PersonnelController::class, 'store'])->name('store');
-        Route::post('/', [PersonnelController::class, 'store'])->name('store');
 
         Route::post('/organization/divisions', [OrganizationController::class, 'storeDivision'])->name('organization.divisions.store');
         Route::put('/organization/divisions/{division}', [OrganizationController::class, 'updateDivision'])->name('organization.divisions.update');

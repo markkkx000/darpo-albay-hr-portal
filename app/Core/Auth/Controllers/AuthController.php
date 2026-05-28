@@ -2,6 +2,7 @@
 
 namespace App\Core\Auth\Controllers;
 
+use App\Core\Auth\Models\LoginLog;
 use App\Core\Auth\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -35,7 +36,17 @@ class AuthController extends Controller
             'is_active' => true, // Ensure account is active
         ];
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        $status = Auth::attempt($credentials, $request->boolean('remember'));
+
+        LoginLog::create([
+            'login_field' => $loginField,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'status' => $status ? 'success' : 'failed',
+            'user_id' => $status ? Auth::id() : null,
+        ]);
+
+        if ($status) {
             $request->session()->regenerate();
 
             return redirect()->intended($this->getRedirectPath());
