@@ -28,6 +28,8 @@
     - Implementation: Call `toast` within the `onSuccess` callback of Inertia `router` or `useForm` methods.
 - **Scroll Position**: Use `preserveScroll: true` in the router options for operations that shouldn't reset the page scroll, such as inline updates in a table.
 - **Form States**: Ensure submit buttons are disabled and show a loading state (e.g., `processing` from `useForm`) during form submission.
+- **Scroll Bleeding & Wheel Events**: When preventing scroll bleed (e.g., inside a custom scrolling component like a calendar), avoid using React's synthetic `onWheel` event because React 17+ attaches passive listeners to the document root, causing `e.preventDefault()` to be ignored. Instead, use a `useEffect` hook to attach a native event listener with `{ passive: false }`.
+- **Radix UI Nested Modals**: When rendering a Radix Popover (like a Select, Combobox, or Color Picker) from inside a Radix Dialog (which locks body scroll via `react-remove-scroll`), always set `modal={true}` on the `<Popover>` component. This allows the Popover to establish its own scroll lock layer so internal scrolling works correctly within its Portal.
 
 ---
 

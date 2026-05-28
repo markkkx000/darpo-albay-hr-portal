@@ -224,6 +224,16 @@ tests/
 - **Permissions**: `personnel.view` (hr_staff, hr_admin, super_admin), `personnel.manage` (hr_admin, super_admin).
 - **Integration**: On employee creation, `EmployeeService` dispatches a high-priority non-dismissible "change default password" notification via `NotificationService`.
 
+### Document Requests Module (`app/Modules/DocumentRequests/`)
+- **Purpose**: Allows employees to request official HR documents (e.g., Certificate of Employment, Service Record) and allows HR to process, generate, and release/reject these requests.
+- **Dashboard** (`Index.tsx`): Shared dashboard with role-based views. Employees see a list of their own requests and a button to create new ones. HR personnel with `document_requests.manage` see a comprehensive dashboard with unassigned, processing, and completed tabs to manage all requests across the organization.
+- **Detail View** (`Show.tsx`): A detailed view for a single request. Shows request metadata, employee info, and a dynamic timeline of the request's status (Submitted -> Processing -> Released / Rejected). Includes action buttons for HR to process, reject, and release the document.
+- **Request Flow**: Requests start as `pending`. HR can mark them as `processing`. Once ready, HR can `release` the document (generating a digital copy or marking it for physical pickup) or `reject` it with a reason.
+- **Components**: Utilizes dedicated components like `DocumentRequestTimeline` for tracking status visually, `ReleaseModal` for handling the release process, and a custom rejection dialog. Shared `Pagination.tsx` is used for lists.
+- **Service Layer**: `DocumentRequestService` manages the business logic for creating requests, updating statuses, assigning requests to HR staff, and generating document previews/PDFs.
+- **Controllers**: `DocumentRequestController` handles CRUD, status transitions, and document preview/generation.
+- **Permissions**: `document_requests.view` (all roles, access to own requests), `document_requests.manage` (HR staff/admin, access to all requests).
+
 ### Roles & Permissions Module (`app/Modules/Roles/`)
 - **Role Management** (`RolesIndex.tsx`): Dashboard to view, create, update, and delete roles. Uses a paginated table.
 - **User Role Assignment** (`UserRolesIndex.tsx`): Dashboard to view users and assign them specific roles. Includes employee search and role assignment modal.

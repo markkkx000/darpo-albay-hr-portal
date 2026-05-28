@@ -409,6 +409,12 @@
     - **Element Covered by Gradient Hover:** When the element itself is covered by the green-yellow gradient hover background, all text and icons inside it MUST be black (`text-black`) to contrast with the bright gradient.
     - **Element NOT Covered by Gradient Hover (Offset Hover):** When only a sibling container (e.g., an icon container) gets the gradient hover while the text area remains on the card background, the hovered text must transition to white (`text-white`) in dark mode, and black (`text-black`) in light mode.
 
+### Edge-Case UI Interactions & Scroll Physics
+- **Rule:** Scroll behaviors and masking effects must degrade gracefully and work predictably across edge cases.
+- **Apply:**
+  - **Fade-out Effects:** When applying a `mask-image` fade to long text (e.g., notification previews), use fixed `rem` values (e.g., `black 4.5rem, transparent 6rem`) instead of percentages. This ensures that short text (under 2-3 lines) does not unnecessarily fade out.
+  - **Scrollable Popovers (Radix UI):** When placing scrollable content inside a Radix Popover with a styling container (like `.matte-card` which uses `overflow-hidden` for border-radius), never apply `overflow-y-auto` directly to the outer container as the `hidden` rule will swallow the scrollbar. Instead, wrap the inner content in a new `<div className="overflow-y-auto">` and apply height constraints there: `style={{ maxHeight: 'calc(var(--radix-popover-content-available-height, 85vh) - 2px)' }}`.
+
 ---
 
 ## ✅ Quick-Reference Checklist
