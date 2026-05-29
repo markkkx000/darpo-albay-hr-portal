@@ -11,6 +11,8 @@ class HolidayController extends Controller
 {
     public function store(StoreHolidayRequest $request)
     {
+        $this->authorize('leave.settings.manage');
+
         Holiday::create($request->validated());
 
         return redirect()->back()->with('success', 'Holiday added successfully.');
@@ -18,6 +20,8 @@ class HolidayController extends Controller
 
     public function update(UpdateHolidayRequest $request, Holiday $holiday)
     {
+        $this->authorize('leave.settings.manage');
+
         $holiday->update($request->validated());
 
         return redirect()->back()->with('success', 'Holiday updated successfully.');
@@ -25,6 +29,8 @@ class HolidayController extends Controller
 
     public function destroy(Holiday $holiday)
     {
+        $this->authorize('leave.settings.manage');
+
         $holiday->delete();
 
         return redirect()->back()->with('success', 'Holiday deleted successfully.');

@@ -64,9 +64,10 @@ Route::middleware(['web', 'auth', 'permission:leave.view'])->group(function () {
         // Dynamic Leave Request Routes (edit/update/delete)
         Route::get('/{leaveRequest}/edit', [LeaveController::class, 'edit'])->name('edit');
         Route::put('/{leaveRequest}', [LeaveController::class, 'update'])->name('update');
-        Route::delete('/{leaveRequest}', [LeaveController::class, 'destroy'])->name('destroy');
+        Route::delete('/{leaveRequest}', [LeaveController::class, 'destroy'])->name('destroy')->withTrashed();
+        Route::post('/{leaveRequest}/restore', [LeaveController::class, 'restore'])->name('restore')->withTrashed();
     });
 
     // Parameterized routes last to avoid capturing static routes
-    Route::get('/{leaveRequest}', [LeaveController::class, 'show'])->name('show');
+    Route::get('/{leaveRequest}', [LeaveController::class, 'show'])->name('show')->withTrashed();
 });

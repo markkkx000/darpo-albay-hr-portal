@@ -92,13 +92,12 @@ class EmployeeService
                 $avatarPath = $this->storeProfilePicture($data['profile_picture']);
             }
 
-            $user = User::create([
+            $user = new User([
                 'employee_number' => $data['employee_number'],
                 'first_name' => $data['first_name'],
                 'middle_name' => $data['middle_name'] ?? null,
                 'last_name' => $data['last_name'],
                 'email' => $data['email'] ?? null,
-                'password' => Hash::make($data['password']), // Password is now provided from the form
                 'is_active' => $data['is_active'] ?? true,
                 'division_id' => $data['division_id'] ?? null,
                 'unit_id' => $data['unit_id'] ?? null,
@@ -134,6 +133,10 @@ class EmployeeService
                 'salary_step' => $data['salary_step'] ?? null,
                 'monthly_salary' => $data['monthly_salary'] ?? null,
             ]);
+
+            $user->forceFill([
+                'password' => Hash::make($data['password']),
+            ])->save();
 
             $user->assignRole('employee');
 
@@ -181,7 +184,8 @@ class EmployeeService
             if (empty($data['password'])) {
                 unset($data['password']);
             } else {
-                $data['password'] = Hash::make($data['password']);
+                $user->forceFill(['password' => Hash::make($data['password'])])->saveQuietly();
+                unset($data['password']);
             }
 
             $user->update($data);
@@ -215,9 +219,9 @@ class EmployeeService
      */
     public function resetPassword(User $user, string $newPassword): void
     {
-        $user->update([
+        $user->forceFill([
             'password' => Hash::make($newPassword),
-        ]);
+        ])->save();
 
         $this->sendDefaultPasswordNotification($user);
     }

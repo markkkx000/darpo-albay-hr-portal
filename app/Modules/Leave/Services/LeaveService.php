@@ -27,8 +27,13 @@ class LeaveService
         $leaveTypeId = $filters['leave_type_id'] ?? null;
         $statusId = $filters['status_id'] ?? null;
         $approvedById = $filters['approved_by_id'] ?? null;
+        $archived = $filters['archived'] ?? false;
 
         $query = LeaveRequest::with(['user', 'leaveType', 'leaveStatus', 'createdBy', 'approvedBy']);
+
+        if ($archived) {
+            $query->onlyTrashed();
+        }
 
         if ($viewMode === 'mine' && $user) {
             $query->where('user_id', $user->id);
@@ -133,13 +138,24 @@ class LeaveService
     }
 
     /**
-     * Delete a leave request
+     * Soft delete a leave request
      */
     public function deleteLeaveRequest(LeaveRequest $leaveRequest): void
     {
         DB::transaction(function () use ($leaveRequest) {
             $this->handleCreditRestoration($leaveRequest);
             $leaveRequest->delete();
+        });
+    }
+
+    /**
+     * Restore a soft deleted leave request
+     */
+    public function restoreLeaveRequest(LeaveRequest $leaveRequest): void
+    {
+        DB::transaction(function () use ($leaveRequest) {
+            $leaveRequest->restore();
+            $this->handleCreditDeduction($leaveRequest);
         });
     }
 

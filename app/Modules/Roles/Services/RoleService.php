@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class RoleService
 {
@@ -72,6 +73,7 @@ class RoleService
     {
         $role = Role::create(['name' => $name]);
         $role->syncPermissions($permissions);
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         return $role;
     }
@@ -102,6 +104,7 @@ class RoleService
         }
 
         $role->delete();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 
     /**

@@ -17,6 +17,8 @@ class RoleController extends Controller
 
     public function index(): Response
     {
+        $this->authorize('roles.manage');
+
         return Inertia::render('Modules/Roles/RolesIndex', [
             'roles' => Role::with('permissions')->get(),
             'permissions' => $this->service->getAllPermissions(),
@@ -25,6 +27,8 @@ class RoleController extends Controller
 
     public function store(RoleCreateRequest $request): RedirectResponse
     {
+        $this->authorize('roles.manage');
+
         $this->service->createRole($request->name, $request->permissions ?? []);
 
         return redirect()->back()->with('success', 'Role created successfully.');
@@ -32,6 +36,8 @@ class RoleController extends Controller
 
     public function update(RoleUpdateRequest $request, Role $role): RedirectResponse
     {
+        $this->authorize('roles.manage');
+
         $this->service->updateRole($role, $request->name, $request->permissions ?? []);
 
         return redirect()->back()->with('success', 'Role updated successfully.');
@@ -39,6 +45,8 @@ class RoleController extends Controller
 
     public function destroy(Role $role): RedirectResponse
     {
+        $this->authorize('roles.manage');
+
         try {
             $this->service->deleteRole($role);
 

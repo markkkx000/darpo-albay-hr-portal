@@ -10,4 +10,5 @@ Artisan::command('inspire', function () {
 
 Schedule::command('notifications:prune')->daily();
 Schedule::command('leave:cleanup-attachments')->daily();
+Schedule::command('document-requests:cleanup-attachments')->daily();
 Schedule::command('activitylog:clean')->daily();
