@@ -315,17 +315,13 @@ This is **infrastructure, not a feature module**. It is a hybrid: the dispatch/m
 
 ---
 
-## UI Conventions
-- **Fluid layouts** (`w-full`) for module indexes and data-heavy tables — avoid restrictive `max-w-*` containers for these views.
-- **Debounced search**: 500ms debounce + instant Enter key trigger across all search inputs.
-- **Pagination**: Always use the shared `Pagination.tsx` component with `meta` prop for "Showing X to Y of Z" info.
-- **Employee Search**: Use the shared `EmployeeSearch.tsx` component for employee selection/filtering with autocomplete.
-- **Error display**: Use `alert-error.tsx` for alert-style error banners and `input-error.tsx` for inline form field errors.
-- **Icons**: Always use `lucide-react`. For dynamic icon rendering from strings, use `dynamic-icon.tsx`.
-- **Management buttons**: Module management actions (e.g., "Manage Announcements", "Attendance Management") are rendered as in-module buttons (top-right of the module page), not as sidebar entries. They are gated by appropriate permissions (e.g., `announcements.manage`, `attendance.logs.manage`).
-- **Inertia History Management**: For subpage forms (like `Create`/`Edit` pages), append `router.clearHistory()` to the `onSuccess` callback of mutations. This ensures that when a user navigates back to the main list via the browser's "Back" button, Inertia forces a fresh data fetch rather than loading a stale cache. This eliminates the need for manual page refreshes while preserving the expected redirection flows.
-- **Toast Notifications**: Use `sonner` for immediate visual feedback after successful data-modifying operations (POST, PUT, DELETE). Use `toast.success('Message')` within the `onSuccess` callback.
-- **Required Fields**: Visually highlight mandatory inputs with a red asterisk (*) beside the label.
-- **Interactive Counters**: For simple numeric increments, use `+` and `-` button pairs with a **500ms debounce** to batch updates and prevent server-side race conditions or excessive load.
-- **UI State Persistence**: Use `localStorage` to persist non-critical UI preferences, such as table column visibility, across browser reloads.
-- **Card Styling**: Use `matte-card elev-2` classes for card containers throughout modules.
+---
+
+## Security Audit & Deployment Checklist
+Based on a recent security audit, the following pending items MUST be addressed before or during production deployment:
+- **Server-Side Sanitization**: Tiptap `content` is currently stored as raw HTML (e.g., Announcements). A server-side HTML Purifier (like `mews/purifier`) must be installed and applied to prevent stored XSS.
+- **HTTP Security Headers**: A middleware (e.g., `SecurityHeaders.php`) must be added to enforce `X-Frame-Options`, `X-Content-Type-Options`, `Strict-Transport-Security`, and `Referrer-Policy`.
+- **Session Security**: `SESSION_SECURE_COOKIE=true` must be explicitly defined in the production `.env`.
+- **Production Cache Scripting**: Ensure deployment scripts explicitly run `php artisan config:cache`, `route:cache`, `view:cache`, `event:cache`, and `permission:cache-reset`.
+- **Mass Assignment Refactor**: Remove `password` from the `User` model's `#[Fillable]` attribute; explicitly use `$user->forceFill(['password' => ...])` in services.
+- **Data Isolation**: HR modules do not currently enforce cross-division scoping (i.e. division heads or HR staff seeing only their own division). Confirm business requirements and implement scoping if necessary.
