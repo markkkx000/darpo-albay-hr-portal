@@ -20,6 +20,7 @@ use Spatie\Activitylog\Support\LogOptions;
     'specify_documents',
     'specify_other',
     'status',
+    'status_reason',
     'received_by',
     'released_to',
     'released_at',
