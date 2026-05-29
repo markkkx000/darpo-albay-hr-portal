@@ -470,7 +470,7 @@ export default function LeaveForm({
             <Head
                 title={isEdit ? 'Edit Leave Request' : 'Encode Leave Request'}
             />
-            <div className="mx-auto w-full max-w-4xl p-4 md:p-6">
+            <div className="mx-auto w-full max-w-4xl p-4">
                 <PageHeader
                     title={
                         isEdit ? 'Edit Leave Request' : 'Encode Leave Request'

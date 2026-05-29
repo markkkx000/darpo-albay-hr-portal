@@ -9,8 +9,18 @@ import {
     Archive,
     RotateCcw,
 } from 'lucide-react';
+import { useState } from 'react';
 import PageHeader from '@/components/page-header';
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+    DialogClose,
+} from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import LeaveRoutes from '@/routes/leave';
 
@@ -103,22 +113,45 @@ export default function LeaveShow({ leaveRequest }: Props) {
     const { auth } = usePage<any>().props;
     const canEncode = auth.permissions.includes('leave.manage');
 
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [confirmConfig, setConfirmConfig] = useState<{
+        title: string;
+        description: string;
+        confirmText?: string;
+        isDestructive?: boolean;
+        onConfirm: () => void;
+    } | null>(null);
+
     const handleArchive = () => {
-        if (confirm('Are you sure you want to archive this leave request?')) {
-            router.delete(LeaveRoutes.destroy({ leaveRequest: leaveRequest.id }).url);
-        }
+        setConfirmConfig({
+            title: 'Archive Leave Request',
+            description: 'Are you sure you want to archive this leave request?',
+            confirmText: 'Archive',
+            isDestructive: true,
+            onConfirm: () => {
+                router.delete(LeaveRoutes.destroy({ leaveRequest: leaveRequest.id }).url);
+            },
+        });
+        setConfirmOpen(true);
     };
 
     const handleRestore = () => {
-        if (confirm('Are you sure you want to restore this leave request?')) {
-            router.post(LeaveRoutes.restore({ leaveRequest: leaveRequest.id }).url);
-        }
+        setConfirmConfig({
+            title: 'Restore Leave Request',
+            description: 'Are you sure you want to restore this leave request?',
+            confirmText: 'Restore',
+            isDestructive: false,
+            onConfirm: () => {
+                router.post(LeaveRoutes.restore({ leaveRequest: leaveRequest.id }).url);
+            },
+        });
+        setConfirmOpen(true);
     };
 
     return (
         <>
             <Head title={`Leave Details - ${leaveRequest.user?.last_name}`} />
-            <div className="relative mx-auto w-full max-w-4xl p-4 md:p-8">
+            <div className="relative mx-auto w-full max-w-4xl p-4">
                 {/* Visual Depth Component */}
                 <div className="mesh-halo pointer-events-none" />
 
@@ -626,6 +659,43 @@ export default function LeaveShow({ leaveRequest }: Props) {
                     </div>
                 </div>
             </div>
+            
+            <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+                <DialogContent className="matte-card !fixed max-w-md rounded-2xl border border-border-2 p-6">
+                    <DialogHeader>
+                        <DialogTitle className="t-headline">
+                            {confirmConfig?.title}
+                        </DialogTitle>
+                        <DialogDescription className="text-sm text-muted-foreground">
+                            {confirmConfig?.description}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="mt-4 flex justify-end gap-2">
+                        <DialogClose asChild>
+                            <Button
+                                variant="ghost"
+                                className="btn-ghost-specular border-none"
+                            >
+                                Cancel
+                            </Button>
+                        </DialogClose>
+                        <Button
+                            className={cn(
+                                'border-none px-5',
+                                confirmConfig?.isDestructive
+                                    ? 'btn-danger-specular'
+                                    : 'btn-specular',
+                            )}
+                            onClick={() => {
+                                confirmConfig?.onConfirm();
+                                setConfirmOpen(false);
+                            }}
+                        >
+                            {confirmConfig?.confirmText || 'Confirm'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

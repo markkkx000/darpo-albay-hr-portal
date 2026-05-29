@@ -461,7 +461,7 @@ return;
     return (
         <>
             <Head title="Leave Settings" />
-            <div className="w-full p-4 md:p-6">
+            <div className="w-full p-4">
                 <PageHeader
                     title="Leave Settings"
                     description="Manage holidays, leave types, and leave statuses."

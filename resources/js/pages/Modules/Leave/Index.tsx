@@ -1,11 +1,20 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Plus, CalendarX } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { ViewActionButton, EditActionButton } from '@/components/ActionButtons';
+import { ViewActionButton, EditActionButton, ArchiveActionButton, RestoreActionButton } from '@/components/ActionButtons';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import PageHeader from '@/components/page-header';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+    DialogClose,
+} from '@/components/ui/dialog';
 import {
     Select,
     SelectContent,
@@ -108,14 +117,23 @@ export default function LeaveDashboard({
     const canEncode = auth.permissions.includes('leave.manage');
 
     const [search, setSearch] = useState(filters?.search || '');
-    const [viewMode, setViewMode] = useState(filters?.view || 'mine');
+    const [viewMode, setViewMode] = useState(filters?.view || (canEncode ? 'all' : 'mine'));
     const [sort, setSort] = useState(filters?.sort || 'desc');
     const [leaveType, setLeaveType] = useState(filters?.leave_type_id || 'all');
     const [status, setStatus] = useState(filters?.status_id || 'all');
     const [approvedBy, setApprovedBy] = useState(filters?.approved_by_id || '');
-    const [archived, setArchived] = useState(filters?.archived || false);
+    const [archived, setArchived] = useState(filters?.archived === true);
 
-    const debouncedSearch = useDebounce(search, 500);
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [confirmConfig, setConfirmConfig] = useState<{
+        title: string;
+        description: string;
+        confirmText?: string;
+        isDestructive?: boolean;
+        onConfirm: () => void;
+    } | null>(null);
+
+    const debouncedSearch = useDebounce(search, 300);
 
     useEffect(() => {
         // Prevent initial mount request if params match
@@ -125,7 +143,9 @@ export default function LeaveDashboard({
             params.search = debouncedSearch;
         }
 
-        if (viewMode !== 'mine') {
+        const defaultView = canEncode ? 'all' : 'mine';
+
+        if (viewMode !== defaultView) {
             params.view = viewMode;
         }
 
@@ -152,7 +172,7 @@ export default function LeaveDashboard({
         // Check if anything actually changed from current filters
         const hasChanged =
             params.search !== filters?.search ||
-            (params.view || 'mine') !== (filters?.view || 'mine') ||
+            (params.view || defaultView) !== (filters?.view || defaultView) ||
             (params.sort || 'desc') !== (filters?.sort || 'desc') ||
             (params.leave_type_id || 'all') !==
                 (filters?.leave_type_id || 'all') ||
@@ -174,6 +194,7 @@ export default function LeaveDashboard({
         status,
         approvedBy,
         archived,
+        canEncode,
         filters?.search,
         filters?.view,
         filters?.sort,
@@ -191,6 +212,32 @@ export default function LeaveDashboard({
         const date = new Date(dateString);
 
         return date.toLocaleDateString('en-US', { timeZone: 'Asia/Manila' });
+    };
+
+    const handleArchive = (id: number) => {
+        setConfirmConfig({
+            title: 'Archive Leave Request',
+            description: 'Are you sure you want to archive this leave request?',
+            confirmText: 'Archive',
+            isDestructive: true,
+            onConfirm: () => {
+                router.delete(LeaveRoutes.destroy({ leaveRequest: id }).url);
+            },
+        });
+        setConfirmOpen(true);
+    };
+
+    const handleRestore = (id: number) => {
+        setConfirmConfig({
+            title: 'Restore Leave Request',
+            description: 'Are you sure you want to restore this leave request?',
+            confirmText: 'Restore',
+            isDestructive: false,
+            onConfirm: () => {
+                router.post(LeaveRoutes.restore({ leaveRequest: id }).url);
+            },
+        });
+        setConfirmOpen(true);
     };
 
     return (
@@ -560,6 +607,18 @@ export default function LeaveDashboard({
                                                             title="Edit Request"
                                                         />
                                                     )}
+                                                    {canEncode && !leave.deleted_at && (
+                                                        <ArchiveActionButton
+                                                            onClick={() => handleArchive(leave.id)}
+                                                            title="Archive Request"
+                                                        />
+                                                    )}
+                                                    {canEncode && leave.deleted_at && (
+                                                        <RestoreActionButton
+                                                            onClick={() => handleRestore(leave.id)}
+                                                            title="Restore Request"
+                                                        />
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>
@@ -593,6 +652,43 @@ export default function LeaveDashboard({
                     </div>
                 </div>
             </div>
+
+            <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+                <DialogContent className="matte-card !fixed max-w-md rounded-2xl border border-border-2 p-6">
+                    <DialogHeader>
+                        <DialogTitle className="t-headline">
+                            {confirmConfig?.title}
+                        </DialogTitle>
+                        <DialogDescription className="text-sm text-muted-foreground">
+                            {confirmConfig?.description}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="mt-4 flex justify-end gap-2">
+                        <DialogClose asChild>
+                            <Button
+                                variant="ghost"
+                                className="btn-ghost-specular border-none"
+                            >
+                                Cancel
+                            </Button>
+                        </DialogClose>
+                        <Button
+                            className={cn(
+                                'border-none px-5',
+                                confirmConfig?.isDestructive
+                                    ? 'btn-danger-specular'
+                                    : 'btn-specular',
+                            )}
+                            onClick={() => {
+                                confirmConfig?.onConfirm();
+                                setConfirmOpen(false);
+                            }}
+                        >
+                            {confirmConfig?.confirmText || 'Confirm'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

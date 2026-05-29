@@ -22,7 +22,7 @@ class LeaveController extends Controller
     public function index(Request $request)
     {
         $canEncode = $request->user()->can('leave.manage');
-        $viewMode = $request->input('view', 'mine');
+        $viewMode = $request->input('view', $canEncode ? 'all' : 'mine');
 
         // Force 'mine' view if user cannot encode
         if (! $canEncode) {

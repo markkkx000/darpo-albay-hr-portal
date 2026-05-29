@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Edit, Eye, Trash2, RotateCcw } from 'lucide-react';
+import { Edit, Eye, Trash2, RotateCcw, Archive } from 'lucide-react';
 import type { ComponentType } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -50,4 +50,8 @@ export const DeleteActionButton = (props: ActionButtonProps) => (
 
 export const RestoreActionButton = (props: ActionButtonProps) => (
     <ActionButton {...props} icon={RotateCcw} className="btn-ghost-specular border-none rounded-full hover:scale-110 transition-transform" />
+);
+
+export const ArchiveActionButton = (props: ActionButtonProps) => (
+    <ActionButton {...props} icon={Archive} variant="ghost-destructive" className="btn-ghost-danger-specular border-none rounded-full hover:scale-110 transition-transform" />
 );
