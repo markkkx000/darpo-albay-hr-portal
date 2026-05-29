@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
 import {
     ArrowLeft,
     Calendar,
@@ -6,6 +6,8 @@ import {
     FileText,
     CheckCircle,
     Clock,
+    Archive,
+    RotateCcw,
 } from 'lucide-react';
 import PageHeader from '@/components/page-header';
 import { Button } from '@/components/ui/button';
@@ -65,7 +67,7 @@ interface LeaveRequest {
     has_attachments: boolean;
     supporting_documents: string[];
     maternity_allocation_details?: string | null;
-
+    deleted_at?: string | null;
 }
 
 interface Props {
@@ -98,6 +100,21 @@ export default function LeaveShow({ leaveRequest }: Props) {
         Number(leaveRequest.days_requested) < 1.0 &&
         leaveRequest.start_date === leaveRequest.end_date;
 
+    const { auth } = usePage<any>().props;
+    const canEncode = auth.permissions.includes('leave.manage');
+
+    const handleArchive = () => {
+        if (confirm('Are you sure you want to archive this leave request?')) {
+            router.delete(LeaveRoutes.destroy({ leaveRequest: leaveRequest.id }).url);
+        }
+    };
+
+    const handleRestore = () => {
+        if (confirm('Are you sure you want to restore this leave request?')) {
+            router.post(LeaveRoutes.restore({ leaveRequest: leaveRequest.id }).url);
+        }
+    };
+
     return (
         <>
             <Head title={`Leave Details - ${leaveRequest.user?.last_name}`} />
@@ -109,14 +126,38 @@ export default function LeaveShow({ leaveRequest }: Props) {
                     title="Leave Details"
                     description="Archival record of the employee's application, including leave credit certification and authorization timeline."
                     actions={
-                        <Button variant="ghost" className="btn-ghost-specular" asChild>
-                            <Link href={LeaveRoutes.index().url}>
-                                <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-                                Back to Dashboard
-                            </Link>
-                        </Button>
+                        <div className="flex gap-2">
+                            {canEncode && !leaveRequest.deleted_at && (
+                                <Button variant="destructive" className="bg-destructive/10 text-destructive hover:bg-destructive/20 shadow-none" onClick={handleArchive}>
+                                    <Archive className="h-4 w-4 mr-2" />
+                                    Archive
+                                </Button>
+                            )}
+                            {canEncode && leaveRequest.deleted_at && (
+                                <Button variant="secondary" className="bg-green-500/10 text-green-600 hover:bg-green-500/20 shadow-none" onClick={handleRestore}>
+                                    <RotateCcw className="h-4 w-4 mr-2" />
+                                    Restore
+                                </Button>
+                            )}
+                            <Button variant="ghost" className="btn-ghost-specular" asChild>
+                                <Link href={LeaveRoutes.index().url}>
+                                    <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                                    Back to Dashboard
+                                </Link>
+                            </Button>
+                        </div>
                     }
                 />
+
+                {leaveRequest.deleted_at && (
+                    <div className="relative z-10 mb-6 rounded-xl border border-destructive/20 bg-destructive/5 p-4 flex items-center gap-3 text-destructive">
+                        <Archive className="h-5 w-5" />
+                        <div>
+                            <h3 className="font-bold">Archived Record</h3>
+                            <p className="text-sm opacity-80">This leave request has been archived and is no longer active.</p>
+                        </div>
+                    </div>
+                )}
 
                 <div className="relative z-10 grid grid-cols-1 gap-6 md:grid-cols-3">
                     {/* Main Content */}

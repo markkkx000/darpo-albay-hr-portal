@@ -48,6 +48,7 @@ interface LeaveRequest {
     date_approved?: string | null;
     approved_by?: User | null;
     created_by?: User;
+    deleted_at?: string | null;
 }
 
 interface PaginatedLeaves {
@@ -67,6 +68,7 @@ interface Filters {
     leave_type_id?: string;
     status_id?: string;
     approved_by_id?: string;
+    archived?: boolean;
 }
 
 interface Props {
@@ -111,6 +113,7 @@ export default function LeaveDashboard({
     const [leaveType, setLeaveType] = useState(filters?.leave_type_id || 'all');
     const [status, setStatus] = useState(filters?.status_id || 'all');
     const [approvedBy, setApprovedBy] = useState(filters?.approved_by_id || '');
+    const [archived, setArchived] = useState(filters?.archived || false);
 
     const debouncedSearch = useDebounce(search, 500);
 
@@ -142,6 +145,10 @@ export default function LeaveDashboard({
             params.approved_by_id = approvedBy;
         }
 
+        if (archived) {
+            params.archived = true;
+        }
+
         // Check if anything actually changed from current filters
         const hasChanged =
             params.search !== filters?.search ||
@@ -150,7 +157,8 @@ export default function LeaveDashboard({
             (params.leave_type_id || 'all') !==
                 (filters?.leave_type_id || 'all') ||
             (params.status_id || 'all') !== (filters?.status_id || 'all') ||
-            params.approved_by_id !== filters?.approved_by_id;
+            params.approved_by_id !== filters?.approved_by_id ||
+            (params.archived || false) !== (filters?.archived || false);
 
         if (hasChanged) {
             router.get(LeaveRoutes.index().url, params, {
@@ -165,12 +173,14 @@ export default function LeaveDashboard({
         leaveType,
         status,
         approvedBy,
+        archived,
         filters?.search,
         filters?.view,
         filters?.sort,
         filters?.leave_type_id,
         filters?.status_id,
         filters?.approved_by_id,
+        filters?.archived,
     ]);
 
     const formatDate = (dateString: string | undefined | null) => {
@@ -242,6 +252,20 @@ export default function LeaveDashboard({
                                     My Leave History
                                 </div>
                             )}
+
+                            <div className="flex items-center space-x-1 rounded-full border border-border-1 bg-surface-2 p-1">
+                                <button
+                                    onClick={() => setArchived(!archived)}
+                                    className={cn(
+                                        'rounded-full px-4 py-1.5 text-sm font-bold transition-all',
+                                        archived
+                                            ? 'bg-destructive/10 text-destructive'
+                                            : 'text-muted-foreground hover:text-foreground',
+                                    )}
+                                >
+                                    {archived ? 'Hide Archived' : 'Show Archived'}
+                                </button>
+                            </div>
 
                             {/* Filters Container */}
                             <div className="flex w-full flex-1 flex-wrap items-center gap-2 md:justify-end">
@@ -399,6 +423,11 @@ export default function LeaveDashboard({
                                             <td className="p-4 align-middle font-medium">
                                                 {leave.user?.first_name}{' '}
                                                 {leave.user?.last_name}
+                                                {leave.deleted_at && (
+                                                    <span className="ml-2 inline-flex items-center rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-bold text-destructive uppercase">
+                                                        Archived
+                                                    </span>
+                                                )}
                                                 <div className="text-xs text-muted-foreground">
                                                     {
                                                         leave.user
