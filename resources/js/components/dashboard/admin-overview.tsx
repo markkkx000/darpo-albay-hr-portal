@@ -40,7 +40,7 @@ export function AdminOverview({ data }: { data: any }) {
                         ) : (
                             <div className="space-y-4 overflow-y-auto max-h-[350px] pr-2">
                                 {stats.recentActivity.map((activity: any) => (
-                                    <div key={activity.id} className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/30 transition-colors">
+                                    <div key={activity.id} className="flex items-start gap-4 p-3 rounded-lg">
                                         <div className="p-2 rounded-full bg-primary/10 text-primary">
                                             {activity.type === 'user_registered' ? (
                                                 <UserPlus className="h-4 w-4" />

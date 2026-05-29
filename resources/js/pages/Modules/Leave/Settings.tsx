@@ -485,11 +485,7 @@ return;
                                         <motion.div
                                             layoutId="settings-active-pill"
                                             className="sidebar-active-gradient pointer-events-none absolute inset-0 rounded-xl"
-                                            transition={{
-                                                type: 'spring',
-                                                stiffness: 400,
-                                                damping: 30,
-                                            }}
+                                            transition={{ duration: 0.2, ease: 'easeOut' }}
                                         />
                                     )}
                                     <button

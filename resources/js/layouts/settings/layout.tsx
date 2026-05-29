@@ -62,7 +62,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                         <motion.div 
                                             layoutId="settings-active"
                                             className="sidebar-active-gradient absolute inset-0 rounded-2xl"
-                                            transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
+                                            transition={{ duration: 0.2, ease: 'easeOut' }}
                                         />
                                     )}
                                     <span className="relative z-10 flex items-center">

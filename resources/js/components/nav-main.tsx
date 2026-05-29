@@ -12,7 +12,7 @@ import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn } from '@/lib/utils';
 import type { NavItem } from '@/types';
 
-const SPRING = { type: 'spring', bounce: 0.15, duration: 0.4 } as const;
+
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
     const { isCurrentOrParentUrl } = useCurrentUrl();
@@ -39,7 +39,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 <motion.div
                                     layoutId="sidebar-active-pill"
                                     className="sidebar-active-gradient pointer-events-none absolute inset-0 rounded-xl"
-                                    transition={SPRING}
+                                    transition={{ duration: 0.2, ease: 'easeOut' }}
                                 />
                             )}
 

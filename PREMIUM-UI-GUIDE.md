@@ -83,8 +83,7 @@ Green is the primary action color. Yellow is the accent. Both appear on interact
   --r-xl:  20px;
   --r-2xl: 28px;
 
-  /* ── Spring easing ── */
-  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* ── Easing ── */
   --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
 }
 ```
@@ -195,202 +194,80 @@ Grain overlays at 3–8% opacity eliminate the "flat digital" feeling on dark ca
 
 ---
 
-### Technique 02 — Specular Highlights & Physical Lighting
+### Technique 02 — Specular Highlights & Physical Lighting (Tailwind Edition)
 
-Simulate a single top light source with an inset top-edge highlight + layered box-shadows. This is what makes Apple's buttons feel physical and pressable.
+Simulate a single top light source with an inset top-edge highlight. **Avoid raw CSS files. Use pure Tailwind utility classes.** For complex multi-layered shadows on Hero CTAs, use arbitrary values inline or extract them to a Tailwind plugin.
 
-```css
-/* Green specular button */
-.btn-specular {
-  padding: 14px 32px;
-  border-radius: var(--r-md);
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  color: #fff;
-  position: relative;
-  overflow: hidden;
-
-  background: linear-gradient(180deg, #28d464 0%, var(--green-600) 100%);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.22) inset,   /* top specular edge */
-    0 -1px 0 rgba(0, 40, 0, 0.25) inset,        /* bottom shadow edge */
-    0 8px 32px var(--green-glow),                /* ambient glow */
-    0 1px 3px rgba(0, 0, 0, 0.5);               /* contact shadow */
-  transition: all 0.2s var(--ease-out);
-  min-height: 44px;
-}
-
-/* Top-half sheen (single light source simulation) */
-.btn-specular::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 50%;
-  background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 100%);
-  border-radius: var(--r-md) var(--r-md) 40% 40%;
-  pointer-events: none;
-}
-
-.btn-specular:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.28) inset,
-    0 -1px 0 rgba(0, 40, 0, 0.25) inset,
-    0 12px 40px var(--green-glow),
-    0 2px 6px rgba(0, 0, 0, 0.5);
-}
-
-.btn-specular:active {
-  transform: translateY(1px);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.10) inset,
-    0 -1px 0 rgba(0, 40, 0, 0.40) inset,
-    0 4px 16px rgba(34, 197, 94, 0.20);
-}
-
-/* Yellow variant */
-.btn-specular-yellow {
-  background: linear-gradient(180deg, #fde047 0%, var(--yellow-500) 100%);
-  color: #1a1a1a;
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.30) inset,
-    0 -1px 0 rgba(80, 50, 0, 0.20) inset,
-    0 8px 32px var(--yellow-glow),
-    0 1px 3px rgba(0, 0, 0, 0.4);
-}
+```tsx
+{/* Green specular button using Tailwind utilities */}
+<button className="relative overflow-hidden px-8 py-3 rounded-xl font-semibold text-white bg-gradient-to-b from-green-400 to-green-600 transition-transform transition-shadow duration-200 ease-out hover:-translate-y-px active:translate-y-px shadow-[inset_0_1px_0_rgba(255,255,255,0.22),_inset_0_-1px_0_rgba(0,40,0,0.25),_0_8px_32px_rgba(34,197,94,0.35),_0_1px_3px_rgba(0,0,0,0.5)]">
+  
+  {/* Top-half sheen pseudo-element equivalent */}
+  <div className="absolute top-0 inset-x-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent rounded-t-xl rounded-b-[40%] pointer-events-none"></div>
+  
+  <span className="relative z-10">Proceed to Checkout</span>
+</button>
 ```
 
 **When to use:** Primary CTAs, important action buttons, hero buttons.
 
 **Rules:**
-- Always use a vertical gradient on the button background (lighter top, darker bottom)
-- Always include the `::before` top-half sheen pseudo-element
-- Layer exactly 3–4 box-shadows: inset-top + inset-bottom + ambient glow + contact shadow
-- `:active` must compress the glow and push the element down
+- Use pure Tailwind utility classes. Do not create `.btn-specular` custom CSS.
+- Layer exactly 3-4 shadows ONLY for this specific primary Hero button. Standard buttons use `shadow-md`.
+- Include the absolute positioned inner `div` for the top sheen.
 
 ---
 
-### Technique 03 — Progressive Elevation System
+### Technique 03 — Progressive Elevation System (Tailwind Edition)
 
-Strictly brighter fill + heavier shadow = higher altitude. Define 4 levels and never deviate. Hover adds exactly one elevation level.
+Use Tailwind's native neutral scale and shadow utilities to define elevation, rather than custom CSS variables.
 
-```css
-/* Level 1 — Base / background items */
-.elev-1 {
-  background: var(--surface-1);   /* #111111 */
-  border: 1px solid var(--border-1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
+```tsx
+{/* Level 1 — Base / background items */}
+<div className="bg-neutral-900 border border-white/5 shadow-sm">
 
-/* Level 2 — Standard cards */
-.elev-2 {
-  background: var(--surface-2);   /* #161616 */
-  border: 1px solid var(--border-2);
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.4),
-    0 1px 3px rgba(0, 0, 0, 0.3);
-}
+{/* Level 2 — Standard cards */}
+<div className="bg-neutral-800 border border-white/10 shadow-md transition-colors transition-shadow duration-200 ease-out hover:bg-neutral-700 hover:shadow-lg">
 
-/* Level 3 — Modal / popover */
-.elev-3 {
-  background: var(--surface-3);   /* #1e1e1e */
-  border: 1px solid var(--border-3);
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.5),
-    0 2px 8px rgba(0, 0, 0, 0.3),
-    0 1px 2px rgba(0, 0, 0, 0.4);
-}
+{/* Level 3 — Modal / popover */}
+<div className="bg-neutral-800 border border-white/15 shadow-xl">
 
-/* Level 4 — Tooltip / highest */
-.elev-4 {
-  background: var(--surface-4);   /* #252525 */
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow:
-    0 16px 48px rgba(0, 0, 0, 0.6),
-    0 4px 16px rgba(0, 0, 0, 0.4),
-    0 1px 3px rgba(0, 0, 0, 0.5);
-}
-
-/* Hover rule: always +1 elevation level */
-.elev-1:hover { background: var(--surface-2); box-shadow: 0 4px 12px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3); }
-.elev-2:hover { background: var(--surface-3); box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3); }
+{/* Level 4 — Tooltip / highest */}
+<div className="bg-neutral-700 border border-white/20 shadow-2xl">
 ```
 
-**When to use:** Every component — this is the structural backbone, not optional.
+**When to use:** Every component — this is the structural backbone.
 
 **Rules:**
-- The 4 levels are the only fill values — no one-off background colors
-- Shadow must always be multi-layered (see Rule 01 below)
-- Hover always elevates by exactly one level, never two
-- Border opacity increases with elevation (0.05 → 0.08 → 0.12 → 0.14)
+- Use standard Tailwind `shadow-sm`, `shadow-md`, `shadow-xl`, `shadow-2xl` scales.
+- **Do NOT apply universal hover states to cards.** Cards must remain perfectly static by default to avoid false affordance. Only add hover states (e.g., `hover:bg-neutral-700 hover:shadow-lg`) if the card is explicitly actionable (like a link).
+- Avoid custom rgba borders. Use Tailwind's `border-white/10` opacity modifiers.
 
 ---
 
-### Technique 04 — Animated Mesh Gradients
+### Technique 04 — Static Radial Gradients (Performance Optimized)
 
-Multiple color blobs blurred together create ambient, "alive" depth — the premium alternative to glassmorphism's background-color-stealing trick.
+Multiple color blobs blended together create ambient depth. **Crucially, we use static radial gradients instead of animated CSS blurs (`filter: blur`) to maintain 60fps performance and zero GPU bloat.**
 
-```css
-.mesh-container {
-  position: relative;
-  overflow: hidden;
-  background: #0d0d0d;
-  border: 1px solid var(--border-2);
-  border-radius: var(--r-xl);
-}
-
-.mesh-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(40px);
-  animation: blobFloat 8s ease-in-out infinite;
-  pointer-events: none;
-}
-
-/* Green & yellow brand blobs */
-.mesh-blob-1 {
-  width: 200px; height: 200px;
-  background: rgba(34, 197, 94, 0.35);   /* green */
-  top: -40px; left: -40px;
-  animation-delay: 0s;
-}
-.mesh-blob-2 {
-  width: 160px; height: 160px;
-  background: rgba(250, 204, 21, 0.25);  /* yellow */
-  bottom: -30px; right: -30px;
-  animation-delay: -3s;
-}
-.mesh-blob-3 {
-  width: 120px; height: 120px;
-  background: rgba(22, 163, 74, 0.20);   /* deep green */
-  bottom: 20%; left: 35%;
-  animation-delay: -5s;
-}
-
-@keyframes blobFloat {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%       { transform: translate(10px, -10px) scale(1.08); }
-  66%       { transform: translate(-8px, 6px) scale(0.95); }
-}
-
-/* Content sits above blobs */
-.mesh-content {
-  position: relative;
-  z-index: 1;
-}
+```tsx
+<div className="relative overflow-hidden bg-neutral-900 border border-white/10 rounded-xl">
+  {/* Green blob */}
+  <div className="absolute -top-10 -left-10 w-48 h-48 rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(34,197,94,0.15)_0%,_transparent_70%)] pointer-events-none"></div>
+  {/* Yellow blob */}
+  <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(250,204,21,0.12)_0%,_transparent_70%)] pointer-events-none"></div>
+  
+  <div className="relative z-10 p-6">
+    Content sits above blobs
+  </div>
+</div>
 ```
 
 **When to use:** Hero section background, feature section backdrop, section dividers.
 
 **Rules:**
-- Animation duration: `6s`–`12s` — slow enough to be ambient, not distracting
-- Blur radius: `30px`–`60px` — blobs must never have visible edges
-- Maximum 3 blobs per container
-- Blob opacity: `0.20`–`0.40` — felt, not seen
-- Always wrap `@keyframes` in `@media (prefers-reduced-motion: no-preference)`
+- Do not use `filter: blur()`. Use Tailwind arbitrary values for `radial-gradient`.
+- Blob opacity: `0.10`–`0.20` — felt, not seen.
+- Keep them static. No animations.
 
 ---
 
@@ -466,58 +343,28 @@ Apple's type hierarchy is mathematically rigorous. This is the component that ca
 
 ---
 
-### Technique 06 — Spring Physics & Haptic-Feel Interactions
+### Technique 06 — Efficient Transitions & Ease-Out
 
-`cubic-bezier(0.34, 1.56, 0.64, 1)` produces a slight overshoot that makes transitions feel physical. Use it for toggles, cards, icons, and button presses.
+Transitions should feel snappy and responsive. **Never use `transition-all`.** Explicitly define the properties that are transitioning to prevent browser reflows and layout recalculations. Always use Tailwind's native `ease-out` instead of heavy custom spring curves.
 
-```css
-/* The spring curve — store as a variable */
-:root { --spring: cubic-bezier(0.34, 1.56, 0.64, 1); }
+```tsx
+{/* ❌ Anti-pattern: transition-all and custom heavy curves */}
+<button className="transition-all duration-300...">
 
-/* iOS toggle — exact Apple proportions */
-.toggle {
-  width: 52px;
-  height: 30px;
-  background: #333333;
-  border-radius: 100px;
-  position: relative;
-  cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  transition: background 0.3s var(--spring);
-}
-
-.toggle.is-on { background: var(--green-500); }
-
-.toggle::after {
-  content: '';
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  background: #ffffff;
-  border-radius: 50%;
-  top: 2px;
-  left: 2px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.25);
-  transition: transform 0.3s var(--spring);
-}
-
-.toggle.is-on::after { transform: translateX(22px); }
-
-/* Spring scale — for cards, icons, buttons */
-.spring-hover {
-  transition: transform 0.25s var(--spring);
-}
-.spring-hover:hover  { transform: scale(1.04); }
-.spring-hover:active { transform: scale(0.97); }
+{/* ✅ Correct: explicit properties and Tailwind defaults */}
+<button className="transition-transform transition-colors duration-200 ease-out hover:scale-105 active:scale-95 bg-neutral-800 hover:bg-neutral-700 rounded-full px-4 py-2">
+  Click Me
+</button>
 ```
 
 **When to use:** All interactive elements — buttons, cards, icons, toggles, checkboxes.
 
 **Rules:**
-- Spring curve for scale/translate transforms only
-- Use `ease-out` (`cubic-bezier(0.4, 0, 0.2, 1)`) for color/opacity transitions — spring on color looks wrong
-- Toggle dimensions: `52×30px` track, `24px` thumb — these are Apple's exact sizes
-- `:active` must always counteract hover (scale down or push down)
+- **Ban `transition-all`**. Always use `transition-transform`, `transition-colors`, or `transition-opacity`.
+- Use Tailwind's native `duration-200 ease-out` for a snappy, professional feel.
+- **Ban Spring Physics**. Avoid bouncy spring curves (`bounce`, `spring`); they cause UI fatigue. Use strict `easeOut`.
+- **Ban Global Entrance Animations**. Do not apply entrance animations (like `animate-fade-up`) to global wrappers or layout components, as it causes severe layout thrashing and frame drops. Use localized, staggered fade-ins on individual components instead.
+- `:active` states (like `active:scale-95`) provide the haptic click feel without complex physics.
 
 ---
 
@@ -586,14 +433,9 @@ True squircle proportions (`border-radius: 12px` on a `48×48px` container) + a 
   align-items: center;
   justify-content: center;
   font-size: 22px;
-  cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: transform 0.25s var(--spring);
 }
-
-.sqicon:hover  { transform: scale(1.12); }
-.sqicon:active { transform: scale(0.96); }
 
 /* Top-half specular sheen (single light source) */
 .sqicon::before {
@@ -631,7 +473,7 @@ True squircle proportions (`border-radius: 12px` on a `48×48px` container) + a 
 - `border-radius` must be exactly **25% of icon width** (12px on 48px, 16px on 64px)
 - `::before` sheen covers top 50%–55% only — simulates light from above
 - Directional colored shadow: always use the icon's dominant color at 30–40% opacity
-- Spring scale on hover (`--spring`), not `ease`
+- **Static by Default**: Do NOT apply interactive hover/active states or pointer events to decorative squircle icons to avoid false affordance. They should remain completely static unless wrapped inside an explicitly actionable element (like a button).
 
 ---
 
@@ -707,27 +549,24 @@ True squircle proportions (`border-radius: 12px` on a `48×48px` container) + a 
 
 These are the rules most developers miss. Violating any one of them is immediately visible.
 
-### Rule 01 — Shadows are always layered
+### Rule 01 — Box-Shadow Discipline
 
-Never a single shadow. Use 2–4 layers per element, each doing a different job:
+Limit shadows to a **maximum of 2 layers** (one ambient, one sharp contact) for standard UI elements like cards and dropdowns to preserve rendering performance. 
 
-```css
-/* Example: layered card shadow */
-box-shadow:
-  0 1px 2px rgba(0, 0, 0, 0.50),    /* contact shadow — sharpest, smallest */
-  0 4px 12px rgba(0, 0, 0, 0.40),   /* near shadow — medium softness */
-  0 16px 48px rgba(0, 0, 0, 0.30);  /* ambient shadow — largest, softest */
+```tsx
+/* ✅ Tailwind approach: shadow-md provides a clean, performant 2-layer shadow natively */
+<div className="bg-neutral-800 shadow-md rounded-xl">
 ```
 
-### Rule 02 — Use spring curves for physical interactions
+> *Note: Heavier shadow stacks (3-4 layers) are strictly reserved for primary hero CTAs where maximum prominence is required.*
 
-Replace `ease-in-out` with the spring curve for all scale and translate transitions:
+### Rule 02 — Ban `transition-all` & Custom Physics
 
-```css
-transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+Never use `transition-all`. It forces the browser to recalculate everything. Always use specific Tailwind transition utilities (`transition-transform`, `transition-colors`) paired with `duration-200 ease-out`.
+
+```tsx
+<button className="transition-transform duration-200 ease-out hover:scale-105">
 ```
-
-The overshoot is the signal. It is what separates "designed" from "default."
 
 ### Rule 03 — Color opacity, not fixed grays
 

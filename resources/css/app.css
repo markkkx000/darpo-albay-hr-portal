@@ -659,35 +659,6 @@ table {
             0 1px 3px rgba(0, 0, 0, 0.5);
     }
 
-    /* Hover rules: elevate by one level */
-    .elev-1:hover {
-        background: var(--surface-2);
-        box-shadow:
-            0 4px 12px rgba(0, 0, 0, 0.08),
-            0 1px 3px rgba(0, 0, 0, 0.04);
-    }
-
-    .dark .elev-1:hover {
-        background: var(--surface-2);
-        box-shadow:
-            0 4px 12px rgba(0, 0, 0, 0.4),
-            0 1px 3px rgba(0, 0, 0, 0.3);
-    }
-
-    .elev-2:hover {
-        background: var(--surface-3);
-        box-shadow:
-            0 8px 24px rgba(0, 0, 0, 0.12),
-            0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-
-    .dark .elev-2:hover {
-        background: var(--surface-3);
-        box-shadow:
-            0 8px 24px rgba(0, 0, 0, 0.5),
-            0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-
     /* Technique 04: Mesh Gradients */
     .mesh-container {
         @apply relative overflow-hidden;
@@ -845,21 +816,9 @@ table {
 
     /* Technique 08: Squircle Icons */
     .sqicon {
-        @apply relative flex items-center justify-center overflow-hidden transition-transform duration-200;
-        transition-timing-function: var(--spring);
+        @apply relative flex items-center justify-center overflow-hidden;
         border-radius: 12px;
     }
-
-    @media (hover: hover) {
-        .sqicon:hover {
-            transform: scale(1.12);
-        }
-    }
-
-    .sqicon:active {
-        transform: scale(0.96);
-    }
-
     .sqicon::before {
         content: '';
         @apply pointer-events-none absolute top-0 right-0 left-0 h-[55%];

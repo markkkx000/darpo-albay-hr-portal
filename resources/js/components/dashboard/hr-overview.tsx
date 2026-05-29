@@ -42,8 +42,8 @@ export function HROverview({ data }: { data: any }) {
                         ) : (
                             <div className="space-y-4 overflow-y-auto max-h-[350px] pr-2">
                                 {stats.recentActivity.map((activity: any) => (
-                                    <div key={activity.id} className="flex items-start gap-4 p-3 rounded-xl hover:item-hover-gradient hover:text-black transition-all group/activity">
-                                        <div className="sqicon sqicon-green p-2 transition-transform duration-300 group-hover/activity:scale-110">
+                                    <div key={activity.id} className="flex items-start gap-4 p-3 rounded-lg">
+                                        <div className="p-2 rounded-full bg-primary/10 text-primary">
                                             {activity.type === 'attendance_clock' ? (
                                                 <Clock className="h-4 w-4" />
                                             ) : (
@@ -51,10 +51,10 @@ export function HROverview({ data }: { data: any }) {
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-semibold truncate transition-colors">{activity.title}</p>
-                                            <p className="text-xs opacity-70 mt-0.5 transition-colors">{activity.description}</p>
+                                            <p className="text-sm font-semibold text-foreground truncate">{activity.title}</p>
+                                            <p className="text-xs text-muted-foreground mt-0.5">{activity.description}</p>
                                         </div>
-                                        <span className="text-[10px] font-bold opacity-60 whitespace-nowrap self-start mt-1 uppercase tracking-tighter">
+                                        <span className="text-[10px] font-medium text-muted-foreground/75 whitespace-nowrap self-start mt-1">
                                             {activity.time}
                                         </span>
                                     </div>

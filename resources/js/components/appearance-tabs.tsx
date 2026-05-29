@@ -41,7 +41,7 @@ export default function AppearanceToggleTab({
                         <motion.div 
                             layoutId="appearance-active"
                             className="sidebar-active-gradient absolute inset-0 rounded-full"
-                            transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                            transition={{ duration: 0.2, ease: 'easeOut' }}
                         />
                     )}
                     <span className="relative z-10 flex items-center">
