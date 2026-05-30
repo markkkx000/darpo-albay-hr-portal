@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
-#[Fillable(['title', 'content', 'posted_by', 'status', 'priority', 'published_at', 'target_type', 'target_id'])]
+#[Fillable(['title', 'content', 'posted_by', 'status', 'priority', 'published_at', 'target_type', 'target_id', 'is_event', 'event_date'])]
 class Announcement extends Model
 {
     use HasFactory, LogsActivity, SoftDeletes;
@@ -37,6 +37,8 @@ class Announcement extends Model
 
     protected $casts = [
         'published_at' => 'datetime',
+        'is_event' => 'boolean',
+        'event_date' => 'date:Y-m-d',
     ];
 
     /**

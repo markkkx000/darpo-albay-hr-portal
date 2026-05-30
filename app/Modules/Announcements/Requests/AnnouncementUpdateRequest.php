@@ -28,6 +28,8 @@ class AnnouncementUpdateRequest extends FormRequest
                 Rule::when($this->target_type === 'position', 'exists:positions,id'),
                 Rule::when($this->target_type === 'user', 'exists:users,id'),
             ],
+            'is_event' => ['boolean'],
+            'event_date' => ['nullable', 'required_if:is_event,true', 'date'],
         ];
     }
 }

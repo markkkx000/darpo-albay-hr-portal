@@ -1,6 +1,8 @@
 import { useForm, router } from '@inertiajs/react';
 import { toast } from 'sonner';
+import { DatePicker } from '@/components/date-picker';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RichTextEditor } from './RichTextEditor';
@@ -29,9 +31,11 @@ export function AnnouncementForm({
         priority: announcement?.priority || 'normal',
         target_type: announcement?.target_type || 'all',
         target_id: announcement?.target_id || null,
+        is_event: announcement?.is_event || false,
+        event_date: announcement?.event_date || '',
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         
         const options = {
@@ -78,6 +82,33 @@ export function AnnouncementForm({
                         </SelectContent>
                     </Select>
                     {errors.priority && <p className="text-xs text-destructive">{errors.priority}</p>}
+                </div>
+
+                <div className="space-y-4">
+                    <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-border/40 p-4 shadow-sm bg-surface-2 mt-1">
+                        <Checkbox 
+                            id="is_event"
+                            checked={data.is_event}
+                            onCheckedChange={(checked) => setData('is_event', checked === true)}
+                        />
+                        <div className="space-y-1 leading-none">
+                            <label htmlFor="is_event" className="text-sm font-medium cursor-pointer">
+                                Mark as Event
+                            </label>
+                        </div>
+                    </div>
+
+                    {data.is_event && (
+                        <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                            <label className="text-sm font-medium">Event Date <span className="text-destructive">*</span></label>
+                            <DatePicker 
+                                value={data.event_date || ''}
+                                onChange={v => setData('event_date', v || '')}
+                                aria-invalid={!!errors.event_date}
+                            />
+                            {errors.event_date && <p className="text-xs text-destructive">{errors.event_date}</p>}
+                        </div>
+                    )}
                 </div>
             </div>
 

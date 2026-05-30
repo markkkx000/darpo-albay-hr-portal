@@ -90,7 +90,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
         setDialogOpen(true);
     }, []);
 
-    const handleConfirm = (e?: React.FormEvent) => {
+    const handleConfirm = (e?: React.SyntheticEvent) => {
         if (e) {
             e.preventDefault();
         }
