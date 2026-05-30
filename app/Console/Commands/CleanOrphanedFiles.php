@@ -19,6 +19,7 @@ class CleanOrphanedFiles extends Command
             $this->error('DANGER: You are not in the production environment.');
             $this->error('Since local and production share the same S3 bucket, running this locally will permanently delete production files that are missing from your local database.');
             $this->error('This command can only be executed in production (or locally via --dry-run).');
+
             return 1;
         }
 
