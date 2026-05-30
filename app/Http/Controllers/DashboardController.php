@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Modules\Announcements\Models\Announcement;
 use App\Modules\Attendance\Models\Attendance;
+use App\Modules\DocumentRequests\Models\DocumentRequest;
+use App\Modules\Leave\Models\Holiday;
 use App\Modules\Leave\Models\LeaveCredit;
 use App\Modules\Leave\Models\LeaveRequest;
 use Illuminate\Http\Request;
@@ -196,7 +199,7 @@ class DashboardController extends Controller
             }
         }
 
-        // Fetch VL and SL leave balances having balance > 0
+        // Fetch VL, SL, FL leave balances having balance > 0
         $leaveBalances = LeaveCredit::with('leaveType')
             ->where('user_id', $userId)
             ->where('year', now()->year)
@@ -211,65 +214,113 @@ class DashboardController extends Controller
             ->values()
             ->all();
 
-        // Working days this month
-        $workingDaysThisMonth = Attendance::where('user_id', $userId)
-            ->whereMonth('date', now()->month)
-            ->whereYear('date', now()->year)
-            ->count();
-
-        // Employee Recent Activities: Personal clock-ins and leaves
-        $myLeaves = LeaveRequest::with('leaveType')
+        // Action Items
+        // 1. Pending Leaves
+        $pendingMyLeaves = LeaveRequest::with('leaveType')
             ->where('user_id', $userId)
-            ->latest()
-            ->take(3)
+            ->whereHas('leaveStatus', function ($query) {
+                $query->where('name', 'ilike', '%pending%');
+            })
             ->get()
             ->map(function ($l) {
                 $type = $l->leaveType ? $l->leaveType->name : 'Leave';
 
                 return [
-                    'id' => 'my_leave_'.$l->id,
-                    'type' => 'my_leave',
-                    'title' => 'Leave Request',
-                    'description' => "Submitted a {$type} request.",
-                    'time' => $l->created_at ? $l->created_at->diffForHumans() : 'Just now',
+                    'id' => 'leave_'.$l->id,
+                    'type' => 'leave_pending',
+                    'title' => 'Pending Leave',
+                    'description' => "Your {$type} request has been encoded and is pending final approval.",
                     'timestamp' => $l->created_at ? $l->created_at->timestamp : now()->timestamp,
+                    'url' => route('leave.show', $l->id),
+                    'action_text' => 'View Request',
                 ];
             });
 
-        $myAttendance = Attendance::where('user_id', $userId)
-            ->latest('updated_at')
-            ->take(3)
+        // 2. Document Requests (Active / In-progress)
+        $pendingMyDocs = DocumentRequest::where('user_id', $userId)
+            ->whereNotIn('status', ['Completed', 'Rejected', 'Cancelled'])
             ->get()
-            ->map(function ($att) {
-                $clocks = [
-                    'in (AM)' => $att->am_clock_in,
-                    'out (AM)' => $att->am_clock_out,
-                    'in (PM)' => $att->pm_clock_in,
-                    'out (PM)' => $att->pm_clock_out,
-                ];
-                $latestClockTime = null;
-                $action = 'in (AM)';
-                foreach ($clocks as $key => $time) {
-                    if ($time && (is_null($latestClockTime) || $time->gt($latestClockTime))) {
-                        $latestClockTime = $time;
-                        $action = $key;
-                    }
+            ->map(function ($d) {
+                $isReleased = $d->status === 'Released';
+                $docs = is_array($d->requests) ? implode(', ', $d->requests) : 'Document';
+
+                // Determine description based on status
+                if ($d->status === 'Pending') {
+                    $desc = "Your request for {$docs} is pending HR review.";
+                } elseif ($d->status === 'Released') {
+                    $desc = "Your request for {$docs} is ready. Please acknowledge receipt.";
+                } else {
+                    // E.g., Received, Processing
+                    $desc = "Your request for {$docs} is currently being processed by HR.";
                 }
-                $activityTime = $latestClockTime ?? $att->updated_at;
 
                 return [
-                    'id' => 'my_att_'.$att->id.'_'.$action,
-                    'type' => 'my_attendance',
-                    'title' => 'Attendance log',
-                    'description' => 'Clocked '.$action.'.',
-                    'time' => $activityTime ? $activityTime->diffForHumans() : 'Just now',
-                    'timestamp' => $activityTime ? $activityTime->timestamp : now()->timestamp,
+                    'id' => 'doc_'.$d->id,
+                    'type' => $isReleased ? 'doc_released' : 'doc_pending',
+                    'title' => $isReleased ? 'Document Ready' : 'Document Requested',
+                    'description' => $desc,
+                    'timestamp' => $d->updated_at ? $d->updated_at->timestamp : ($d->created_at ? $d->created_at->timestamp : now()->timestamp),
+                    'url' => route('documentrequests.show', $d->id),
+                    'action_text' => $isReleased ? 'Acknowledge' : 'View Status',
                 ];
             });
 
-        $recentActivity = $myLeaves->concat($myAttendance)
-            ->sortByDesc(function ($item) {
-                return $item['timestamp'];
+        $actionItems = $pendingMyLeaves->concat($pendingMyDocs)
+            ->sortByDesc('timestamp')
+            ->values()
+            ->all();
+
+        // Calendar: Events & Holidays
+        $upcomingHolidays = Holiday::where('date', '>=', now()->toDateString())
+            ->orderBy('date', 'asc')
+            ->take(5)
+            ->get()
+            ->map(function ($h) {
+                return [
+                    'id' => 'holiday_'.$h->id,
+                    'type' => 'holiday',
+                    'title' => $h->name,
+                    'date' => $h->date->format('M j, Y'),
+                    'timestamp' => $h->date->timestamp,
+                ];
+            });
+
+        $upcomingEvents = Announcement::forUser($user)
+            ->where('is_event', true)
+            ->where('event_date', '>=', now()->toDateString())
+            ->orderBy('event_date', 'asc')
+            ->take(5)
+            ->get()
+            ->map(function ($e) {
+                return [
+                    'id' => 'event_'.$e->id,
+                    'type' => 'event',
+                    'title' => $e->title,
+                    'date' => $e->event_date->format('M j, Y'),
+                    'timestamp' => $e->event_date->timestamp,
+                ];
+            });
+
+        $calendarEvents = $upcomingHolidays->concat($upcomingEvents)
+            ->sortBy('timestamp')
+            ->take(5)
+            ->values()
+            ->all();
+
+        // Latest Announcements
+        $latestAnnouncements = Announcement::forUser($user)
+            ->with('author')
+            ->latest('published_at')
+            ->take(5)
+            ->get()
+            ->map(function ($a) {
+                return [
+                    'id' => $a->id,
+                    'title' => $a->title,
+                    'content' => strip_tags($a->content),
+                    'author' => $a->author ? $a->author->first_name.' '.$a->author->last_name : 'HR',
+                    'date' => $a->published_at ? $a->published_at->diffForHumans() : 'Recently',
+                ];
             })
             ->values()
             ->all();
@@ -278,8 +329,9 @@ class DashboardController extends Controller
             'today_status' => $todayStatus,
             'today_time' => $todayTime,
             'leave_balances' => $leaveBalances,
-            'this_month_working_days' => $workingDaysThisMonth,
-            'recentActivity' => $recentActivity,
+            'action_items' => $actionItems,
+            'calendar_events' => $calendarEvents,
+            'latest_announcements' => $latestAnnouncements,
         ];
 
         return Inertia::render('dashboard', [

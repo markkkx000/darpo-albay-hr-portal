@@ -1,7 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { Activity, UserPlus, FileText } from 'lucide-react';
 import { StatCard } from '@/components/dashboard/stat-card';
-import profile from '@/routes/profile';
+import { userinfo } from '@/routes';
 import roles from '@/routes/roles';
 
 export function AdminOverview({ data }: { data: any }) {
@@ -74,8 +74,8 @@ export function AdminOverview({ data }: { data: any }) {
                                 <div className="font-semibold text-foreground transition-colors">Role Configuration</div>
                                 <div className="text-sm text-muted-foreground mt-1">Configure system roles and permission sets</div>
                             </Link>
-                            <Link href={profile.edit().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
-                                <div className="font-semibold text-foreground transition-colors">My Profile</div>
+                            <Link href={userinfo().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
+                                <div className="font-semibold text-foreground transition-colors">My Personnel Info</div>
                                 <div className="text-sm text-muted-foreground mt-1">Update personal information</div>
                             </Link>
                         </div>

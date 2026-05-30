@@ -9,7 +9,7 @@ import {
 import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { logout, userinfo } from '@/routes';
-import { edit } from '@/routes/profile';
+import { edit as editPreferences } from '@/routes/preferences';
 import type { User } from '@/types';
 
 type Props = {
@@ -40,7 +40,7 @@ export function UserMenuContent({ user }: Props) {
                 <DropdownMenuItem asChild>
                     <Link
                         className="group block w-full cursor-pointer hover:item-hover-gradient hover:text-black p-2 rounded-md"
-                        href={edit()}
+                        href={editPreferences()}
                         prefetch
                         onClick={cleanup}
                     >
