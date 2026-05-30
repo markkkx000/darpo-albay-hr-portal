@@ -109,6 +109,7 @@
 - **Spatie Permission Caching**: Always call `app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions()` in the service layer after explicitly creating or deleting roles. Spatie handles cache clearing on `syncPermissions()`, but not on model creation/deletion.
 - **Production Caching**: Production deployment scripts MUST run `php artisan config:cache`, `route:cache`, `view:cache`, `event:cache`, and `permission:cache-reset`.
 - **Data Isolation Scope**: When building HR actions (like Leave, Attendance, Document Requests), explicitly confirm the business requirement for cross-division scoping. If a role (e.g. `division_head`) should only see records within their division, you must explicitly enforce `$user->division_id === $target->division_id` in the controller or policy.
+- **CSV Injection (Formula Injection)**: When exporting data to CSV, all user-controlled string fields (e.g., descriptions, names) must be sanitized. If a field starts with `=`, `+`, `-`, `@`, `\t`, `\r`, or `\n`, prefix it with a single quote (`'`) to prevent execution in spreadsheet software.
 
 ---
 

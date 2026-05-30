@@ -3,7 +3,7 @@
 ## Overview
 This application is a **Laravel 13** backend with an **Inertia.js React** frontend. It strictly requires **PHP 8.4**. Authentication is custom and uses Laravel `Auth::attempt()` instead of Fortify, with role-based redirects to a single dashboard page. The application uses a modular architecture for navigation and feature development.
 
-Currently implemented modules: **Announcements, Attendance, Document Requests, DTR Export, Leave Tracking, Notifications (infra), Personnel Directory, Roles & Permissions, Travel Orders (stub)**.
+Currently implemented modules: **Announcements, Attendance, Audit (System Logs), Document Requests, DTR Export, Leave Tracking, Notifications (infra), Personnel Directory, Roles & Permissions, Travel Orders (stub)**.
 
 ---
 
@@ -68,6 +68,9 @@ app/
       Models/Announcement.php
       Requests/AnnouncementCreateRequest.php, AnnouncementUpdateRequest.php, AnnouncementPublishRequest.php
       Services/AnnouncementService.php
+    Audit/
+      Controllers/AuditController.php
+      navigation.php             # Sidebar: 'System Logs', permission: system.audit
     Attendance/
       Controllers/AttendanceController.php, AttendanceManagementController.php, AttendanceHistoryController.php
       Models/Attendance.php
@@ -116,6 +119,8 @@ resources/js/
     Modules/                     # Module pages
       Announcements/
         Index.tsx, Show.tsx, Manage.tsx, Create.tsx, Edit.tsx
+      Audit/
+        Index.tsx                # System logs and activity feed
       Attendance/
         ClockInOut.tsx, ManageRecords.tsx, HistoryIndex.tsx
       DTR/
@@ -164,6 +169,7 @@ database/
 tests/
   Feature/                       # Root-level feature tests
     Modules/                     # Module-specific test subdirectories
+      Audit/AuditTest.php
       DTR/DTRExportTest.php
       LeaveCreditTest.php, LeaveDigitizationTest.php, LeaveTest.php
       Roles/
@@ -177,6 +183,13 @@ tests/
 ---
 
 ## Implemented Modules
+
+### Audit Module (`app/Modules/Audit/`)
+- **Purpose**: System-wide activity logging and audit trail viewing for Super Admins. Powered by `Spatie\Activitylog`.
+- **Dashboard** (`Index.tsx`): Paginated datatable of all system events. Features client-side/server-side debounced search, user filtering, date range filtering, and event type filtering.
+- **Raw Log Viewer**: Includes a dialog modal to view raw JSON properties and attribute changes (`old` and `attributes`).
+- **CSV Export**: Securely streams CSV downloads of the audit log, supporting chunking for memory safety. Fully protects against CSV (Formula) Injection vulnerabilities by sanitizing user-controlled fields (`=, +, -, @, \t, \r, \n`).
+- **Permissions**: Protected by the strictly scoped `system.audit` permission (assigned uniquely to `super_admin`).
 
 ### Announcements Module (`app/Modules/Announcements/`)
 - **Viewing**: All authenticated users with `announcements.view` see published announcements targeted to them (by division, position, individual, or "all") via `Index.tsx`.
@@ -314,6 +327,7 @@ This is **infrastructure, not a feature module**. It is a hybrid: the dispatch/m
 | `travel_order.create` | division_head, super_admin |
 | `travel_order.manage` | hr_staff, hr_admin, super_admin |
 | `roles.manage` | super_admin |
+| `system.audit` | super_admin |
 
 ---
 
