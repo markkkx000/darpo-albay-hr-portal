@@ -84,7 +84,7 @@ export default function Index({ users, isHrAdmin }: Props) {
     // the DTR export endpoint returns a binary file blob (PDF/CSV). Inertia's request
     // handling expects JSON or a redirect response and cannot process binary responses
     // for client-side file downloads. Manual XSRF token injection is required.
-    const submit = async (e: React.FormEvent) => {
+    const submit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         setProcessing(true);
         setErrors({});

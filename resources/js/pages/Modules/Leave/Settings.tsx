@@ -144,7 +144,7 @@ export default function LeaveSettings({
         }
     };
 
-    const handleAddHoliday = (e: React.FormEvent) => {
+    const handleAddHoliday = (e: React.SyntheticEvent) => {
         e.preventDefault();
         router.post(
             holidays_store().url,
@@ -187,7 +187,7 @@ export default function LeaveSettings({
         setConfirmOpen(true);
     };
 
-    const handleAddType = (e: React.FormEvent) => {
+    const handleAddType = (e: React.SyntheticEvent) => {
         e.preventDefault();
         router.post(
             types_store().url,
@@ -222,7 +222,7 @@ export default function LeaveSettings({
         );
     };
 
-    const handleEditType = (e: React.FormEvent) => {
+    const handleEditType = (e: React.SyntheticEvent) => {
         e.preventDefault();
 
         if (!editingType) {
@@ -293,7 +293,7 @@ return;
         setConfirmOpen(true);
     };
 
-    const handleAddStatus = (e: React.FormEvent) => {
+    const handleAddStatus = (e: React.SyntheticEvent) => {
         e.preventDefault();
         router.post(
             statuses_store().url,

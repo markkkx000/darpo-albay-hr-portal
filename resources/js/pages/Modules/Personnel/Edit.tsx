@@ -66,7 +66,7 @@ export default function Edit({ employee, divisions, units, positions, appointmen
         monthly_salary: employee?.monthly_salary !== undefined && employee?.monthly_salary !== null ? employee.monthly_salary : '',
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         
         transform((data) => {

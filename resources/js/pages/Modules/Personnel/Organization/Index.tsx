@@ -78,7 +78,7 @@ export default function Index({ divisions }: Props) {
         setIsPositionOpen(true);
     };
 
-    const handleDivisionSubmit = (e: React.FormEvent) => {
+    const handleDivisionSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         setProcessing(true);
 
@@ -103,7 +103,7 @@ export default function Index({ divisions }: Props) {
         }
     };
 
-    const handleUnitSubmit = (e: React.FormEvent) => {
+    const handleUnitSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         setProcessing(true);
 
@@ -128,7 +128,7 @@ export default function Index({ divisions }: Props) {
         }
     };
 
-    const handlePositionSubmit = (e: React.FormEvent) => {
+    const handlePositionSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         setProcessing(true);
 
