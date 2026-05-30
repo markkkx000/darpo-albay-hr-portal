@@ -417,7 +417,7 @@ export default function Index({ users, isHrAdmin }: Props) {
                             <Button
                                 type="submit"
                                 disabled={processing || !data.user_id}
-                                className="flex h-12 items-center gap-2 rounded-full px-8 text-base font-bold tracking-wide shadow-lg transition-all hover:shadow-xl"
+                                className="flex h-12 items-center gap-2 rounded-full px-8 text-base font-bold tracking-wide shadow-lg transition hover:shadow-xl"
                             >
                                 <Download className="h-5 w-5" />
                                 {processing

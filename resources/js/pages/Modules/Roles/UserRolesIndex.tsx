@@ -132,7 +132,7 @@ export default function UserRolesIndex({ users, allUsers, roles, filters }: Prop
                                                     size="sm"
                                                     onClick={() => openAssignment(user)}
                                                     disabled={user.roles?.some((r) => r.name === 'super_admin')}
-                                                    className="gap-2 h-8 px-3 sm:opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-[image:var(--grad-primary)] hover:text-black hover:shadow-[var(--grad-shadow)] border border-transparent hover:border-transparent rounded-full"
+                                                    className="gap-2 h-8 px-3 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-[image:var(--grad-primary)] hover:text-black hover:shadow-[var(--grad-shadow)] border border-transparent hover:border-transparent rounded-full"
                                                 >
                                                     <UserCog className="h-4 w-4" />
                                                     <span className="hidden sm:inline">Edit Role</span>

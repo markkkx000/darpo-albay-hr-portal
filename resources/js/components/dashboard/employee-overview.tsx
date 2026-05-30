@@ -37,7 +37,7 @@ export function EmployeeOverview({ data }: { data: any }) {
                     <div className="p-3 bg-muted/20 border-t border-border-1">
                         <Link href={attendance.index().url} className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium hover:bg-surface-2 rounded-md transition-colors group">
                             <span>Open Attendance</span>
-                            <ChevronRight className="h-4 w-4 opacity-50 group-hover:translate-x-1 group-hover:opacity-100 transition-all duration-200" />
+                            <ChevronRight className="h-4 w-4 opacity-50 group-hover:translate-x-1 group-hover:opacity-100 transition duration-200" />
                         </Link>
                     </div>
                 </div>

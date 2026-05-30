@@ -193,7 +193,7 @@ export function EmployeeSearch({
                                                     <span className={cn("block truncate", selected ? "font-medium" : "font-normal")}>
                                                         {person.first_name} {person.last_name}
                                                         {person.employee_number && (
-                                                            <span className={cn("ml-2 text-xs transition-colors duration-200", focus ? "text-black/65 font-semibold" : "text-muted-foreground")}>({person.employee_number})</span>
+                                                            <span className={cn("ml-2 text-xs", focus ? "text-black/65 font-semibold" : "text-muted-foreground")}>({person.employee_number})</span>
                                                         )}
                                                     </span>
                                                     {selected ? (

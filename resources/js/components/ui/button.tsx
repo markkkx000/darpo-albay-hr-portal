@@ -5,7 +5,7 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] spring-press",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-colors duration-200 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] spring-press",
   {
     variants: {
       variant: {
@@ -16,7 +16,7 @@ const buttonVariants = cva(
         outline:
           "border border-border-2 bg-background shadow-xs hover:item-hover-gradient hover:border-transparent hover:text-black",
         "outline-primary":
-          "border border-primary/30 bg-transparent text-primary font-semibold hover:item-hover-gradient hover:border-transparent hover:text-black hover:shadow-[0_8px_24px_rgba(34,197,94,0.35)] transition-all duration-300",
+          "border border-primary/30 bg-transparent text-primary font-semibold hover:item-hover-gradient hover:border-transparent hover:text-black hover:shadow-[0_8px_24px_rgba(34,197,94,0.35)]",
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:item-hover-gradient hover:text-black",
         ghost: "hover:item-hover-gradient hover:text-black",

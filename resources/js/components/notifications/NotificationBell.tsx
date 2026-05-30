@@ -99,7 +99,7 @@ export default function NotificationBell() {
                             <div
                                 key={notification.id}
                                 className={cn(
-                                    "flex flex-col border-b border-sidebar-border/30 p-4 transition-all duration-200 cursor-pointer mx-1.5 my-1 rounded-xl group hover:bg-black/5 dark:hover:bg-white/5 active:scale-[0.99]",
+                                    "flex flex-col border-b border-sidebar-border/30 p-4 transition duration-200 cursor-pointer mx-1.5 my-1 rounded-xl group hover:bg-black/5 dark:hover:bg-white/5 active:scale-[0.99]",
                                     !notification.read_at ? "bg-primary/[0.05]" : ""
                                 )}
                                 onClick={(e) => toggleExpand(notification.id, e)}

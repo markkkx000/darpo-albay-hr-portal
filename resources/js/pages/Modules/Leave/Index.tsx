@@ -274,7 +274,7 @@ export default function LeaveDashboard({
                                     <button
                                         onClick={() => setViewMode('all')}
                                         className={cn(
-                                            'rounded-full px-4 py-1.5 text-sm font-bold transition-all',
+                                            'rounded-full px-4 py-1.5 text-sm font-bold transition',
                                             viewMode === 'all'
                                                 ? 'btn-specular'
                                                 : 'text-muted-foreground hover:text-foreground',
@@ -285,7 +285,7 @@ export default function LeaveDashboard({
                                     <button
                                         onClick={() => setViewMode('mine')}
                                         className={cn(
-                                            'rounded-full px-4 py-1.5 text-sm font-bold transition-all',
+                                            'rounded-full px-4 py-1.5 text-sm font-bold transition',
                                             viewMode === 'mine'
                                                 ? 'btn-specular'
                                                 : 'text-muted-foreground hover:text-foreground',
@@ -304,7 +304,7 @@ export default function LeaveDashboard({
                                 <button
                                     onClick={() => setArchived(!archived)}
                                     className={cn(
-                                        'rounded-full px-4 py-1.5 text-sm font-bold transition-all',
+                                        'rounded-full px-4 py-1.5 text-sm font-bold transition',
                                         archived
                                             ? 'bg-destructive/10 text-destructive'
                                             : 'text-muted-foreground hover:text-foreground',
@@ -584,7 +584,7 @@ export default function LeaveDashboard({
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-right">
-                                                <div className="flex justify-end gap-2 transition-all duration-300 group-hover:opacity-100 sm:opacity-60">
+                                                <div className="flex justify-end gap-2 transition duration-300 group-hover:opacity-100 sm:opacity-60">
                                                     <ViewActionButton
                                                         href={
                                                             LeaveRoutes.show({

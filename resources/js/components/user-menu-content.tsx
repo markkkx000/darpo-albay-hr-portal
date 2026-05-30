@@ -29,7 +29,7 @@ export function UserMenuContent({ user }: Props) {
             <DropdownMenuLabel className="p-0 font-normal">
                 <Link
                     href={userinfo()}
-                    className="group flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:item-hover-gradient hover:text-black transition-all cursor-pointer rounded-lg"
+                    className="group flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:item-hover-gradient hover:text-black cursor-pointer rounded-lg"
                     onClick={cleanup}
                 >
                     <UserInfo user={user} showEmail={true} />
@@ -45,7 +45,7 @@ export function UserMenuContent({ user }: Props) {
                         onClick={cleanup}
                     >
                         <div className="flex items-center">
-                            <Settings className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-black transition-colors" />
+                            <Settings className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-black" />
                             <span className="font-medium">Settings</span>
                         </div>
                     </Link>
@@ -61,7 +61,7 @@ export function UserMenuContent({ user }: Props) {
                     data-test="logout-button"
                 >
                     <div className="flex items-center">
-                        <LogOut className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-black transition-colors" />
+                        <LogOut className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-black" />
                         <span className="font-medium">Log out</span>
                     </div>
                 </Link>

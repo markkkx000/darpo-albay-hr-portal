@@ -35,7 +35,7 @@ export default function Login({ status }: Props) {
                         <Label htmlFor="login">
                             Email or Employee Number
                         </Label>
-                        <div className="focus-glow rounded-md transition-all">
+                        <div className="focus-glow rounded-md transition">
                             <Input
                                 id="login"
                                 type="text"
@@ -54,7 +54,7 @@ export default function Login({ status }: Props) {
 
                     <div className="grid animate-fade-up-delay-1 gap-2">
                         <Label htmlFor="password">Password</Label>
-                        <div className="focus-glow rounded-md transition-all">
+                        <div className="focus-glow rounded-md transition">
                             <PasswordInput
                                 id="password"
                                 name="password"

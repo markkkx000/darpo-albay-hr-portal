@@ -21,7 +21,7 @@ export default function Show({ employee }: Props) {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <Link href={indexRoute().url} className="mr-2">
-                            <Button variant="ghost" size="icon" className="rounded-xl hover:item-hover-gradient transition-all">
+                            <Button variant="ghost" size="icon" className="rounded-xl hover:item-hover-gradient transition">
                                 <ChevronLeft className="h-5 w-5" />
                             </Button>
                         </Link>

@@ -68,19 +68,19 @@ export function HROverview({ data }: { data: any }) {
                     <div className="relative z-10 p-6">
                         <h3 className="t-headline mb-4">HR Quick Actions</h3>
                         <div className="grid gap-3">
-                            <Link href={personnel.index().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
+                            <Link href={personnel.index().url} className="matte-card elev-2 p-4 text-left hover:-translate-y-1 transition-transform duration-200 ease-out block border border-border-2">
                                 <div className="font-semibold text-foreground transition-colors">Employee Directory</div>
                                 <div className="text-sm text-muted-foreground mt-1">View and manage employee profiles and position assignments</div>
                             </Link>
-                            <Link href={leave.index().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
+                            <Link href={leave.index().url} className="matte-card elev-2 p-4 text-left hover:-translate-y-1 transition-transform duration-200 ease-out block border border-border-2">
                                 <div className="font-semibold text-foreground transition-colors">Leave Management</div>
                                 <div className="text-sm text-muted-foreground mt-1">Approve and manage leave requests, review credits</div>
                             </Link>
-                            <Link href={attendance.index().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
+                            <Link href={attendance.index().url} className="matte-card elev-2 p-4 text-left hover:-translate-y-1 transition-transform duration-200 ease-out block border border-border-2">
                                 <div className="font-semibold text-foreground transition-colors">Attendance Records</div>
                                 <div className="text-sm text-muted-foreground mt-1">Check employee daily time records and punch histories</div>
                             </Link>
-                            <Link href={announcements.manage().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
+                            <Link href={announcements.manage().url} className="matte-card elev-2 p-4 text-left hover:-translate-y-1 transition-transform duration-200 ease-out block border border-border-2">
                                 <div className="font-semibold text-foreground transition-colors">Announcements</div>
                                 <div className="text-sm text-muted-foreground mt-1">Publish notices, policy updates, and employee news</div>
                             </Link>

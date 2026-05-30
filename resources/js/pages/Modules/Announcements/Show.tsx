@@ -68,7 +68,7 @@ export default function Show({ announcement }: Props) {
                                     )}
                                 </div>
                                 <span className={cn(
-                                    "uppercase font-bold text-[10px] px-3 py-1 rounded-full tracking-wider transition-all shadow-sm",
+                                    "uppercase font-bold text-[10px] px-3 py-1 rounded-full tracking-wider transition shadow-sm",
                                     announcement.priority === 'high'
                                         ? 'status-badge-danger animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.3)]'
                                         : announcement.priority === 'low'

@@ -34,7 +34,7 @@ export function AnnouncementCard({ announcement, defaultExpanded = false }: Prop
     return (
         <div 
             className={cn(
-                "matte-card elev-2 overflow-hidden transition-all duration-300 group cursor-pointer",
+                "matte-card elev-2 overflow-hidden transition duration-300 group cursor-pointer",
                 announcement.priority === 'high' ? "border-red-500/40 ring-1 ring-red-500/10" : "",
                 isExpanded ? "border-primary/40 shadow-lg shadow-primary/5" : "hover:translate-x-1"
             )}

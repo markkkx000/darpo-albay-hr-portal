@@ -52,7 +52,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                     key={`${toUrl(item.href)}-${index}`}
                                     href={item.href}
                                     className={cn(
-                                        'relative flex items-center rounded-2xl px-4 py-2.5 transition-all duration-300',
+                                        'relative flex items-center rounded-2xl px-4 py-2.5 transition duration-300',
                                         active
                                             ? 'text-black font-bold'
                                             : 'text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5',

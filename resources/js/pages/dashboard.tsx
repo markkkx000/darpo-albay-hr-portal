@@ -14,9 +14,9 @@ export default function Dashboard({ adminData, hrData, employeeData }: any) {
     return (
         <>
             <Head title={`${isSuperAdmin ? 'Admin' : isHR ? 'HR' : 'Employee'} Dashboard`} />
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4 md:p-6 transition-all duration-500">
+            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4 md:p-6 transition-opacity duration-300 ease-out">
                 <div className="mb-8 px-2">
-                    <h1 className="text-4xl font-extrabold tracking-tight text-foreground drop-shadow-sm mb-2 transition-all">
+                    <h1 className="text-4xl font-extrabold tracking-tight text-foreground drop-shadow-sm mb-2">
                         {isSuperAdmin ? 'Admin Dashboard' : isHR ? 'HR Dashboard' : 'Employee Dashboard'}
                     </h1>
                     <p className="text-lg font-medium text-muted-foreground tracking-wide opacity-90">

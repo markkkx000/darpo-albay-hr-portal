@@ -66,15 +66,15 @@ export function AdminOverview({ data }: { data: any }) {
                     <div className="relative z-10 p-6">
                         <h3 className="t-headline mb-4">Admin Quick Actions</h3>
                         <div className="grid gap-3">
-                            <Link href={roles.users.index().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
+                            <Link href={roles.users.index().url} className="matte-card elev-2 p-4 text-left hover:-translate-y-1 transition-transform duration-200 ease-out block border border-border-2">
                                 <div className="font-semibold text-foreground transition-colors">User Management</div>
                                 <div className="text-sm text-muted-foreground mt-1">Manage user accounts and permissions</div>
                             </Link>
-                            <Link href={roles.index().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
+                            <Link href={roles.index().url} className="matte-card elev-2 p-4 text-left hover:-translate-y-1 transition-transform duration-200 ease-out block border border-border-2">
                                 <div className="font-semibold text-foreground transition-colors">Role Configuration</div>
                                 <div className="text-sm text-muted-foreground mt-1">Configure system roles and permission sets</div>
                             </Link>
-                            <Link href={userinfo().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
+                            <Link href={userinfo().url} className="matte-card elev-2 p-4 text-left hover:-translate-y-1 transition-transform duration-200 ease-out block border border-border-2">
                                 <div className="font-semibold text-foreground transition-colors">My Personnel Info</div>
                                 <div className="text-sm text-muted-foreground mt-1">Update personal information</div>
                             </Link>

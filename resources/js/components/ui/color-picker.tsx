@@ -167,7 +167,7 @@ export function ColorPicker({ value, onChange, className }: ColorPickerProps) {
                 <PopoverTrigger asChild>
                     <button
                         type="button"
-                        className="relative w-12 h-9 shrink-0 group/color rounded-2xl border border-border shadow-xs transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary/40 focus:ring-offset-1"
+                        className="relative w-12 h-9 shrink-0 group/color rounded-2xl border border-border shadow-xs transition-transform duration-200 hover:scale-105 active:scale-95 flex items-center justify-center overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary/40 focus:ring-offset-1"
                         style={{ backgroundColor: value }}
                     >
                         <Pipette className="h-4 w-4 text-white opacity-0 group-hover/color:opacity-100 transition-opacity drop-shadow-sm pointer-events-none" />

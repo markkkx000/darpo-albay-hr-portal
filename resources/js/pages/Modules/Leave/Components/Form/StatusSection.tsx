@@ -242,7 +242,7 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     onClick={triggerFileSelect}
-                    className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all duration-300 relative select-none ${
+                    className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition duration-300 relative select-none ${
                         isDragging
                             ? 'border-primary bg-primary/5 scale-[1.01] shadow-md'
                             : 'border-border/60 hover:border-primary/50 hover:bg-muted/10'
@@ -278,7 +278,7 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
                             return (
                                 <div
                                     key={file.id}
-                                    className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-card/60 backdrop-blur-xs shadow-xs animate-in fade-in slide-in-from-top-1 duration-200"
+                                    className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-card/98 shadow-xs animate-in fade-in slide-in-from-top-1 duration-200"
                                 >
                                     <div className="flex items-center gap-3 overflow-hidden">
                                         <div className={`p-2 rounded-md ${isPdf ? 'bg-red-500/10 text-red-500' : 'bg-blue-500/10 text-blue-500'}`}>

@@ -182,7 +182,7 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                     variant="ghost"
                     size="sm"
                     onClick={handleReset}
-                    className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-all hover:bg-primary/5"
+                    className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition hover:bg-primary/5"
                 >
                     <RefreshCw className="h-3 w-3 mr-1" />
                     Reset All Filters

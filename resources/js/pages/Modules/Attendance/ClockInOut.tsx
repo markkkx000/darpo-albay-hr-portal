@@ -191,7 +191,7 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                         >
                             <Button
                                 variant="ghost"
-                                className="group flex h-10 w-10 items-center justify-start overflow-hidden rounded-full border-none bg-background/80 p-0 shadow-md backdrop-blur-sm hover:w-64 btn-ghost-specular btn-expand-pill"
+                                className="group flex h-10 w-10 items-center justify-start overflow-hidden rounded-full border-none bg-background/98 p-0 shadow-md hover:w-64 btn-ghost-specular btn-expand-pill"
                             >
                                 <div className="flex h-full w-[38px] shrink-0 items-center justify-center">
                                     <Settings
