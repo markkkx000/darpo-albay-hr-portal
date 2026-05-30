@@ -4,6 +4,7 @@ import { DatePicker } from '@/components/date-picker';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { SlidingTabs } from '@/components/ui/sliding-tabs';
 import { Required, parseLocalDate } from './utils';
 
 interface DateSectionProps {
@@ -49,24 +50,14 @@ export const DateSection: React.FC<DateSectionProps> = ({
         <div className="space-y-4 border-y py-4 my-4">
             <div className="flex items-center justify-between">
                 <Label className="text-base">Date Selection</Label>
-                <div className="flex items-center space-x-2 bg-muted p-1 rounded-full">
-                    <Button
-                        type="button"
-                        size="sm"
-                        variant={dateMode === 'range' ? 'default' : 'ghost'}
-                        onClick={() => toggleDateMode('range')}
-                    >
-                        Date Range
-                    </Button>
-                    <Button
-                        type="button"
-                        size="sm"
-                        variant={dateMode === 'specific' ? 'default' : 'ghost'}
-                        onClick={() => toggleDateMode('specific')}
-                    >
-                        Specific Dates
-                    </Button>
-                </div>
+                <SlidingTabs
+                    layoutId="datemode-active"
+                    tabs={[
+                        { value: 'range', label: 'Date Range', active: dateMode === 'range' },
+                        { value: 'specific', label: 'Specific Dates', active: dateMode === 'specific' }
+                    ]}
+                    onChange={(val) => toggleDateMode(val as 'range' | 'specific')}
+                />
             </div>
 
             {dateMode === 'range' ? (

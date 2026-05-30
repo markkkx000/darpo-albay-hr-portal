@@ -36,7 +36,7 @@ export default function LeaveNavigation() {
     }
 
     return (
-        <div className="mb-6 flex space-x-4 border-b border-border-1">
+        <div className="mb-6 flex space-x-4 border-b border-border-1 overflow-x-auto whitespace-nowrap pb-1">
             {tabs.map((tab) => {
                 const Icon = tab.icon;
                 const pathname = url.split('?')[0];
@@ -49,10 +49,10 @@ export default function LeaveNavigation() {
                         key={tab.name}
                         href={tab.href}
                         className={cn(
-                            'relative flex items-center space-x-2 border-b-2 px-4 py-3 text-sm font-medium transition-all duration-200 rounded-xl',
+                            'relative flex items-center space-x-2 border-b-2 px-4 py-3 text-sm font-medium rounded-xl',
                             isActive
                                 ? 'border-transparent font-semibold'
-                                : 'border-transparent text-muted-foreground hover:item-hover-gradient hover:text-black hover:scale-105 active:scale-95'
+                                : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/30'
                         )}
                     >
                         {isActive && (
