@@ -6,6 +6,7 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
+import { useSidebar } from '@/components/ui/sidebar';
 import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { logout, userinfo } from '@/routes';
@@ -17,7 +18,13 @@ type Props = {
 };
 
 export function UserMenuContent({ user }: Props) {
-    const cleanup = useMobileNavigation();
+    const mobileCleanup = useMobileNavigation();
+    const { setOpenMobile } = useSidebar();
+
+    const cleanup = () => {
+        mobileCleanup();
+        setOpenMobile(false);
+    };
 
     const handleLogout = () => {
         cleanup();

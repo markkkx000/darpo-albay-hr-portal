@@ -22,6 +22,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { SlidingTabs } from '@/components/ui/sliding-tabs';
 import { useDebounce } from '@/hooks/use-debounce';
 import { cn } from '@/lib/utils';
 import LeaveRoutes from '@/routes/leave';
@@ -270,30 +271,14 @@ export default function LeaveDashboard({
                         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
                             {/* View Toggle (Only for Encoders) */}
                             {canEncode ? (
-                                <div className="flex items-center space-x-1 rounded-full border border-border-1 bg-surface-2 p-1">
-                                    <button
-                                        onClick={() => setViewMode('all')}
-                                        className={cn(
-                                            'rounded-full px-4 py-1.5 text-sm font-bold transition',
-                                            viewMode === 'all'
-                                                ? 'btn-specular'
-                                                : 'text-muted-foreground hover:text-foreground',
-                                        )}
-                                    >
-                                        All Leaves
-                                    </button>
-                                    <button
-                                        onClick={() => setViewMode('mine')}
-                                        className={cn(
-                                            'rounded-full px-4 py-1.5 text-sm font-bold transition',
-                                            viewMode === 'mine'
-                                                ? 'btn-specular'
-                                                : 'text-muted-foreground hover:text-foreground',
-                                        )}
-                                    >
-                                        My Leave History
-                                    </button>
-                                </div>
+                                <SlidingTabs 
+                                    tabs={[
+                                        { value: 'all', label: 'All Leaves', active: viewMode === 'all' },
+                                        { value: 'mine', label: 'My Leave History', active: viewMode === 'mine' }
+                                    ]}
+                                    layoutId="leave-view-tabs"
+                                    onChange={(val) => setViewMode(val as 'all' | 'mine')}
+                                />
                             ) : (
                                 <div className="text-lg font-semibold">
                                     My Leave History

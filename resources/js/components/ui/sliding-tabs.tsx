@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 
 export interface SlidingTab {
     value: string;
-    label: string;
+    label: string | React.ReactNode;
     icon?: LucideIcon;
     href?: string;
     active: boolean;

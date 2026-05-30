@@ -19,7 +19,7 @@ php artisan event:cache
 php artisan permission:cache-reset
 
 # Build frontend assets
-npm ci --production
+npm ci
 npm run build
 
 echo "Deployment complete."
