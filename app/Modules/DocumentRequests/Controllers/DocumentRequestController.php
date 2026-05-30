@@ -103,11 +103,12 @@ class DocumentRequestController extends Controller
                 'action_url' => route('documentrequests.index'),
                 'icon' => 'FileText',
                 'color' => 'blue',
-                'type' => 'System',
+                'type' => 'Update',
             ]);
         }
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Document request submitted successfully.']);
+
         return redirect()->route('documentrequests.index');
     }
 
@@ -119,6 +120,7 @@ class DocumentRequestController extends Controller
 
         if ($documentRequest->status !== 'Pending') {
             Inertia::flash('toast', ['type' => 'error', 'message' => 'Cannot mark as received: This request has already been processed or cancelled.']);
+
             return back();
         }
 
@@ -132,10 +134,11 @@ class DocumentRequestController extends Controller
             'message' => 'Your document request is now being processed by HR.',
             'icon' => 'CheckCircle',
             'color' => 'indigo',
-            'type' => 'System',
+            'type' => 'Update',
         ]);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Request marked as received.']);
+
         return back();
     }
 
@@ -143,6 +146,7 @@ class DocumentRequestController extends Controller
     {
         if ($documentRequest->status !== 'Received') {
             Inertia::flash('toast', ['type' => 'error', 'message' => 'Cannot process release: This request is not in the Received state.']);
+
             return back();
         }
 
@@ -157,7 +161,7 @@ class DocumentRequestController extends Controller
                 $paths = $this->service->storeAttachments($request->file('files'));
                 $data['files'] = $paths;
             }
-            $data['status'] = 'Released/Sent';
+            $data['status'] = 'Released';
             $data['released_to'] = $documentRequest->user->first_name.' '.$documentRequest->user->last_name;
             $data['released_at'] = now();
 
@@ -169,7 +173,7 @@ class DocumentRequestController extends Controller
                 'action_url' => route('documentrequests.index'),
                 'icon' => 'Send',
                 'color' => 'green',
-                'type' => 'System',
+                'type' => 'Update',
             ]);
         } else {
             $data['status'] = 'Ready for Pickup';
@@ -181,11 +185,12 @@ class DocumentRequestController extends Controller
                 'action_url' => route('documentrequests.index'),
                 'icon' => 'Box',
                 'color' => 'orange',
-                'type' => 'System',
+                'type' => 'Update',
             ]);
         }
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Request processed successfully.']);
+
         return back();
     }
 
@@ -197,6 +202,7 @@ class DocumentRequestController extends Controller
 
         if ($documentRequest->status !== 'Ready for Pickup') {
             Inertia::flash('toast', ['type' => 'error', 'message' => 'Cannot log pickup: This request is not ready for pickup.']);
+
             return back();
         }
 
@@ -205,12 +211,13 @@ class DocumentRequestController extends Controller
         ]);
 
         $documentRequest->update([
-            'status' => 'Released/Sent',
+            'status' => 'Released',
             'released_to' => $request->released_to,
             'released_at' => now(),
         ]);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Request marked as picked up.']);
+
         return back();
     }
 
@@ -258,11 +265,12 @@ class DocumentRequestController extends Controller
                 'message' => $message,
                 'icon' => 'XCircle',
                 'color' => 'red',
-                'type' => 'System',
+                'type' => 'Update',
             ]);
         }
 
         Inertia::flash('toast', ['type' => 'success', 'message' => "Request status updated to {$request->status}."]);
+
         return back();
     }
 
@@ -296,7 +304,7 @@ class DocumentRequestController extends Controller
             abort(403, 'Only the requesting employee can acknowledge receipt.');
         }
 
-        if ($documentRequest->status !== 'Released/Sent') {
+        if ($documentRequest->status !== 'Released') {
             abort(400, 'Request is not in a state to be acknowledged.');
         }
 
@@ -313,11 +321,12 @@ class DocumentRequestController extends Controller
                 'action_url' => route('documentrequests.show', $documentRequest->id),
                 'icon' => 'CheckCircle',
                 'color' => 'green',
-                'type' => 'System',
+                'type' => 'Update',
             ]);
         }
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'You have successfully acknowledged receipt of the documents.']);
+
         return back();
     }
 }

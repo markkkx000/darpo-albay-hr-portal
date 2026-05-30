@@ -11,11 +11,38 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class NotificationService
 {
     /**
+     * Check if a user should receive a notification based on their preferences.
+     */
+    private function shouldNotify(User $user, array $data): bool
+    {
+        $prefs = $user->notification_preferences ?? [];
+
+        $type = $data['type'] ?? '';
+        $title = $data['title'] ?? '';
+
+        if (strtolower($type) === 'announcement' || strtolower($type) === 'announcements' || str_contains(strtolower($title), 'announcement')) {
+            return $prefs['announcements'] ?? true;
+        }
+
+        if (strtolower($type) === 'update' || str_contains(strtolower($title), 'document')) {
+            return $prefs['updates'] ?? true;
+        }
+
+        if (strtolower($type) === 'system') {
+            return $prefs['system'] ?? true;
+        }
+
+        return true;
+    }
+
+    /**
      * Send notification to a single user.
      */
     public function notifyUser(User $user, array $data): void
     {
-        $user->notify(new GenericDatabaseNotification($data));
+        if ($this->shouldNotify($user, $data)) {
+            $user->notify(new GenericDatabaseNotification($data));
+        }
     }
 
     /**
@@ -24,6 +51,7 @@ class NotificationService
     public function notifyDivision(int $divisionId, array $data): void
     {
         $users = User::where('division_id', $divisionId)->where('is_active', true)->get();
+        $users = $users->filter(fn ($user) => $this->shouldNotify($user, $data));
         Notification::send($users, new GenericDatabaseNotification($data));
     }
 
@@ -35,6 +63,7 @@ class NotificationService
         $users = User::whereHas('positions', function ($query) use ($positionId) {
             $query->where('positions.id', $positionId);
         })->where('is_active', true)->get();
+        $users = $users->filter(fn ($user) => $this->shouldNotify($user, $data));
         Notification::send($users, new GenericDatabaseNotification($data));
     }
 
@@ -44,6 +73,7 @@ class NotificationService
     public function notifyAll(array $data): void
     {
         $users = User::where('is_active', true)->get();
+        $users = $users->filter(fn ($user) => $this->shouldNotify($user, $data));
         Notification::send($users, new GenericDatabaseNotification($data));
     }
 
