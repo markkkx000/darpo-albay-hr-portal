@@ -75,7 +75,7 @@ function getStatusIcon(status: string) {
             return <FileText className="mr-1 h-3 w-3" />;
         case 'Ready for Pickup':
             return <Box className="mr-1 h-3 w-3" />;
-        case 'Released/Sent':
+        case 'Released':
             return <Send className="mr-1 h-3 w-3" />;
         case 'Completed':
             return <CheckCircle className="mr-1 h-3 w-3" />;
@@ -95,7 +95,7 @@ function getStatusClass(status: string) {
             return 'status-badge-permanent';
         case 'Ready for Pickup':
             return 'badge-premium text-orange-700 bg-orange-100 border-orange-200';
-        case 'Released/Sent':
+        case 'Released':
             return 'badge-premium text-indigo-700 bg-indigo-100 border-indigo-200';
         case 'Completed':
             return 'badge-premium text-emerald-700 bg-emerald-100 border-emerald-200';
@@ -131,7 +131,7 @@ export default function DocumentRequestsIndex({
         setIsRejectModalOpen(true);
     };
 
-    const handleConfirmReject = (e: React.FormEvent) => {
+    const handleConfirmReject = (e: React.SyntheticEvent) => {
         e.preventDefault();
 
         if (!requestToConfirm) {
@@ -154,7 +154,7 @@ export default function DocumentRequestsIndex({
         );
     };
 
-    const handleLogPickup = (e: React.FormEvent) => {
+    const handleLogPickup = (e: React.SyntheticEvent) => {
         e.preventDefault();
 
         if (pickupName && selectedRequestId) {
@@ -259,7 +259,7 @@ export default function DocumentRequestsIndex({
                                         <SelectItem value="Pending">Pending</SelectItem>
                                         <SelectItem value="Received">Received</SelectItem>
                                         <SelectItem value="Ready for Pickup">Ready for Pickup</SelectItem>
-                                        <SelectItem value="Released/Sent">Released/Sent</SelectItem>
+                                        <SelectItem value="Released">Released</SelectItem>
                                         <SelectItem value="Completed">Completed</SelectItem>
                                         <SelectItem value="Rejected">Rejected</SelectItem>
                                         <SelectItem value="Cancelled">Cancelled</SelectItem>

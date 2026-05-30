@@ -43,7 +43,7 @@ function getStatusClass(status: string) {
             return 'status-badge-permanent';
         case 'Ready for Pickup':
             return 'badge-premium text-orange-700 bg-orange-100 border-orange-200';
-        case 'Released/Sent':
+        case 'Released':
             return 'badge-premium text-indigo-700 bg-indigo-100 border-indigo-200';
         case 'Completed':
             return 'badge-premium text-emerald-700 bg-emerald-100 border-emerald-200';
@@ -73,7 +73,7 @@ export default function DocumentRequestsShow({
     const [statusReason, setStatusReason] = useState('');
     const [statusAction, setStatusAction] = useState<'Rejected' | 'Cancelled' | null>(null);
 
-    const handleStatusUpdate = (e: React.FormEvent) => {
+    const handleStatusUpdate = (e: React.SyntheticEvent) => {
         e.preventDefault();
 
         if (statusAction) {
@@ -106,7 +106,7 @@ export default function DocumentRequestsShow({
         );
     };
 
-    const handleLogPickup = (e: React.FormEvent) => {
+    const handleLogPickup = (e: React.SyntheticEvent) => {
         e.preventDefault();
 
         if (pickupName) {
@@ -442,7 +442,7 @@ export default function DocumentRequestsShow({
 
                             {/* Actions */}
                             {!isHr &&
-                                documentRequest.status === 'Released/Sent' && (
+                                documentRequest.status === 'Released' && (
                                     <CardFooter className="bg-muted/30 pt-6">
                                         <Button
                                             size="lg"

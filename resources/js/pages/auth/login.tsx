@@ -18,7 +18,7 @@ export default function Login({ status }: Props) {
         remember: false,
     });
 
-    const submit = (e: React.FormEvent) => {
+    const submit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         post('/login', {
             onFinish: () => reset('password'),

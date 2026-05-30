@@ -69,7 +69,7 @@ newData.specify_other = '';
         });
     };
 
-    const submit = (e: React.FormEvent) => {
+    const submit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         post(DocumentRequestsRoutes.store().url);
     };

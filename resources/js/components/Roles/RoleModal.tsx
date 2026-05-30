@@ -57,7 +57,7 @@ export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
         }
     }, [open, role, setData, clearErrors, reset]);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
 
         if (isEdit) {

@@ -43,7 +43,7 @@ interface Props {
     units: Unit[];
     positions: Position[];
     appointmentStatuses: AppointmentStatus[];
-    onSubmit: (e: React.FormEvent) => void;
+    onSubmit: (e: React.SyntheticEvent) => void;
     data: any;
     setData: (key: string | ((prev: any) => any), value?: any) => void;
     errors: any;
@@ -99,7 +99,7 @@ export function EmployeeForm({
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.SyntheticEvent) => {
         onSubmit(e);
     };
 
