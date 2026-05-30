@@ -10,7 +10,6 @@ use App\Modules\Leave\Models\Holiday;
 use App\Modules\Leave\Models\LeaveCredit;
 use App\Modules\Leave\Models\LeaveRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -39,33 +38,7 @@ class DashboardController extends Controller
             $activeSessions = User::where('last_seen_at', '>=', now()->subMinutes(15))->count();
 
             // Dynamic System Health Check
-            $dbHealth = true;
-            try {
-                DB::connection()->getPdo();
-            } catch (\Exception $e) {
-                $dbHealth = false;
-            }
-
-            $cacheHealth = true;
-            try {
-                Cache::put('health_check', true, 5);
-                $cacheHealth = Cache::get('health_check') === true;
-            } catch (\Exception $e) {
-                $cacheHealth = false;
-            }
-
-            $storageHealth = is_writable(storage_path());
-
-            $healthScore = 0;
-            if ($dbHealth) {
-                $healthScore += 33;
-            }
-            if ($cacheHealth) {
-                $healthScore += 33;
-            }
-            if ($storageHealth) {
-                $healthScore += 34;
-            }
+            $failedJobs = DB::table('failed_jobs')->count();
 
             // Admin Recent Activities: Fetch from Spatie Activitylog
             $recentActivity = Activity::with('causer')
@@ -90,7 +63,7 @@ class DashboardController extends Controller
             $adminData = [
                 'total_users' => $totalUsers,
                 'active_sessions' => $activeSessions,
-                'system_health' => $healthScore === 100 ? 'Healthy' : "{$healthScore}%",
+                'failed_jobs' => $failedJobs,
                 'recentActivity' => $recentActivity,
             ];
         }
@@ -104,12 +77,64 @@ class DashboardController extends Controller
                 $query->where('name', 'ilike', '%pending%');
             })->count();
 
+            // Count pending document requests
+            $pendingDocsCount = DocumentRequest::where('status', 'Pending')->count();
+
             // Count unique clocked-in users today
             $activeToday = Attendance::whereDate('date', now()->toDateString())
                 ->distinct('user_id')
                 ->count();
 
-            // HR Recent Activities: Leaves filed & Clock-ins
+            // HR Action Items (Pending Leaves & Docs)
+            $hrPendingLeaves = LeaveRequest::with('user', 'leaveType')
+                ->whereHas('leaveStatus', function ($query) {
+                    $query->where('name', 'ilike', '%pending%');
+                })
+                ->latest()
+                ->take(5)
+                ->get()
+                ->map(function ($l) {
+                    $name = $l->user ? "{$l->user->first_name} {$l->user->last_name}" : 'Unknown';
+                    $type = $l->leaveType ? $l->leaveType->name : 'Leave';
+
+                    return [
+                        'id' => 'hr_leave_'.$l->id,
+                        'type' => 'leave_pending',
+                        'title' => 'Leave Approval Required',
+                        'description' => "{$name} filed a request for {$type} pending approval.",
+                        'timestamp' => $l->created_at ? $l->created_at->timestamp : now()->timestamp,
+                        'url' => route('leave.show', $l->id),
+                        'action_text' => 'Review Request',
+                    ];
+                });
+
+            $hrPendingDocs = DocumentRequest::with('user')
+                ->where('status', 'Pending')
+                ->latest()
+                ->take(5)
+                ->get()
+                ->map(function ($d) {
+                    $name = $d->user ? "{$d->user->first_name} {$d->user->last_name}" : 'Unknown';
+                    $docs = is_array($d->requests) ? implode(', ', $d->requests) : 'Document';
+
+                    return [
+                        'id' => 'hr_doc_'.$d->id,
+                        'type' => 'doc_pending',
+                        'title' => 'Document Request',
+                        'description' => "{$name} requested: {$docs}.",
+                        'timestamp' => $d->created_at ? $d->created_at->timestamp : now()->timestamp,
+                        'url' => route('documentrequests.show', $d->id),
+                        'action_text' => 'Process Request',
+                    ];
+                });
+
+            $hrActionItems = $hrPendingLeaves->concat($hrPendingDocs)
+                ->sortByDesc('timestamp')
+                ->take(6)
+                ->values()
+                ->all();
+
+            // HR Recent Activities: Leaves filed & Clock-ins & Docs
             $recentLeaves = LeaveRequest::with('user', 'leaveType')
                 ->latest()
                 ->take(3)
@@ -117,14 +142,33 @@ class DashboardController extends Controller
                 ->map(function ($l) {
                     $name = $l->user ? "{$l->user->first_name} {$l->user->last_name}" : 'Unknown';
                     $type = $l->leaveType ? $l->leaveType->name : 'Leave';
+                    $time = $l->date_filed ?? $l->created_at;
 
                     return [
                         'id' => 'leave_'.$l->id,
                         'type' => 'leave_filed',
                         'title' => 'Leave Filed',
                         'description' => "{$name} filed a request for {$type}.",
-                        'time' => $l->created_at ? $l->created_at->diffForHumans() : 'Just now',
-                        'timestamp' => $l->created_at ? $l->created_at->timestamp : now()->timestamp,
+                        'time' => $time ? $time->diffForHumans() : 'Just now',
+                        'timestamp' => $time ? $time->timestamp : now()->timestamp,
+                    ];
+                });
+
+            $recentDocs = DocumentRequest::with('user')
+                ->latest()
+                ->take(3)
+                ->get()
+                ->map(function ($d) {
+                    $name = $d->user ? "{$d->user->first_name} {$d->user->last_name}" : 'Unknown';
+                    $docs = is_array($d->requests) ? implode(', ', $d->requests) : 'Document';
+
+                    return [
+                        'id' => 'doc_log_'.$d->id,
+                        'type' => 'doc_requested',
+                        'title' => 'Document Requested',
+                        'description' => "{$name} requested: {$docs}.",
+                        'time' => $d->created_at ? $d->created_at->diffForHumans() : 'Just now',
+                        'timestamp' => $d->created_at ? $d->created_at->timestamp : now()->timestamp,
                     ];
                 });
 
@@ -160,7 +204,7 @@ class DashboardController extends Controller
                     ];
                 });
 
-            $recentActivity = $recentLeaves->concat($recentAttendance)
+            $recentActivity = $recentLeaves->concat($recentAttendance)->concat($recentDocs)
                 ->sortByDesc(function ($item) {
                     return $item['timestamp'];
                 })
@@ -170,8 +214,10 @@ class DashboardController extends Controller
             $hrData = [
                 'total_employees' => $totalEmployees,
                 'pending_leaves' => $pendingLeaves,
+                'pending_docs' => $pendingDocsCount,
                 'active_today' => $activeToday,
                 'recentActivity' => $recentActivity,
+                'action_items' => $hrActionItems,
             ];
         }
 

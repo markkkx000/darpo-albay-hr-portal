@@ -1,7 +1,7 @@
 import { Head, usePage } from '@inertiajs/react';
-import { AdminOverview } from '@/components/dashboard/admin-overview';
 import { EmployeeOverview } from '@/components/dashboard/employee-overview';
 import { HROverview } from '@/components/dashboard/hr-overview';
+import { SuperAdminOverview } from '@/components/dashboard/super-admin-overview';
 import { dashboard } from '@/routes';
 
 export default function Dashboard({ adminData, hrData, employeeData }: any) {
@@ -30,8 +30,8 @@ export default function Dashboard({ adminData, hrData, employeeData }: any) {
                 </div>
 
                 <div className="space-y-8">
-                    {isSuperAdmin && <AdminOverview data={adminData} />}
-                    {(isSuperAdmin || isHR) && <HROverview data={hrData} />}
+                    {isSuperAdmin && <SuperAdminOverview adminData={adminData} hrData={hrData} employeeData={employeeData} />}
+                    {!isSuperAdmin && (isSuperAdmin || isHR) && <HROverview data={hrData} employeeData={employeeData} />}
                     {isEmployee && <EmployeeOverview data={employeeData} />}
                 </div>
             </div>

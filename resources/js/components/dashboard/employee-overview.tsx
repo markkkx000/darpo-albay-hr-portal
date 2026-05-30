@@ -44,18 +44,18 @@ export function EmployeeOverview({ data }: { data: any }) {
                 </div>
 
                 {/* 2. Quick Links */}
-                <div className="grid grid-cols-2 gap-2 content-start">
-                    <Link href={userinfo().url} className="matte-card elev-2 p-3 text-center hover:bg-surface-2 focus-visible:outline-primary border border-border-2 block">
+                <div className="grid grid-cols-2 gap-2 h-full">
+                    <Link href={userinfo().url} className="matte-card elev-2 p-3 text-center hover:bg-surface-2 focus-visible:outline-primary border border-border-2 flex flex-col items-center justify-center h-full">
                         <div className="text-xs font-semibold">View Profile</div>
                     </Link>
-                    <Link href={documentrequests.index().url} className="matte-card elev-2 p-3 text-center hover:bg-surface-2 focus-visible:outline-primary border border-border-2 block">
+                    <Link href={documentrequests.index().url} className="matte-card elev-2 p-3 text-center hover:bg-surface-2 focus-visible:outline-primary border border-border-2 flex flex-col items-center justify-center h-full">
                         <div className="text-xs font-semibold">Request Docs</div>
                     </Link>
-                    <Link href={leave.index().url} className="matte-card elev-2 p-3 text-center hover:bg-surface-2 focus-visible:outline-primary border border-border-2 block">
+                    <Link href={leave.index().url} className="matte-card elev-2 p-3 text-center hover:bg-surface-2 focus-visible:outline-primary border border-border-2 flex flex-col items-center justify-center h-full">
                         <div className="text-xs font-semibold">Leave History</div>
                     </Link>
-                    <Link href={attendance.index().url} className="matte-card elev-2 p-3 text-center hover:bg-surface-2 focus-visible:outline-primary border border-border-2 block">
-                        <div className="text-xs font-semibold">Attendance</div>
+                    <Link href={attendance.history.index().url} className="matte-card elev-2 p-3 text-center hover:bg-surface-2 focus-visible:outline-primary border border-border-2 flex flex-col items-center justify-center h-full">
+                        <div className="text-xs font-semibold">Attendance History</div>
                     </Link>
                 </div>
             </div>
