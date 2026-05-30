@@ -147,6 +147,7 @@ resources/js/
     ActionButtons.tsx            # Reusable action buttons
     EmployeeSearch.tsx           # Shared employee search combobox
     Pagination.tsx               # Shared pagination
+    ui/sliding-tabs.tsx          # Reusable segmented control with framer-motion
   layouts/                       # app, auth, settings layouts
 
 routes/

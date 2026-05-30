@@ -5,7 +5,11 @@
 
 ## Role
 
-You are a frontend UI developer and visual designer. Build a **clean, professional, and premium website** modeled on Apple's iOS design language — precise spacing, crisp typography, physical depth, and purposeful motion. The interface must feel **crafted**, not generated. Do not add decorative elements that don't carry meaning. Do not use `backdrop-filter` glassmorphism as the primary depth strategy.
+You are a frontend UI developer and visual designer. Build a **clean, professional, and ultra-fast website** modeled on Apple's iOS design language — precise spacing, crisp typography, physical depth, and purposeful motion. The interface must feel **crafted**, not generated. Do not add decorative elements that don't carry meaning. 
+
+**STRICT DIRECTIVE: Performance > Aesthetics.** 
+- **NO GPU-heavy filters:** Absolutely no `backdrop-filter`, `filter: blur()`, or `mix-blend-mode`.
+- **NO false affordances:** If an element is not clickable, it must remain completely static. No hover states, no shadows, no cursor changes on static elements.
 
 ---
 
@@ -159,38 +163,23 @@ These are the techniques that make the UI feel physically crafted. Apply them se
 
 ---
 
-### Technique 01 — Noise Texture on Matte Surfaces
+### Technique 01 — Zero-GPU Matte Surfaces
 
-Grain overlays at 3–8% opacity eliminate the "flat digital" feeling on dark cards. No transparency needed.
+Instead of heavy SVG noise overlays and `mix-blend-mode` which destroy scroll performance, rely on subtle, clean linear gradients to create depth on dark cards without any GPU penalty.
 
 ```css
 .matte-card {
   background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
   border: 1px solid var(--border-2);
   border-radius: var(--r-xl);
-  position: relative;
-  overflow: hidden;
-}
-
-/* SVG grain overlay — zero external dependency */
-.matte-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
-  opacity: 0.4;
-  mix-blend-mode: overlay;
-  pointer-events: none;
 }
 ```
 
 **When to use:** Feature cards, hero containers, pricing panels, any dark surface that needs warmth.
 
 **Rules:**
-- Noise opacity: `0.3` to `0.5` (via the outer element's opacity)
-- Always use `mix-blend-mode: overlay`
-- Do not stack noise on noise
-- Hover: `transform: scale(1.03)` with `--spring` easing
+- **NEVER** use `mix-blend-mode` or SVG noise overlays. They cause severe frame drops during scrolling.
+- Rely on border contrast and subtle gradients instead.
 
 ---
 
@@ -213,7 +202,7 @@ Simulate a single top light source with an inset top-edge highlight. **Avoid raw
 
 **Rules:**
 - Use pure Tailwind utility classes. Do not create `.btn-specular` custom CSS.
-- Layer exactly 3-4 shadows ONLY for this specific primary Hero button. Standard buttons use `shadow-md`.
+- Layer a maximum of 2 shadows. Never use complex 4-layer shadow stacks as they hurt rendering performance.
 - Include the absolute positioned inner `div` for the top sheen.
 
 ---
@@ -364,6 +353,7 @@ Transitions should feel snappy and responsive. **Never use `transition-all`.** E
 - Use Tailwind's native `duration-200 ease-out` for a snappy, professional feel.
 - **Ban Spring Physics**. Avoid bouncy spring curves (`bounce`, `spring`); they cause UI fatigue. Use strict `easeOut`.
 - **Ban Global Entrance Animations**. Do not apply entrance animations (like `animate-fade-up`) to global wrappers or layout components, as it causes severe layout thrashing and frame drops. Use localized, staggered fade-ins on individual components instead.
+- **Instantaneous Text Color on Background Change**. Anything that changes font color on hover (because of hover background color, like `hover:text-black` with a gradient background) MUST be instantaneous. Do not apply `transition-colors` or `transition` to text color changes that are tied to background changes; it looks disjointed. If the element scales on hover, apply `transition-transform` instead of `transition`.
 - `:active` states (like `active:scale-95`) provide the haptic click feel without complex physics.
 
 ---
@@ -487,9 +477,7 @@ True squircle proportions (`border-radius: 12px` on a `48×48px` container) + a 
   top: 0;
   z-index: 100;
   height: 56px;
-  background: rgba(10, 10, 10, 0.85);
-  backdrop-filter: saturate(180%) blur(12px);
-  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  background: rgba(10, 10, 10, 0.98); /* Solid opacity, no blur */
   border-bottom: 1px solid var(--border-2);
   display: flex;
   align-items: center;
@@ -497,7 +485,7 @@ True squircle proportions (`border-radius: 12px` on a `48×48px` container) + a 
 }
 ```
 
-> Blur here is functional — it mirrors iOS tab bar behavior and keeps the nav readable as content scrolls beneath.
+> **Performance Rule:** Do NOT use `backdrop-filter: blur` for navbars. It forces the GPU to recalculate the blur on every single scroll frame, leading to jank. Use a near-solid background color instead.
 
 ### Standard Card (Elevation 2)
 
@@ -506,21 +494,17 @@ True squircle proportions (`border-radius: 12px` on a `48×48px` container) + a 
   background: var(--surface-2);
   border: 1px solid var(--border-2);
   border-radius: var(--r-xl);
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.4),
-    0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   padding: var(--s8) var(--s8);
-  transition: transform 0.25s var(--spring),
-              box-shadow 0.25s var(--ease-out),
-              background 0.2s var(--ease-out);
+  /* DO NOT add hover transitions here. Cards are static by default. */
 }
 
-.card:hover {
+/* ONLY apply hover states to .card-interactive */
+a.card-interactive:hover, button.card-interactive:hover {
   background: var(--surface-3);
-  transform: translateY(-3px);
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.5),
-    0 2px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), background 0.2s var(--ease-out);
 }
 ```
 
@@ -542,6 +526,27 @@ True squircle proportions (`border-radius: 12px` on a `48×48px` container) + a 
 .badge-yellow { background: var(--yellow-tint); color: var(--yellow-400); border: 1px solid rgba(250, 204, 21, 0.25); }
 .badge-gray   { background: rgba(255,255,255,0.05); color: #666; border: 1px solid var(--border-2); }
 ```
+
+### Sliding Pills / Segmented Controls
+
+For state toggles and horizontal navigation (like Appearance settings or module tabs), use the reusable `<SlidingTabs>` component. It leverages `framer-motion` for a premium layout sliding animation.
+
+```tsx
+import { SlidingTabs } from '@/components/ui/sliding-tabs';
+
+<SlidingTabs
+    layoutId="unique-framer-id"
+    tabs={[
+        { value: 'tab1', label: 'Tab One', active: activeTab === 'tab1' },
+        { value: 'tab2', label: 'Tab Two', active: activeTab === 'tab2' }
+    ]}
+    onChange={(val) => setActiveTab(val)}
+/>
+```
+
+**Rules:**
+- Requires a globally unique `layoutId` string for `framer-motion` layout animations to work correctly without cross-page collisions.
+- If an `href` property is provided in a tab object, the component automatically renders an Inertia `<Link>` instead of a `<button>`.
 
 ---
 
@@ -646,22 +651,15 @@ section { padding: var(--s20) 0; }
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-
-/* Blob float (Technique 04) */
-@keyframes blobFloat {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%       { transform: translate(10px, -10px) scale(1.08); }
-  66%       { transform: translate(-8px, 6px) scale(0.95); }
-}
 ```
 
 **Motion Rules:**
-- Max UI transition duration: `300ms`
-- Max entrance animation: `500ms`
+- Max UI transition duration: `200ms`
+- Max entrance animation: `300ms`
 - Stagger entrance items by no more than `60ms` each
 - Animate `transform` and `opacity` only — never `width`, `height`, or `padding`
 - All animations wrapped in `@media (prefers-reduced-motion: no-preference) { ... }`
-- No looping animations unless they communicate live/loading status
+- **Zero Looping Animations:** No floating blobs, no pulsing glows, no rotating borders. They constantly wake up the CPU/GPU. The only exception is a small loading spinner.
 
 ---
 
@@ -687,7 +685,7 @@ section { padding: var(--s20) 0; }
 - Semantic HTML: `<nav>`, `<main>`, `<section>`, `<article>`, `<header>`, `<footer>`
 - No nesting more than **4 `<div>` levels deep**
 - Vanilla JS only — no frameworks unless the brief requires it
-- CSS handles hover, focus, and toggle states — no JS for what CSS can do
+- **BANNED CSS PROPERTIES:** Do not use `backdrop-filter`, `filter`, or `mix-blend-mode`. They are rendering bottlenecks.
 
 ---
 
@@ -695,15 +693,17 @@ section { padding: var(--s20) 0; }
 
 | ❌ Don't | ✅ Do instead |
 |---|---|
-| Single `box-shadow` per element | Layer 2–4 shadows (ambient + contact + specular) |
-| `ease-in-out` on interactive elements | Use `--spring` for transforms |
+| Deep shadow stacks (3+ layers) | Max 2 layers (`shadow-md`) to prevent rendering lag |
+| `ease-in-out` on interactive elements | Use `ease-out` for snappy responses |
 | Flat `#333` borders | Use `rgba(255, 255, 255, 0.08)` — adapts to context |
 | Gradient text on every heading | Reserve it for Display-level text only |
 | Arbitrary spacing values | Multiples of 4px or 8px exclusively |
-| `backdrop-filter` as the primary depth tool | Use elevation, shadow, and noise instead |
-| Looping decorative animations | Motion only communicates status or responds to interaction |
+| `backdrop-filter` or `mix-blend-mode` | Use solid colors or simple gradients to save GPU |
+| Looping background animations | 100% static backgrounds to maintain 60fps |
+| Hover states on non-clickable cards | No false affordances! Interactive states ONLY on buttons/links |
 | More than 3 font weights | Stick to `400`, `600`, `700` |
 | Opaque green/yellow backgrounds | Keep accent colors on elements, not page surfaces |
+| `transition` on text color change + bg change | Make text color changes instantaneous when the background changes on hover |
 | Forgetting `:active` states | Every pressable element must have a pressed visual |
 
 ---
