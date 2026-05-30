@@ -60,7 +60,7 @@ class SyncHolidaysCommand extends Command
             }
 
             $this->info("Successfully synced {$count} holidays for {$year}.");
-            Log::info("Holiday Sync Success", ['year' => $year, 'count' => $count]);
+            Log::info('Holiday Sync Success', ['year' => $year, 'count' => $count]);
 
             return Command::SUCCESS;
         } catch (\Exception $e) {

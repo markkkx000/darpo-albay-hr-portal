@@ -69,8 +69,7 @@ it('returns only the authenticated user\'s own records', function () {
 
     $response->assertInertia(fn ($page) => $page
         ->component('Modules/Attendance/HistoryIndex')
-        ->where('records', fn ($records) =>
-            collect($records)->every(fn ($r) => $r['user_id'] === $this->employee->id)
+        ->where('records', fn ($records) => collect($records)->every(fn ($r) => $r['user_id'] === $this->employee->id)
         )
     );
 });
@@ -117,8 +116,7 @@ it('returns only records for the requested month', function () {
         ->assertOk();
 
     $response->assertInertia(fn ($page) => $page
-        ->where('records', fn ($records) =>
-            count($records) === 1 &&
+        ->where('records', fn ($records) => count($records) === 1 &&
             str_starts_with($records[0]['date'], '2025-03')
         )
     );
@@ -143,8 +141,7 @@ it('returns records ordered by date descending', function () {
         ->assertOk();
 
     $response->assertInertia(fn ($page) => $page
-        ->where('records', fn ($records) =>
-            $records[0]['date'] === '2025-03-20' &&
+        ->where('records', fn ($records) => $records[0]['date'] === '2025-03-20' &&
             $records[1]['date'] === '2025-03-12' &&
             $records[2]['date'] === '2025-03-05'
         )

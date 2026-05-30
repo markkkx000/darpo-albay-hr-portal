@@ -57,7 +57,7 @@ class ModuleServiceProvider extends ServiceProvider
                         $commands[] = $class;
                     }
                 }
-                if (!empty($commands)) {
+                if (! empty($commands)) {
                     $this->commands($commands);
                 }
             }
