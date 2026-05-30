@@ -135,6 +135,11 @@ class NotificationService
      */
     public function getRecentNotifications(User $user, int $limit = 20): Collection
     {
-        return $user->notifications()->latest()->limit($limit)->get();
+        return $user->notifications()
+            ->reorder()
+            ->orderByRaw("CASE WHEN data->>'subtype' = 'default_password' THEN 1 ELSE 0 END DESC")
+            ->latest()
+            ->limit($limit)
+            ->get();
     }
 }

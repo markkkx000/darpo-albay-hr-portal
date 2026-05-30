@@ -17,7 +17,7 @@ class AnnouncementCreateRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
-            'priority' => ['required', Rule::in(['low', 'normal', 'high'])],
+            'priority' => ['required', Rule::in(['normal', 'high'])],
             'target_type' => ['required', Rule::in(['all', 'division', 'position', 'user'])],
             'target_id' => [
                 'required_unless:target_type,all',

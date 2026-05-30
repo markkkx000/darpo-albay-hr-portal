@@ -22,7 +22,11 @@ class NotificationController extends Controller
     public function index(Request $request): Response
     {
         return Inertia::render('Modules/Notifications/Index', [
-            'notifications' => $request->user()->notifications()->latest()->paginate(20),
+            'notifications' => $request->user()->notifications()
+                ->reorder()
+                ->orderByRaw("CASE WHEN data->>'subtype' = 'default_password' THEN 1 ELSE 0 END DESC")
+                ->latest()
+                ->paginate(20),
         ]);
     }
 
@@ -78,5 +82,19 @@ class NotificationController extends Controller
         }
 
         return back();
+    }
+
+    /**
+     * Delete all read notifications.
+     */
+    public function destroyRead(Request $request): JsonResponse|RedirectResponse
+    {
+        $request->user()->readNotifications()->delete();
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Read notifications cleared.']);
+        }
+
+        return back()->with('success', 'Read notifications cleared.');
     }
 }

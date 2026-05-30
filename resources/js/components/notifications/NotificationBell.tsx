@@ -81,9 +81,30 @@ export default function NotificationBell() {
                     )}
                 </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-80 p-1.5 matte-card elev-3 border-none shadow-2xl" sideOffset={8}>
+            <DropdownMenuContent align="end" className="w-80 p-0 matte-card elev-3 border-none shadow-2xl" sideOffset={8}>
+                <div className="flex items-center justify-between px-4 py-3 border-b border-sidebar-border/30">
+                    <span className="text-sm font-semibold">Notifications</span>
+                    {unreadCount > 0 && (
+                        <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                httpPost(NotificationActions.readAll.url(), {
+                                    onSuccess: () => {
+                                        router.reload({ only: ['notifications', 'appNotifications'] });
+                                        fetchRecent();
+                                    }
+                                });
+                            }}
+                            className="h-7 text-[11px] px-2 text-primary hover:text-primary hover:bg-primary/10"
+                        >
+                            Mark all read
+                        </Button>
+                    )}
+                </div>
 
-                <div className="max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted">
+                <div className="max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted p-1.5">
                     {loading && notifications.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
                             <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent mb-2" />
@@ -118,7 +139,7 @@ export default function NotificationBell() {
                                                 <Badge variant="outline" className="flex h-[15px] items-center justify-center border-destructive px-1.5 py-0 text-[9px] font-bold uppercase tracking-wider text-destructive">High</Badge>
                                             )}
                                             {!notification.read_at && (
-                                                <span className="flex h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_8px_var(--green-glow)]" />
+                                                <span className="flex h-2.5 w-2.5 shrink-0 rounded-full bg-primary shadow-[0_0_8px_var(--green-glow)]" />
                                             )}
                                         </div>
                                         <div className="text-[11px] text-muted-foreground flex items-center gap-1.5">
@@ -185,7 +206,7 @@ export default function NotificationBell() {
                         ))
                     )}
                 </div>
-                <DropdownMenuSeparator className="m-0 opacity-50" />
+                <DropdownMenuSeparator className="m-0 border-sidebar-border/30" />
                 <div className="p-2">
                     <Link
                         href={NotificationActions.index.url()}

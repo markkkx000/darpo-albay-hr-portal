@@ -76,7 +76,6 @@ export function AnnouncementForm({
                             <SelectValue placeholder="Select priority" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="low">Low</SelectItem>
                             <SelectItem value="normal">Normal</SelectItem>
                             <SelectItem value="high">High</SelectItem>
                         </SelectContent>
