@@ -95,7 +95,7 @@
 ## Testing Guidelines
 - All tests run against **PostgreSQL** (configured in `phpunit.xml`). Never assume SQLite behavior.
 - Feature tests use `RefreshDatabase` (configured globally in `tests/Pest.php`).
-- Module-specific tests go in `tests/Feature/Modules/` subdirectories.
+- Module-specific tests go in `tests/Feature/Modules/` subdirectories where a dedicated subdirectory exists for that module. Standalone cross-cutting tests (e.g. `AttendanceHistoryTest.php`) may live directly under `tests/Feature/`.
 - Use `ilike` instead of `like` in test assertions and search queries for PostgreSQL compatibility.
 - CI runs via GitHub Actions (`tests.yml`) against a PostgreSQL service container.
 

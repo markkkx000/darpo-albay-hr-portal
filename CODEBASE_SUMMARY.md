@@ -69,7 +69,7 @@ app/
       Requests/AnnouncementCreateRequest.php, AnnouncementUpdateRequest.php, AnnouncementPublishRequest.php
       Services/AnnouncementService.php
     Attendance/
-      Controllers/AttendanceController.php, AttendanceManagementController.php
+      Controllers/AttendanceController.php, AttendanceManagementController.php, AttendanceHistoryController.php
       Models/Attendance.php
       Requests/ClockInRequest.php, ClockOutRequest.php, StoreAttendanceRecordRequest.php, UpdateAttendanceRecordRequest.php
       Services/AttendanceService.php
@@ -117,7 +117,7 @@ resources/js/
       Announcements/
         Index.tsx, Show.tsx, Manage.tsx, Create.tsx, Edit.tsx
       Attendance/
-        ClockInOut.tsx, ManageRecords.tsx
+        ClockInOut.tsx, ManageRecords.tsx, HistoryIndex.tsx
       DTR/
         Index.tsx                # CS Form 48 export form (employee or HR admin view)
       Leave/
@@ -191,6 +191,7 @@ tests/
 - **Clock In/Out**: Server-side timestamp recording via `ClockInOut.tsx`. Three states: not clocked in, clocked in, completed.
 - **History**: Recent 7-day activity table on the employee view.
 - **Record Management**: HR roles with `attendance.logs.manage` can manually add missing records and edit clock-in/out timestamps via `ManageRecords.tsx` and `AttendanceRecordModal.tsx`. Management button is rendered in-module (top-right of ClockInOut page), not in the sidebar.
+- **Employee History View**: All authenticated employees can view their own full attendance history via `GET /attendance/history` (`HistoryIndex.tsx`). The page defaults to the current month and supports month/year navigation via query string (`?month=&year=`). All queries are strictly scoped to the authenticated user — no employee can access another's records.
 - **Soft Delete**: HR admins and super admins with `attendance.logs.manage` can soft delete records.
 - **Filtering & Search**: Server-side filtering by status (Working/Incomplete/Completed), date range, and full-text employee name search. 500ms debounce with instant Enter key trigger. Paginated via `paginate(15)`.
 - **Controllers**: `AttendanceController` (clock in/out, index), `AttendanceManagementController` (CRUD for records).
