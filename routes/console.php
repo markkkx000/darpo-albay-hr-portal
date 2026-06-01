@@ -12,4 +12,5 @@ Schedule::command('notifications:prune')->daily();
 Schedule::command('leave:cleanup-attachments')->daily();
 Schedule::command('document-requests:cleanup-attachments')->daily();
 Schedule::command('activitylog:clean')->daily();
+Schedule::command('support:clean-deleted-tickets')->daily();
 Schedule::command('leave:sync-holidays')->yearlyOn(1, 1, '01:00');
