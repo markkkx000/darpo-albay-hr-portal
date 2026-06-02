@@ -11,3 +11,4 @@ Artisan::command('inspire', function () {
 Schedule::command('notifications:prune')->daily();
 Schedule::command('leave:cleanup-attachments')->daily();
 Schedule::command('activitylog:clean')->daily();
+Schedule::command('milestones:check-upcoming')->daily();
