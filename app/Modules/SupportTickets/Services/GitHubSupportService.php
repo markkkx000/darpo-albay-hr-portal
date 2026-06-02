@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\Services;
+namespace App\Modules\SupportTickets\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;

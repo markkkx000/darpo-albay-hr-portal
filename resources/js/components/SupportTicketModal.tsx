@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { store as supportTicketsStore } from '@/routes/support/tickets';
+import { store as supportTicketsStore } from '@/routes/supporttickets';
 
 type Props = {
     children: ReactNode;

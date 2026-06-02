@@ -11,7 +11,7 @@ import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { logout, userinfo } from '@/routes';
 import { edit as editPreferences } from '@/routes/preferences';
-import { index as supportTicketsIndex } from '@/routes/support/tickets';
+import { index as supportTicketsIndex } from '@/routes/supporttickets';
 import type { User } from '@/types';
 
 type Props = {

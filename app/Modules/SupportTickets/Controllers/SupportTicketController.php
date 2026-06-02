@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Core\Controllers;
+namespace App\Modules\SupportTickets\Controllers;
 
-use App\Core\Requests\SupportTicketRequest;
-use App\Core\Services\GitHubSupportService;
 use App\Models\SupportTicket;
+use App\Modules\SupportTickets\Requests\SupportTicketRequest;
+use App\Modules\SupportTickets\Services\GitHubSupportService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -23,17 +24,6 @@ class SupportTicketController extends Controller
      */
     public function index()
     {
-        // Lazily sync the status of all open tickets
-        $openTickets = SupportTicket::where('user_id', Auth::id())
-            ->where('status', 'open')
-            ->get();
-
-        foreach ($openTickets as $openTicket) {
-            $issue = $this->github->getIssue($openTicket->github_issue_id);
-            if ($issue && isset($issue['state']) && $issue['state'] !== $openTicket->status) {
-                $openTicket->update(['status' => $issue['state']]);
-            }
-        }
 
         $tickets = SupportTicket::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
@@ -167,5 +157,33 @@ class SupportTicketController extends Controller
         }
 
         return back()->with('success', 'Reply posted successfully!');
+    }
+
+    /**
+     * Manually refresh ticket statuses.
+     */
+    public function refresh(Request $request): RedirectResponse
+    {
+        $userId = Auth::id();
+        $cacheKey = "support_tickets_sync_{$userId}";
+
+        if (Cache::has($cacheKey)) {
+            return back()->with('error', 'Please wait a few minutes before refreshing again.');
+        }
+
+        $openTickets = SupportTicket::where('user_id', $userId)
+            ->where('status', 'open')
+            ->get();
+
+        foreach ($openTickets as $openTicket) {
+            $issue = $this->github->getIssue($openTicket->github_issue_id);
+            if ($issue && isset($issue['state']) && $issue['state'] !== $openTicket->status) {
+                $openTicket->update(['status' => $issue['state']]);
+            }
+        }
+
+        Cache::put($cacheKey, true, now()->addMinutes(5));
+
+        return back()->with('success', 'Tickets refreshed successfully.');
     }
 }

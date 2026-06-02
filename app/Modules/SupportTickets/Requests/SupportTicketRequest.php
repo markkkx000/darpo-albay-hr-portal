@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\Requests;
+namespace App\Modules\SupportTickets\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;

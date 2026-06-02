@@ -1,12 +1,13 @@
-import { Head, Link } from '@inertiajs/react';
-import { CircleDot, CheckCircle2, Search } from 'lucide-react';
+import { Head, Link, useForm } from '@inertiajs/react';
+import { CircleDot, CheckCircle2, Search, RefreshCw } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { DatePicker } from '@/components/date-picker';
 import { PageHeader } from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { show } from '@/routes/support/tickets';
+import { show, refresh } from '@/routes/supporttickets';
 
 type Ticket = {
     id: number;
@@ -28,6 +29,7 @@ export default function SupportTicketsIndex({ tickets }: Props) {
     const [dateFrom, setDateFrom] = useState<string | null>(null);
     const [dateTo, setDateTo] = useState<string | null>(null);
 
+    const { post, processing } = useForm();
     const uniqueTypes = useMemo(() => Array.from(new Set(tickets.map(t => t.type))), [tickets]);
 
     const baseFilteredTickets = useMemo(() => {
@@ -74,7 +76,18 @@ return false;
         <>
             <Head title="My Tickets" />
             <div className="flex flex-col gap-6 p-6">
-                <PageHeader title="My Tickets" description="View and track your support requests." />
+                <div className="flex items-center justify-between">
+                    <PageHeader title="My Tickets" description="View and track your support requests." />
+                    <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => post(refresh.url())} 
+                        disabled={processing}
+                    >
+                        <RefreshCw className={`w-4 h-4 mr-2 ${processing ? 'animate-spin' : ''}`} />
+                        Refresh Status
+                    </Button>
+                </div>
 
                 {/* Filters Toolbar */}
                 <div className="flex flex-col sm:flex-row gap-4">

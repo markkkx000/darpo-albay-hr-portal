@@ -260,6 +260,14 @@ tests/
 - **Service Layer**: `RoleService` handles role business logic.
 - **Permissions**: Requires `roles.manage` (assigned to `super_admin`).
 
+### Support Tickets Module (`app/Modules/SupportTickets/`)
+- **Purpose**: Allows users to submit, view, and reply to support tickets. It integrates directly with GitHub issues.
+- **Dashboard** (`Index.tsx`): Lists all tickets submitted by the authenticated user. Includes a manually triggered sync (Refresh button) to fetch the latest status from GitHub, utilizing a 5-minute cache to prevent API rate limit abuse.
+- **Detail View** (`Show.tsx`): Displays the ticket description, attachments, and the threaded comments from GitHub. Users can reply directly from here.
+- **GitHub Integration**: `GitHubSupportService` handles creating issues, posting comments, and fetching statuses. Open tickets' statuses are automatically synced via a background scheduled job.
+- **Attachments**: Supports image uploads (drag-and-drop, clipboard paste) limited to 10 images max 5MB each. Stored locally before being referenced in markdown on GitHub.
+- **Permissions**: Available to all authenticated users.
+
 ### DTR Export Module (`app/Modules/DTR/`)
 - **Purpose**: Generates CS Form 48 (Daily Time Record) exports from attendance data. Accessible to all users with `attendance.view`. HR admins with `dtr.manage` can export for any employee; regular users can only export their own.
 - **Export Formats**: PDF (via `barryvdh/laravel-dompdf`, rendered from `resources/views/exports/dtr_pdf.blade.php`) and CSV (raw data).

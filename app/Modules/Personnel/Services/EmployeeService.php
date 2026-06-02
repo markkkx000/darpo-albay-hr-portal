@@ -20,7 +20,7 @@ class EmployeeService
     /**
      * Get active employees with filters and pagination.
      */
-    public function getEmployees(array $filters = []): LengthAwarePaginator
+    public function getEmployees(array $filters = [], ?User $user = null): LengthAwarePaginator
     {
         $query = User::query()
             ->with(['division', 'unit', 'positions', 'appointmentStatus'])
@@ -50,13 +50,17 @@ class EmployeeService
             ->orderBy('first_name')
             ->orderBy('middle_name');
 
+        if ($user && ! $user->hasRole(['super_admin', 'hr_admin'])) {
+            $query->where('division_id', $user->division_id);
+        }
+
         return $query->paginate(15)->withQueryString();
     }
 
     /**
      * Get archived (soft-deleted) employees.
      */
-    public function getArchivedEmployees(array $filters = []): LengthAwarePaginator
+    public function getArchivedEmployees(array $filters = [], ?User $user = null): LengthAwarePaginator
     {
         $query = User::onlyTrashed()
             ->with(['division', 'unit', 'positions', 'appointmentStatus'])
@@ -77,6 +81,10 @@ class EmployeeService
                 });
             })
             ->orderByDesc('deleted_at');
+
+        if ($user && ! $user->hasRole(['super_admin', 'hr_admin'])) {
+            $query->where('division_id', $user->division_id);
+        }
 
         return $query->paginate(15)->withQueryString();
     }
