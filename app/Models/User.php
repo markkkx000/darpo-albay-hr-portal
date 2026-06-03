@@ -22,12 +22,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['employee_number', 'first_name', 'middle_name', 'last_name', 'email', 'is_active', 'division_id', 'unit_id', 'appointment_status_id', 'hire_date', 'contact_number', 'address', 'sex', 'date_of_birth', 'years_in_service', 'plantilla_number', 'gsis_bp_number', 'philhealth', 'hdmf_pagibig_no', 'tin_number', 'prc_id_no', 'prc_expiration', 'orig_date_of_appointment', 'date_of_latest_appointment', 'date_of_assumption', 'date_of_separation', 'date_hired_government', 'present_address', 'civil_status', 'fund_code', 'func_activity_code', 'item_number', 'office_per_appointment', 'plantilla_position', 'lbp_account_number', 'profile_picture', 'salary_grade', 'salary_step', 'monthly_salary', 'notification_preferences', 'mfa_enabled', 'mfa_code', 'mfa_expires_at'])]
-#[Hidden(['password', 'remember_token'])]
+#[Hidden(['password', 'remember_token', 'mfa_code', 'mfa_expires_at'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -40,6 +41,32 @@ class User extends Authenticatable
             ->logOnlyDirty()
             ->dontLogEmptyChanges()
             ->setDescriptionForEvent(fn (string $eventName) => "User has been {$eventName}");
+    }
+
+    public function beforeActivityLogged(Activity $activity, string $eventName)
+    {
+        if ($activity->attribute_changes) {
+            $changes = $activity->attribute_changes->toArray();
+            $sensitive = ['monthly_salary', 'tin_number', 'gsis_bp_number', 'philhealth', 'hdmf_pagibig_no', 'prc_id_no'];
+
+            if (isset($changes['attributes'])) {
+                foreach ($sensitive as $s) {
+                    if (array_key_exists($s, $changes['attributes'])) {
+                        $changes['attributes'][$s] = '[REDACTED]';
+                    }
+                }
+            }
+
+            if (isset($changes['old'])) {
+                foreach ($sensitive as $s) {
+                    if (array_key_exists($s, $changes['old'])) {
+                        $changes['old'][$s] = '[REDACTED]';
+                    }
+                }
+            }
+
+            $activity->attribute_changes = collect($changes);
+        }
     }
 
     protected $appends = ['name', 'age', 'avatar'];

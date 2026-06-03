@@ -60,7 +60,10 @@ class AuditController extends Controller
                 'subject_type' => $activity->subject_type ? class_basename($activity->subject_type) : null,
                 'subject_id' => $activity->subject_id,
                 'causer' => $activity->causer ? "{$activity->causer->first_name} {$activity->causer->last_name}" : 'System',
-                'properties' => $activity->properties,
+                'properties' => array_merge(
+                    $activity->properties ? $activity->properties->toArray() : [],
+                    $activity->attribute_changes ? $activity->attribute_changes->toArray() : []
+                ),
                 'created_at' => $activity->created_at->format('M j, Y h:i A'),
                 'created_at_human' => $activity->created_at->diffForHumans(),
             ];
@@ -151,10 +154,11 @@ class AuditController extends Controller
             // Chunk to avoid memory issues
             $query->chunk(500, function ($activities) use ($handle, $sanitize) {
                 foreach ($activities as $activity) {
-                    $properties = $activity->properties;
-                    $old = isset($properties['old']) ? json_encode($properties['old']) : '';
-                    $attributes = isset($properties['attributes']) ? json_encode($properties['attributes']) : '';
-                    $ip = $activity->properties['ip'] ?? '';
+                    $properties = $activity->properties ? $activity->properties->toArray() : [];
+                    $attribute_changes = $activity->attribute_changes ? $activity->attribute_changes->toArray() : [];
+                    $old = isset($attribute_changes['old']) ? json_encode($attribute_changes['old']) : '';
+                    $attributes = isset($attribute_changes['attributes']) ? json_encode($attribute_changes['attributes']) : '';
+                    $ip = $properties['ip'] ?? '';
 
                     fputcsv($handle, [
                         $activity->id,
