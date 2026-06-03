@@ -3,6 +3,7 @@
 namespace App\Modules\Personnel\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Modules\Personnel\Models\AppointmentStatus;
 use App\Modules\Personnel\Models\Division;
@@ -30,8 +31,10 @@ class PersonnelController extends Controller
     {
         $this->authorize('personnel.view');
 
+        $employees = $this->employeeService->getEmployees($request->only(['search', 'division_id', 'appointment_status_id']));
+
         return Inertia::render('Modules/Personnel/Index', [
-            'employees' => $this->employeeService->getEmployees($request->only(['search', 'division_id', 'appointment_status_id'])),
+            'employees' => UserResource::collection($employees),
             'filters' => $request->only(['search', 'division_id', 'appointment_status_id']),
             'divisions' => Division::where('is_active', true)->get(),
             'units' => Unit::where('is_active', true)->get(),
@@ -73,7 +76,7 @@ class PersonnelController extends Controller
         $this->authorize('personnel.view');
 
         return Inertia::render('Modules/Personnel/Show', [
-            'employee' => $user->load(['division', 'unit', 'positions', 'appointmentStatus']),
+            'employee' => UserResource::make($user->load(['division', 'unit', 'positions', 'appointmentStatus']))->resolve(),
         ]);
     }
 
@@ -85,7 +88,7 @@ class PersonnelController extends Controller
         $this->authorize('personnel.manage');
 
         return Inertia::render('Modules/Personnel/Edit', [
-            'employee' => $user->load('positions'),
+            'employee' => UserResource::make($user->load('positions'))->resolve(),
             'divisions' => Division::where('is_active', true)->get(),
             'units' => Unit::where('is_active', true)->get(),
             'positions' => Position::where('is_active', true)->get(),

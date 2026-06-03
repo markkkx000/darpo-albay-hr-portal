@@ -2,6 +2,7 @@
 
 namespace App\Modules\Roles\Services;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use DomainException;
 use Illuminate\Support\Collection;
@@ -25,7 +26,7 @@ class RoleService
      */
     public function getPaginatedUsersWithRoles(?string $search = null)
     {
-        return User::with('roles')
+        $users = User::with('roles')
             ->when($search, function ($query, $search) {
                 $keywords = explode(' ', $search);
                 foreach ($keywords as $keyword) {
@@ -41,6 +42,8 @@ class RoleService
             })
             ->paginate(15)
             ->withQueryString();
+
+        return UserResource::collection($users);
     }
 
     /**
