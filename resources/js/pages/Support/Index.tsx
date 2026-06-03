@@ -76,18 +76,21 @@ return false;
         <>
             <Head title="My Tickets" />
             <div className="flex flex-col gap-6 p-6">
-                <div className="flex items-center justify-between">
-                    <PageHeader title="My Tickets" description="View and track your support requests." />
-                    <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => post(refresh.url())} 
-                        disabled={processing}
-                    >
-                        <RefreshCw className={`w-4 h-4 mr-2 ${processing ? 'animate-spin' : ''}`} />
-                        Refresh Status
-                    </Button>
-                </div>
+                <PageHeader 
+                    title="My Tickets" 
+                    description="View and track your support requests." 
+                    actions={
+                        <Button 
+                            variant="ghost" 
+                            className="btn-ghost-specular border-none"
+                            onClick={() => post(refresh.url())} 
+                            disabled={processing}
+                        >
+                            <RefreshCw className={`w-4 h-4 mr-2 ${processing ? 'animate-spin' : ''}`} />
+                            Refresh Status
+                        </Button>
+                    }
+                />
 
                 {/* Filters Toolbar */}
                 <div className="flex flex-col sm:flex-row gap-4">
