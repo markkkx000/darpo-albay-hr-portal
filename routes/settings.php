@@ -18,5 +18,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('throttle:6,1')
         ->name('user-password.update');
 
+    Route::post('settings/mfa/setup', [SecurityController::class, 'setupMfa'])
+        ->middleware('throttle:5,1')
+        ->name('user-mfa.setup');
+
+    Route::post('settings/mfa/resend', [SecurityController::class, 'resendMfa'])
+        ->name('user-mfa.resend');
+
+    Route::post('settings/mfa/verify-enable', [SecurityController::class, 'enableMfa'])
+        ->name('user-mfa.enable');
+
+    Route::post('settings/mfa/verify-disable', [SecurityController::class, 'disableMfa'])
+        ->name('user-mfa.disable');
     Route::inertia('settings/appearance', 'settings/appearance')->name('appearance.edit');
 });
