@@ -428,7 +428,7 @@ class LeaveService
     {
         $path = $this->extractRelativePath($url);
 
-        if (! $path || ! str_starts_with($path, 'leaves/attachments/')) {
+        if (! $path || ! preg_match('/^leaves\/attachments\/[a-zA-Z0-9\/_\-\.]+$/', $path) || str_contains($path, '../')) {
             return false;
         }
 
