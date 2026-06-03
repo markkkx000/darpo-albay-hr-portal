@@ -6,7 +6,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import AuthLayout from '@/layouts/auth-layout';
 
 export default function MfaVerify() {
     const { data, setData, post, processing, errors } = useForm({
@@ -41,7 +40,7 @@ return;
     };
 
     return (
-        <AuthLayout title="Two-Factor Authentication" description="Enter the 6-digit code sent to your email">
+        <>
             <Head title="MFA Verify" />
 
             <form onSubmit={submit} className="flex flex-col gap-6">
@@ -100,6 +99,11 @@ return;
                     </div>
                 </div>
             </form>
-        </AuthLayout>
+        </>
     );
 }
+
+MfaVerify.layout = {
+    title: 'Two-Factor Authentication',
+    description: 'Enter the 6-digit code sent to your email',
+};
