@@ -1,5 +1,7 @@
 import { Link } from '@inertiajs/react';
-import { Clock, Calendar, CheckCircle2, Activity, ChevronRight } from 'lucide-react';
+import { Clock, Calendar, CheckCircle2, Activity, ChevronRight, User, FileText } from 'lucide-react';
+import { LatestAnnouncements } from '@/components/dashboard/latest-announcements';
+import { UpcomingEvents } from '@/components/dashboard/upcoming-events';
 import { userinfo } from '@/routes';
 import attendance from '@/routes/attendance';
 import documentrequests from '@/routes/documentrequests';
@@ -45,17 +47,21 @@ export function EmployeeOverview({ data }: { data: any }) {
 
                 {/* 2. Quick Links */}
                 <div className="grid grid-cols-2 gap-2 h-full">
-                    <Link href={userinfo().url} className="matte-card elev-2 p-3 text-center hover:bg-surface-2 focus-visible:outline-primary border border-border-2 flex flex-col items-center justify-center h-full">
-                        <div className="text-xs font-semibold">View Profile</div>
+                    <Link href={userinfo().url} className="matte-card elev-2 p-3 text-center hover:bg-muted/50 transition-all duration-200 active:scale-[0.98] focus-visible:outline-primary border border-border-2 flex flex-col items-center justify-center h-full group">
+                        <User className="h-6 w-6 mb-2 text-primary opacity-70 group-hover:scale-110 group-hover:opacity-100 transition-all duration-200" />
+                        <div className="text-sm font-bold">View Profile</div>
                     </Link>
-                    <Link href={documentrequests.index().url} className="matte-card elev-2 p-3 text-center hover:bg-surface-2 focus-visible:outline-primary border border-border-2 flex flex-col items-center justify-center h-full">
-                        <div className="text-xs font-semibold">Request Docs</div>
+                    <Link href={documentrequests.index().url} className="matte-card elev-2 p-3 text-center hover:bg-muted/50 transition-all duration-200 active:scale-[0.98] focus-visible:outline-primary border border-border-2 flex flex-col items-center justify-center h-full group">
+                        <FileText className="h-6 w-6 mb-2 text-primary opacity-70 group-hover:scale-110 group-hover:opacity-100 transition-all duration-200" />
+                        <div className="text-sm font-bold">Request Docs</div>
                     </Link>
-                    <Link href={leave.index().url} className="matte-card elev-2 p-3 text-center hover:bg-surface-2 focus-visible:outline-primary border border-border-2 flex flex-col items-center justify-center h-full">
-                        <div className="text-xs font-semibold">Leave History</div>
+                    <Link href={leave.index().url} className="matte-card elev-2 p-3 text-center hover:bg-muted/50 transition-all duration-200 active:scale-[0.98] focus-visible:outline-primary border border-border-2 flex flex-col items-center justify-center h-full group">
+                        <Calendar className="h-6 w-6 mb-2 text-primary opacity-70 group-hover:scale-110 group-hover:opacity-100 transition-all duration-200" />
+                        <div className="text-sm font-bold">Leave History</div>
                     </Link>
-                    <Link href={attendance.history.index().url} className="matte-card elev-2 p-3 text-center hover:bg-surface-2 focus-visible:outline-primary border border-border-2 flex flex-col items-center justify-center h-full">
-                        <div className="text-xs font-semibold">Attendance History</div>
+                    <Link href={attendance.history.index().url} className="matte-card elev-2 p-3 text-center hover:bg-muted/50 transition-all duration-200 active:scale-[0.98] focus-visible:outline-primary border border-border-2 flex flex-col items-center justify-center h-full group">
+                        <Clock className="h-6 w-6 mb-2 text-primary opacity-70 group-hover:scale-110 group-hover:opacity-100 transition-all duration-200" />
+                        <div className="text-sm font-bold">Attendance History</div>
                     </Link>
                 </div>
             </div>
@@ -98,56 +104,8 @@ export function EmployeeOverview({ data }: { data: any }) {
                     </div>
                 </div>
 
-                {/* 4. Upcoming */}
-                <div className="matte-card elev-2 flex flex-col min-h-[300px]">
-                    <div className="p-5 border-b border-border-1">
-                        <h3 className="text-lg font-bold">Upcoming</h3>
-                    </div>
-                    <div className="flex-1 p-5 overflow-y-auto max-h-[300px]">
-                        {stats.calendar_events?.length === 0 ? (
-                            <div className="h-full flex flex-col items-center justify-center text-center opacity-50">
-                                <Calendar className="h-10 w-10 mb-2" />
-                                <p className="text-sm font-medium">No upcoming events</p>
-                            </div>
-                        ) : (
-                            <div className="space-y-4">
-                                {stats.calendar_events.map((evt: any) => (
-                                    <div key={evt.id} className="flex items-center gap-4">
-                                        <div className="bg-surface-2 border border-border-2 rounded-lg p-2 text-center min-w-[50px]">
-                                            <div className="text-[10px] font-bold text-muted-foreground uppercase">{evt.date.split(' ')[0]}</div>
-                                            <div className="text-lg font-black leading-none">{evt.date.split(' ')[1].replace(',', '')}</div>
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="text-sm font-semibold truncate">{evt.title}</div>
-                                            <div className="text-[10px] font-bold text-primary uppercase tracking-wider">{evt.type === 'holiday' ? 'Holiday' : 'Event'}</div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                {/* 5. Latest Announcements */}
-                <div className="matte-card elev-2 flex flex-col flex-1">
-                    <div className="p-5 border-b border-border-1">
-                        <h3 className="text-lg font-bold">Latest Announcements</h3>
-                    </div>
-                    <div className="p-5 overflow-y-auto max-h-[300px]">
-                        {stats.latest_announcements?.length === 0 ? (
-                            <div className="text-sm text-muted-foreground">No recent announcements.</div>
-                        ) : (
-                            <div className="space-y-4">
-                                {stats.latest_announcements.map((ann: any) => (
-                                    <div key={ann.id}>
-                                        <div className="text-sm font-semibold truncate">{ann.title}</div>
-                                        <div className="text-[10px] text-muted-foreground mt-0.5">Posted by {ann.author} • {ann.date}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div>
+                <UpcomingEvents events={stats.calendar_events || []} />
+                <LatestAnnouncements announcements={stats.latest_announcements || []} />
             </div>
 
             {/* Row 3: Leave Balances (last) */}
