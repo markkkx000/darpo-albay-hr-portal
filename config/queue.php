@@ -81,6 +81,10 @@ return [
             'driver' => 'background',
         ],
 
+        'cloud' => [
+            'driver' => 'cloud',
+        ],
+
         'failover' => [
             'driver' => 'failover',
             'connections' => [
