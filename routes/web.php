@@ -1,6 +1,8 @@
 <?php
 
 use App\Core\Auth\Controllers\AuthController;
+use App\Core\Auth\Controllers\MfaController;
+use App\Core\Auth\Controllers\PasswordResetController;
 use App\Http\Controllers\DashboardController;
 use App\Modules\Personnel\Controllers\PersonnelController;
 use Illuminate\Support\Facades\Route;
@@ -15,8 +17,16 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login.store');
-});
 
+    Route::get('mfa/verify', [MfaController::class, 'show'])->name('mfa.show');
+    Route::post('mfa/verify', [MfaController::class, 'verify'])->name('mfa.verify');
+    Route::post('mfa/resend', [MfaController::class, 'resend'])->name('mfa.resend');
+
+    Route::get('forgot-password', [PasswordResetController::class, 'create'])->name('password.request');
+    Route::post('forgot-password', [PasswordResetController::class, 'store'])->name('password.email');
+    Route::get('reset-password/{token}', [PasswordResetController::class, 'edit'])->name('password.reset');
+    Route::post('reset-password', [PasswordResetController::class, 'update'])->name('password.update');
+});
 Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');

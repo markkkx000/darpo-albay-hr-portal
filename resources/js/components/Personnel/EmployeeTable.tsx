@@ -256,7 +256,7 @@ export function EmployeeTable({
                                             </td>
                                         )}
                                         <td className="px-6 py-4 text-right">
-                                            <div className="flex justify-end gap-2 sm:opacity-60 group-hover:opacity-100 transition-all duration-300">
+                                            <div className="flex justify-end gap-2 sm:opacity-60 group-hover:opacity-100 transition duration-300">
                                                 {!isArchivedView && (
                                                     <ViewActionButton
                                                         href={showRoute({ user: employee.id }).url}

@@ -122,7 +122,7 @@ test('default password notification is auto-deleted after password change', func
 
     expect($user->notifications)->toHaveCount(1);
 
-    $user->update(['password' => 'new-password-123']);
+    $user->forceFill(['password' => 'new-password-123'])->save();
 
     expect($user->fresh()->notifications)->toHaveCount(0);
 });

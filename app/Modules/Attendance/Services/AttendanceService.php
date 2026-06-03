@@ -123,6 +123,18 @@ class AttendanceService
     }
 
     /**
+     * Get attendance records for a specific month and year for a user.
+     */
+    public function getMonthlyHistory(User $user, int $month, int $year)
+    {
+        return Attendance::where('user_id', $user->id)
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->orderBy('date', 'desc')
+            ->get();
+    }
+
+    /**
      * Get all attendance records with potential filtering.
      *
      * @param  array{search?: string, status?: string, user_id?: string, from_date?: string, to_date?: string}  $filters

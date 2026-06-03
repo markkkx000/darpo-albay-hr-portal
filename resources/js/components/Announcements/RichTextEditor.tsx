@@ -90,7 +90,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
         setDialogOpen(true);
     }, []);
 
-    const handleConfirm = (e?: React.FormEvent) => {
+    const handleConfirm = (e?: React.SyntheticEvent) => {
         if (e) {
             e.preventDefault();
         }
@@ -514,7 +514,7 @@ return;
     }, [editor, uploadImageFile]);
 
     return (
-        <div className={cn('border rounded-xl overflow-hidden matte-card elev-1 transition-all duration-200 focus-within:ring-2 focus-within:ring-primary/20', error ? 'border-destructive' : 'border-input')}>
+        <div className={cn('border rounded-xl overflow-hidden matte-card elev-1 transition duration-200 focus-within:ring-2 focus-within:ring-primary/20', error ? 'border-destructive' : 'border-input')}>
             <MenuBar editor={editor} />
             <EditorContent editor={editor} />
             {error && <p className="text-xs text-destructive p-2 font-medium bg-destructive/5 border-t border-destructive/10">{error}</p>}

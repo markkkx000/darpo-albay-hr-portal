@@ -6,14 +6,14 @@ import { Separator } from '@/components/ui/separator';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn, toUrl } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
-import { edit } from '@/routes/profile';
+import { edit as editPreferences } from '@/routes/preferences';
 import { edit as editSecurity } from '@/routes/security';
 import type { NavItem } from '@/types';
 
 const sidebarNavItems: NavItem[] = [
     {
-        title: 'Profile',
-        href: edit(),
+        title: 'Preferences',
+        href: editPreferences(),
         icon: null,
     },
     {
@@ -52,7 +52,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                     key={`${toUrl(item.href)}-${index}`}
                                     href={item.href}
                                     className={cn(
-                                        'relative flex items-center rounded-2xl px-4 py-2.5 transition-all duration-300',
+                                        'relative flex items-center rounded-2xl px-4 py-2.5 transition duration-300',
                                         active
                                             ? 'text-black font-bold'
                                             : 'text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5',
@@ -62,7 +62,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                         <motion.div 
                                             layoutId="settings-active"
                                             className="sidebar-active-gradient absolute inset-0 rounded-2xl"
-                                            transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
+                                            transition={{ duration: 0.2, ease: 'easeOut' }}
                                         />
                                     )}
                                     <span className="relative z-10 flex items-center">

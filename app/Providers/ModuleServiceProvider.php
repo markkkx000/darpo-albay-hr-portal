@@ -45,6 +45,22 @@ class ModuleServiceProvider extends ServiceProvider
                 $registry = $this->app->make(ModuleRegistry::class);
                 (require $navPath)($registry);
             }
+
+            // Register Commands
+            $commandsPath = $modulePath.'/Commands';
+            if ($this->app->runningInConsole() && File::isDirectory($commandsPath)) {
+                $commandFiles = File::allFiles($commandsPath);
+                $commands = [];
+                foreach ($commandFiles as $file) {
+                    $class = 'App\\Modules\\'.$moduleName.'\\Commands\\'.$file->getFilenameWithoutExtension();
+                    if (class_exists($class)) {
+                        $commands[] = $class;
+                    }
+                }
+                if (! empty($commands)) {
+                    $this->commands($commands);
+                }
+            }
         }
     }
 

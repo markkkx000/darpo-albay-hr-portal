@@ -29,8 +29,9 @@ class CleanupOrphanLeaveAttachments extends Command
     {
         $this->info('Starting orphan leave request attachments cleanup...');
 
-        // Fetch all attachment URLs stored in the database
-        $referencedUrls = LeaveRequest::whereNotNull('attachment_urls')
+        // Fetch all attachment URLs stored in the database (including soft deleted)
+        $referencedUrls = LeaveRequest::withTrashed()
+            ->whereNotNull('attachment_urls')
             ->pluck('attachment_urls')
             ->flatten()
             ->filter()

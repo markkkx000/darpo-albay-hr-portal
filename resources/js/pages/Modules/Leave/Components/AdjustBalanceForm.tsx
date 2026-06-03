@@ -34,7 +34,7 @@ export default function AdjustBalanceForm({
     // Auto-calculate Total (Earned) visually
     const total = (Number(data.balance) || 0) + (Number(data.used) || 0);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         put(LeaveRoutes.credits.update().url, {
             preserveScroll: true,

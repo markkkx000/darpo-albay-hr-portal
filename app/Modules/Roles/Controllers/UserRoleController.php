@@ -17,6 +17,8 @@ class UserRoleController extends Controller
 
     public function index(Request $request): Response
     {
+        $this->authorize('roles.manage');
+
         return Inertia::render('Modules/Roles/UserRolesIndex', [
             'users' => $this->service->getPaginatedUsersWithRoles($request->search),
             'allUsers' => User::select(['id', 'first_name', 'last_name', 'employee_number'])->get(),
@@ -27,6 +29,8 @@ class UserRoleController extends Controller
 
     public function assign(UserRoleSyncRequest $request, User $user): RedirectResponse
     {
+        $this->authorize('roles.manage');
+
         try {
             $this->service->syncUserRole($user, $request->role);
 

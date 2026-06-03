@@ -41,7 +41,7 @@ export function ReleaseModal({ isOpen, onClose, documentRequestId }: ReleaseModa
         }
     };
 
-    const submit = (e: React.FormEvent) => {
+    const submit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         
         if (!documentRequestId) {

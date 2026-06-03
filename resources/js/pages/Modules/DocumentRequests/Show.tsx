@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import DocumentRequestsRoutes from '@/routes/documentrequests';
 import { ReleaseModal } from './Components/ReleaseModal';
@@ -42,7 +43,7 @@ function getStatusClass(status: string) {
             return 'status-badge-permanent';
         case 'Ready for Pickup':
             return 'badge-premium text-orange-700 bg-orange-100 border-orange-200';
-        case 'Released/Sent':
+        case 'Released':
             return 'badge-premium text-indigo-700 bg-indigo-100 border-indigo-200';
         case 'Completed':
             return 'badge-premium text-emerald-700 bg-emerald-100 border-emerald-200';
@@ -68,6 +69,29 @@ export default function DocumentRequestsShow({
     const [isPickupModalOpen, setIsPickupModalOpen] = useState(false);
     const [pickupName, setPickupName] = useState('');
 
+    const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+    const [statusReason, setStatusReason] = useState('');
+    const [statusAction, setStatusAction] = useState<'Rejected' | 'Cancelled' | null>(null);
+
+    const handleStatusUpdate = (e: React.SyntheticEvent) => {
+        e.preventDefault();
+
+        if (statusAction) {
+            router.post(
+                DocumentRequestsRoutes.status({ documentRequest: documentRequest.id }).url,
+                { status: statusAction, status_reason: statusReason },
+                {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        setIsStatusModalOpen(false);
+                        setStatusReason('');
+                        setStatusAction(null);
+                    }
+                }
+            );
+        }
+    };
+
     const handleAcknowledge = () => {
         router.post(
             DocumentRequestsRoutes.acknowledge({
@@ -82,7 +106,7 @@ export default function DocumentRequestsShow({
         );
     };
 
-    const handleLogPickup = (e: React.FormEvent) => {
+    const handleLogPickup = (e: React.SyntheticEvent) => {
         e.preventDefault();
 
         if (pickupName) {
@@ -130,9 +154,8 @@ export default function DocumentRequestsShow({
                                     variant="destructive"
                                     className="shadow-sm"
                                     onClick={() => {
-                                        if (confirm('Are you sure you want to reject this request?')) {
-                                            router.post(DocumentRequestsRoutes.status({ documentRequest: documentRequest.id }).url, { status: 'Rejected' }, { preserveScroll: true })
-                                        }
+                                        setStatusAction('Rejected');
+                                        setIsStatusModalOpen(true);
                                     }}
                                 >
                                     <XCircle className="h-4 w-4" />
@@ -164,9 +187,8 @@ export default function DocumentRequestsShow({
                                     variant="destructive"
                                     className="shadow-sm"
                                     onClick={() => {
-                                        if (confirm('Are you sure you want to cancel this request?')) {
-                                            router.post(DocumentRequestsRoutes.status({ documentRequest: documentRequest.id }).url, { status: 'Cancelled' }, { preserveScroll: true })
-                                        }
+                                        setStatusAction('Cancelled');
+                                        setIsStatusModalOpen(true);
                                     }}
                                 >
                                     <XCircle className="h-4 w-4" />
@@ -393,12 +415,34 @@ export default function DocumentRequestsShow({
                                             </div>
                                         </div>
                                     )}
+
+                                    {(documentRequest.status === 'Rejected' || documentRequest.status === 'Cancelled') && (
+                                        <div className="relative">
+                                            <div className="absolute -left-[1.35rem] mt-1 h-3 w-3 rounded-full bg-destructive/20 ring-4 ring-background">
+                                                <div className="h-full w-full rounded-full bg-destructive" />
+                                            </div>
+                                            <p className="text-sm font-medium text-destructive">
+                                                {documentRequest.status}
+                                            </p>
+                                            <p className="text-xs text-muted-foreground">
+                                                {formatDate(
+                                                    documentRequest.updated_at,
+                                                )}
+                                            </p>
+                                            {documentRequest.status_reason && (
+                                                <div className="mt-2 rounded-md bg-destructive/10 p-2 text-xs text-destructive border border-destructive/20">
+                                                    <span className="font-semibold block mb-0.5">Reason:</span>
+                                                    {documentRequest.status_reason}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             </CardContent>
 
                             {/* Actions */}
                             {!isHr &&
-                                documentRequest.status === 'Released/Sent' && (
+                                documentRequest.status === 'Released' && (
                                     <CardFooter className="bg-muted/30 pt-6">
                                         <Button
                                             size="lg"
@@ -501,6 +545,45 @@ export default function DocumentRequestsShow({
                             </Button>
                             <Button type="submit" className="btn-premium">
                                 Confirm Pickup
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
+            <Dialog open={isStatusModalOpen} onOpenChange={setIsStatusModalOpen}>
+                <DialogContent>
+                    <form onSubmit={handleStatusUpdate}>
+                        <DialogHeader>
+                            <DialogTitle>{statusAction === 'Rejected' ? 'Reject Request' : 'Cancel Request'}</DialogTitle>
+                            <DialogDescription>
+                                Are you sure you want to {statusAction === 'Rejected' ? 'reject' : 'cancel'} this request?
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                            <div className="grid gap-2">
+                                <Label htmlFor="reason">Reason (Optional)</Label>
+                                <Textarea
+                                    id="reason"
+                                    value={statusReason}
+                                    onChange={(e) => setStatusReason(e.target.value)}
+                                    placeholder="Enter the reason here..."
+                                    className="min-h-[100px]"
+                                />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => {
+                                    setIsStatusModalOpen(false);
+                                    setStatusReason('');
+                                }}
+                            >
+                                Back
+                            </Button>
+                            <Button type="submit" variant="destructive">
+                                Confirm {statusAction === 'Rejected' ? 'Rejection' : 'Cancellation'}
                             </Button>
                         </DialogFooter>
                     </form>

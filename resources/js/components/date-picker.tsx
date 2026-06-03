@@ -160,7 +160,7 @@ return;
           <button
             type="button"
             disabled={disabled}
-            className="absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:opacity-50 disabled:pointer-events-none"
+            className="absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-muted/50 text-muted-foreground hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:opacity-50 disabled:pointer-events-none"
           >
             <CalendarIcon className="h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
           </button>

@@ -199,7 +199,7 @@ export default function LeaveTardiness({
     return (
         <>
             <Head title="Tardiness Records" />
-            <div className="w-full p-4 md:p-6">
+            <div className="w-full p-4">
                 <PageHeader
                     title="Tardiness &amp; Undertime"
                     description="Manage tardiness and undertime records per month."

@@ -158,7 +158,7 @@ export default function LeaveCalendar({
     return (
         <>
             <Head title="Leave Calendar" />
-            <div className="w-full p-4 md:p-6">
+            <div className="w-full p-4">
                 <PageHeader
                     title="Leave Calendar"
                     description="Visual overview of employee leaves."

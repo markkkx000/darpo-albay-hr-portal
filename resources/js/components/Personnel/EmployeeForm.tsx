@@ -43,7 +43,7 @@ interface Props {
     units: Unit[];
     positions: Position[];
     appointmentStatuses: AppointmentStatus[];
-    onSubmit: (e: React.FormEvent) => void;
+    onSubmit: (e: React.SyntheticEvent) => void;
     data: any;
     setData: (key: string | ((prev: any) => any), value?: any) => void;
     errors: any;
@@ -124,7 +124,7 @@ export function EmployeeForm({
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.SyntheticEvent) => {
         onSubmit(e);
     };
 
@@ -193,8 +193,8 @@ export function EmployeeForm({
                     
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                         {/* Left: Profile Picture Column */}
-                        <div className="flex flex-col items-center justify-center p-4 border border-dashed rounded-3xl bg-surface-2/10 hover:bg-surface-2/20 transition-all duration-300 gap-3 group relative h-fit">
-                            <div className="relative h-28 w-28 rounded-full overflow-hidden shadow-inner border border-border group-hover:scale-105 transition-all duration-300">
+                        <div className="flex flex-col items-center justify-center p-4 border border-dashed rounded-3xl bg-surface-2/10 hover:bg-surface-2/20 transition duration-300 gap-3 group relative h-fit">
+                            <div className="relative h-28 w-28 rounded-full overflow-hidden shadow-inner border border-border group-hover:scale-105 transition duration-300">
                                 <img 
                                     src={previewUrl || '/img/pfp_placeholder.png'} 
                                     alt="Profile Preview" 
@@ -426,7 +426,7 @@ export function EmployeeForm({
                         <div className="space-y-3 md:col-span-3 pt-2">
                             <div className="flex items-center justify-between">
                                 <Label>Positions <Required /></Label>
-                                <Button type="button" variant="default" size="sm" onClick={handleAddPosition} className="btn-specular rounded-2xl px-6 py-2 h-9 transition-all group border-none shadow-md">
+                                <Button type="button" variant="default" size="sm" onClick={handleAddPosition} className="btn-specular rounded-2xl px-6 py-2 h-9 transition group border-none shadow-md">
                                     <Plus className="h-4 w-4 mr-2 text-[#1c1c1e] transition-colors" />
                                     <span className="text-[#1c1c1e] font-bold">Add Position</span>
                                 </Button>
@@ -455,7 +455,7 @@ export function EmployeeForm({
                                                 title={pos.is_primary ? "Primary Position" : "Set as Primary"}
                                                 onClick={() => handleSetPrimaryPosition(index)}
                                                 className={cn(
-                                                    "rounded-2xl transition-all h-9 w-9 p-0 group",
+                                                    "rounded-2xl transition h-9 w-9 p-0 group",
                                                     pos.is_primary
                                                         ? "item-hover-gradient border-none shadow-md"
                                                         : "btn-ghost-specular border-border/20"
@@ -472,10 +472,10 @@ export function EmployeeForm({
                                                     type="button"
                                                     variant="ghost-destructive"
                                                     size="icon"
-                                                    className="btn-ghost-danger-specular border-border/20 h-9 w-9 p-0 rounded-full hover:scale-110 transition-all duration-300 group"
+                                                    className="btn-ghost-danger-specular border-border/20 h-9 w-9 p-0 rounded-full hover:scale-110 transition duration-300 group"
                                                     onClick={() => handleRemovePosition(index)}
                                                 >
-                                                    <Trash2 className="h-4 w-4 text-muted-foreground group-hover:text-white transition-colors" />
+                                                    <Trash2 className="h-4 w-4 text-muted-foreground group-hover:text-white" />
                                                 </Button>
                                             )}
                                         </div>

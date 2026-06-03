@@ -51,7 +51,7 @@ test('authenticated admin receives admin and HR metrics stacked', function () {
         ->has('adminData')
         ->has('adminData.total_users')
         ->has('adminData.active_sessions')
-        ->has('adminData.system_health')
+        ->has('adminData.failed_jobs')
         ->has('hrData') // Super admin has HR dashboard stacked under admin
         ->has('hrData.total_employees')
         ->has('employeeData') // Employee data is passed but UI may not render it

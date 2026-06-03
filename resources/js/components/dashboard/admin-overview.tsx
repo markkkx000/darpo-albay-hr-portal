@@ -1,7 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { Activity, UserPlus, FileText } from 'lucide-react';
 import { StatCard } from '@/components/dashboard/stat-card';
-import profile from '@/routes/profile';
+import { userinfo } from '@/routes';
 import roles from '@/routes/roles';
 
 export function AdminOverview({ data }: { data: any }) {
@@ -40,7 +40,7 @@ export function AdminOverview({ data }: { data: any }) {
                         ) : (
                             <div className="space-y-4 overflow-y-auto max-h-[350px] pr-2">
                                 {stats.recentActivity.map((activity: any) => (
-                                    <div key={activity.id} className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/30 transition-colors">
+                                    <div key={activity.id} className="flex items-start gap-4 p-3 rounded-lg">
                                         <div className="p-2 rounded-full bg-primary/10 text-primary">
                                             {activity.type === 'user_registered' ? (
                                                 <UserPlus className="h-4 w-4" />
@@ -66,16 +66,16 @@ export function AdminOverview({ data }: { data: any }) {
                     <div className="relative z-10 p-6">
                         <h3 className="t-headline mb-4">Admin Quick Actions</h3>
                         <div className="grid gap-3">
-                            <Link href={roles.users.index().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
+                            <Link href={roles.users.index().url} className="matte-card elev-2 p-4 text-left hover:-translate-y-1 transition-transform duration-200 ease-out block border border-border-2">
                                 <div className="font-semibold text-foreground transition-colors">User Management</div>
                                 <div className="text-sm text-muted-foreground mt-1">Manage user accounts and permissions</div>
                             </Link>
-                            <Link href={roles.index().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
+                            <Link href={roles.index().url} className="matte-card elev-2 p-4 text-left hover:-translate-y-1 transition-transform duration-200 ease-out block border border-border-2">
                                 <div className="font-semibold text-foreground transition-colors">Role Configuration</div>
                                 <div className="text-sm text-muted-foreground mt-1">Configure system roles and permission sets</div>
                             </Link>
-                            <Link href={profile.edit().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
-                                <div className="font-semibold text-foreground transition-colors">My Profile</div>
+                            <Link href={userinfo().url} className="matte-card elev-2 p-4 text-left hover:-translate-y-1 transition-transform duration-200 ease-out block border border-border-2">
+                                <div className="font-semibold text-foreground transition-colors">My Personnel Info</div>
                                 <div className="text-sm text-muted-foreground mt-1">Update personal information</div>
                             </Link>
                         </div>

@@ -1,4 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePoll } from '@inertiajs/react';
 import {
     Plus,
     Files,
@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import DocumentRequestsRoutes from '@/routes/documentrequests';
 import { ReleaseModal } from './Components/ReleaseModal';
@@ -74,7 +75,7 @@ function getStatusIcon(status: string) {
             return <FileText className="mr-1 h-3 w-3" />;
         case 'Ready for Pickup':
             return <Box className="mr-1 h-3 w-3" />;
-        case 'Released/Sent':
+        case 'Released':
             return <Send className="mr-1 h-3 w-3" />;
         case 'Completed':
             return <CheckCircle className="mr-1 h-3 w-3" />;
@@ -94,7 +95,7 @@ function getStatusClass(status: string) {
             return 'status-badge-permanent';
         case 'Ready for Pickup':
             return 'badge-premium text-orange-700 bg-orange-100 border-orange-200';
-        case 'Released/Sent':
+        case 'Released':
             return 'badge-premium text-indigo-700 bg-indigo-100 border-indigo-200';
         case 'Completed':
             return 'badge-premium text-emerald-700 bg-emerald-100 border-emerald-200';
@@ -112,6 +113,9 @@ export default function DocumentRequestsIndex({
     users,
     filters = {},
 }: Props) {
+    // Automatically refresh the list every 15 seconds to prevent stale data
+    usePoll(15000, { only: ['documentRequests'] });
+
     const [isReleaseModalOpen, setIsReleaseModalOpen] = useState(false);
     const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null);
     const [isPickupModalOpen, setIsPickupModalOpen] = useState(false);
@@ -119,6 +123,7 @@ export default function DocumentRequestsIndex({
     const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
     const [rejectAction, setRejectAction] = useState<'Reject' | 'Cancel'>('Reject');
     const [requestToConfirm, setRequestToConfirm] = useState<number | null>(null);
+    const [statusReason, setStatusReason] = useState('');
 
     const openRejectConfirm = (id: number, action: 'Reject' | 'Cancel') => {
         setRequestToConfirm(id);
@@ -126,22 +131,30 @@ export default function DocumentRequestsIndex({
         setIsRejectModalOpen(true);
     };
 
-    const handleConfirmReject = () => {
+    const handleConfirmReject = (e: React.SyntheticEvent) => {
+        e.preventDefault();
+
         if (!requestToConfirm) {
-return;
-}
+            return;
+        }
         
         router.post(
             DocumentRequestsRoutes.status({ documentRequest: requestToConfirm }).url,
-            { status: rejectAction === 'Reject' ? 'Rejected' : 'Cancelled' },
+            { 
+                status: rejectAction === 'Reject' ? 'Rejected' : 'Cancelled',
+                status_reason: statusReason
+            },
             { 
                 preserveScroll: true,
-                onSuccess: () => setIsRejectModalOpen(false)
+                onSuccess: () => {
+                    setIsRejectModalOpen(false);
+                    setStatusReason('');
+                }
             }
         );
     };
 
-    const handleLogPickup = (e: React.FormEvent) => {
+    const handleLogPickup = (e: React.SyntheticEvent) => {
         e.preventDefault();
 
         if (pickupName && selectedRequestId) {
@@ -246,7 +259,7 @@ return;
                                         <SelectItem value="Pending">Pending</SelectItem>
                                         <SelectItem value="Received">Received</SelectItem>
                                         <SelectItem value="Ready for Pickup">Ready for Pickup</SelectItem>
-                                        <SelectItem value="Released/Sent">Released/Sent</SelectItem>
+                                        <SelectItem value="Released">Released</SelectItem>
                                         <SelectItem value="Completed">Completed</SelectItem>
                                         <SelectItem value="Rejected">Rejected</SelectItem>
                                         <SelectItem value="Cancelled">Cancelled</SelectItem>
@@ -579,20 +592,37 @@ return;
             {/* Custom Confirm Reject/Cancel Dialog */}
             <Dialog open={isRejectModalOpen} onOpenChange={setIsRejectModalOpen}>
                 <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Confirm {rejectAction}</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to {rejectAction.toLowerCase()} this document request? This action cannot be undone.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsRejectModalOpen(false)}>
-                            Keep Request
-                        </Button>
-                        <Button variant="destructive" onClick={handleConfirmReject}>
-                            Yes, {rejectAction}
-                        </Button>
-                    </DialogFooter>
+                    <form onSubmit={handleConfirmReject}>
+                        <DialogHeader>
+                            <DialogTitle>Confirm {rejectAction}</DialogTitle>
+                            <DialogDescription>
+                                Are you sure you want to {rejectAction.toLowerCase()} this document request? This action cannot be undone.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                            <div className="grid gap-2">
+                                <Label htmlFor="indexReason">Reason (Optional)</Label>
+                                <Textarea
+                                    id="indexReason"
+                                    value={statusReason}
+                                    onChange={(e) => setStatusReason(e.target.value)}
+                                    placeholder="Enter the reason here..."
+                                    className="min-h-[100px]"
+                                />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button type="button" variant="outline" onClick={() => {
+                                setIsRejectModalOpen(false);
+                                setStatusReason('');
+                            }}>
+                                Keep Request
+                            </Button>
+                            <Button type="submit" variant="destructive">
+                                Yes, {rejectAction}
+                            </Button>
+                        </DialogFooter>
+                    </form>
                 </DialogContent>
             </Dialog>
         </>

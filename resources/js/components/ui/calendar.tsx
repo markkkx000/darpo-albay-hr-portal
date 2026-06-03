@@ -61,7 +61,7 @@ function CalendarCaption({ displayMonth, onMonthChange }: { displayMonth: Date, 
   return (
     <div className="flex items-center justify-center gap-1.5">
       <Select value={currentMonth.toString()} onValueChange={handleMonthChange}>
-        <SelectTrigger className="h-10 px-4 bg-secondary border border-border rounded-2xl text-base font-bold text-secondary-foreground hover:bg-secondary/80 transition-all focus:ring-0 gap-2 min-w-[90px] justify-center cursor-pointer shadow-sm">
+        <SelectTrigger className="h-10 px-4 bg-secondary border border-border rounded-2xl text-base font-bold text-secondary-foreground hover:bg-secondary/80 focus:ring-0 gap-2 min-w-[90px] justify-center cursor-pointer shadow-sm">
           <SelectValue>{months[currentMonth]}</SelectValue>
         </SelectTrigger>
         <SelectContent className="matte-card elev-4 border-border max-h-[350px]">
@@ -74,7 +74,7 @@ function CalendarCaption({ displayMonth, onMonthChange }: { displayMonth: Date, 
       </Select>
 
       <Select value={currentYear.toString()} onValueChange={handleYearChange}>
-        <SelectTrigger className="h-10 px-4 bg-secondary border border-border rounded-2xl text-base font-bold text-secondary-foreground hover:bg-secondary/80 transition-all focus:ring-0 gap-2 min-w-[85px] justify-center cursor-pointer shadow-sm">
+        <SelectTrigger className="h-10 px-4 bg-secondary border border-border rounded-2xl text-base font-bold text-secondary-foreground hover:bg-secondary/80 focus:ring-0 gap-2 min-w-[85px] justify-center cursor-pointer shadow-sm">
           <SelectValue>{currentYear}</SelectValue>
         </SelectTrigger>
         <SelectContent className="matte-card elev-4 border-border max-h-[350px]">
@@ -172,7 +172,7 @@ function Calendar({
                 cell: "h-10 w-10 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
                 day: cn(
                   buttonVariants({ variant: "ghost" }),
-                  "h-10 w-10 p-0 font-bold aria-selected:opacity-100 rounded-full transition-all duration-200 hover:bg-[#22c55e]/10"
+                  "h-10 w-10 p-0 font-bold aria-selected:opacity-100 rounded-full hover:bg-[#22c55e]/10"
                 ),
                 day_range_end: "day-range-end",
                 day_selected:

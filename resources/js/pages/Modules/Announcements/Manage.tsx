@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import PageHeader from '@/components/page-header';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -93,20 +94,18 @@ export default function Manage({ announcements }: Props) {
             <Head title="Manage Announcements" />
 
             <div className="p-4 w-full space-y-6">
-                <div className="matte-card elev-1 mb-2 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 rounded-2xl">
-                    <div className="flex items-center gap-3">
-                        <h1 className="t-headline">Manage Announcements</h1>
-                        <p className="text-muted-foreground text-sm mt-2">
-                            Create, edit, and publish announcements for the organization.
-                        </p>
-                    </div>
-                    <Link href={create().url}>
-                        <Button className="btn-ghost-specular gap-2 px-6 py-5 border-none">
-                            <Plus className="h-4 w-4" />
-                            Create Announcement
+                <PageHeader
+                    title="Manage Announcements"
+                    description="Create, edit, and publish announcements for the organization."
+                    actions={
+                        <Button asChild className="btn-ghost-specular gap-2 px-6 border-none">
+                            <Link href={create().url}>
+                                <Plus className="h-4 w-4" />
+                                Create Announcement
+                            </Link>
                         </Button>
-                    </Link>
-                </div>
+                    }
+                />
 
                 <Card className="matte-card elev-2 border-none overflow-hidden">
                     <CardHeader className="border-b border-muted/20 pb-4">
@@ -123,11 +122,11 @@ export default function Manage({ announcements }: Props) {
                                 <thead className="text-muted-foreground font-medium border-b border-muted/20">
                                     <tr>
                                         <th className="px-6 py-4">Title</th>
-                                        <th className="px-6 py-4">Target</th>
-                                        <th className="px-6 py-4 text-center">Status</th>
-                                        <th className="px-6 py-4 text-center">Priority</th>
-                                        <th className="px-6 py-4">Created By</th>
-                                        <th className="px-6 py-4 text-right">Actions</th>
+                                        <th className="px-6 py-4 whitespace-nowrap">Target</th>
+                                        <th className="px-6 py-4 text-center whitespace-nowrap">Status</th>
+                                        <th className="px-6 py-4 text-center whitespace-nowrap">Priority</th>
+                                        <th className="px-6 py-4 whitespace-nowrap">Created By</th>
+                                        <th className="px-6 py-4 text-right whitespace-nowrap">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-muted/30">
@@ -153,77 +152,88 @@ export default function Manage({ announcements }: Props) {
                                         announcements.data.map((announcement) => (
                                             <tr key={announcement.id} className="hover:bg-muted/10 transition-colors">
                                                 <td className="px-6 py-4">
-                                                    <div className="font-medium">{announcement.title}</div>
+                                                    <div className="font-medium flex flex-wrap items-center gap-2">
+                                                        {announcement.title}
+                                                        {announcement.is_event && announcement.event_date && (
+                                                            <span className="inline-flex items-center gap-1 text-[9px] uppercase font-bold tracking-wider text-primary bg-primary/10 px-1.5 py-0.5 rounded-sm whitespace-nowrap">
+                                                                EVENT: {formatDate(announcement.event_date)}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                     <div className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                                                         <Calendar className="h-3 w-3" />
                                                         {formatDate(announcement.created_at)}
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-4 whitespace-nowrap">
                                                     <div className="flex items-center gap-1.5">
                                                         <Users className="h-3.5 w-3.5 text-muted-foreground" />
                                                         <span className="capitalize">{announcement.target_type}</span>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 text-center">
+                                                <td className="px-6 py-4 text-center whitespace-nowrap">
                                                     <span
                                                         className={cn(
                                                             "capitalize font-bold text-[10px] px-3 py-1 rounded-full tracking-wider",
                                                             announcement.status === 'published'
-                                                                ? "status-badge-permanent shadow-[0_0_15px_rgba(34,197,94,0.3)] animate-pulse"
+                                                                ? "status-badge-permanent shadow-[0_0_15px_rgba(34,197,94,0.3)]"
                                                                 : "status-badge-unknown opacity-80"
                                                         )}
                                                     >
                                                         {announcement.status}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 text-center">
-                                                    <span className={cn(
-                                                        "uppercase font-bold text-[10px] px-3 py-0.5 rounded-full tracking-wider",
-                                                        announcement.priority === 'high'
-                                                            ? 'status-badge-danger animate-pulse'
-                                                            : announcement.priority === 'low'
-                                                                ? 'status-badge-unknown'
-                                                                : 'status-badge-permanent'
-                                                    )}>
-                                                        {announcement.priority}
-                                                    </span>
+                                                <td className="px-6 py-4 text-center whitespace-nowrap">
+                                                    {announcement.priority === 'high' ? (
+                                                        <span className="uppercase font-bold text-[10px] px-3 py-0.5 rounded-full tracking-wider status-badge-danger animate-pulse whitespace-nowrap">
+                                                            High Priority
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-muted-foreground text-xs capitalize font-medium">Normal</span>
+                                                    )}
                                                 </td>
-                                                <td className="px-6 py-4 text-muted-foreground">
+                                                <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">
                                                     {announcement.author?.name || 'Unknown'}
                                                 </td>
-                                                <td className="px-6 py-4 text-right">
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger asChild>
-                                                            <Button variant="ghost" size="icon" aria-label={`Actions for ${announcement.title}`}>
-                                                                <MoreHorizontal className="h-4 w-4" />
+                                                <td className="px-6 py-4 text-right whitespace-nowrap">
+                                                    <div className="flex items-center justify-end gap-2">
+                                                        {announcement.status === 'draft' && (
+                                                            <Button 
+                                                                variant="outline" 
+                                                                size="sm"
+                                                                onClick={() => setAnnouncementToPublish(announcement)} 
+                                                                className="gap-2 text-green-600 border-green-600/20 hover:bg-green-600/10 hover:text-green-700"
+                                                            >
+                                                                <Send className="h-3.5 w-3.5" /> Publish
                                                             </Button>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent align="end">
-                                                            <DropdownMenuItem asChild>
-                                                                <Link href={show(announcement.id).url} className="gap-2">
-                                                                    <Eye className="h-4 w-4" /> View
-                                                                </Link>
-                                                            </DropdownMenuItem>
+                                                        )}
+                                                        <DropdownMenu>
+                                                            <DropdownMenuTrigger asChild>
+                                                                <Button variant="ghost" size="icon" aria-label={`Actions for ${announcement.title}`}>
+                                                                    <MoreHorizontal className="h-4 w-4" />
+                                                                </Button>
+                                                            </DropdownMenuTrigger>
+                                                            <DropdownMenuContent align="end">
+                                                                <DropdownMenuItem asChild>
+                                                                    <Link href={show(announcement.id).url} className="gap-2">
+                                                                        <Eye className="h-4 w-4" /> View
+                                                                    </Link>
+                                                                </DropdownMenuItem>
 
-                                                            {announcement.status === 'draft' && (
-                                                                <>
+                                                                {announcement.status === 'draft' && (
                                                                     <DropdownMenuItem asChild>
                                                                         <Link href={edit(announcement.id).url} className="gap-2 text-primary">
                                                                             <Edit2 className="h-4 w-4" /> Edit
                                                                         </Link>
                                                                     </DropdownMenuItem>
-                                                                    <DropdownMenuItem onClick={() => setAnnouncementToPublish(announcement)} className="gap-2 text-green-600">
-                                                                        <Send className="h-4 w-4" /> Publish
-                                                                    </DropdownMenuItem>
-                                                                </>
-                                                            )}
+                                                                )}
 
-                                                            <DropdownMenuItem onClick={() => setAnnouncementToDelete(announcement)} className="gap-2 text-destructive">
-                                                                <Trash2 className="h-4 w-4" /> Delete
-                                                            </DropdownMenuItem>
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
+                                                                <DropdownMenuItem onClick={() => setAnnouncementToDelete(announcement)} className="gap-2 text-destructive">
+                                                                    <Trash2 className="h-4 w-4" /> Delete
+                                                                </DropdownMenuItem>
+                                                            </DropdownMenuContent>
+                                                        </DropdownMenu>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))

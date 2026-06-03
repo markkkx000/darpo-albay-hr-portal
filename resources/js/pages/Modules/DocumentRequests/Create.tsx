@@ -69,7 +69,7 @@ newData.specify_other = '';
         });
     };
 
-    const submit = (e: React.FormEvent) => {
+    const submit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         post(DocumentRequestsRoutes.store().url);
     };
@@ -130,7 +130,7 @@ newData.specify_other = '';
                                             <Label 
                                                 htmlFor={`type-${type}`}
                                                 className={cn(
-                                                    "relative flex cursor-pointer flex-col gap-4 rounded-xl border p-4 shadow-sm transition-all hover:border-primary/50 hover:bg-muted/50",
+                                                    "relative flex cursor-pointer flex-col gap-4 rounded-xl border p-4 shadow-sm transition hover:border-primary/50 hover:bg-muted/50",
                                                     isSelected && "border-primary bg-primary/5 ring-1 ring-primary/20"
                                                 )}
                                             >
@@ -139,7 +139,7 @@ newData.specify_other = '';
                                                         id={`type-${type}`}
                                                         checked={isSelected}
                                                         onCheckedChange={(checked) => handleCheckboxChange(type, checked === true)}
-                                                        className={cn("transition-all")}
+                                                        className={cn("transition")}
                                                     />
                                                     <span className="font-medium leading-tight">
                                                         {type}

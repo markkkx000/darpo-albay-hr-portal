@@ -14,7 +14,7 @@ export default function AppHeaderLayout({
         <AppShell variant="header">
             <AppHeader breadcrumbs={breadcrumbs} />
             <AppContent variant="header">
-                <div key={component} className="animate-fade-up flex flex-1 flex-col w-full h-full">
+                <div key={component} className="flex flex-1 flex-col w-full h-full">
                     {children}
                 </div>
             </AppContent>

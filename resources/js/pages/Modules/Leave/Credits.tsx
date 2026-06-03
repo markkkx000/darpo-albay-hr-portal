@@ -146,7 +146,7 @@ export default function LeaveCredits({
     return (
         <>
             <Head title="Leave Credits" />
-            <div className="w-full p-4 md:p-6">
+            <div className="w-full p-4">
                 <PageHeader
                     title="Leave Credits"
                     description={

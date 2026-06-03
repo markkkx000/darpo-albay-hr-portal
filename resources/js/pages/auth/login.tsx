@@ -1,4 +1,4 @@
-import { useForm, Head } from '@inertiajs/react';
+import { useForm, Head, Link } from '@inertiajs/react';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,7 @@ export default function Login({ status }: Props) {
         remember: false,
     });
 
-    const submit = (e: React.FormEvent) => {
+    const submit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         post('/login', {
             onFinish: () => reset('password'),
@@ -35,7 +35,7 @@ export default function Login({ status }: Props) {
                         <Label htmlFor="login">
                             Email or Employee Number
                         </Label>
-                        <div className="focus-glow rounded-md transition-all">
+                        <div className="focus-glow rounded-md transition">
                             <Input
                                 id="login"
                                 type="text"
@@ -53,8 +53,13 @@ export default function Login({ status }: Props) {
                     </div>
 
                     <div className="grid animate-fade-up-delay-1 gap-2">
-                        <Label htmlFor="password">Password</Label>
-                        <div className="focus-glow rounded-md transition-all">
+                        <div className="flex items-center justify-between">
+                            <Label htmlFor="password">Password</Label>
+                            <Link href="/forgot-password" className="text-sm font-medium text-primary hover:underline" tabIndex={-1}>
+                                Forgot password?
+                            </Link>
+                        </div>
+                        <div className="focus-glow rounded-md transition">
                             <PasswordInput
                                 id="password"
                                 name="password"

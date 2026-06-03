@@ -66,7 +66,7 @@ export default function Create({ divisions, units, positions, appointmentStatuse
         monthly_salary: '',
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         
         transform((data) => ({

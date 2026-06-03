@@ -58,7 +58,7 @@ export function RoleAssignmentModal({ open, onOpenChange, user, roles, onSuccess
         });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
 
         if (data.role === 'super_admin') {

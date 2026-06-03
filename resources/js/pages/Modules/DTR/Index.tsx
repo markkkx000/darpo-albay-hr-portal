@@ -84,7 +84,7 @@ export default function Index({ users, isHrAdmin }: Props) {
     // the DTR export endpoint returns a binary file blob (PDF/CSV). Inertia's request
     // handling expects JSON or a redirect response and cannot process binary responses
     // for client-side file downloads. Manual XSRF token injection is required.
-    const submit = async (e: React.FormEvent) => {
+    const submit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         setProcessing(true);
         setErrors({});
@@ -417,7 +417,7 @@ export default function Index({ users, isHrAdmin }: Props) {
                             <Button
                                 type="submit"
                                 disabled={processing || !data.user_id}
-                                className="flex h-12 items-center gap-2 rounded-full px-8 text-base font-bold tracking-wide shadow-lg transition-all hover:shadow-xl"
+                                className="flex h-12 items-center gap-2 rounded-full px-8 text-base font-bold tracking-wide shadow-lg transition hover:shadow-xl"
                             >
                                 <Download className="h-5 w-5" />
                                 {processing

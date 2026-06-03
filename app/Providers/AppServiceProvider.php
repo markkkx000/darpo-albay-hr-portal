@@ -6,8 +6,10 @@ use App\Models\User;
 use App\Observers\UserObserver;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -28,6 +30,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
 
+        JsonResource::withoutWrapping();
+
         User::observe(UserObserver::class);
     }
 
@@ -37,6 +41,10 @@ class AppServiceProvider extends ServiceProvider
     protected function configureDefaults(): void
     {
         Date::use(CarbonImmutable::class);
+
+        if (app()->isProduction()) {
+            URL::forceHttps();
+        }
 
         Model::preventLazyLoading(! app()->isProduction());
 

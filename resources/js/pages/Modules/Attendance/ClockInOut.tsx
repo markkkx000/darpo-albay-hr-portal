@@ -14,7 +14,8 @@ import {
 } from '@/components/ui/dialog';
 
 import { cn } from '@/lib/utils';
-import { clockIn, clockOut, index as attendanceIndexRoute } from '@/routes/attendance/index';
+import { index as historyRoute } from '@/routes/attendance/history/index';
+import { clockIn, clockOut } from '@/routes/attendance/index';
 import { index as records_index } from '@/routes/attendance/manage/records/index';
 
 interface Attendance {
@@ -191,7 +192,7 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
                         >
                             <Button
                                 variant="ghost"
-                                className="group flex h-10 w-10 items-center justify-start overflow-hidden rounded-full border-none bg-background/80 p-0 shadow-md backdrop-blur-sm hover:w-64 btn-ghost-specular btn-expand-pill"
+                                className="group flex h-10 w-10 items-center justify-start overflow-hidden rounded-full border-none bg-background/98 p-0 shadow-md hover:w-64 btn-ghost-specular btn-expand-pill"
                             >
                                 <div className="flex h-full w-[38px] shrink-0 items-center justify-center">
                                     <Settings
@@ -239,7 +240,15 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
 
                             {/* Right Pane: History Timeline */}
                             <div className="flex-1 py-2 px-1 flex flex-col overflow-hidden">
-                                <p className="t-caption mb-4">Recent History</p>
+                                <div className="flex items-center justify-between mb-4">
+                                    <p className="t-caption">Recent History</p>
+                                    <Link
+                                        href={historyRoute().url}
+                                        className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground px-2 py-1 rounded-full hover:bg-muted"
+                                    >
+                                        View All
+                                    </Link>
+                                </div>
 
                                 <div className="space-y-1 overflow-y-auto max-h-[200px] pr-2 scrollbar-thin">
                                     {timelineItems.length === 0 ? (
@@ -420,10 +429,6 @@ ClockInOut.layout = {
     breadcrumbs: [
         {
             title: 'Attendance',
-            href: attendanceIndexRoute().url,
-        },
-        {
-            title: 'Registry',
             href: '#',
         },
     ],

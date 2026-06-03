@@ -22,7 +22,7 @@ class LeaveController extends Controller
     public function index(Request $request)
     {
         $canEncode = $request->user()->can('leave.manage');
-        $viewMode = $request->input('view', 'mine');
+        $viewMode = $request->input('view', $canEncode ? 'all' : 'mine');
 
         // Force 'mine' view if user cannot encode
         if (! $canEncode) {
@@ -36,6 +36,7 @@ class LeaveController extends Controller
             'leave_type_id' => $request->input('leave_type_id'),
             'status_id' => $request->input('status_id'),
             'approved_by_id' => $request->input('approved_by_id'),
+            'archived' => $request->boolean('archived', false),
         ];
 
         $leaves = $this->leaveService->getPaginatedLeaves($filters, $request->user());
@@ -65,6 +66,8 @@ class LeaveController extends Controller
 
     public function create()
     {
+        $this->authorize('leave.manage');
+
         $users = User::select('id', 'first_name', 'last_name', 'employee_number')->orderBy('last_name')->get();
         $types = LeaveType::where('is_active', true)->get();
         $statuses = LeaveStatus::where('is_active', true)->get();
@@ -89,6 +92,8 @@ class LeaveController extends Controller
 
     public function edit(LeaveRequest $leaveRequest)
     {
+        $this->authorize('leave.manage');
+
         $users = User::select('id', 'first_name', 'last_name', 'employee_number')->orderBy('last_name')->get();
         $types = LeaveType::where('is_active', true)->get();
         $statuses = LeaveStatus::where('is_active', true)->get();
@@ -105,6 +110,8 @@ class LeaveController extends Controller
 
     public function update(UpdateLeaveRequest $request, LeaveRequest $leaveRequest)
     {
+        $this->authorize('leave.manage');
+
         $data = $request->validated();
 
         $this->leaveService->updateLeaveRequest($leaveRequest, $data);
@@ -114,13 +121,27 @@ class LeaveController extends Controller
 
     public function destroy(LeaveRequest $leaveRequest)
     {
+        $this->authorize('leave.manage');
+
         $this->leaveService->deleteLeaveRequest($leaveRequest);
 
-        return redirect()->route('leave.index')->with('success', 'Leave request deleted.');
+        return redirect()->route('leave.index')->with('success', 'Leave request archived successfully.');
+    }
+
+    public function restore(int $id)
+    {
+        $this->authorize('leave.manage');
+
+        $leaveRequest = LeaveRequest::withTrashed()->findOrFail($id);
+        $this->leaveService->restoreLeaveRequest($leaveRequest);
+
+        return redirect()->route('leave.index')->with('success', 'Leave request restored successfully.');
     }
 
     public function calendar(Request $request)
     {
+        $this->authorize('leave.manage');
+
         $year = (int) $request->input('year', now()->year);
         $month = (int) $request->input('month', now()->month);
         $userId = $request->input('user_id') ? (int) $request->input('user_id') : null;
@@ -138,6 +159,8 @@ class LeaveController extends Controller
 
     public function settings(Request $request)
     {
+        $this->authorize('leave.settings.manage');
+
         $year = $request->input('year', now()->year);
 
         return Inertia::render('Modules/Leave/Settings', [

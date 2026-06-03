@@ -3,7 +3,7 @@
 ## Overview
 This application is a **Laravel 13** backend with an **Inertia.js React** frontend. It strictly requires **PHP 8.4**. Authentication is custom and uses Laravel `Auth::attempt()` instead of Fortify, with role-based redirects to a single dashboard page. The application uses a modular architecture for navigation and feature development.
 
-Currently implemented modules: **Announcements, Attendance, Document Requests, DTR Export, Leave Tracking, Notifications (infra), Personnel Directory, Roles & Permissions, Travel Orders (stub)**.
+Currently implemented modules: **Announcements, Attendance, Audit (System Logs), Document Requests, DTR Export, Leave Tracking, Notifications (infra), Personnel Directory, Roles & Permissions, Travel Orders (stub)**.
 
 ---
 
@@ -68,8 +68,11 @@ app/
       Models/Announcement.php
       Requests/AnnouncementCreateRequest.php, AnnouncementUpdateRequest.php, AnnouncementPublishRequest.php
       Services/AnnouncementService.php
+    Audit/
+      Controllers/AuditController.php
+      navigation.php             # Sidebar: 'System Logs', permission: system.audit
     Attendance/
-      Controllers/AttendanceController.php, AttendanceManagementController.php
+      Controllers/AttendanceController.php, AttendanceManagementController.php, AttendanceHistoryController.php
       Models/Attendance.php
       Requests/ClockInRequest.php, ClockOutRequest.php, StoreAttendanceRecordRequest.php, UpdateAttendanceRecordRequest.php
       Services/AttendanceService.php
@@ -116,8 +119,10 @@ resources/js/
     Modules/                     # Module pages
       Announcements/
         Index.tsx, Show.tsx, Manage.tsx, Create.tsx, Edit.tsx
+      Audit/
+        Index.tsx                # System logs and activity feed
       Attendance/
-        ClockInOut.tsx, ManageRecords.tsx
+        ClockInOut.tsx, ManageRecords.tsx, HistoryIndex.tsx
       DTR/
         Index.tsx                # CS Form 48 export form (employee or HR admin view)
       Leave/
@@ -147,6 +152,7 @@ resources/js/
     ActionButtons.tsx            # Reusable action buttons
     EmployeeSearch.tsx           # Shared employee search combobox
     Pagination.tsx               # Shared pagination
+    ui/sliding-tabs.tsx          # Reusable segmented control with framer-motion
   layouts/                       # app, auth, settings layouts
 
 routes/
@@ -163,6 +169,7 @@ database/
 tests/
   Feature/                       # Root-level feature tests
     Modules/                     # Module-specific test subdirectories
+      Audit/AuditTest.php
       DTR/DTRExportTest.php
       LeaveCreditTest.php, LeaveDigitizationTest.php, LeaveTest.php
       Roles/
@@ -177,6 +184,14 @@ tests/
 
 ## Implemented Modules
 
+### Audit Module (`app/Modules/Audit/`)
+- **Purpose**: System-wide activity logging and audit trail viewing for Super Admins. Powered by `Spatie\Activitylog`.
+- **Dashboard** (`Index.tsx`): Paginated datatable of all system events. Features client-side/server-side debounced search, user filtering, date range filtering, and event type filtering.
+- **Raw Log Viewer**: Includes a dialog modal to view raw JSON properties and attribute changes (`old` and `attributes`). For Spatie Activitylog v5+, the UI and CSV Export explicitly merge the `$activity->properties` and `$activity->attribute_changes` columns, ensuring Eloquent Model modifications are properly displayed.
+- **PII Redaction**: Highly sensitive encrypted fields (like `monthly_salary`) are actively redacted before being written to the database via the `beforeActivityLogged()` method on models, ensuring they do not leak into plain text audit logs.
+- **CSV Export**: Securely streams CSV downloads of the audit log, supporting chunking for memory safety. Fully protects against CSV (Formula) Injection vulnerabilities by sanitizing user-controlled fields (`=, +, -, @, \t, \r, \n`).
+- **Permissions**: Protected by the strictly scoped `system.audit` permission (assigned uniquely to `super_admin`).
+
 ### Announcements Module (`app/Modules/Announcements/`)
 - **Viewing**: All authenticated users with `announcements.view` see published announcements targeted to them (by division, position, individual, or "all") via `Index.tsx`.
 - **Detail View**: `Show.tsx` renders a single announcement with rich HTML content (sanitized via DOMPurify). Unpublished announcements are only visible to users with `announcements.manage`.
@@ -190,6 +205,7 @@ tests/
 - **Clock In/Out**: Server-side timestamp recording via `ClockInOut.tsx`. Three states: not clocked in, clocked in, completed.
 - **History**: Recent 7-day activity table on the employee view.
 - **Record Management**: HR roles with `attendance.logs.manage` can manually add missing records and edit clock-in/out timestamps via `ManageRecords.tsx` and `AttendanceRecordModal.tsx`. Management button is rendered in-module (top-right of ClockInOut page), not in the sidebar.
+- **Employee History View**: All authenticated employees can view their own full attendance history via `GET /attendance/history` (`HistoryIndex.tsx`). The page defaults to the current month and supports month/year navigation via query string (`?month=&year=`). All queries are strictly scoped to the authenticated user — no employee can access another's records.
 - **Soft Delete**: HR admins and super admins with `attendance.logs.manage` can soft delete records.
 - **Filtering & Search**: Server-side filtering by status (Working/Incomplete/Completed), date range, and full-text employee name search. 500ms debounce with instant Enter key trigger. Paginated via `paginate(15)`.
 - **Controllers**: `AttendanceController` (clock in/out, index), `AttendanceManagementController` (CRUD for records).
@@ -197,13 +213,14 @@ tests/
 - **Timezone & Safari Compatibility**: Timezone manipulation is handled via `toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' })` on the frontend to prevent day-shifting. iOS Safari's native time picker strips seconds; always pad with `:00` before submitting to satisfy Laravel's `date_format:Y-m-d H:i:s`.
 
 ### Leave Tracking Module (`app/Modules/Leave/`)
-- **Dashboard** (`Index.tsx`): Paginated table of all leave requests with employee search (via `EmployeeSearch` component). Shows employee, leave type (with color dot), dates (specific or range), days requested, status badge, pay status, and who encoded it. "Encode" button to create new leave requests.
+- **Dashboard** (`Index.tsx`): Paginated table of all leave requests with employee search (via `EmployeeSearch` component). Shows employee, leave type (with color dot), dates (specific or range), days requested, status badge, pay status, and who encoded it. "Encode" button to create new leave requests. For HR admins (`leave.manage`), the default filter view is set to "view all" rather than just their own.
+- **Soft Deletes / Archiving**: Only users with `leave.manage` can archive or restore leave requests using dedicated action buttons that trigger a custom `Dialog` confirmation (native browser prompts are strictly avoided). Regular employees can view their own "Archived" requests via a status filter but cannot perform archiving actions.
 - **Detail View** (`Show.tsx`): Detailed leave request view with CS Form 6 sections — leave information (type, status, pay status, filing details, commutation), schedule & duration (days breakdown, specific dates or range, pay status breakdown with days with/without pay), credit balances at filing (VL/SL), employee info sidebar, timeline (filed/received/approved dates), authorization (encoded by, approved by), attachments, and supporting documents.
 - **Leave Form** (`Form.tsx`): Shared create/edit form. Supports date range or specific date picking, half-day logic, and automatic working-day calculation. Features reactive validation feedback with per-field error messages and red borders. Mandatory fields are marked with red asterisks (*). Attachment URLs are automatically prefixed with `https://` if a protocol is missing but a domain structure is detected. Data is transformed before submission using `useForm`'s `transform` method. Includes CS Form 6 digitization fields: salary, date filed, pay status breakdown (days with/without pay, others remarks), approved by official, leave detail type/remarks, VL/SL balance at filing, supporting documents, maternity allocation details.
 - **Calendar** (`Calendar.tsx`): Visual monthly calendar showing leave requests per day. Employee filter via Headless UI Combobox. Color-coded by leave type. Click on a day to see details in a dialog.
-- **Leave Credits** (`Credits.tsx`): Dual-view — HR sees a paginated table of all employees with inline-editable earned/used credits; employees/division_heads see their own credits. Features a "Display Leave Types" toggle to choose which credits are visible in the table. This visibility state is persisted via `localStorage` and defaults to VL and SL. Includes `CreditDetailSheet` for viewing individual employee credit details and `AdjustBalanceForm` for balance adjustments.
-- **Tardiness & Undertime** (`Tardiness.tsx`): Paginated table of employees with inline-editable tardiness/undertime counts per month. Features a custom counter UI with `+`/`-` buttons and a 500ms debounce for database updates to prevent rapid redundant requests.
-- **Settings** (`Settings.tsx`): Admin-only tab (requires `leave.settings.manage`). CRUD for holidays (add/edit/delete by year), leave types (add with name/color/description/abbreviation/credit-behavior, toggle active/inactive), and leave statuses (add, toggle active/inactive). Deactivation pattern preferred over hard deletion to preserve historical integrity.
+- **Leave Credits** (`Credits.tsx`): Dual-view (uses standard `p-4` padding) — HR sees a paginated table of all employees with inline-editable earned/used credits; employees/division_heads see their own credits. Features a "Display Leave Types" toggle to choose which credits are visible in the table. This visibility state is persisted via `localStorage` and defaults to VL and SL. Includes `CreditDetailSheet` for viewing individual employee credit details and `AdjustBalanceForm` for balance adjustments.
+- **Tardiness & Undertime** (`Tardiness.tsx`): Paginated table of employees with inline-editable tardiness/undertime counts per month (uses standard `p-4` padding). Features a custom counter UI with `+`/`-` buttons and a 500ms debounce for database updates to prevent rapid redundant requests.
+- **Settings** (`Settings.tsx`): Admin-only tab (requires `leave.settings.manage`, uses standard `p-4` padding). CRUD for holidays (add/edit/delete by year), leave types (add with name/color/description/abbreviation/credit-behavior, toggle active/inactive), and leave statuses (add, toggle active/inactive). Deactivation pattern preferred over hard deletion to preserve historical integrity.
   - **Credit Behavior**: Leave types have a **tri-state** `is_cumulative` field (`true` = Cumulative, `false` = Non-Cumulative, `null` = N/A). The Settings UI uses a `<Select>` with string values `'true'`/`'false'`/`'null'` that are transformed to the appropriate PHP types on submission.
 - **Navigation**: `LeaveNavigation.tsx` provides in-module tab navigation (Dashboard, Calendar, Credits, Tardiness, Settings). Settings tab is hidden from users without `leave.settings.manage`.
 - **Service Layer**: `LeaveService` handles overlap validation, half-day validation, working-day calculation, and automatic credit deduction/restoration on approved leave changes. `LeaveCreditService` handles credit queries and updates.
@@ -219,6 +236,7 @@ tests/
 - **Lookup Tables**: `divisions`, `units`, `positions`, `employment_statuses` — all use `is_active` flag, never hard deleted. `units` and `positions` are hierarchically nested under a `division`. Each user belongs to exactly one `division_id` and optionally one `unit_id` (primary assignment), but can hold multiple positions.
 - **Organization Management**: Dedicated management dashboard for Divisions, Units, and Positions (`Organization/Index.tsx`) via `OrganizationController` and `OrganizationService`. Full CRUD with form requests for each entity type.
 - **Dynamic Field Logic**: Position and Unit comboboxes filter by selected Division in create/edit forms. PRC Expiration is automatically enabled/disabled based on validation of a 7-digit PRC ID number.
+- **PII Protection**: Highly sensitive fields (`monthly_salary`, `tin_number`, `gsis_bp_number`, `philhealth`, `hdmf_pagibig_no`, `prc_id_no`) are secured using Laravel's `encrypted` cast. Furthermore, these fields are restricted using form/resource exclusions so that HR staff cannot view or edit them—only the `super_admin` retains access.
 - **Soft Delete & Restoration**: Archived employees viewable by `personnel.view` users (read-only at `Archived.tsx`). Restore restricted to `personnel.manage` users via `/personnel/archived`.
 - **Search & Filtering**: By name, employee number, division, employment status. 500ms debounce with Enter key trigger.
 - **Permissions**: `personnel.view` (hr_staff, hr_admin, super_admin), `personnel.manage` (hr_admin, super_admin).
@@ -226,12 +244,13 @@ tests/
 
 ### Document Requests Module (`app/Modules/DocumentRequests/`)
 - **Purpose**: Allows employees to request official HR documents (e.g., Certificate of Employment, Service Record) and allows HR to process, generate, and release/reject these requests.
-- **Dashboard** (`Index.tsx`): Shared dashboard with role-based views. Employees see a list of their own requests and a button to create new ones. HR personnel with `document_requests.manage` see a comprehensive dashboard with unassigned, processing, and completed tabs to manage all requests across the organization.
-- **Detail View** (`Show.tsx`): A detailed view for a single request. Shows request metadata, employee info, and a dynamic timeline of the request's status (Submitted -> Processing -> Released / Rejected). Includes action buttons for HR to process, reject, and release the document.
-- **Request Flow**: Requests start as `pending`. HR can mark them as `processing`. Once ready, HR can `release` the document (generating a digital copy or marking it for physical pickup) or `reject` it with a reason.
-- **Components**: Utilizes dedicated components like `DocumentRequestTimeline` for tracking status visually, `ReleaseModal` for handling the release process, and a custom rejection dialog. Shared `Pagination.tsx` is used for lists.
+- **Dashboard** (`Index.tsx`): Shared dashboard with role-based views. Employees see a list of their own requests and a button to create new ones. HR personnel with `document_requests.manage` see a comprehensive dashboard with unassigned, processing, and completed tabs to manage all requests across the organization. Uses Inertia `usePoll` (15s interval) to auto-refresh the queue, preventing stale data and concurrency conflicts.
+- **Detail View** (`Show.tsx`): A detailed view for a single request. Shows request metadata, employee info, and a dynamic timeline of the request's status (Submitted -> Received -> Released / Rejected / Cancelled). The timeline conditionally displays formatted status reasons for rejected or cancelled requests.
+- **Request Flow**: Requests start as `Pending`. HR can mark them as `Received`. Once ready, HR can `release` the document (generating a digital copy or marking it for physical pickup) or `reject` it with an optional reason. Employees can `cancel` their own pending requests with an optional reason.
+- **Concurrency Safeguards**: Backend controllers (`markAsReceived`, `release`, `markAsPickedUp`) strictly validate the prerequisite status of the request (e.g. must be `Pending` to be marked `Received`). Denied state transitions flash errors to the UI via `Inertia::flash('toast', ...)`, fully integrated with the Sonner toast system.
+- **Components**: Utilizes dedicated components like `DocumentRequestTimeline` for tracking status visually, `ReleaseModal` for handling the release process, and a custom `Dialog`-based Reject/Cancel modal equipped with a Textarea for capturing status reasons (native `window.confirm` is strictly avoided). Shared `Pagination.tsx` is used for lists.
 - **Service Layer**: `DocumentRequestService` manages the business logic for creating requests, updating statuses, assigning requests to HR staff, and generating document previews/PDFs.
-- **Controllers**: `DocumentRequestController` handles CRUD, status transitions, and document preview/generation.
+- **Controllers**: `DocumentRequestController` handles CRUD, status transitions, and document preview/generation. Rejection notifications dynamically include the reason directly in the notification message payload.
 - **Permissions**: `document_requests.view` (all roles, access to own requests), `document_requests.manage` (HR staff/admin, access to all requests).
 
 ### Roles & Permissions Module (`app/Modules/Roles/`)
@@ -242,6 +261,14 @@ tests/
 - **Requests**: `RoleCreateRequest`, `RoleUpdateRequest`, `UserRoleSyncRequest`.
 - **Service Layer**: `RoleService` handles role business logic.
 - **Permissions**: Requires `roles.manage` (assigned to `super_admin`).
+
+### Support Tickets Module (`app/Modules/SupportTickets/`)
+- **Purpose**: Allows users to submit, view, and reply to support tickets. It integrates directly with GitHub issues.
+- **Dashboard** (`Index.tsx`): Lists all tickets submitted by the authenticated user. Includes a manually triggered sync (Refresh button) to fetch the latest status from GitHub, utilizing a 5-minute cache to prevent API rate limit abuse.
+- **Detail View** (`Show.tsx`): Displays the ticket description, attachments, and the threaded comments from GitHub. Users can reply directly from here.
+- **GitHub Integration**: `GitHubSupportService` handles creating issues, posting comments, and fetching statuses. Open tickets' statuses are automatically synced via a background scheduled job.
+- **Attachments**: Supports image uploads (drag-and-drop, clipboard paste) limited to 10 images max 5MB each. Stored locally before being referenced in markdown on GitHub.
+- **Permissions**: Available to all authenticated users.
 
 ### DTR Export Module (`app/Modules/DTR/`)
 - **Purpose**: Generates CS Form 48 (Daily Time Record) exports from attendance data. Accessible to all users with `attendance.view`. HR admins with `dtr.manage` can export for any employee; regular users can only export their own.
@@ -269,6 +296,10 @@ This is **infrastructure, not a feature module**. It is a hybrid: the dispatch/m
 - **Auto-Dismissal**: `UserObserver` watches for password changes on the `User` model and calls `NotificationService::dismissBySubtype($user, 'default_password')` to automatically delete the password nudge.
 - **Retention**: A scheduled `notifications:prune` command runs daily and deletes all notifications older than 1 year.
 - **No Permissions Required**: All queries are scoped to `$request->user()` — no role/permission middleware needed.
+
+### Storage Optimization & Maintenance Commands
+- **Orphan Cleanup (`app/Console/Commands/CleanOrphanedFiles.php`)**: A dedicated Artisan command (`php artisan maintenance:clean-orphans`) that securely scans the configured S3 storage bucket for `avatars` and `document_requests/attachments`. It compares physical files against database records (including soft-deleted records) to identify and delete unreferenced files.
+  - **Safeguards**: Requires a `--dry-run` flag if run locally, preventing accidental deletion of production files when local and production environments share the same bucket for testing purposes.
 
 ---
 
@@ -306,20 +337,12 @@ This is **infrastructure, not a feature module**. It is a hybrid: the dispatch/m
 | `travel_order.create` | division_head, super_admin |
 | `travel_order.manage` | hr_staff, hr_admin, super_admin |
 | `roles.manage` | super_admin |
+| `system.audit` | super_admin |
 
 ---
 
-## UI Conventions
-- **Fluid layouts** (`w-full`) for module indexes and data-heavy tables — avoid restrictive `max-w-*` containers for these views.
-- **Debounced search**: 500ms debounce + instant Enter key trigger across all search inputs.
-- **Pagination**: Always use the shared `Pagination.tsx` component with `meta` prop for "Showing X to Y of Z" info.
-- **Employee Search**: Use the shared `EmployeeSearch.tsx` component for employee selection/filtering with autocomplete.
-- **Error display**: Use `alert-error.tsx` for alert-style error banners and `input-error.tsx` for inline form field errors.
-- **Icons**: Always use `lucide-react`. For dynamic icon rendering from strings, use `dynamic-icon.tsx`.
-- **Management buttons**: Module management actions (e.g., "Manage Announcements", "Attendance Management") are rendered as in-module buttons (top-right of the module page), not as sidebar entries. They are gated by appropriate permissions (e.g., `announcements.manage`, `attendance.logs.manage`).
-- **Inertia History Management**: For subpage forms (like `Create`/`Edit` pages), append `router.clearHistory()` to the `onSuccess` callback of mutations. This ensures that when a user navigates back to the main list via the browser's "Back" button, Inertia forces a fresh data fetch rather than loading a stale cache. This eliminates the need for manual page refreshes while preserving the expected redirection flows.
-- **Toast Notifications**: Use `sonner` for immediate visual feedback after successful data-modifying operations (POST, PUT, DELETE). Use `toast.success('Message')` within the `onSuccess` callback.
-- **Required Fields**: Visually highlight mandatory inputs with a red asterisk (*) beside the label.
-- **Interactive Counters**: For simple numeric increments, use `+` and `-` button pairs with a **500ms debounce** to batch updates and prevent server-side race conditions or excessive load.
-- **UI State Persistence**: Use `localStorage` to persist non-critical UI preferences, such as table column visibility, across browser reloads.
-- **Card Styling**: Use `matte-card elev-2` classes for card containers throughout modules.
+---
+
+## Security Audit & Deployment Checklist
+Based on a recent security audit, the following pending items MUST be addressed before or during production deployment:
+- **Data Isolation**: HR modules do not currently enforce cross-division scoping (i.e. division heads or HR staff seeing only their own division). Confirm business requirements and implement scoping if necessary.

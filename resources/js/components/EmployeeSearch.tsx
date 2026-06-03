@@ -98,7 +98,6 @@ export function EmployeeSearch({
                 onChange={handleChange}
                 onClose={() => setQuery('')}
                 nullable
-                immediate
                 disabled={disabled}
             >
                 <div className="relative w-full z-10">
@@ -145,10 +144,8 @@ export function EmployeeSearch({
                         </div>
                     </div>
                     <ComboboxOptions 
-                        anchor={{ to: 'bottom start', gap: 4 }}
-                        portal
                         transition
-                        className="max-h-60 w-[var(--input-width)] overflow-auto rounded-xl bg-popover py-1 px-1.5 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm border z-50 transition duration-100 ease-in data-[leave]:opacity-0"
+                        className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-popover py-1 px-1.5 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm border z-[100] transition duration-100 ease-in data-[leave]:opacity-0"
                     >
                             {filteredUsers.length === 0 && query !== '' ? (
                                 <div className="relative cursor-default select-none py-2 px-4 text-muted-foreground">
@@ -195,7 +192,9 @@ export function EmployeeSearch({
                                                 <div className="contents">
                                                     <span className={cn("block truncate", selected ? "font-medium" : "font-normal")}>
                                                         {person.first_name} {person.last_name}
-                                                        <span className={cn("ml-2 text-xs transition-colors duration-200", focus ? "text-black/65 font-semibold" : "text-muted-foreground")}>({person.employee_number})</span>
+                                                        {person.employee_number && (
+                                                            <span className={cn("ml-2 text-xs", focus ? "text-black/65 font-semibold" : "text-muted-foreground")}>({person.employee_number})</span>
+                                                        )}
                                                     </span>
                                                     {selected ? (
                                                         <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3", focus ? "text-black font-extrabold" : "text-primary")}>

@@ -7,15 +7,17 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    useSidebar,
 } from '@/components/ui/sidebar';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn } from '@/lib/utils';
 import type { NavItem } from '@/types';
 
-const SPRING = { type: 'spring', bounce: 0.15, duration: 0.4 } as const;
+
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
     const { isCurrentOrParentUrl } = useCurrentUrl();
+    const { setOpenMobile } = useSidebar();
 
     return (
         <SidebarGroup className="px-2 py-0">
@@ -39,7 +41,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 <motion.div
                                     layoutId="sidebar-active-pill"
                                     className="sidebar-active-gradient pointer-events-none absolute inset-0 rounded-xl"
-                                    transition={SPRING}
+                                    transition={{ duration: 0.2, ease: 'easeOut' }}
                                 />
                             )}
 
@@ -57,6 +59,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 <Link
                                     href={item.href}
                                     prefetch
+                                    onClick={() => setOpenMobile(false)}
                                     className={cn(
                                         'group/link flex w-full items-center rounded-xl px-2.5 py-2',
                                         active

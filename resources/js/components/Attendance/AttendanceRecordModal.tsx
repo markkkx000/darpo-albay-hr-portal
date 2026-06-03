@@ -1,12 +1,10 @@
-import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, ComboboxButton, Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
-import { clsx  } from 'clsx';
-import type {ClassValue} from 'clsx';
-import { Check, ChevronsUpDown, User as UserIcon } from 'lucide-react';
-import { useEffect, useState, useMemo } from 'react';
+
+import { User as UserIcon } from 'lucide-react';
+import { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-import { twMerge } from 'tailwind-merge';
 import { DatePicker } from '@/components/date-picker';
+import { EmployeeSearch } from '@/components/EmployeeSearch';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -20,15 +18,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { store as storeRecord, update as updateRecord } from '@/routes/attendance/manage/records';
 
-function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
 
 interface User {
     id: number;
     first_name: string;
     last_name: string;
-    employee_number?: string | null;
+    employee_number: string | null;
 }
 
 interface AttendanceRecord {
@@ -73,7 +68,6 @@ function extractTime(dateTimeString: string | null) {
 
 export function AttendanceRecordModal({ isOpen, onClose, record, employees }: AttendanceRecordModalProps) {
     const isEditing = !!record;
-    const [query, setQuery] = useState('');
 
     const { data, setData, post, put, processing, errors, reset, clearErrors, transform } = useForm({
         user_id: record?.user_id?.toString() || '',
@@ -84,33 +78,6 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
         pm_clock_out: record?.pm_clock_out ? extractTime(record.pm_clock_out) : '',
     });
 
-    const filteredEmployees = useMemo(() => {
-        const employeesArray = Array.isArray(employees) ? employees : [];
-
-        // Identify selected employee display name to prevent dropdown truncation when clicking
-        let selectedName = '';
-
-        if (data.user_id) {
-            const found = employeesArray.find((e) => e.id.toString() === data.user_id.toString());
-
-            if (found) {
-                selectedName = `${found.first_name} ${found.last_name}`;
-            }
-        }
-
-        // If query is empty or matches the selected display name exactly, show all employees
-        if (query === '' || query.toLowerCase() === selectedName.toLowerCase()) {
-            return employeesArray;
-        }
-
-        return employeesArray.filter((employee) => {
-            const fullName = `${employee.first_name} ${employee.last_name}`.toLowerCase();
-            const employeeNum = (employee.employee_number || '').toLowerCase();
-            const search = query.toLowerCase();
-
-            return fullName.includes(search) || employeeNum.includes(search);
-        });
-    }, [query, employees, data.user_id]);
 
     const selectedEmployee = useMemo(() => {
         return employees.find((e) => e.id.toString() === data.user_id);
@@ -165,7 +132,7 @@ return `${timeStr}:00`;
         };
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
 
         if (isEditing && record) {
@@ -209,66 +176,13 @@ return `${timeStr}:00`;
                             </div>
                         ) : (
                             <div className="relative">
-                                <Combobox 
-                                    value={data.user_id} 
-                                    onChange={(value) => setData('user_id', value as string)}
-                                >
-                                    <div className="relative">
-                                        <div className="relative w-full cursor-default overflow-hidden rounded-xl border border-input bg-background text-left shadow-sm focus-within:ring-1 focus-within:ring-ring">
-                                            <ComboboxInput
-                                                className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-foreground bg-transparent focus:ring-0 outline-none"
-                                                displayValue={() => {
-                                                    return selectedEmployee ? `${selectedEmployee.first_name} ${selectedEmployee.last_name}` : '';
-                                                }}
-                                                placeholder="Search employee..."
-                                                onChange={(event) => setQuery(event.target.value)}
-                                            />
-                                            <ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2">
-                                                <ChevronsUpDown className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                                            </ComboboxButton>
-                                        </div>
-                                        <Transition
-                                            leave="transition ease-in duration-100"
-                                            leaveFrom="opacity-100"
-                                            leaveTo="opacity-0"
-                                            afterLeave={() => setQuery('')}
-                                        >
-                                            <ComboboxOptions className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-popover py-1 px-1.5 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-50 border">
-                                                {filteredEmployees.length === 0 && query !== '' ? (
-                                                    <div className="relative cursor-default select-none py-2 px-4 text-muted-foreground">
-                                                        Nothing found.
-                                                    </div>
-                                                ) : (
-                                                    filteredEmployees.map((person) => (
-                                                        <ComboboxOption
-                                                            key={person.id}
-                                                            className={({ focus }) =>
-                                                                cn(
-                                                                    "relative cursor-default select-none py-2 pl-10 pr-4",
-                                                                    focus ? "item-hover-gradient mx-1.5 my-0.5 rounded-[16px]" : "text-popover-foreground mx-1.5 my-0.5"
-                                                                )
-                                                            }
-                                                            value={person.id.toString()}
-                                                        >
-                                                             {({ selected, focus }) => (
-                                                                <>
-                                                                    <span className={cn("block truncate", selected ? "font-medium" : "font-normal")}>
-                                                                        {person.first_name} {person.last_name}
-                                                                    </span>
-                                                                    {selected ? (
-                                                                        <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3", focus ? "text-black font-extrabold" : "text-primary")}>
-                                                                            <Check className="h-4 w-4" aria-hidden="true" />
-                                                                        </span>
-                                                                    ) : null}
-                                                                </>
-                                                            )}
-                                                        </ComboboxOption>
-                                                    ))
-                                                )}
-                                            </ComboboxOptions>
-                                        </Transition>
-                                    </div>
-                                </Combobox>
+                                <EmployeeSearch
+                                    users={employees}
+                                    selectedId={data.user_id}
+                                    onSelect={(val) => setData('user_id', val === 'all' ? '' : val)}
+                                    returnValue="id"
+                                    error={!!errors.user_id}
+                                />
                             </div>
                         )}
                         {errors.user_id && <p className="text-xs text-red-500">{errors.user_id}</p>}

@@ -13,8 +13,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { SlidingTabs } from '@/components/ui/sliding-tabs';
 import { Switch } from '@/components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { index as personnelIndexRoute } from '@/routes/personnel';
 import organizationRoutes from '@/routes/personnel/organization';
@@ -49,6 +50,8 @@ export default function Index({ divisions }: Props) {
     const units = divisions.flatMap(d => d.units || []);
     const positions = divisions.flatMap(d => d.positions || []);
 
+    const [activeTab, setActiveTab] = useState('divisions');
+
     const [isDivisionOpen, setIsDivisionOpen] = useState(false);
     const [isUnitOpen, setIsUnitOpen] = useState(false);
     const [isPositionOpen, setIsPositionOpen] = useState(false);
@@ -78,7 +81,7 @@ export default function Index({ divisions }: Props) {
         setIsPositionOpen(true);
     };
 
-    const handleDivisionSubmit = (e: React.FormEvent) => {
+    const handleDivisionSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         setProcessing(true);
 
@@ -103,7 +106,7 @@ export default function Index({ divisions }: Props) {
         }
     };
 
-    const handleUnitSubmit = (e: React.FormEvent) => {
+    const handleUnitSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         setProcessing(true);
 
@@ -128,7 +131,7 @@ export default function Index({ divisions }: Props) {
         }
     };
 
-    const handlePositionSubmit = (e: React.FormEvent) => {
+    const handlePositionSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         setProcessing(true);
 
@@ -167,18 +170,34 @@ export default function Index({ divisions }: Props) {
                     </div>
                 </div>
 
-                <Tabs defaultValue="divisions" className="w-full">
-                    <TabsList className="grid w-full grid-cols-3 mb-6 bg-muted/40 p-1 rounded-xl">
-                        <TabsTrigger value="divisions" className="rounded-lg data-[state=active]:item-hover-gradient font-bold uppercase text-[10px] tracking-widest gap-2 py-2.5 transition-all">
-                            <Building2 className="h-4 w-4" /> Divisions
-                        </TabsTrigger>
-                        <TabsTrigger value="units" className="rounded-lg data-[state=active]:item-hover-gradient font-bold uppercase text-[10px] tracking-widest gap-2 py-2.5 transition-all">
-                            <Building className="h-4 w-4" /> Units
-                        </TabsTrigger>
-                        <TabsTrigger value="positions" className="rounded-lg data-[state=active]:item-hover-gradient font-bold uppercase text-[10px] tracking-widest gap-2 py-2.5 transition-all">
-                            <Briefcase className="h-4 w-4" /> Positions
-                        </TabsTrigger>
-                    </TabsList>
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                    <div className="flex w-full mb-6">
+                        <SlidingTabs 
+                            tabs={[
+                                { 
+                                    value: 'divisions', 
+                                    label: <span className="font-bold uppercase text-[10px] tracking-[0.2em]">Divisions</span>, 
+                                    icon: Building2, 
+                                    active: activeTab === 'divisions' 
+                                },
+                                { 
+                                    value: 'units', 
+                                    label: <span className="font-bold uppercase text-[10px] tracking-[0.2em]">Units</span>, 
+                                    icon: Building, 
+                                    active: activeTab === 'units' 
+                                },
+                                { 
+                                    value: 'positions', 
+                                    label: <span className="font-bold uppercase text-[10px] tracking-[0.2em]">Positions</span>, 
+                                    icon: Briefcase, 
+                                    active: activeTab === 'positions' 
+                                }
+                            ]} 
+                            layoutId="organization-tabs" 
+                            onChange={setActiveTab} 
+                            className="w-full grid grid-cols-3 bg-muted/40 p-1 border-none rounded-2xl [&_button]:py-2.5 [&_button]:rounded-xl [&_.sidebar-active-gradient]:rounded-xl"
+                        />
+                    </div>
                     
                     {/* Divisions Tab */}
                     <TabsContent value="divisions">

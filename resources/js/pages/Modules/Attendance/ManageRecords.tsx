@@ -393,7 +393,7 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                             </Badge>
                                                         </td>
                                                         <td className="px-6 py-4 text-right">
-                                                            <div className="flex justify-end gap-2 opacity-60 transition-all duration-300 group-hover:opacity-100">
+                                                            <div className="flex justify-end gap-2 opacity-60 transition duration-300 group-hover:opacity-100">
                                                                 {record.deleted_at ? (
                                                                     canDelete && (
                                                                         <Button

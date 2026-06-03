@@ -53,6 +53,15 @@ export default function Index({ notifications }: Props) {
         });
     };
 
+    const clearRead = () => {
+        router.delete(NotificationActions.destroyRead.url(), {
+            onSuccess: () => {
+                toast.success('Read notifications cleared');
+                router.reload({ only: ['notifications', 'appNotifications'] });
+            }
+        });
+    };
+
     return (
         <>
             <Head title="Notifications" />
@@ -65,10 +74,15 @@ export default function Index({ notifications }: Props) {
                             Manage your system and module notifications.
                         </p>
                     </div>
-                    <Button variant="outline" size="sm" onClick={markAllAsRead} className="gap-2">
-                        <CheckCheck className="h-4 w-4" />
-                        Mark all as read
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm" onClick={clearRead} className="gap-2 text-destructive border-destructive/20 hover:bg-destructive/10">
+                            Clear Read
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={markAllAsRead} className="gap-2">
+                            <CheckCheck className="h-4 w-4" />
+                            Mark all as read
+                        </Button>
+                    </div>
                 </div>
 
                 <Card className="flex-1 matte-card elev-2 border-none">

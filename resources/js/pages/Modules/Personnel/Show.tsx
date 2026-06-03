@@ -1,5 +1,5 @@
-import { Head, Link, usePage } from '@inertiajs/react';
-import { Edit, User as UserIcon, ChevronLeft } from 'lucide-react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
+import { Edit, User as UserIcon, ChevronLeft, ShieldOff } from 'lucide-react';
 import { EmployeeCard } from '@/components/Personnel/EmployeeCard';
 import type { Employee } from '@/components/Personnel/EmployeeCard';
 import { PromotionHistorySection } from '@/components/Personnel/PromotionHistorySection';
@@ -14,6 +14,15 @@ interface Props {
 export default function Show({ employee, positions }: Props) {
     const { auth } = usePage().props as any;
     const canEdit = auth.permissions?.includes('personnel.manage');
+    const isSuperAdmin = auth.roles?.includes('super_admin');
+
+    const disableMfa = () => {
+        if (confirm('Are you sure you want to disable Two-Factor Authentication for this user?')) {
+            router.post(`/personnel/${employee.id}/disable-mfa`, {}, {
+                preserveScroll: true,
+            });
+        }
+    };
 
     return (
         <>
@@ -23,7 +32,7 @@ export default function Show({ employee, positions }: Props) {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <Link href={indexRoute().url} className="mr-2">
-                            <Button variant="ghost" size="icon" className="rounded-xl hover:item-hover-gradient transition-all">
+                            <Button variant="ghost" size="icon" className="rounded-xl hover:item-hover-gradient transition">
                                 <ChevronLeft className="h-5 w-5" />
                             </Button>
                         </Link>
@@ -32,14 +41,22 @@ export default function Show({ employee, positions }: Props) {
                         </div>
                         <h1 className="text-2xl font-bold tracking-tight">Employee Profile</h1>
                     </div>
-                    {canEdit && (
-                        <Button asChild variant="ghost" className="btn-ghost-specular gap-2 px-6 py-5 border-none">
-                            <Link href={editRoute({ user: employee.id }).url}>
-                                <Edit className="h-4 w-4" />
-                                Edit Profile
-                            </Link>
-                        </Button>
-                    )}
+                    <div className="flex gap-2">
+                        {isSuperAdmin && employee.mfa_enabled && (
+                            <Button onClick={disableMfa} variant="outline" className="gap-2 px-6 py-5 border-destructive text-destructive hover:bg-destructive/10">
+                                <ShieldOff className="h-4 w-4" />
+                                Disable MFA
+                            </Button>
+                        )}
+                        {canEdit && (
+                            <Button asChild variant="ghost" className="btn-ghost-specular gap-2 px-6 py-5 border-none">
+                                <Link href={editRoute({ user: employee.id }).url}>
+                                    <Edit className="h-4 w-4" />
+                                    Edit Profile
+                                </Link>
+                            </Button>
+                        )}
+                    </div>
                 </div>
 
                 <EmployeeCard employee={employee} />

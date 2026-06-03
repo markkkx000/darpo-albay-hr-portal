@@ -9,4 +9,5 @@ Route::middleware('auth')->group(function () {
     Route::post('/{id}/read', [NotificationController::class, 'read'])->name('read');
     Route::post('/{id}/unread', [NotificationController::class, 'unread'])->name('unread');
     Route::post('/read-all', [NotificationController::class, 'readAll'])->name('read-all');
+    Route::delete('/clear-read', [NotificationController::class, 'destroyRead'])->name('clear-read');
 });

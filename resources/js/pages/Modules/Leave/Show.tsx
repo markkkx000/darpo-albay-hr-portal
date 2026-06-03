@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
 import {
     ArrowLeft,
     Calendar,
@@ -6,9 +6,21 @@ import {
     FileText,
     CheckCircle,
     Clock,
+    Archive,
+    RotateCcw,
 } from 'lucide-react';
+import { useState } from 'react';
 import PageHeader from '@/components/page-header';
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+    DialogClose,
+} from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import LeaveRoutes from '@/routes/leave';
 
@@ -65,7 +77,7 @@ interface LeaveRequest {
     has_attachments: boolean;
     supporting_documents: string[];
     maternity_allocation_details?: string | null;
-
+    deleted_at?: string | null;
 }
 
 interface Props {
@@ -98,10 +110,48 @@ export default function LeaveShow({ leaveRequest }: Props) {
         Number(leaveRequest.days_requested) < 1.0 &&
         leaveRequest.start_date === leaveRequest.end_date;
 
+    const { auth } = usePage<any>().props;
+    const canEncode = auth.permissions.includes('leave.manage');
+
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [confirmConfig, setConfirmConfig] = useState<{
+        title: string;
+        description: string;
+        confirmText?: string;
+        isDestructive?: boolean;
+        onConfirm: () => void;
+    } | null>(null);
+
+    const handleArchive = () => {
+        setConfirmConfig({
+            title: 'Archive Leave Request',
+            description: 'Are you sure you want to archive this leave request?',
+            confirmText: 'Archive',
+            isDestructive: true,
+            onConfirm: () => {
+                router.delete(LeaveRoutes.destroy({ leaveRequest: leaveRequest.id }).url);
+            },
+        });
+        setConfirmOpen(true);
+    };
+
+    const handleRestore = () => {
+        setConfirmConfig({
+            title: 'Restore Leave Request',
+            description: 'Are you sure you want to restore this leave request?',
+            confirmText: 'Restore',
+            isDestructive: false,
+            onConfirm: () => {
+                router.post(LeaveRoutes.restore({ leaveRequest: leaveRequest.id }).url);
+            },
+        });
+        setConfirmOpen(true);
+    };
+
     return (
         <>
             <Head title={`Leave Details - ${leaveRequest.user?.last_name}`} />
-            <div className="relative mx-auto w-full max-w-4xl p-4 md:p-8">
+            <div className="relative mx-auto w-full max-w-4xl p-4">
                 {/* Visual Depth Component */}
                 <div className="mesh-halo pointer-events-none" />
 
@@ -109,14 +159,38 @@ export default function LeaveShow({ leaveRequest }: Props) {
                     title="Leave Details"
                     description="Archival record of the employee's application, including leave credit certification and authorization timeline."
                     actions={
-                        <Button variant="ghost" className="btn-ghost-specular" asChild>
-                            <Link href={LeaveRoutes.index().url}>
-                                <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-                                Back to Dashboard
-                            </Link>
-                        </Button>
+                        <div className="flex gap-2">
+                            {canEncode && !leaveRequest.deleted_at && (
+                                <Button variant="destructive" className="bg-destructive/10 text-destructive hover:bg-destructive/20 shadow-none" onClick={handleArchive}>
+                                    <Archive className="h-4 w-4 mr-2" />
+                                    Archive
+                                </Button>
+                            )}
+                            {canEncode && leaveRequest.deleted_at && (
+                                <Button variant="secondary" className="bg-green-500/10 text-green-600 hover:bg-green-500/20 shadow-none" onClick={handleRestore}>
+                                    <RotateCcw className="h-4 w-4 mr-2" />
+                                    Restore
+                                </Button>
+                            )}
+                            <Button variant="ghost" className="btn-ghost-specular" asChild>
+                                <Link href={LeaveRoutes.index().url}>
+                                    <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                                    Back to Dashboard
+                                </Link>
+                            </Button>
+                        </div>
                     }
                 />
+
+                {leaveRequest.deleted_at && (
+                    <div className="relative z-10 mb-6 rounded-xl border border-destructive/20 bg-destructive/5 p-4 flex items-center gap-3 text-destructive">
+                        <Archive className="h-5 w-5" />
+                        <div>
+                            <h3 className="font-bold">Archived Record</h3>
+                            <p className="text-sm opacity-80">This leave request has been archived and is no longer active.</p>
+                        </div>
+                    </div>
+                )}
 
                 <div className="relative z-10 grid grid-cols-1 gap-6 md:grid-cols-3">
                     {/* Main Content */}
@@ -585,6 +659,43 @@ export default function LeaveShow({ leaveRequest }: Props) {
                     </div>
                 </div>
             </div>
+            
+            <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+                <DialogContent className="matte-card !fixed max-w-md rounded-2xl border border-border-2 p-6">
+                    <DialogHeader>
+                        <DialogTitle className="t-headline">
+                            {confirmConfig?.title}
+                        </DialogTitle>
+                        <DialogDescription className="text-sm text-muted-foreground">
+                            {confirmConfig?.description}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="mt-4 flex justify-end gap-2">
+                        <DialogClose asChild>
+                            <Button
+                                variant="ghost"
+                                className="btn-ghost-specular border-none"
+                            >
+                                Cancel
+                            </Button>
+                        </DialogClose>
+                        <Button
+                            className={cn(
+                                'border-none px-5',
+                                confirmConfig?.isDestructive
+                                    ? 'btn-danger-specular'
+                                    : 'btn-specular',
+                            )}
+                            onClick={() => {
+                                confirmConfig?.onConfirm();
+                                setConfirmOpen(false);
+                            }}
+                        >
+                            {confirmConfig?.confirmText || 'Confirm'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

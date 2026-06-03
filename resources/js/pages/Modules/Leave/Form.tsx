@@ -7,7 +7,7 @@ import {
     useMemo,
     useSyncExternalStore,
 } from 'react';
-import type { FormEvent } from 'react';
+import type { SyntheticEvent } from 'react';
 import { toast } from 'sonner';
 import PageHeader from '@/components/page-header';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -406,7 +406,7 @@ export default function LeaveForm({
         'BAR/Board Examination Review',
     ].includes(category);
 
-    const submit = (e: FormEvent) => {
+    const submit = (e: SyntheticEvent) => {
         e.preventDefault();
 
         transform((data) => {
@@ -470,7 +470,7 @@ export default function LeaveForm({
             <Head
                 title={isEdit ? 'Edit Leave Request' : 'Encode Leave Request'}
             />
-            <div className="mx-auto w-full max-w-4xl p-4 md:p-6">
+            <div className="mx-auto w-full max-w-4xl p-4">
                 <PageHeader
                     title={
                         isEdit ? 'Edit Leave Request' : 'Encode Leave Request'

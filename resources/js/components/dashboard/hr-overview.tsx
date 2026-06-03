@@ -1,17 +1,15 @@
-import { Link } from '@inertiajs/react';
-import { Activity, Clock, FileText } from 'lucide-react';
+import { HrPriorityBoard } from '@/components/dashboard/hr-priority-board';
+import { HrQuickLinks } from '@/components/dashboard/hr-quick-links';
+import { LatestAnnouncements } from '@/components/dashboard/latest-announcements';
 import { StatCard } from '@/components/dashboard/stat-card';
-import announcements from '@/routes/announcements';
-import attendance from '@/routes/attendance';
-import leave from '@/routes/leave';
-import personnel from '@/routes/personnel';
+import { UpcomingEvents } from '@/components/dashboard/upcoming-events';
 
-export function HROverview({ data }: { data: any }) {
-    const stats = data || { total_employees: 0, pending_leaves: 0, active_today: 0, recentActivity: [] };
+export function HROverview({ data, employeeData }: { data: any, employeeData?: any }) {
+    const stats = data || { total_employees: 0, pending_leaves: 0, pending_docs: 0, active_today: 0, recentActivity: [], action_items: [] };
 
     return (
         <>
-            <div className="grid animate-fade-up auto-rows-min gap-4 md:grid-cols-3">
+            <div className="grid animate-fade-up auto-rows-min gap-4 md:grid-cols-4">
                 <StatCard
                     title="Total Employees"
                     value={stats.total_employees ?? 0}
@@ -23,6 +21,11 @@ export function HROverview({ data }: { data: any }) {
                     accentColor="#38E54D"
                 />
                 <StatCard
+                    title="Pending Docs"
+                    value={stats.pending_docs ?? 0}
+                    accentColor="#F43F5E"
+                />
+                <StatCard
                     title="Active Today"
                     value={stats.active_today ?? 0}
                     accentColor="#84cc16"
@@ -30,63 +33,16 @@ export function HROverview({ data }: { data: any }) {
             </div>
 
             <div className="grid animate-fade-up-delay-1 gap-4 md:grid-cols-2 mt-4">
-                <div className="matte-card elev-2 min-h-[400px]">
-                    <div className="relative z-10 p-6 h-full flex flex-col">
-                        <h3 className="t-headline mb-4">Recent HR Activities</h3>
-                        {!stats.recentActivity || stats.recentActivity.length === 0 ? (
-                            <div className="flex-1 flex flex-col items-center justify-center gap-3 py-8 text-center">
-                                <Activity className="h-10 w-10 text-muted-foreground opacity-20" />
-                                <p className="text-sm font-medium text-muted-foreground">No recent activity</p>
-                                <p className="text-xs text-muted-foreground/60 max-w-[200px]">HR actions like leave approvals and onboarding will appear here.</p>
-                            </div>
-                        ) : (
-                            <div className="space-y-4 overflow-y-auto max-h-[350px] pr-2">
-                                {stats.recentActivity.map((activity: any) => (
-                                    <div key={activity.id} className="flex items-start gap-4 p-3 rounded-xl hover:item-hover-gradient hover:text-black transition-all group/activity">
-                                        <div className="sqicon sqicon-green p-2 transition-transform duration-300 group-hover/activity:scale-110">
-                                            {activity.type === 'attendance_clock' ? (
-                                                <Clock className="h-4 w-4" />
-                                            ) : (
-                                                <FileText className="h-4 w-4" />
-                                            )}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-semibold truncate transition-colors">{activity.title}</p>
-                                            <p className="text-xs opacity-70 mt-0.5 transition-colors">{activity.description}</p>
-                                        </div>
-                                        <span className="text-[10px] font-bold opacity-60 whitespace-nowrap self-start mt-1 uppercase tracking-tighter">
-                                            {activity.time}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div>
+                <HrPriorityBoard data={stats} layoutId="hr-overview-priority-tabs" />
 
-                <div className="matte-card elev-2 min-h-[400px]">
-                    <div className="relative z-10 p-6">
-                        <h3 className="t-headline mb-4">HR Quick Actions</h3>
-                        <div className="grid gap-3">
-                            <Link href={personnel.index().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
-                                <div className="font-semibold text-foreground transition-colors">Employee Directory</div>
-                                <div className="text-sm text-muted-foreground mt-1">View and manage employee profiles and position assignments</div>
-                            </Link>
-                            <Link href={leave.index().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
-                                <div className="font-semibold text-foreground transition-colors">Leave Management</div>
-                                <div className="text-sm text-muted-foreground mt-1">Approve and manage leave requests, review credits</div>
-                            </Link>
-                            <Link href={attendance.index().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
-                                <div className="font-semibold text-foreground transition-colors">Attendance Records</div>
-                                <div className="text-sm text-muted-foreground mt-1">Check employee daily time records and punch histories</div>
-                            </Link>
-                            <Link href={announcements.manage().url} className="matte-card elev-2 p-4 text-left spring-hover block border border-border-2">
-                                <div className="font-semibold text-foreground transition-colors">Announcements</div>
-                                <div className="text-sm text-muted-foreground mt-1">Publish notices, policy updates, and employee news</div>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
+                {/* Quick Links */}
+                <HrQuickLinks />
+            </div>
+
+            {/* Row 3: Upcoming + Latest Announcements */}
+            <div className="grid gap-4 md:grid-cols-2 mt-4">
+                <UpcomingEvents events={employeeData?.calendar_events || []} />
+                <LatestAnnouncements announcements={employeeData?.latest_announcements || []} />
             </div>
         </>
     );

@@ -2,12 +2,14 @@
 
 namespace App\Modules\Roles\Services;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use DomainException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class RoleService
 {
@@ -24,7 +26,7 @@ class RoleService
      */
     public function getPaginatedUsersWithRoles(?string $search = null)
     {
-        return User::with('roles')
+        $users = User::with('roles')
             ->when($search, function ($query, $search) {
                 $keywords = explode(' ', $search);
                 foreach ($keywords as $keyword) {
@@ -40,6 +42,8 @@ class RoleService
             })
             ->paginate(15)
             ->withQueryString();
+
+        return UserResource::collection($users);
     }
 
     /**
@@ -72,6 +76,7 @@ class RoleService
     {
         $role = Role::create(['name' => $name]);
         $role->syncPermissions($permissions);
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         return $role;
     }
@@ -102,6 +107,7 @@ class RoleService
         }
 
         $role->delete();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 
     /**

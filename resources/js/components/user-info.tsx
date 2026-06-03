@@ -24,7 +24,7 @@ export function UserInfo({
             <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
                 <span className="truncate font-medium">{fullName}</span>
                 {showEmail && (
-                    <span className="truncate text-xs text-muted-foreground group-hover:text-black group-data-[state=open]:text-black transition-colors duration-200">
+                    <span className="truncate text-xs text-muted-foreground group-hover:text-black group-data-[state=open]:text-black">
                         {user.email}
                     </span>
                 )}
