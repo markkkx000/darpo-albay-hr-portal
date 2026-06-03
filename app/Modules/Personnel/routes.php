@@ -31,4 +31,8 @@ Route::middleware(['auth', 'permission:personnel.view'])->group(function () {
     Route::middleware('permission:roles.manage')->group(function () {
         Route::post('/{user}/reset-password', [PersonnelController::class, 'resetPassword'])->name('reset-password');
     });
+
+    Route::middleware('role:super_admin')->group(function () {
+        Route::post('/{user}/disable-mfa', [PersonnelController::class, 'disableMfa'])->name('disable-mfa');
+    });
 });

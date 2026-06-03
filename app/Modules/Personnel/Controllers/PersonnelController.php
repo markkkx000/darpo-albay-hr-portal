@@ -31,7 +31,7 @@ class PersonnelController extends Controller
         $this->authorize('personnel.view');
 
         return Inertia::render('Modules/Personnel/Index', [
-            'employees' => $this->employeeService->getEmployees($request->only(['search', 'division_id', 'appointment_status_id']), $request->user()),
+            'employees' => $this->employeeService->getEmployees($request->only(['search', 'division_id', 'appointment_status_id'])),
             'filters' => $request->only(['search', 'division_id', 'appointment_status_id']),
             'divisions' => Division::where('is_active', true)->get(),
             'units' => Unit::where('is_active', true)->get(),
@@ -127,7 +127,7 @@ class PersonnelController extends Controller
         $this->authorize('personnel.view');
 
         return Inertia::render('Modules/Personnel/Archived', [
-            'employees' => $this->employeeService->getArchivedEmployees($request->only(['search']), $request->user()),
+            'employees' => $this->employeeService->getArchivedEmployees($request->only(['search'])),
             'filters' => $request->only(['search']),
         ]);
     }
@@ -157,6 +157,24 @@ class PersonnelController extends Controller
         $this->employeeService->resetPassword($user, $request->input('password'));
 
         return back()->with('success', 'Password reset successfully.');
+    }
+
+    /**
+     * Disable MFA for a user (Super Admin only).
+     */
+    public function disableMfa(Request $request, User $user): RedirectResponse
+    {
+        if (! $request->user()->hasRole('super_admin')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $user->forceFill([
+            'mfa_enabled' => false,
+            'mfa_code' => null,
+            'mfa_expires_at' => null,
+        ])->save();
+
+        return back()->with('success', 'Two-Factor Authentication has been disabled for this user.');
     }
 
     /**

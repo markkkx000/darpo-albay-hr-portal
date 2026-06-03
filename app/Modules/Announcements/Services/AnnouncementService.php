@@ -95,9 +95,18 @@ class AnnouncementService
     /**
      * Get all announcements for HR management view.
      */
-    public function getAllForHR(): LengthAwarePaginator
+    public function getAllForHR(User $user): LengthAwarePaginator
     {
         return Announcement::with('author')
+            ->when($user->hasRole('division_head'), function ($query) use ($user) {
+                $query->where(function ($q) use ($user) {
+                    $q->where('posted_by', $user->id)
+                        ->orWhere(function ($q2) use ($user) {
+                            $q2->where('target_type', 'division')
+                                ->where('target_id', $user->division_id);
+                        });
+                });
+            })
             ->latest()
             ->paginate(15);
     }

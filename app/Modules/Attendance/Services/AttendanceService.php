@@ -139,17 +139,10 @@ class AttendanceService
      *
      * @param  array{search?: string, status?: string, user_id?: string, from_date?: string, to_date?: string}  $filters
      */
-    public function getAllAttendance(array $filters = [], ?User $user = null): LengthAwarePaginator
+    public function getAllAttendance(array $filters = []): LengthAwarePaginator
     {
-        $query = Attendance::with('user')->filter($filters);
-
-        if ($user && ! $user->hasRole(['super_admin', 'hr_admin'])) {
-            $query->whereHas('user', function ($q) use ($user) {
-                $q->where('division_id', $user->division_id);
-            });
-        }
-
-        return $query
+        return Attendance::with('user')
+            ->filter($filters)
             ->orderBy('date', 'desc')
             ->orderBy('am_clock_in', 'desc')
             ->paginate(15)

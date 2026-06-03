@@ -19,6 +19,7 @@ export interface Employee {
     unit?: { name: string };
     positions?: Array<{ name: string; pivot: { is_primary: boolean } }>;
     appointment_status?: { name: string };
+    mfa_enabled?: boolean;
 
     sex: string | null;
     date_of_birth: string | null;

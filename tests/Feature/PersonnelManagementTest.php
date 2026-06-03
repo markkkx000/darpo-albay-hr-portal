@@ -59,8 +59,10 @@ test('can create a new employee record', function () {
         'last_name' => 'Doe',
         'salary_grade' => 15,
         'salary_step' => 1,
-        'monthly_salary' => 35000.50,
     ]);
+
+    $user = User::where('employee_number', 'P-001')->first();
+    expect((float) $user->monthly_salary)->toBe(35000.50);
 });
 
 test('can archive an employee record', function () {
@@ -154,6 +156,8 @@ test('can update an employee record', function () {
         'first_name' => 'Updated',
         'salary_grade' => 16,
         'salary_step' => 3,
-        'monthly_salary' => 38500.75,
     ]);
+
+    $employee->refresh();
+    expect((float) $employee->monthly_salary)->toBe(38500.75);
 });

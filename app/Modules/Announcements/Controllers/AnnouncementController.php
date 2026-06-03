@@ -62,7 +62,7 @@ class AnnouncementController extends Controller
         abort_unless($request->user()->can('announcements.manage'), 403);
 
         return Inertia::render('Modules/Announcements/Manage', [
-            'announcements' => $this->announcementService->getAllForHR(),
+            'announcements' => $this->announcementService->getAllForHR($request->user()),
         ]);
     }
 

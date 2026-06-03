@@ -37,10 +37,6 @@ class LeaveService
 
         if ($viewMode === 'mine' && $user) {
             $query->where('user_id', $user->id);
-        } elseif ($user && ! $user->hasRole(['super_admin', 'hr_admin'])) {
-            $query->whereHas('user', function ($q) use ($user) {
-                $q->where('division_id', $user->division_id);
-            });
         }
 
         $query->when($search, function ($q) use ($search) {
@@ -83,7 +79,7 @@ class LeaveService
     /**
      * Get leaves for calendar view
      */
-    public function getCalendarLeaves(int $year, int $month, ?int $userId = null, ?User $user = null): Collection
+    public function getCalendarLeaves(int $year, int $month, ?int $userId = null): Collection
     {
         $query = LeaveRequest::with(['user', 'leaveType'])
             ->where(function ($q) use ($year, $month) {
@@ -96,10 +92,6 @@ class LeaveService
 
         if ($userId) {
             $query->where('user_id', $userId);
-        } elseif ($user && ! $user->hasRole(['super_admin', 'hr_admin'])) {
-            $query->whereHas('user', function ($q) use ($user) {
-                $q->where('division_id', $user->division_id);
-            });
         }
 
         return $query->get();

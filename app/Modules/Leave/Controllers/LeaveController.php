@@ -147,7 +147,7 @@ class LeaveController extends Controller
         $userId = $request->input('user_id') ? (int) $request->input('user_id') : null;
 
         return Inertia::render('Modules/Leave/Calendar', [
-            'leaves' => $this->leaveService->getCalendarLeaves($year, $month, $userId, $request->user()),
+            'leaves' => $this->leaveService->getCalendarLeaves($year, $month, $userId),
             'leaveTypes' => LeaveType::all(),
             'users' => User::select('id', 'first_name', 'last_name', 'employee_number')->orderBy('last_name')->get(),
             'holidays' => Holiday::whereYear('date', $year)->whereMonth('date', $month)->get(),
