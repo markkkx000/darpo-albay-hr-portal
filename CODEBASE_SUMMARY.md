@@ -187,7 +187,8 @@ tests/
 ### Audit Module (`app/Modules/Audit/`)
 - **Purpose**: System-wide activity logging and audit trail viewing for Super Admins. Powered by `Spatie\Activitylog`.
 - **Dashboard** (`Index.tsx`): Paginated datatable of all system events. Features client-side/server-side debounced search, user filtering, date range filtering, and event type filtering.
-- **Raw Log Viewer**: Includes a dialog modal to view raw JSON properties and attribute changes (`old` and `attributes`).
+- **Raw Log Viewer**: Includes a dialog modal to view raw JSON properties and attribute changes (`old` and `attributes`). For Spatie Activitylog v5+, the UI and CSV Export explicitly merge the `$activity->properties` and `$activity->attribute_changes` columns, ensuring Eloquent Model modifications are properly displayed.
+- **PII Redaction**: Highly sensitive encrypted fields (like `monthly_salary`) are actively redacted before being written to the database via the `beforeActivityLogged()` method on models, ensuring they do not leak into plain text audit logs.
 - **CSV Export**: Securely streams CSV downloads of the audit log, supporting chunking for memory safety. Fully protects against CSV (Formula) Injection vulnerabilities by sanitizing user-controlled fields (`=, +, -, @, \t, \r, \n`).
 - **Permissions**: Protected by the strictly scoped `system.audit` permission (assigned uniquely to `super_admin`).
 
@@ -235,6 +236,7 @@ tests/
 - **Lookup Tables**: `divisions`, `units`, `positions`, `employment_statuses` — all use `is_active` flag, never hard deleted. `units` and `positions` are hierarchically nested under a `division`. Each user belongs to exactly one `division_id` and optionally one `unit_id` (primary assignment), but can hold multiple positions.
 - **Organization Management**: Dedicated management dashboard for Divisions, Units, and Positions (`Organization/Index.tsx`) via `OrganizationController` and `OrganizationService`. Full CRUD with form requests for each entity type.
 - **Dynamic Field Logic**: Position and Unit comboboxes filter by selected Division in create/edit forms. PRC Expiration is automatically enabled/disabled based on validation of a 7-digit PRC ID number.
+- **PII Protection**: Highly sensitive fields (`monthly_salary`, `tin_number`, `gsis_bp_number`, `philhealth`, `hdmf_pagibig_no`, `prc_id_no`) are secured using Laravel's `encrypted` cast. Furthermore, these fields are restricted using form/resource exclusions so that HR staff cannot view or edit them—only the `super_admin` retains access.
 - **Soft Delete & Restoration**: Archived employees viewable by `personnel.view` users (read-only at `Archived.tsx`). Restore restricted to `personnel.manage` users via `/personnel/archived`.
 - **Search & Filtering**: By name, employee number, division, employment status. 500ms debounce with Enter key trigger.
 - **Permissions**: `personnel.view` (hr_staff, hr_admin, super_admin), `personnel.manage` (hr_admin, super_admin).
@@ -343,9 +345,4 @@ This is **infrastructure, not a feature module**. It is a hybrid: the dispatch/m
 
 ## Security Audit & Deployment Checklist
 Based on a recent security audit, the following pending items MUST be addressed before or during production deployment:
-- **Server-Side Sanitization**: Tiptap `content` is currently stored as raw HTML (e.g., Announcements). A server-side HTML Purifier (like `mews/purifier`) must be installed and applied to prevent stored XSS.
-- **HTTP Security Headers**: A middleware (e.g., `SecurityHeaders.php`) must be added to enforce `X-Frame-Options`, `X-Content-Type-Options`, `Strict-Transport-Security`, and `Referrer-Policy`.
-- **Session Security**: `SESSION_SECURE_COOKIE=true` must be explicitly defined in the production `.env`.
-- **Production Cache Scripting**: Ensure deployment scripts explicitly run `php artisan config:cache`, `route:cache`, `view:cache`, `event:cache`, and `permission:cache-reset`.
-- **Mass Assignment Refactor**: Remove `password` from the `User` model's `#[Fillable]` attribute; explicitly use `$user->forceFill(['password' => ...])` in services.
 - **Data Isolation**: HR modules do not currently enforce cross-division scoping (i.e. division heads or HR staff seeing only their own division). Confirm business requirements and implement scoping if necessary.

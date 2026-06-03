@@ -57,6 +57,8 @@
 - **Model Definition**: Use Laravel 13 PHP attributes (`#[Fillable]`, `#[Hidden]`) instead of protected properties.
 - **Mass Assignment**: Security-sensitive fields like `password`, `remember_token`, and `email_verified_at` must **never** be included in the `#[Fillable]` attribute. Update them explicitly using `$model->forceFill(['password' => Hash::make(...)])->save()`.
 - Real-world entity tables must use `softDeletes()`.
+- **API Resources & Inertia**: When returning individual Eloquent models via Inertia, use `$resource->resolve()` (e.g., `UserResource::make($user)->resolve()`) instead of globally disabling wrapping (`JsonResource::withoutWrapping()`). This ensures the frontend receives a flattened object (no `data` wrapper) for individual records, while allowing paginated collections to maintain their expected wrapper structure natively.
+- **PII Protection & Audit Logs**: Encrypt highly sensitive PII fields (like `monthly_salary`, `tin_number`) using Laravel's `encrypted` cast. To prevent these encrypted fields from leaking in plain text via system audit logs, you must implement the `beforeActivityLogged(\Spatie\Activitylog\Models\Activity $activity)` method on the Eloquent model to explicitly redact sensitive keys from `$activity->attribute_changes`.
 - Each module that needs a sidebar link must include `app/Modules/{ModuleName}/navigation.php`. Read `ModuleServiceProvider.php` and an existing `navigation.php` (e.g. Attendance) before writing a new one to match the expected format.
 
 ---
