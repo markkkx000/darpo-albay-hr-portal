@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Vite;
 use Symfony\Component\HttpFoundation\Response;
 
 class SecurityHeaders
@@ -23,12 +24,14 @@ class SecurityHeaders
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
         $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
 
-        // CSP: Allow Vite dev server (unsafe-inline for dev), Tiptap's inline styles
+        // CSP: Secure defaults with nonce for dynamic scripts/styles
         if (app()->isProduction()) {
+            $nonce = Vite::cspNonce();
+
             $response->headers->set('Content-Security-Policy',
                 "default-src 'self'; ".
-                "script-src 'self' 'unsafe-eval' 'unsafe-inline'; ". // Required for Vue/React/Inertia hydration and dynamic chunks
-                "style-src 'self' 'unsafe-inline'; ". // Tiptap requires inline styles
+                "script-src 'self' 'nonce-{$nonce}' 'strict-dynamic'; ".
+                "style-src 'self' 'unsafe-inline'; ". // Many UI libraries (Tiptap, etc) require inline styles
                 "img-src 'self' data: blob: https:; ". // allow external images
                 "font-src 'self' data:; ".
                 "connect-src 'self'; ".

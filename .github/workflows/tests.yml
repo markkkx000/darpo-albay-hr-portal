@@ -76,3 +76,6 @@ jobs:
           DB_DATABASE: testing
           DB_USERNAME: postgres
           DB_PASSWORD: password
+
+      - name: Static Analysis
+        run: ./vendor/bin/phpstan analyse

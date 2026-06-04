@@ -14,8 +14,9 @@ return [
     /*
      * When running the clean-command all recording older than
      * the number of days specified here will be deleted.
+     * Set to 1095 days (3 years) to comply with RA 10173 data retention for HR records.
      */
-    'delete_records_older_than_days' => 365,
+    'delete_records_older_than_days' => 1095,
 
     /*
      * If no log name is passed to the activity() helper
