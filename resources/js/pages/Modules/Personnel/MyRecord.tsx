@@ -1,8 +1,8 @@
 import { Head, router } from '@inertiajs/react';
-import { EmployeeCard } from '@/components/Personnel/EmployeeCard';
-import { Button } from '@/components/ui/button';
 import { DownloadCloud } from 'lucide-react';
 import { useState } from 'react';
+import { EmployeeCard } from '@/components/Personnel/EmployeeCard';
+import { Button } from '@/components/ui/button';
 
 interface Props {
     employee: any;
@@ -13,7 +13,7 @@ export default function MyRecord({ employee }: Props) {
 
     const handleExport = () => {
         setIsExporting(true);
-        router.post(route('dsar.export'), {}, {
+        router.post('/dsar/export', {}, {
             onFinish: () => setIsExporting(false),
             preserveScroll: true,
         });
