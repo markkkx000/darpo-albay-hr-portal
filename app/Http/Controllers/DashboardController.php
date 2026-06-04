@@ -9,6 +9,7 @@ use App\Modules\DocumentRequests\Models\DocumentRequest;
 use App\Modules\Leave\Models\Holiday;
 use App\Modules\Leave\Models\LeaveCredit;
 use App\Modules\Leave\Models\LeaveRequest;
+use App\Modules\Personnel\Services\MilestoneService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -218,6 +219,7 @@ class DashboardController extends Controller
                 'active_today' => $activeToday,
                 'recentActivity' => $recentActivity,
                 'action_items' => $hrActionItems,
+                'upcoming_milestones' => app(MilestoneService::class)->getUpcomingMilestones(30),
             ];
         }
 

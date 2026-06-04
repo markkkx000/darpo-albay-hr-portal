@@ -6,6 +6,7 @@ import { HrQuickLinks } from '@/components/dashboard/hr-quick-links';
 import { LatestAnnouncements } from '@/components/dashboard/latest-announcements';
 import { StatCard } from '@/components/dashboard/stat-card';
 import { UpcomingEvents } from '@/components/dashboard/upcoming-events';
+import { UpcomingMilestones } from '@/components/dashboard/upcoming-milestones';
 import { Button } from '@/components/ui/button';
 import { SlidingTabs } from '@/components/ui/sliding-tabs';
 import { userinfo } from '@/routes';
@@ -133,6 +134,11 @@ export function SuperAdminOverview({ adminData, hrData, employeeData }: { adminD
                         <div className="grid gap-4 md:grid-cols-2 mt-4">
                             <UpcomingEvents events={emp.calendar_events || []} />
                             <LatestAnnouncements announcements={emp.latest_announcements || []} />
+                        </div>
+
+                        {/* Row 4: Upcoming Milestones */}
+                        <div className="grid gap-4 md:grid-cols-2 mt-4">
+                            <UpcomingMilestones milestones={hr.upcoming_milestones || []} />
                         </div>
                     </>
                 )}
