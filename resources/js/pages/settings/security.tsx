@@ -1,4 +1,4 @@
-import { Form, Head, router, useForm } from '@inertiajs/react';
+import { Form, Head, router, useForm, usePage } from '@inertiajs/react';
 import { useRef, useState, useEffect } from 'react';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
@@ -12,6 +12,7 @@ import { edit } from '@/routes/security';
 import { update } from '@/routes/user-password';
 
 export default function Security({ mfaEnabled, isMfaForced, loginHistory }: { mfaEnabled: boolean, isMfaForced: boolean, loginHistory: Array<{ip: string, browser: string, os: string, time: string}> }) {
+    const { errors } = usePage().props as { errors: Record<string, string> };
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
     
@@ -102,6 +103,11 @@ return;
                             onCheckedChange={handleMfaToggle}
                         />
                     </div>
+                    {errors.mfa && (
+                        <div className="mt-2 text-sm font-medium text-destructive">
+                            {errors.mfa}
+                        </div>
+                    )}
                     </div>
                 </div>
 
