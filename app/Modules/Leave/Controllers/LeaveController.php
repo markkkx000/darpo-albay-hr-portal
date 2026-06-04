@@ -3,6 +3,7 @@
 namespace App\Modules\Leave\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\LeaveRequestResource;
 use App\Models\User;
 use App\Modules\Leave\Models\Holiday;
 use App\Modules\Leave\Models\LeaveRequest;
@@ -11,7 +12,6 @@ use App\Modules\Leave\Models\LeaveType;
 use App\Modules\Leave\Requests\StoreLeaveRequest;
 use App\Modules\Leave\Requests\UpdateLeaveRequest;
 use App\Modules\Leave\Services\LeaveService;
-use App\Http\Resources\LeaveRequestResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;

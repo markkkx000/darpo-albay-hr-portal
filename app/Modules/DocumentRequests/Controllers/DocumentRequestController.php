@@ -4,6 +4,7 @@ namespace App\Modules\DocumentRequests\Controllers;
 
 use App\Core\Services\NotificationService;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\DocumentRequestResource;
 use App\Models\User;
 use App\Modules\DocumentRequests\Models\DocumentRequest;
 use App\Modules\DocumentRequests\Requests\ReleaseDocumentRequest;
@@ -12,7 +13,6 @@ use App\Modules\DocumentRequests\Services\DocumentRequestService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use App\Http\Resources\DocumentRequestResource;
 
 class DocumentRequestController extends Controller
 {

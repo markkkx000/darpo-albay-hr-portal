@@ -2,9 +2,13 @@
 
 namespace App\Http\Resources;
 
+use App\Modules\DocumentRequests\Models\DocumentRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin DocumentRequest
+ */
 class DocumentRequestResource extends JsonResource
 {
     /**
@@ -43,8 +47,6 @@ class DocumentRequestResource extends JsonResource
                     'first_name' => $this->user->first_name,
                     'last_name' => $this->user->last_name,
                     'employee_number' => $this->user->employee_number,
-                    'division' => $this->user->division,
-                    'position' => $this->user->position,
                 ];
             }),
             'requester' => $this->whenLoaded('requester', function () {
