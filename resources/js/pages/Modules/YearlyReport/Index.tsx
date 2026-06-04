@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { index as yearlyreportIndexRoute, exportMethod as yearlyreportExportRoute } from '@/routes/yearlyreport';
 
 interface ResultItem {
     emp_id: number;
@@ -28,7 +29,7 @@ export default function YearlyReport({ results, year, filter }: Props) {
     const [selectedFilter, setSelectedFilter] = useState(filter);
 
     const handleFilterChange = (newYear: string, newFilter: string) => {
-        router.get('/yearlyreport', {
+        router.get(yearlyreportIndexRoute().url, {
             year: newYear,
             filter: newFilter
         }, {
@@ -38,7 +39,7 @@ export default function YearlyReport({ results, year, filter }: Props) {
     };
 
     const handleExport = () => {
-        window.location.href = `/yearlyreport/export?year=${selectedYear}&filter=${selectedFilter}`;
+        window.location.href = yearlyreportExportRoute({ year: selectedYear, filter: selectedFilter }).url;
     };
 
     const formatDate = (date: string) => {

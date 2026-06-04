@@ -14,6 +14,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { store as storePromotionRoute, update as updatePromotionRoute, destroy as destroyPromotionRoute } from '@/routes/personnel/promotions';
 import type { Employee } from './EmployeeCard';
 import { PositionCombobox } from './PositionCombobox';
 
@@ -35,7 +36,7 @@ export function PromotionHistorySection({ employee, positions = [] }: { employee
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(`/personnel/${employee.id}/promotions`, {
+        post(storePromotionRoute({ user: employee.id }).url, {
             onSuccess: () => {
                 toast.success('Promotion logged successfully.');
                 reset();
@@ -46,7 +47,7 @@ export function PromotionHistorySection({ employee, positions = [] }: { employee
     };
 
     const submitEdit = (id: number) => {
-        router.put(`/personnel/${employee.id}/promotions/${id}`, editData, {
+        router.put(updatePromotionRoute({ user: employee.id, promotionHistory: id }).url, editData, {
             onSuccess: () => {
                 toast.success('Promotion updated successfully.');
                 setEditingId(null);
@@ -64,7 +65,7 @@ export function PromotionHistorySection({ employee, positions = [] }: { employee
 return;
 }
 
-        router.delete(`/personnel/${employee.id}/promotions/${deleteTargetId}`, {
+        router.delete(destroyPromotionRoute({ user: employee.id, promotionHistory: deleteTargetId }).url, {
             onSuccess: () => {
                 toast.success('Promotion deleted successfully.');
                 setDeleteTargetId(null);
