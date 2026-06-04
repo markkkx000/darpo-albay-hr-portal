@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
+use App\Modules\Personnel\Services\MilestoneService;
 use App\Notifications\GenericDatabaseNotification;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 class CheckUpcomingMilestones extends Command
 {
@@ -27,65 +27,53 @@ class CheckUpcomingMilestones extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(MilestoneService $milestoneService)
     {
         $this->info('Checking for upcoming milestones...');
 
-        $year = Carbon::now()->year;
         $targetDate = Carbon::today()->addDays(30)->format('Y-m-d');
-        
-        $employees = User::where('is_active', true)->get();
 
         $adminsToNotify = User::role(['super_admin', 'hr_admin', 'hr_staff'])->get();
         if ($adminsToNotify->isEmpty()) {
             $this->warn('No admins found to notify.');
+
             return;
         }
 
         $notificationCount = 0;
 
-        foreach ($employees as $emp) {
-            // Loyalty Milestones
-            $startDate = $emp->date_hired_government ?? $emp->orig_date_of_appointment ?? $emp->hire_date;
-            if ($startDate) {
-                $startYear = Carbon::parse($startDate)->year;
-                $m = $year - $startYear;
-                if ($m >= 10 && ($m === 10 || ($m - 10) % 5 === 0)) {
-                    $milestoneDate = Carbon::parse($startDate)->addYears($m)->format('Y-m-d');
-                    
-                    if ($milestoneDate === $targetDate) {
-                        $this->notifyAdmins(
-                            $adminsToNotify,
-                            'Loyalty Award',
-                            'Update',
-                            "{$emp->name} has reached {$m}-year Loyalty Award",
-                            $emp->id
-                        );
-                        $notificationCount++;
-                        $this->info("Loyalty award notification queued for {$emp->name} ({$m} years).");
-                    }
-                }
-            }
+        // Get all milestones for this year
+        $year = Carbon::now()->year;
+        $milestones = $milestoneService->getMilestonesForYear($year);
 
-            // Salary Milestones
-            $baseDate = $emp->date_of_latest_appointment ?? $emp->orig_date_of_appointment ?? $emp->hire_date;
-            if ($baseDate) {
-                $baseYear = Carbon::parse($baseDate)->year;
-                $mSal = $year - $baseYear;
-                if ($mSal >= 3 && $mSal % 3 === 0) {
-                    $milestoneDate = Carbon::parse($baseDate)->addYears($mSal)->format('Y-m-d');
-                    
-                    if ($milestoneDate === $targetDate) {
-                        $this->notifyAdmins(
-                            $adminsToNotify,
-                            'Salary Update',
-                            'Update',
-                            "{$emp->name} is due for a {$mSal}-year salary update",
-                            $emp->id
-                        );
-                        $notificationCount++;
-                        $this->info("Salary update notification queued for {$emp->name} ({$mSal} years).");
-                    }
+        foreach ($milestones as $milestone) {
+            // We only notify if the milestone date is exactly 30 days from today
+            if ($milestone['date'] === $targetDate) {
+                $empId = $milestone['emp_id'];
+                $empName = $milestone['name'];
+
+                if ($milestone['type'] === 'loyalty') {
+                    $m = $milestone['milestone'];
+                    $this->notifyAdmins(
+                        $adminsToNotify,
+                        'Loyalty Award',
+                        'Update',
+                        "{$empName} has reached {$m}-year Loyalty Award",
+                        $empId
+                    );
+                    $notificationCount++;
+                    $this->info("Loyalty award notification queued for {$empName} ({$m} years).");
+                } elseif ($milestone['type'] === 'salary') {
+                    $mSal = $milestone['milestone'];
+                    $this->notifyAdmins(
+                        $adminsToNotify,
+                        'Salary Update',
+                        'Update',
+                        "{$empName} is due for a {$mSal}-year salary update",
+                        $empId
+                    );
+                    $notificationCount++;
+                    $this->info("Salary update notification queued for {$empName} ({$mSal} years).");
                 }
             }
         }
@@ -103,7 +91,7 @@ class CheckUpcomingMilestones extends Command
             'type' => $type,
             'message' => $message,
         ];
-        
+
         if ($employeeId) {
             $notificationData['employee_id'] = $employeeId;
         }
