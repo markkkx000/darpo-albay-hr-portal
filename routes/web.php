@@ -19,7 +19,7 @@ Route::middleware('guest')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login.store');
 
     Route::get('mfa/verify', [MfaController::class, 'show'])->name('mfa.show');
-    Route::post('mfa/verify', [MfaController::class, 'verify'])->name('mfa.verify');
+    Route::post('mfa/verify', [MfaController::class, 'verify'])->middleware('throttle:5,1')->name('mfa.verify');
     Route::post('mfa/resend', [MfaController::class, 'resend'])->name('mfa.resend');
 
     Route::get('forgot-password', [PasswordResetController::class, 'create'])->name('password.request');
