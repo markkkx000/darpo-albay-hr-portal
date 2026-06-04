@@ -2,13 +2,16 @@
 
 namespace App\Providers;
 
+use App\Listeners\SendFailedJobAlert;
 use App\Models\User;
 use App\Observers\UserObserver;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -33,6 +36,11 @@ class AppServiceProvider extends ServiceProvider
         JsonResource::withoutWrapping();
 
         User::observe(UserObserver::class);
+
+        Event::listen(
+            JobFailed::class,
+            SendFailedJobAlert::class,
+        );
     }
 
     /**
