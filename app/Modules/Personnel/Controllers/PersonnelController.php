@@ -16,6 +16,7 @@ use App\Modules\Personnel\Requests\EmployeeUpdateRequest;
 use App\Modules\Personnel\Services\EmployeeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -156,7 +157,7 @@ class PersonnelController extends Controller
         $this->authorize('roles.manage');
 
         $request->validate([
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['required', 'string', Password::defaults()],
         ]);
 
         $this->employeeService->resetPassword($user, $request->input('password'));
