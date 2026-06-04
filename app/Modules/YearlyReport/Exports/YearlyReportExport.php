@@ -29,9 +29,15 @@ class YearlyReportExport implements FromArray, ShouldAutoSize, WithHeadings, Wit
                 ? "{$row['milestone']}-year Salary Adjustment"
                 : "{$row['milestone']}-year Loyalty Award";
 
+            $name = $row['name'];
+            // Sanitize to prevent CSV formula injection
+            if (preg_match('/^[=\+\-@\t\r\n]/', $name)) {
+                $name = "'".$name;
+            }
+
             $data[] = [
                 $row['date'],
-                $row['name'],
+                $name,
                 $row['employee_number'] ?: '—',
                 $row['division'],
                 $milestoneText,
