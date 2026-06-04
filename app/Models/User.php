@@ -48,7 +48,7 @@ class User extends Authenticatable
     {
         if ($activity->attribute_changes) {
             $changes = $activity->attribute_changes->toArray();
-            $sensitive = ['monthly_salary', 'tin_number', 'gsis_bp_number', 'philhealth', 'hdmf_pagibig_no', 'prc_id_no'];
+            $sensitive = ['monthly_salary', 'tin_number', 'gsis_bp_number', 'philhealth', 'hdmf_pagibig_no', 'prc_id_no', 'lbp_account_number'];
 
             if (isset($changes['attributes'])) {
                 foreach ($sensitive as $s) {
@@ -100,6 +100,7 @@ class User extends Authenticatable
             'philhealth' => 'encrypted',
             'hdmf_pagibig_no' => 'encrypted',
             'prc_id_no' => 'encrypted',
+            'lbp_account_number' => 'encrypted',
             'mfa_enabled' => 'boolean',
             'mfa_expires_at' => 'datetime',
         ];
