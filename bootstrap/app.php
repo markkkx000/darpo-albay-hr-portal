@@ -34,5 +34,19 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->report(function (Throwable $e) {
+            if (app()->bound('log')) {
+                logger()->error($e->getMessage(), [
+                    'exception' => get_class($e),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'url' => request()?->fullUrl(),
+                    'method' => request()?->method(),
+                    'user_id' => request()?->user()?->id,
+                    'ip' => request()?->ip(),
+                ]);
+            }
+
+            return false; // Let Laravel continue its default handling
+        });
     })->create();
