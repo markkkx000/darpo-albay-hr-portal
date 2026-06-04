@@ -14,7 +14,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(RoleAndPermissionSeeder::class);
+        $this->call([
+            RoleAndPermissionSeeder::class,
+            LeaveTypeSeeder::class,
+            LeaveStatusSeeder::class,
+            OrganizationStructureSeeder::class,
+        ]);
 
         // Seed Appointment Statuses
         $statuses = [
