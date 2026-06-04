@@ -7,6 +7,7 @@ use App\Modules\Personnel\Services\MilestoneService;
 use App\Modules\YearlyReport\Exports\YearlyReportExport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inertia\Inertia;
 use Inertia\Response;
 use Maatwebsite\Excel\Facades\Excel;
@@ -27,7 +28,7 @@ class YearlyReportController extends Controller
         $offset = ($page - 1) * $perPage;
         $items = array_values(array_slice($results, $offset, $perPage));
 
-        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+        $paginator = new LengthAwarePaginator(
             $items,
             count($results),
             $perPage,

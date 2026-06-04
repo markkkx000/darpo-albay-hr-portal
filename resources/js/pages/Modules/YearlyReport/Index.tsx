@@ -2,11 +2,11 @@ import { Head, router } from '@inertiajs/react';
 import { Download } from 'lucide-react';
 import { useState } from 'react';
 import PageHeader from '@/components/page-header';
+import { Pagination } from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { index as yearlyreportIndexRoute, exportMethod as yearlyreportExportRoute } from '@/routes/yearlyreport';
-import { Pagination } from '@/components/Pagination';
 
 interface ResultItem {
     emp_id: number;
