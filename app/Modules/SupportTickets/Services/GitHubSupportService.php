@@ -102,6 +102,29 @@ class GitHubSupportService
     }
 
     /**
+     * Get timeline events for a specific issue.
+     */
+    public function getTimeline(string $issueNumber): ?array
+    {
+        if (empty($this->token) || empty($this->repo)) {
+            return null;
+        }
+
+        $response = Http::withToken($this->token)
+            ->withHeaders([
+                'Accept' => 'application/vnd.github.v3+json',
+                'X-GitHub-Api-Version' => '2022-11-28',
+            ])
+            ->get("https://api.github.com/repos/{$this->repo}/issues/{$issueNumber}/timeline");
+
+        if ($response->successful()) {
+            return $response->json();
+        }
+
+        return null;
+    }
+
+    /**
      * Get details for a specific issue.
      */
     public function getIssue(string $issueNumber): ?array

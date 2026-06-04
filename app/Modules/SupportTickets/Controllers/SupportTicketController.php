@@ -102,17 +102,52 @@ class SupportTicketController extends Controller
             abort(403);
         }
 
-        // Always sync the status when viewing the ticket
-        $issue = $this->github->getIssue($ticket->github_issue_id);
+        $cacheKeyIssue = "github_issue_{$ticket->github_issue_id}";
+        $issue = Cache::get($cacheKeyIssue);
+
+        if (! $issue) {
+            $apiIssue = $this->github->getIssue($ticket->github_issue_id);
+            if ($apiIssue) {
+                $issue = $apiIssue;
+                Cache::put($cacheKeyIssue, $issue, 15);
+            }
+        }
+
         if ($issue && isset($issue['state']) && $issue['state'] !== $ticket->status) {
             $ticket->update(['status' => $issue['state']]);
         }
 
-        $comments = $this->github->getComments($ticket->github_issue_id);
+        $cacheKeyTimeline = "github_timeline_{$ticket->github_issue_id}";
+        $events = Cache::get($cacheKeyTimeline);
+
+        if ($events === null) {
+            $apiEvents = $this->github->getTimeline($ticket->github_issue_id);
+            if ($apiEvents !== null) {
+                $events = $apiEvents;
+                Cache::put($cacheKeyTimeline, $events, 15);
+            } else {
+                $events = []; // Fallback if API fails and cache is empty
+            }
+        }
+
+        $filteredEvents = collect($events)->filter(function ($e) {
+            return in_array($e['event'] ?? null, ['commented', 'closed', 'reopened']);
+        })->values()->toArray();
+
+        // Create a mock comment for the original issue description
+        $issueComment = [
+            'id' => 'issue-'.$ticket->github_issue_id,
+            'body' => $issue['body'] ?? '',
+            'created_at' => $issue['created_at'] ?? $ticket->created_at,
+            'user' => $issue['user'] ?? ['login' => 'User', 'avatar_url' => ''],
+            'event' => 'commented',
+        ];
+
+        array_unshift($filteredEvents, $issueComment);
 
         return Inertia::render('Support/Show', [
             'ticket' => $ticket,
-            'comments' => $comments,
+            'comments' => $filteredEvents,
         ]);
     }
 

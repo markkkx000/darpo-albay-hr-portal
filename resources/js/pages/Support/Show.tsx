@@ -1,5 +1,5 @@
-import { Head, useForm, usePage } from '@inertiajs/react';
-import { User as UserIcon, Paperclip, X, Heading, Bold, Italic, List, ListOrdered, CheckSquare, Code, Link } from 'lucide-react';
+import { Head, useForm, usePage, usePoll } from '@inertiajs/react';
+import { User as UserIcon, Paperclip, X, Heading, Bold, Italic, List, ListOrdered, CheckSquare, Code, Link, CheckCircle2, RotateCcw } from 'lucide-react';
 import type { FormEvent} from 'react';
 import { useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -21,13 +21,18 @@ type Ticket = {
 };
 
 type Comment = {
-    id: number;
+    id: number | string;
     body: string;
     created_at: string;
-    user: {
+    user?: {
         login: string;
         avatar_url: string;
     };
+    actor?: {
+        login: string;
+        avatar_url: string;
+    };
+    event?: string;
 };
 
 type Props = {
@@ -41,6 +46,12 @@ export default function SupportTicketShow({ ticket, comments }: Props) {
     const { data, setData, post, processing, errors, reset, clearErrors } = useForm({
         body: '',
         attachments: [] as File[],
+    });
+
+    // Only poll if the ticket is open to save API rate limits (10 seconds)
+    // If closed, set a massive interval (essentially paused) since Inertia doesn't natively disable usePoll
+    usePoll(ticket.status === 'open' ? 10000 : 86400000, {
+        only: ['comments', 'ticket'],
     });
 
     const insertMarkdown = (prefix: string, suffix: string = '') => {
@@ -110,61 +121,100 @@ return;
                                 No comments yet on this ticket thread.
                             </div>
                         ) : (
-                            comments.map((comment) => {
-                                let authorName = comment.user.login;
-                                let displayBody = comment.body;
-                                let isFromAppUser = false;
+                            <div className="relative">
+                                {/* Vertical line connecting timeline events */}
+                                <div className="absolute left-[1.125rem] top-8 bottom-8 w-0.5 bg-border -z-10 hidden sm:block"></div>
+                                <div className="space-y-6">
+                                    {comments.map((comment) => {
+                                        if (comment.event === 'closed' || comment.event === 'reopened') {
+                                            const actor = comment.actor?.login || 'User';
+                                            const isClosed = comment.event === 'closed';
 
-                                const match = comment.body.match(/^\*\*Reply from (.*?)(?: \((.*?)\))?:\*\*\s*(.*)$/s);
-
-                                if (match) {
-                                    authorName = match[1];
-                                    displayBody = match[3];
-                                    isFromAppUser = true;
-                                }
-
-                                return (
-                                    <div key={comment.id} className="flex gap-4">
-                                        {isFromAppUser ? (
-                                            auth.user?.avatar ? (
-                                                <img 
-                                                    src={auth.user.avatar} 
-                                                    alt={authorName}
-                                                    className="w-10 h-10 rounded-full bg-muted border shrink-0 object-cover" 
-                                                />
-                                            ) : (
-                                                <div className="w-10 h-10 rounded-full bg-muted border shrink-0 flex items-center justify-center text-muted-foreground">
-                                                    <UserIcon className="h-5 w-5" />
+                                            return (
+                                                <div key={comment.id} className="flex items-center gap-3 py-2 pl-12">
+                                                    <div className={`flex items-center justify-center w-8 h-8 rounded-full shadow-sm shrink-0 -ml-11 sm:-ml-0 ${isClosed ? 'bg-purple-500/10 text-purple-500 border border-purple-500/20' : 'bg-green-500/10 text-green-500 border border-green-500/20'}`}>
+                                                        {isClosed ? <CheckCircle2 className="w-4 h-4" /> : <RotateCcw className="w-4 h-4" />}
+                                                    </div>
+                                                    <div className="text-sm text-muted-foreground">
+                                                        <span className="font-semibold text-foreground mr-1">{actor}</span>
+                                                        {isClosed ? 'closed this as completed' : 'reopened this'}
+                                                        <span className="ml-1 opacity-75">{new Date(comment.created_at).toLocaleString()}</span>
+                                                    </div>
                                                 </div>
-                                            )
-                                        ) : (
-                                            <img 
-                                                src={comment.user.avatar_url} 
-                                                alt={authorName}
-                                                className="w-10 h-10 rounded-full bg-muted border shrink-0 object-cover" 
-                                            />
-                                        )}
-                                        <div className="flex-1 bg-background border rounded-lg overflow-hidden shadow-sm">
-                                            <div className="bg-muted/50 px-4 py-2 border-b flex justify-between items-center text-sm">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="font-semibold">{authorName}</span>
-                                                    {isFromAppUser ? (
-                                                        <Badge variant="secondary" className="text-[10px] h-5 py-0 px-1.5 font-medium">User</Badge>
+                                            );
+                                        }
+
+                                        // Skip other non-comment events
+                                        if (comment.event !== 'commented' && comment.body === undefined) {
+                                            return null;
+                                        }
+
+                                        let authorName = comment.user?.login || 'User';
+                                        let displayBody = comment.body || '';
+                                        let isFromAppUser = false;
+
+                                        const replyMatch = displayBody.match(/^\*\*Reply from (.*?)(?: \((.*?)\))?:\*\*\s*(.*)$/s);
+                                        const submitMatch = displayBody.match(/^\*\*Submitted by:\*\* (.*?)(?: \((.*?)\))?\n/);
+
+                                        if (replyMatch) {
+                                            authorName = replyMatch[1];
+                                            displayBody = replyMatch[3];
+                                            isFromAppUser = true;
+                                        } else if (submitMatch) {
+                                            authorName = submitMatch[1];
+                                            isFromAppUser = true;
+                                        }
+
+                                        return (
+                                            <div key={comment.id} className="flex gap-4">
+                                                {isFromAppUser ? (
+                                                    auth.user?.avatar ? (
+                                                        <img 
+                                                            src={auth.user.avatar} 
+                                                            alt={authorName}
+                                                            className="w-10 h-10 rounded-full bg-muted border shrink-0 object-cover z-10" 
+                                                        />
                                                     ) : (
-                                                        <Badge className="text-[10px] h-5 py-0 px-1.5 bg-primary/20 text-primary hover:bg-primary/30 border-transparent font-medium">Support Agent</Badge>
-                                                    )}
+                                                        <div className="w-10 h-10 rounded-full bg-muted border shrink-0 flex items-center justify-center text-muted-foreground z-10">
+                                                            <UserIcon className="h-5 w-5" />
+                                                        </div>
+                                                    )
+                                                ) : (
+                                                    comment.user?.avatar_url ? (
+                                                        <img 
+                                                            src={comment.user.avatar_url} 
+                                                            alt={authorName}
+                                                            className="w-10 h-10 rounded-full bg-muted border shrink-0 object-cover z-10" 
+                                                        />
+                                                    ) : (
+                                                        <div className="w-10 h-10 rounded-full bg-muted border shrink-0 flex items-center justify-center text-muted-foreground z-10">
+                                                            <UserIcon className="h-5 w-5" />
+                                                        </div>
+                                                    )
+                                                )}
+                                                <div className="flex-1 bg-background border rounded-lg overflow-hidden shadow-sm z-10">
+                                                    <div className="bg-muted/50 px-4 py-2 border-b flex justify-between items-center text-sm">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="font-semibold">{authorName}</span>
+                                                            {isFromAppUser ? (
+                                                                <Badge variant="secondary" className="text-[10px] h-5 py-0 px-1.5 font-medium">User</Badge>
+                                                            ) : (
+                                                                <Badge className="text-[10px] h-5 py-0 px-1.5 bg-primary/20 text-primary hover:bg-primary/30 border-transparent font-medium">Support Agent</Badge>
+                                                            )}
+                                                        </div>
+                                                        <span className="text-muted-foreground">{new Date(comment.created_at).toLocaleString()}</span>
+                                                    </div>
+                                                    <div className="p-4 text-sm leading-relaxed prose prose-sm max-w-none dark:prose-invert">
+                                                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                            {displayBody}
+                                                        </ReactMarkdown>
+                                                    </div>
                                                 </div>
-                                                <span className="text-muted-foreground">{new Date(comment.created_at).toLocaleString()}</span>
                                             </div>
-                                            <div className="p-4 text-sm leading-relaxed prose prose-sm max-w-none dark:prose-invert">
-                                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                                    {displayBody}
-                                                </ReactMarkdown>
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })
+                                        );
+                                    })}
+                                </div>
+                            </div>
                         )}
                         <div ref={bottomRef} />
                     </div>
