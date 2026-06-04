@@ -4,6 +4,7 @@ use App\Core\Auth\Controllers\AuthController;
 use App\Core\Auth\Controllers\MfaController;
 use App\Core\Auth\Controllers\PasswordResetController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PersonalDataExportController;
 use App\Modules\Personnel\Controllers\PersonnelController;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,11 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('userinfo', [PersonnelController::class, 'myRecord'])->name('userinfo');
+    
+    // DSAR
+    Route::post('/dsar/export', [PersonalDataExportController::class, 'store'])->name('dsar.export');
+    Route::get('/dsar/download/{filename}', [PersonalDataExportController::class, 'download'])->name('dsar.download');
+
     Route::get('/health', HealthCheckResultsController::class)
         ->middleware('can:roles.manage')
         ->name('health.panel');
