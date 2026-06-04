@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 import { index as historyRoute } from '@/routes/attendance/history/index';
 import { clockIn, clockOut } from '@/routes/attendance/index';
 import { index as records_index } from '@/routes/attendance/manage/records/index';
+import type { PageProps } from '@/types';
 
 interface Attendance {
     id: number;
@@ -34,7 +35,7 @@ interface Props {
 }
 
 export default function ClockInOut({ attendance, history = [] }: Props) {
-    const { auth } = usePage().props as any;
+    const { auth } = usePage<PageProps>().props;
     const permissions = (auth.permissions || auth.user?.permissions || []) as string[];
     const canManage = permissions.includes('attendance.logs.view');
 
@@ -75,7 +76,7 @@ export default function ClockInOut({ attendance, history = [] }: Props) {
      * Truly broken (incomplete): am_out without am_in, pm_out without pm_in,
      * or jumping from am_in straight to pm_in (skipping am_out).
      */
-    const { server_time } = usePage().props as any;
+    const { server_time } = usePage<PageProps & { server_time: string }>().props;
     
     let currentAction: 'am_in' | 'am_out' | 'pm_in' | 'pm_out' | 'done' | 'half_day_am' | 'half_day_pm' = 'am_in';
     let isSkipped = false;

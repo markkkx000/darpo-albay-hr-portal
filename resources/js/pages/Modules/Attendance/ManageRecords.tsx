@@ -25,12 +25,14 @@ import {
     destroy as destroyRecord,
     restore as restoreRecord,
 } from '@/routes/attendance/manage/records';
+import type { PageProps } from '@/types';
 
 interface User {
     id: number;
     first_name: string;
     last_name: string;
     avatar?: string | null;
+    employee_number: string | null;
 }
 
 interface AttendanceRecord {
@@ -65,7 +67,7 @@ interface Props {
 }
 
 export default function ManageRecords({ records, employees, filters }: Props) {
-    const { auth } = usePage().props as any;
+    const { auth } = usePage<PageProps>().props;
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] =
         useState<AttendanceRecord | null>(null);

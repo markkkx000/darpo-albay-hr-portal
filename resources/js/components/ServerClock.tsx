@@ -1,8 +1,9 @@
 import { usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import type { PageProps } from '@/types';
 
 export function ServerClock() {
-    const { server_time } = usePage().props as any;
+    const { server_time } = usePage<PageProps & { server_time: string }>().props;
     
     // Default to current local time if server_time is missing
     const [currentTime, setCurrentTime] = useState<Date>(

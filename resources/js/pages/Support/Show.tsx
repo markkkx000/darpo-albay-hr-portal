@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { index as supportTicketsIndex, reply } from '@/routes/supporttickets';
+import type { PageProps } from '@/types';
 
 type Ticket = {
     id: number;
@@ -41,7 +42,7 @@ type Props = {
 };
 
 export default function SupportTicketShow({ ticket, comments }: Props) {
-    const { auth } = usePage().props as any;
+    const { auth } = usePage<PageProps>().props;
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const { data, setData, post, processing, errors, reset, clearErrors } = useForm({
         body: '',

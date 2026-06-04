@@ -5,6 +5,7 @@ import type { Employee } from '@/components/Personnel/EmployeeCard';
 import { PromotionHistorySection } from '@/components/Personnel/PromotionHistorySection';
 import { Button } from '@/components/ui/button';
 import { index as indexRoute, edit as editRoute } from '@/routes/personnel';
+import type { PageProps } from '@/types';
 
 interface Props {
     employee: Employee;
@@ -12,7 +13,7 @@ interface Props {
 }
 
 export default function Show({ employee, positions }: Props) {
-    const { auth } = usePage().props as any;
+    const { auth } = usePage<PageProps>().props;
     const canEdit = auth.permissions?.includes('personnel.manage');
     const isSuperAdmin = auth.roles?.includes('super_admin');
 

@@ -5,6 +5,7 @@ import PageHeader from '@/components/page-header';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { index, manage } from '@/routes/announcements/index';
+import type { PageProps } from '@/types';
 
 interface Props {
     announcements: {
@@ -15,7 +16,7 @@ interface Props {
 }
 
 export default function Index({ announcements }: Props) {
-    const { auth } = usePage().props as any;
+    const { auth } = usePage<PageProps>().props;
     const permissions = (auth.permissions || auth.user?.permissions || []) as string[];
     const canManage = permissions.includes('announcements.manage');
 

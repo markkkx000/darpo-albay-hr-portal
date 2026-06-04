@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Skeleton } from '@/components/ui/skeleton';
 import { useDebounce } from '@/hooks/use-debounce';
 import PersonnelRoutes from '@/routes/personnel';
+import type { PageProps } from '@/types';
 
 const createRoute = () => PersonnelRoutes.create();
 const indexRoute = () => PersonnelRoutes.index();
@@ -26,7 +27,7 @@ interface Props {
 }
 
 export default function Index({ employees, filters, divisions = [], appointmentStatuses = [] }: Props) {
-    const { auth } = usePage().props as any;
+    const { auth } = usePage<PageProps>().props;
 
     const [search, setSearch] = useState(filters?.search || '');
     const debouncedSearch = useDebounce(search, 500);

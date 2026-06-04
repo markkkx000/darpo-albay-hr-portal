@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hooks/use-debounce';
 import { index as indexRoute, archived as archivedRoute } from '@/routes/personnel';
+import type { PageProps } from '@/types';
 
 interface Props {
     employees: any;
@@ -16,7 +17,7 @@ interface Props {
 }
 
 export default function Archived({ employees, filters }: Props) {
-    const { auth } = usePage().props as any;
+    const { auth } = usePage<PageProps>().props;
     const [search, setSearch] = useState(filters.search || '');
     const debouncedSearch = useDebounce(search, 500);
 

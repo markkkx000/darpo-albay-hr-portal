@@ -24,6 +24,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { exportMethod, index as dtrIndexRoute } from '@/routes/dtr/index';
+import type { PageProps } from '@/types';
 
 interface User {
     id: number;
@@ -38,7 +39,7 @@ interface Props {
 }
 
 export default function Index({ users, isHrAdmin }: Props) {
-    const { auth } = usePage().props as any;
+    const { auth } = usePage<PageProps>().props;
 
     const [data, setData] = useState({
         user_id: auth?.user?.id?.toString() || '',
