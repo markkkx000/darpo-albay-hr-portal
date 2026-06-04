@@ -5,6 +5,7 @@ use App\Core\Auth\Controllers\MfaController;
 use App\Core\Auth\Controllers\PasswordResetController;
 use App\Http\Controllers\DashboardController;
 use App\Modules\Personnel\Controllers\PersonnelController;
+use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,6 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('userinfo', [PersonnelController::class, 'myRecord'])->name('userinfo');
+    Route::get('/health', HealthCheckResultsController::class)
+        ->middleware('can:roles.manage')
+        ->name('health.panel');
 });
 
 Route::inertia('/', 'welcome', [
