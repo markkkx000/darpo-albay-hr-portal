@@ -11,6 +11,7 @@ use App\Modules\Leave\Models\LeaveType;
 use App\Modules\Leave\Requests\StoreLeaveRequest;
 use App\Modules\Leave\Requests\UpdateLeaveRequest;
 use App\Modules\Leave\Services\LeaveService;
+use App\Http\Resources\LeaveRequestResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -42,7 +43,7 @@ class LeaveController extends Controller
         $leaves = $this->leaveService->getPaginatedLeaves($filters, $request->user());
 
         return Inertia::render('Modules/Leave/Index', [
-            'leaves' => $leaves,
+            'leaves' => LeaveRequestResource::collection($leaves),
             'filters' => $filters,
             'allEmployees' => User::select('id', 'first_name', 'last_name', 'employee_number')->orderBy('last_name')->get(),
             'leaveTypes' => LeaveType::all(),
@@ -60,7 +61,7 @@ class LeaveController extends Controller
         $leaveRequest->load(['user', 'leaveType', 'leaveStatus', 'createdBy', 'approvedBy']);
 
         return Inertia::render('Modules/Leave/Show', [
-            'leaveRequest' => $leaveRequest,
+            'leaveRequest' => new LeaveRequestResource($leaveRequest),
         ]);
     }
 
@@ -100,7 +101,7 @@ class LeaveController extends Controller
         $holidays = Holiday::whereYear('date', now()->year)->get();
 
         return Inertia::render('Modules/Leave/Form', [
-            'leaveRequest' => $leaveRequest,
+            'leaveRequest' => new LeaveRequestResource($leaveRequest),
             'users' => $users,
             'leaveTypes' => $types,
             'leaveStatuses' => $statuses,

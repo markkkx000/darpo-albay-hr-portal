@@ -12,6 +12,7 @@ use App\Modules\DocumentRequests\Services\DocumentRequestService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Http\Resources\DocumentRequestResource;
 
 class DocumentRequestController extends Controller
 {
@@ -61,7 +62,7 @@ class DocumentRequestController extends Controller
         }
 
         return Inertia::render('Modules/DocumentRequests/Index', [
-            'documentRequests' => $requests,
+            'documentRequests' => DocumentRequestResource::collection($requests),
             'isHr' => $isHr,
             'users' => $users,
             'filters' => $filters,
@@ -292,7 +293,7 @@ class DocumentRequestController extends Controller
         }
 
         return Inertia::render('Modules/DocumentRequests/Show', [
-            'documentRequest' => $documentRequest,
+            'documentRequest' => new DocumentRequestResource($documentRequest),
             'isHr' => $isHr,
             'users' => $users,
         ]);
