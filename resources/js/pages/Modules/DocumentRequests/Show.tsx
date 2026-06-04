@@ -1,4 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { ArrowLeft, CheckCircle, FileText } from 'lucide-react';
 import { Clock, Send, Box, XCircle } from 'lucide-react';
 import { useState } from 'react';
@@ -64,6 +64,9 @@ export default function DocumentRequestsShow({
     isHr: boolean;
     users?: any[];
 }) {
+    const { auth } = usePage<any>().props;
+    const isOwner = auth.user.id === documentRequest.user_id || auth.user.id === documentRequest.requested_by;
+
     const [isAcknowledgeModalOpen, setIsAcknowledgeModalOpen] = useState(false);
     const [isReleaseModalOpen, setIsReleaseModalOpen] = useState(false);
     const [isPickupModalOpen, setIsPickupModalOpen] = useState(false);
@@ -441,7 +444,7 @@ export default function DocumentRequestsShow({
                             </CardContent>
 
                             {/* Actions */}
-                            {!isHr &&
+                            {(isOwner || !isHr) &&
                                 documentRequest.status === 'Released' && (
                                     <CardFooter className="bg-muted/30 pt-6">
                                         <Button
