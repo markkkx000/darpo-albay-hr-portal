@@ -88,6 +88,10 @@ class AuditController extends Controller
 
     public function export(Request $request): StreamedResponse
     {
+        if (! $request->filled('start_date') || ! $request->filled('end_date')) {
+            abort(400, 'Start date and end date are required for exporting audit logs.');
+        }
+
         $query = Activity::with('causer')->latest();
 
         if ($search = $request->input('search')) {
@@ -151,29 +155,27 @@ class AuditController extends Controller
                 return $value;
             };
 
-            // Chunk to avoid memory issues
-            $query->chunk(500, function ($activities) use ($handle, $sanitize) {
-                foreach ($activities as $activity) {
-                    $properties = $activity->properties ? $activity->properties->toArray() : [];
-                    $attribute_changes = $activity->attribute_changes ? $activity->attribute_changes->toArray() : [];
-                    $old = isset($attribute_changes['old']) ? json_encode($attribute_changes['old']) : '';
-                    $attributes = isset($attribute_changes['attributes']) ? json_encode($attribute_changes['attributes']) : '';
-                    $ip = $properties['ip'] ?? '';
+            // Use cursor with a take limit to prevent memory exhaustion and limit total rows to 10,000
+            foreach ($query->take(10000)->cursor() as $activity) {
+                $properties = $activity->properties ? $activity->properties->toArray() : [];
+                $attribute_changes = $activity->attribute_changes ? $activity->attribute_changes->toArray() : [];
+                $old = isset($attribute_changes['old']) ? json_encode($attribute_changes['old']) : '';
+                $attributes = isset($attribute_changes['attributes']) ? json_encode($attribute_changes['attributes']) : '';
+                $ip = $properties['ip'] ?? '';
 
-                    fputcsv($handle, [
-                        $activity->id,
-                        $activity->created_at->toDateTimeString(),
-                        $sanitize($activity->causer ? "{$activity->causer->first_name} {$activity->causer->last_name}" : 'System'),
-                        $sanitize($activity->event ?: $activity->log_name),
-                        $sanitize($activity->description),
-                        $sanitize($activity->subject_type),
-                        $activity->subject_id,
-                        $sanitize($old),
-                        $sanitize($attributes),
-                        $sanitize($ip),
-                    ]);
-                }
-            });
+                fputcsv($handle, [
+                    $activity->id,
+                    $activity->created_at->toDateTimeString(),
+                    $sanitize($activity->causer ? "{$activity->causer->first_name} {$activity->causer->last_name}" : 'System'),
+                    $sanitize($activity->event ?: $activity->log_name),
+                    $sanitize($activity->description),
+                    $sanitize($activity->subject_type),
+                    $activity->subject_id,
+                    $sanitize($old),
+                    $sanitize($attributes),
+                    $sanitize($ip),
+                ]);
+            }
 
             fclose($handle);
         }, 200, $headers);

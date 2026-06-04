@@ -49,7 +49,10 @@ class AuditTest extends TestCase
         ]);
 
         $response = $this->actingAs($admin)
-            ->get(route('audit.export'));
+            ->get(route('audit.export', [
+                'start_date' => now()->subDay()->format('Y-m-d'),
+                'end_date' => now()->addDay()->format('Y-m-d'),
+            ]));
 
         $response->assertOk();
         $response->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
