@@ -22,8 +22,21 @@ class YearlyReportController extends Controller
 
         $results = $milestoneService->getMilestonesForYear((int) $year, $filter);
 
+        $perPage = 10;
+        $page = $request->query('page', 1);
+        $offset = ($page - 1) * $perPage;
+        $items = array_values(array_slice($results, $offset, $perPage));
+
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            $items,
+            count($results),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
         return Inertia::render('Modules/YearlyReport/Index', [
-            'results' => $results,
+            'results' => $paginator,
             'year' => (int) $year,
             'filter' => $filter,
         ]);
