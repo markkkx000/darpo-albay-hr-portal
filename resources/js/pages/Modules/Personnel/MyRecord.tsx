@@ -3,6 +3,7 @@ import { DownloadCloud } from 'lucide-react';
 import { useState } from 'react';
 import { EmployeeCard } from '@/components/Personnel/EmployeeCard';
 import { Button } from '@/components/ui/button';
+import dsar from '@/routes/personnel/dsar';
 
 interface Props {
     employee: any;
@@ -13,7 +14,7 @@ export default function MyRecord({ employee }: Props) {
 
     const handleExport = () => {
         setIsExporting(true);
-        router.post('/dsar/export', {}, {
+        router.post(dsar.export.url(), {}, {
             onFinish: () => setIsExporting(false),
             preserveScroll: true,
         });

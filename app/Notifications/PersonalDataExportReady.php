@@ -36,7 +36,7 @@ class PersonalDataExportReady extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Your Personal Data Export is Ready')
-            ->greeting('Hello ' . $notifiable->first_name . ',')
+            ->greeting('Hello '.$notifiable->first_name.',')
             ->line('You recently requested an export of your personal data (DSAR).')
             ->line('Your export file has been generated successfully and is ready for download.')
             ->action('Download My Data', $this->downloadUrl)

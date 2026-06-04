@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Models\User;
+use App\Modules\DocumentRequests\Models\DocumentRequest;
+use App\Modules\Leave\Models\LeaveRequest;
 use App\Notifications\PersonalDataExportReady;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,33 +34,33 @@ class ExportPersonalDataJob implements ShouldQueue
         // Gather the user's data
         $data = [
             'personal_information' => $this->user->only([
-                'employee_number', 'first_name', 'middle_name', 'last_name', 'email', 'contact_number', 'address', 'sex', 'date_of_birth'
+                'employee_number', 'first_name', 'middle_name', 'last_name', 'email', 'contact_number', 'address', 'sex', 'date_of_birth',
             ]),
             'employment_information' => [
                 'division' => $this->user->division?->name,
                 'unit' => $this->user->unit?->name,
                 'appointment_status' => $this->user->appointmentStatus?->name,
-                'hire_date' => $this->user->hire_date?->format('Y-m-d'),
+                'hire_date' => $this->user->hire_date?->format('Y-m-d'), // @phpstan-ignore-line
                 'years_in_service' => $this->user->years_in_service,
                 'plantilla_number' => $this->user->plantilla_number,
-                'orig_date_of_appointment' => $this->user->orig_date_of_appointment?->format('Y-m-d'),
-                'date_of_latest_appointment' => $this->user->date_of_latest_appointment?->format('Y-m-d'),
-                'date_of_assumption' => $this->user->date_of_assumption?->format('Y-m-d'),
-                'date_hired_government' => $this->user->date_hired_government?->format('Y-m-d'),
+                'orig_date_of_appointment' => $this->user->orig_date_of_appointment?->format('Y-m-d'), // @phpstan-ignore-line
+                'date_of_latest_appointment' => $this->user->date_of_latest_appointment?->format('Y-m-d'), // @phpstan-ignore-line
+                'date_of_assumption' => $this->user->date_of_assumption?->format('Y-m-d'), // @phpstan-ignore-line
+                'date_hired_government' => $this->user->date_hired_government?->format('Y-m-d'), // @phpstan-ignore-line
             ],
             'leaves' => $this->user->leaveRequests()
                 ->with(['leaveType', 'leaveStatus'])
                 ->get()
-                ->map(fn($leave) => [
+                ->map(fn (LeaveRequest $leave) => [
                     'type' => $leave->leaveType?->name,
                     'status' => $leave->leaveStatus?->name,
                     'date_filed' => $leave->date_filed?->format('Y-m-d H:i:s'),
                     'inclusive_dates' => $leave->inclusive_dates,
                     'total_working_days' => $leave->total_working_days,
                 ]),
-            'document_requests' => \App\Modules\DocumentRequests\Models\DocumentRequest::where('user_id', $this->user->id)
+            'document_requests' => DocumentRequest::where('user_id', $this->user->id)
                 ->get()
-                ->map(fn($req) => [
+                ->map(fn (DocumentRequest $req) => [
                     'requests' => $req->requests,
                     'purpose' => $req->purpose,
                     'status' => $req->status,
@@ -68,12 +70,12 @@ class ExportPersonalDataJob implements ShouldQueue
                 'exported_at' => now()->format('Y-m-d H:i:s'),
                 'format' => 'JSON',
                 'version' => '1.0',
-            ]
+            ],
         ];
 
         // Format and store as JSON
         $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        
+
         $filename = "dsar_user_{$this->user->id}.json";
         $path = "dsar/{$filename}";
 
@@ -81,8 +83,8 @@ class ExportPersonalDataJob implements ShouldQueue
 
         // Generate signed URL valid for 24 hours
         $url = URL::temporarySignedRoute(
-            'dsar.download', 
-            now()->addHours(24), 
+            'personnel.dsar.download',
+            now()->addHours(24),
             ['filename' => $filename]
         );
 

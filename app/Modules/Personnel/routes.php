@@ -1,8 +1,15 @@
 <?php
 
 use App\Modules\Personnel\Controllers\OrganizationController;
+use App\Modules\Personnel\Controllers\PersonalDataExportController;
 use App\Modules\Personnel\Controllers\PersonnelController;
 use Illuminate\Support\Facades\Route;
+
+Route::middleware(['auth'])->group(function () {
+    // DSAR
+    Route::post('/dsar/export', [PersonalDataExportController::class, 'store'])->name('dsar.export');
+    Route::get('/dsar/download/{filename}', [PersonalDataExportController::class, 'download'])->name('dsar.download');
+});
 
 Route::middleware(['auth', 'permission:personnel.view'])->group(function () {
     Route::get('/', [PersonnelController::class, 'index'])->name('index');
