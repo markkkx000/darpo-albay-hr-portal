@@ -13,67 +13,9 @@ A modern, high-performance Human Resource Information System (HRIS) tailored for
 
 ---
 
-## Code Structure & Architecture
+## Architecture & Development
 
-This application utilizes a modern, modular tech stack:
-
-*   **Backend:** PHP 8.4 + Laravel 13
-*   **Frontend:** React 19 + Inertia.js v3 (SPA architecture)
-*   **Styling:** TailwindCSS v4
-*   **Database:** PostgreSQL
-*   **Type Safety:** Laravel Wayfinder (auto-generates typed routes for frontend)
-*   **Testing:** Pest PHP v4
-*   **Code Quality:** Laravel Pint (Formatting) & PHPStan (Static Analysis)
-
-### Modular Design (`app/Modules/`)
-The backend avoids standard Laravel monolith clutter by grouping features into domain-specific modules. Each module contains its own Controllers, Models, Form Requests, Services, and `routes.php`.
-
-The frontend mimics this structure, with components and pages organized into `resources/js/pages/Modules/`.
-
----
-
-## Modules & Dependency Tree
-
-The application is composed of several independent but cooperating modules:
-
-1. **Personnel Directory (`app/Modules/Personnel/`)**
-   - *Core Entity*. Manages Employees, Divisions, Units, and Positions.
-   - *Dependencies*: Relies on Spatie Roles for permission assignment.
-2. **Attendance Tracking (`app/Modules/Attendance/`)**
-   - Employee clock-in/out and HR manual logging.
-   - *Dependencies*: Personnel.
-3. **Leave Tracking (`app/Modules/Leave/`)**
-   - Digitizes CS Form 6. Tracks Leave Credits, Requests, and Holidays.
-   - *Dependencies*: Personnel.
-4. **DTR Export (`app/Modules/DTR/`)**
-   - Generates CS Form 48 exports from attendance and leave data.
-   - *Dependencies*: Attendance, Leave, Personnel.
-5. **Document Requests (`app/Modules/DocumentRequests/`)**
-   - Allows employees to request CoEs, Service Records, etc., with a full HR processing pipeline.
-   - *Dependencies*: Personnel.
-6. **Audit Logs (`app/Modules/Audit/`)**
-   - Tracks all system events across all modules.
-   - *Dependencies*: `spatie/laravel-activitylog`.
-7. **Notifications Infrastructure (`app/Modules/Notifications/`)**
-   - Cross-cutting service. Any module can dispatch database notifications (e.g., Leave approvals).
-8. **Roles & Permissions (`app/Modules/Roles/`)**
-   - Manages access control matrices.
-9. **Support Tickets (`app/Modules/SupportTickets/`)**
-   - GitHub Issue integration for user bug reports.
-
----
-
-## Database Schema Overview
-
-The database uses PostgreSQL exclusively. Key structures include:
-- **Users**: Extended with HR data (encrypted PII like Salary, TIN, PhilHealth).
-- **Organization**: `divisions`, `units`, `positions` (hierarchical). A `position_user` pivot table allows employees to hold multiple roles (with one primary).
-- **Leave Data**: `leave_credits` (balances), `leave_requests` (filed leaves), `holidays`, `tardiness_records`.
-- **Attendance**: `attendances` (daily logs with in/out timestamps).
-- **Documents**: `document_requests` (json payload of requested forms + status timeline).
-- **Audit**: `activity_log` (Spatie table containing attribute-level changes).
-
-*Note: Real-world entities use `SoftDeletes`. Lookup tables use an `is_active` boolean instead of deletion to preserve historical data integrity.*
+Detailed information regarding the system architecture, database schema, modular dependencies, background scheduled tasks, and custom console commands are documented in the **[Contributing Guide](CONTRIBUTING.md)**.
 
 ---
 
@@ -86,11 +28,46 @@ Deployment is fully automated via GitHub Actions (`.github/workflows/tests.yml`)
 3. **Database & Migrations:** Laravel Cloud connects to a **Supabase PostgreSQL** pooler. The deployment hook automatically runs `php artisan migrate --force`.
 4. **Asset Storage:** Avatars and documents are uploaded to **Supabase Storage** (S3-compatible) via Laravel's S3 driver.
 
-### External Services Required for Production
-- **Laravel Cloud**: Application hosting and zero-downtime deployments.
-- **Supabase**: Managed PostgreSQL database.
-- **Supabase Storage**: Object storage for file uploads (S3-compatible).
-- **GitHub**: Source control and CI/CD pipelines.
+### External Services & Required API Keys
+
+To run the application fully (especially in production), you need to provision the following third-party credentials in your `.env` or Laravel Cloud environment variables:
+
+1. **Supabase PostgreSQL (Database)**
+   - Managed PostgreSQL database with connection pooling.
+   - Keys required: `DB_HOST`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`.
+
+2. **Supabase Storage (File Uploads)**
+   - S3-compatible object storage for avatars and document attachments.
+   - You must enable S3 compatibility in Supabase and generate access keys.
+   - Keys required: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` (along with `AWS_ENDPOINT` and `AWS_BUCKET`).
+
+3. **GitHub API (Support Tickets Module)**
+   - The Support Tickets module (`app/Modules/SupportTickets`) integrates directly with a GitHub repository to track issues.
+   - You must generate a GitHub Personal Access Token (Classic) with `repo` permissions.
+   - Keys required: 
+     - `GITHUB_TOKEN="ghp_your_personal_access_token"`
+     - `GITHUB_REPO="your-github-username/your-repo-name"`
+
+4. **Laravel Cloud**
+   - Application hosting and zero-downtime deployments. Tied to your GitHub repository.
+
+
+
+## Legal & Compliance (Philippines)
+
+As a government HR information system, this application is strictly designed to comply with several Philippine laws and Civil Service Commission (CSC) mandates:
+
+1. **Republic Act No. 10173 (Data Privacy Act of 2012)**
+   - **Compliance:** All highly sensitive Personally Identifiable Information (PII) — such as Monthly Salary, TIN, GSIS, PhilHealth, and HDMF/Pag-IBIG numbers — are permanently encrypted at rest in the database using Laravel's AES-256 encryption. Furthermore, the system implements an auto-redaction layer (`beforeActivityLogged`) to ensure these fields never leak in plain-text into the system's Audit Logs. A self-service "Export Personal Data" feature is also available to employees in compliance with the right to data portability.
+
+2. **Civil Service Commission (CSC) Omnibus Rules on Leave (Rule XVI)**
+   - **Compliance:** The system completely digitizes **CS Form No. 6 (Application for Leave)**. It features an automated engine that calculates precise working days requested (accounting for weekends and Philippine holidays), tracks accrued Vacation Leave (VL) and Sick Leave (SL) credits, and manages cumulative vs. non-cumulative leave behaviors.
+
+3. **CSC Memorandum Circular No. 21, s. 1991 (Daily Time Record)**
+   - **Compliance:** The application digitizes the generation of **CS Form No. 48 (Daily Time Record)**. The Attendance module tracks exact server-side clock-in and clock-out timestamps, and automatically handles Regular and Compressed workweek schedules, exporting directly to the official CSC-mandated PDF layout.
+
+4. **Republic Act No. 11032 (Ease of Doing Business and Efficient Government Service Delivery Act of 2018)**
+   - **Compliance:** The Document Requests module fully digitizes and streamlines the workflow for requesting official HR documents (Service Records, Certificates of Employment, etc.), providing full transparency, status tracking, and minimizing bureaucratic friction.
 
 ---
 

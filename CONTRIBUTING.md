@@ -99,3 +99,96 @@ If you are tasked with creating a new feature module (e.g., Payroll):
 4. Create `navigation.php` if it requires a sidebar link.
 5. Create the React frontend pages in `resources/js/pages/Modules/Payroll/`.
 6. Assign permissions in `database/seeders/RoleAndPermissionSeeder.php`.
+
+---
+
+## Code Structure & Architecture
+
+This application utilizes a modern, modular tech stack:
+
+*   **Backend:** PHP 8.4 + Laravel 13
+*   **Frontend:** React 19 + Inertia.js v3 (SPA architecture)
+*   **Styling:** TailwindCSS v4
+*   **Database:** PostgreSQL
+*   **Type Safety:** Laravel Wayfinder (auto-generates typed routes for frontend)
+*   **Testing:** Pest PHP v4
+*   **Code Quality:** Laravel Pint (Formatting) & PHPStan (Static Analysis)
+
+### Modular Design (`app/Modules/`)
+The backend avoids standard Laravel monolith clutter by grouping features into domain-specific modules. Each module contains its own Controllers, Models, Form Requests, Services, and `routes.php`.
+
+The frontend mimics this structure, with components and pages organized into `resources/js/pages/Modules/`.
+
+---
+
+## Modules & Dependency Tree
+
+The application is composed of several independent but cooperating modules:
+
+1. **Personnel Directory (`app/Modules/Personnel/`)**
+   - *Core Entity*. Manages Employees, Divisions, Units, and Positions.
+   - *Dependencies*: Relies on Spatie Roles for permission assignment.
+2. **Attendance Tracking (`app/Modules/Attendance/`)**
+   - Employee clock-in/out and HR manual logging.
+   - *Dependencies*: Personnel.
+3. **Leave Tracking (`app/Modules/Leave/`)**
+   - Digitizes CS Form 6. Tracks Leave Credits, Requests, and Holidays.
+   - *Dependencies*: Personnel.
+4. **DTR Export (`app/Modules/DTR/`)**
+   - Generates CS Form 48 exports from attendance and leave data.
+   - *Dependencies*: Attendance, Leave, Personnel.
+5. **Document Requests (`app/Modules/DocumentRequests/`)**
+   - Allows employees to request CoEs, Service Records, etc., with a full HR processing pipeline.
+   - *Dependencies*: Personnel.
+6. **Audit Logs (`app/Modules/Audit/`)**
+   - Tracks all system events across all modules.
+   - *Dependencies*: `spatie/laravel-activitylog`.
+7. **Notifications Infrastructure (`app/Modules/Notifications/`)**
+   - Cross-cutting service. Any module can dispatch database notifications (e.g., Leave approvals).
+8. **Roles & Permissions (`app/Modules/Roles/`)**
+   - Manages access control matrices.
+9. **Support Tickets (`app/Modules/SupportTickets/`)**
+   - GitHub Issue integration for user bug reports.
+
+---
+
+## Database Schema Overview
+
+The database uses PostgreSQL exclusively. Key structures include:
+- **Users**: Extended with HR data (encrypted PII like Salary, TIN, PhilHealth).
+- **Organization**: `divisions`, `units`, `positions` (hierarchical). A `position_user` pivot table allows employees to hold multiple roles (with one primary).
+- **Leave Data**: `leave_credits` (balances), `leave_requests` (filed leaves), `holidays`, `tardiness_records`.
+- **Attendance**: `attendances` (daily logs with in/out timestamps).
+- **Documents**: `document_requests` (json payload of requested forms + status timeline).
+- **Audit**: `activity_log` (Spatie table containing attribute-level changes).
+
+*Note: Real-world entities use `SoftDeletes`. Lookup tables use an `is_active` boolean instead of deletion to preserve historical data integrity.*
+
+---
+
+## Scheduled Tasks & Custom Commands
+
+The application relies on Laravel's Task Scheduler (`routes/console.php`) to automate cleanup, synchronization, and notifications. In production, ensure the scheduler is running (Laravel Cloud handles this automatically; on a VPS, configure `* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1`).
+
+### Scheduled Background Tasks
+| Command | Frequency | Purpose |
+| :--- | :--- | :--- |
+| `support-tickets:sync` | Every 5 Mins | Syncs the status of support tickets directly from the GitHub repository. |
+| `notifications:prune` | Daily | Deletes user notifications older than the retention period (1 year). |
+| `leave:cleanup-attachments` | Daily | Scans for and removes orphaned or soft-deleted leave request attachments from S3. |
+| `document-requests:cleanup-attachments` | Daily | Removes orphaned document request file attachments from S3. |
+| `milestones:check-upcoming` | Daily | Checks for upcoming employee milestones (like work anniversaries) and dispatches notifications. |
+| `support:clean-deleted-tickets` | Daily | Hard-deletes support tickets that were soft-deleted beyond the grace period. |
+| `activitylog:clean` | Weekly | Prunes Spatie activity logs older than the legally mandated retention period. |
+| `employees:prune` | Monthly | Hard-deletes archived employee records beyond their retention policy. |
+| `leave:sync-holidays` | Yearly (Jan 1) | Auto-populates the upcoming year's standard Philippine holidays. |
+
+### Manual Custom Commands
+The system includes utility commands for maintenance and development operations:
+
+*   `php artisan maintenance:clean-orphans`
+    *   **Purpose:** Deep-scans the S3 bucket comparing physical files to database records to locate and remove completely orphaned files (avatars, attachments).
+    *   **Usage:** Must be run manually. Accepts a `--dry-run` flag to preview deletions safely.
+*   `php artisan db:anonymize`
+    *   **Purpose:** Scrambles PII (Names, Emails, TINs, Salaries) in a database clone to create a safe testing environment for external developers without exposing real government employee data.
+    *   **Usage:** *NEVER RUN THIS ON PRODUCTION.* Use only on isolated local or staging databases.
