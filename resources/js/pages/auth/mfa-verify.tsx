@@ -89,8 +89,8 @@ return;
                         </Button>
                         <Button
                             type="button"
-                            variant="ghost"
-                            className="w-full text-muted-foreground hover:text-foreground"
+                            variant="link"
+                            className="w-full text-muted-foreground hover:text-foreground hover:no-underline"
                             disabled={countdown > 0}
                             onClick={resendCode}
                         >
