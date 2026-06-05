@@ -69,7 +69,7 @@ if [ ! -f .env ]; then
     success "Created .env from .env.example"
     
     if [ "$HAS_DOCKER" = true ]; then
-        info "Configuring .env for Docker ..."
+        info "Configuring .env for Docker PostgreSQL ..."
         sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=pgsql/' .env
         sed -i 's/DB_HOST=127.0.0.1/DB_HOST=pgsql/' .env
         sed -i 's/DB_PORT=3306/DB_PORT=5432/' .env
@@ -81,11 +81,15 @@ if [ ! -f .env ]; then
             echo "WWWUSER=$(id -u)"
             echo "WWWGROUP=$(id -g)"
         } >> .env
-        success ".env configured for Docker (User ID: $(id -u))"
+        success ".env configured for Docker PostgreSQL (User ID: $(id -u))"
     fi
 else
     success ".env file already exists"
 fi
+
+# Ensure storage directories exist and have proper permissions
+mkdir -p storage/framework/{sessions,views,cache}
+chmod -R 777 storage bootstrap/cache
 
 # ┌─────────────────────────────────────────────────────────────────────────────┐
 # │ 3. Dependency Installation                                                  │
@@ -113,6 +117,8 @@ fi
 if [ "$HAS_DOCKER" = true ]; then
     info "Starting Docker containers (Sail) ..."
     ./vendor/bin/sail up -d
+    info "Waiting for PostgreSQL database to be ready..."
+    sleep 8 # Give postgres container time to initialize
 fi
 
 if [ ! -d node_modules ]; then
@@ -134,6 +140,9 @@ if [ "$HAS_DOCKER" = true ]; then
     info "Generating App Key ..."
     ./vendor/bin/sail artisan key:generate --no-interaction
     
+    info "Linking Storage ..."
+    ./vendor/bin/sail artisan storage:link || true
+    
     info "Running Migrations ..."
     ./vendor/bin/sail artisan migrate --no-interaction
     
@@ -145,11 +154,17 @@ if [ "$HAS_DOCKER" = true ]; then
     
     info "Building Assets ..."
     ./vendor/bin/sail npm run build
+    
+    info "Clearing Caches ..."
+    ./vendor/bin/sail artisan optimize:clear
 else
     php artisan key:generate --no-interaction
+    php artisan storage:link || true
     php artisan migrate --no-interaction
     php artisan db:seed --no-interaction
+    php artisan wayfinder:generate --with-form
     npm run build
+    php artisan optimize:clear
 fi
 
 success "Application setup complete"
@@ -160,13 +175,17 @@ success "Application setup complete"
 step "Step 5/6 — Summary"
 
 echo -e "\n${GREEN}${BOLD}Setup completed successfully!${NC}"
-echo -e "\n  ${BOLD}Commands:${NC}"
+echo -e "\n  ${BOLD}Daily Commands:${NC}"
 if [ "$HAS_DOCKER" = true ]; then
     echo -e "  Start App:      ${CYAN}./vendor/bin/sail up -d${NC}"
     echo -e "  Stop App:       ${CYAN}./vendor/bin/sail down${NC}"
     echo -e "  Vite (Dev):     ${CYAN}./vendor/bin/sail npm run dev${NC}"
+    echo -e "  Run Tests:      ${CYAN}./vendor/bin/sail artisan test --compact${NC}"
+    echo -e "  Run Pint:       ${CYAN}./vendor/bin/sail vendor/bin/pint --dirty${NC}"
+    echo -e "  Run PHPStan:    ${CYAN}./vendor/bin/sail php -d memory_limit=2G ./vendor/bin/phpstan analyse${NC}"
 else
     echo -e "  Start App:      ${CYAN}composer run dev${NC}"
+    echo -e "  Run Tests:      ${CYAN}php artisan test --compact${NC}"
 fi
 
 # Get APP_URL from .env
