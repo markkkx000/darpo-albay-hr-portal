@@ -79,3 +79,17 @@ As DARPO Albay's usage grows, consider the following infrastructural upgrades:
 2. **Dedicated Queue Workers**: Currently, background jobs run on the default database queue driver. If email notifications and PDF generations scale up, transition to **Laravel Horizon** backed by a **Redis** cluster.
 3. **Database Read Replicas**: If DTR report generation and Audit Log filtering become slow due to data volume, configure Supabase Read Replicas to handle heavy `SELECT` queries off the primary write database.
 4. **Caching Layer**: Shift heavy, static computations (like the organizational chart structure) to Redis instead of recalculating them on the fly.
+
+---
+
+## License
+
+**Proprietary Software.**
+
+Copyright &copy; 2026 Mark Kenneth S. Nudo, Allan Paul A. Sodsod II, Mauve C. Labalan.
+
+This software was developed by the authors during their internship, and they jointly own the intellectual property rights to the source code. A perpetual, non-exclusive license is hereby granted for the exclusive internal operational use of the **Department of Agrarian Reform Provincial Office (DARPO) Albay**. 
+
+It is strictly closed-source. No part of this codebase may be copied, reproduced, distributed, sold, or transmitted to third parties without the express written permission of the authors. 
+
+See the [LICENSE](LICENSE) file for the full legal text.
