@@ -55,8 +55,8 @@ class ExportPersonalDataJob implements ShouldQueue
                     'type' => $leave->leaveType?->name,
                     'status' => $leave->leaveStatus?->name,
                     'date_filed' => $leave->date_filed?->format('Y-m-d H:i:s'),
-                    'inclusive_dates' => $leave->inclusive_dates,
-                    'total_working_days' => $leave->total_working_days,
+                    'inclusive_dates' => $leave->specific_dates ?: ($leave->start_date ? $leave->start_date->format('Y-m-d') . ' to ' . $leave->end_date->format('Y-m-d') : null),
+                    'total_working_days' => $leave->days_requested,
                 ]),
             'document_requests' => DocumentRequest::where('user_id', $this->user->id)
                 ->get()

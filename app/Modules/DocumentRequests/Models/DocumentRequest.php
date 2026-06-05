@@ -11,6 +11,32 @@ use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int|null $requested_by
+ * @property array|null $requests
+ * @property string|null $purpose
+ * @property string|null $specify_remittance
+ * @property string|null $specify_documents
+ * @property string|null $specify_other
+ * @property string $status
+ * @property string|null $status_reason
+ * @property int|null $received_by
+ * @property string|null $released_to
+ * @property \Illuminate\Support\Carbon|null $released_at
+ * @property bool $is_electronic
+ * @property array|null $files
+ * @property array $file_urls
+ * @property \Illuminate\Support\Carbon|null $acknowledged_at
+ * @property string|null $acknowledged_ip
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * 
+ * @property-read \App\Models\User $user
+ * @property-read \App\Models\User|null $requester
+ * @property-read \App\Models\User|null $receiver
+ */
 #[Fillable([
     'user_id',
     'requested_by',
