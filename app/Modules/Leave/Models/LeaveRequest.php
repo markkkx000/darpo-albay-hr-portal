@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
@@ -16,11 +17,11 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property int $user_id
  * @property int $leave_type_id
  * @property int $leave_status_id
- * @property \Illuminate\Support\Carbon|null $start_date
- * @property \Illuminate\Support\Carbon|null $end_date
+ * @property Carbon|null $start_date
+ * @property Carbon|null $end_date
  * @property float $days_requested
- * @property \Illuminate\Support\Carbon|null $date_received
- * @property \Illuminate\Support\Carbon|null $date_approved
+ * @property Carbon|null $date_received
+ * @property Carbon|null $date_approved
  * @property string|null $leave_details
  * @property bool $commutation_requested
  * @property bool $is_filed
@@ -30,7 +31,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property int|null $approved_by_id
  * @property array|null $specific_dates
  * @property float|null $salary
- * @property \Illuminate\Support\Carbon|null $date_filed
+ * @property Carbon|null $date_filed
  * @property float|null $days_with_pay
  * @property float|null $days_without_pay
  * @property string|null $others_pay_remarks
@@ -41,15 +42,14 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property array|null $supporting_documents
  * @property array|null $maternity_allocation_details
  * @property string $pay_status
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * 
- * @property-read \App\Models\User $user
- * @property-read \App\Modules\Leave\Models\LeaveType $leaveType
- * @property-read \App\Modules\Leave\Models\LeaveStatus $leaveStatus
- * @property-read \App\Models\User|null $createdBy
- * @property-read \App\Models\User|null $approvedBy
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property-read User $user
+ * @property-read LeaveType $leaveType
+ * @property-read LeaveStatus $leaveStatus
+ * @property-read User|null $createdBy
+ * @property-read User|null $approvedBy
  */
 #[Fillable(['user_id', 'leave_type_id', 'leave_status_id', 'start_date', 'end_date', 'days_requested', 'date_received', 'date_approved', 'leave_details', 'commutation_requested', 'is_filed', 'notes', 'attachment_urls', 'created_by', 'approved_by_id', 'specific_dates', 'salary', 'date_filed', 'days_with_pay', 'days_without_pay', 'others_pay_remarks', 'approved_by_official', 'leave_detail_type', 'leave_detail_remarks', 'has_attachments', 'supporting_documents', 'maternity_allocation_details'])]
 class LeaveRequest extends Model

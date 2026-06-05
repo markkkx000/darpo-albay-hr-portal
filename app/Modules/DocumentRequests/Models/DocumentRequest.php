@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
@@ -24,18 +25,17 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property string|null $status_reason
  * @property int|null $received_by
  * @property string|null $released_to
- * @property \Illuminate\Support\Carbon|null $released_at
+ * @property Carbon|null $released_at
  * @property bool $is_electronic
  * @property array|null $files
  * @property array $file_urls
- * @property \Illuminate\Support\Carbon|null $acknowledged_at
+ * @property Carbon|null $acknowledged_at
  * @property string|null $acknowledged_ip
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * 
- * @property-read \App\Models\User $user
- * @property-read \App\Models\User|null $requester
- * @property-read \App\Models\User|null $receiver
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User $user
+ * @property-read User|null $requester
+ * @property-read User|null $receiver
  */
 #[Fillable([
     'user_id',
