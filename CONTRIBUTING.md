@@ -47,6 +47,30 @@ Once setup is complete, you will use Laravel Sail for day-to-day commands:
 
 You can access the local application at `http://localhost`.
 
+### 4. Running the Queue Worker
+Many features (notifications, MFA verification emails, data exports) dispatch jobs to the queue. **These jobs will NOT execute until a queue worker is running.** In a second terminal:
+
+```bash
+# Start the queue worker (required for notifications, 2FA emails, exports, etc.)
+./vendor/bin/sail artisan queue:work
+```
+
+If you forget this step, actions like enabling MFA, publishing announcements, or exporting personal data will appear to do nothing.
+
+### 5. Testing 2FA / Email Verification Without an Email Provider
+By default, the local `.env` uses `MAIL_MAILER=log`, which writes all outgoing emails (including MFA verification codes) to the Laravel log file instead of actually sending them.
+
+To retrieve a 2FA code locally:
+```bash
+# Check the latest log entry for the verification code
+./vendor/bin/sail artisan pail
+```
+
+This will tail the log in real-time. Trigger the MFA setup in the browser, and the 6-digit code will appear in the log output. Alternatively, you can read the log file directly:
+```bash
+tail -50 storage/logs/laravel.log
+```
+
 ---
 
 ## Working with AI Agents

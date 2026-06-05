@@ -103,7 +103,7 @@ Initial accounts created by the database seeders (`php artisan db:seed`):
 | **Super Admin** | `superadmin` | `superadmin@example.com` | `password` |
 | **HR Admin** | `hradmin` | `hradmin@example.com` | `password` |
 
-> **Tip:** Standard employees can log in using their system-assigned Employee Number (e.g., `EMP-0001`) and the default password `password` once registered by HR.
+> **Note:** No employee accounts are seeded. Employee records must be created manually by logging in as Super Admin or HR Admin through the Personnel module.
 
 ---
 
