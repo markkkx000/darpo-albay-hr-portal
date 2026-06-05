@@ -90,6 +90,20 @@ All business logic must be tested using Pest. We use PostgreSQL for testing to m
 
 ---
 
+## Common Pitfalls
+
+These are hard-won lessons from past debugging sessions. Read them before writing code:
+
+| Pitfall | Correct Approach |
+| :--- | :--- |
+| Using `LIKE` in queries | PostgreSQL requires `ILIKE` for case-insensitive matching. `LIKE` is case-sensitive in Postgres. |
+| Arrow functions in `Collection::map()` | PHPStan cannot infer model types through arrow functions on generic collections. Use a standard `function () {}` closure with an inline `/** @var \App\...\Model $item */` annotation. |
+| Accessing PII in Audit Logs | Never log raw PII. The `beforeActivityLogged` hook in `AppServiceProvider` auto-redacts sensitive fields. If you add new encrypted fields, add them to the redaction list. |
+| PHPStan memory errors | Always run with `php -d memory_limit=2G ./vendor/bin/phpstan analyse`. The default 128MB is insufficient. |
+| Nullsafe `?->` on required relations | If a model relation is guaranteed (e.g., `leaveType` on `LeaveRequest`), use `->` not `?->`. PHPStan will flag nullsafe access on non-nullable relations. |
+| Hardcoded frontend URLs | Always use Laravel Wayfinder generated functions from `@/actions/` or `@/routes/`. Never hardcode `/api/...` paths. |
+| SQLite in tests | Tests **must** run against PostgreSQL to match production. The CI pipeline enforces this. |
+
 ## Creating a New Module
 
 If you are tasked with creating a new feature module (e.g., Payroll):
@@ -149,6 +163,34 @@ The application is composed of several independent but cooperating modules:
    - Manages access control matrices.
 9. **Support Tickets (`app/Modules/SupportTickets/`)**
    - GitHub Issue integration for user bug reports.
+
+### Dependency Diagram
+
+```mermaid
+graph TD
+    Personnel["Personnel Directory"]
+    Attendance["Attendance Tracking"]
+    Leave["Leave Tracking"]
+    DTR["DTR Export"]
+    DocReq["Document Requests"]
+    Audit["Audit Logs"]
+    Notifications["Notifications"]
+    Roles["Roles & Permissions"]
+    Support["Support Tickets"]
+
+    Attendance --> Personnel
+    Leave --> Personnel
+    DTR --> Attendance
+    DTR --> Leave
+    DTR --> Personnel
+    DocReq --> Personnel
+    Audit -.-> |"spatie/activitylog"| Personnel
+    Roles --> Personnel
+    Support -.-> |"GitHub API"| Personnel
+    Notifications -.-> |"cross-cutting"| Personnel
+```
+
+*Solid arrows = direct code dependency. Dotted arrows = integration/cross-cutting concern.*
 
 ---
 

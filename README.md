@@ -51,7 +51,61 @@ To run the application fully (especially in production), you need to provision t
 4. **Laravel Cloud**
    - Application hosting and zero-downtime deployments. Tied to your GitHub repository.
 
+### Production Environment Variables Template
 
+A complete reference for all required production variables:
+
+```env
+APP_NAME="DARPO Albay HR Portal"
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://hrdarpoalbay.laravel.cloud
+APP_TIMEZONE=Asia/Manila
+
+# Database (Supabase Pooler)
+DB_CONNECTION=pgsql
+DB_HOST=aws-1-ap-southeast-1.pooler.supabase.com
+DB_PORT=5432
+DB_DATABASE=postgres
+DB_USERNAME=postgres.your_project_id
+DB_PASSWORD=your_secure_password
+
+# Session, Cache, & Queue (all on database to stay lean)
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+CACHE_STORE=database
+QUEUE_CONNECTION=database
+BCRYPT_ROUNDS=10
+
+# Cloud Storage (Supabase S3)
+FILESYSTEM_DISK=s3
+AWS_ACCESS_KEY_ID=your_supabase_s3_access_key
+AWS_SECRET_ACCESS_KEY=your_supabase_s3_secret_key
+AWS_DEFAULT_REGION=ap-southeast-1
+AWS_BUCKET=your_bucket_name
+AWS_ENDPOINT=https://your_project_id.supabase.co/storage/v1/s3
+AWS_USE_PATH_STYLE_ENDPOINT=true
+AWS_URL=https://your_project_id.supabase.co/storage/v1/object/public/your_bucket_name
+
+# GitHub Integration (Support Tickets)
+GITHUB_TOKEN=ghp_your_personal_access_token
+GITHUB_REPO=your-username/your-repo-name
+```
+
+---
+
+## Default Test Accounts
+
+Initial accounts created by the database seeders (`php artisan db:seed`):
+
+| Role | Employee Number | Email | Password |
+| :--- | :--- | :--- | :--- |
+| **Super Admin** | `superadmin` | `superadmin@example.com` | `password` |
+| **HR Admin** | `hradmin` | `hradmin@example.com` | `password` |
+
+> **Tip:** Standard employees can log in using their system-assigned Employee Number (e.g., `EMP-0001`) and the default password `password` once registered by HR.
+
+---
 
 ## Legal & Compliance (Philippines)
 
