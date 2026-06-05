@@ -49,7 +49,7 @@ Currently implemented modules: **Announcements, Attendance, Audit (System Logs),
 
 ### CI/CD
 - **GitHub Actions** workflows in `.github/workflows/`:
-  - `tests.yml` — runs Pest test suite against PostgreSQL.
+  - `tests.yml` — Unified pipeline that runs Pest tests against PostgreSQL (with `DB_SSLMODE: disable`), builds Vite assets, and automatically deploys to Laravel Cloud on the `main` branch.
   - `lint.yml` — runs code linting checks.
 
 ---
