@@ -31,9 +31,9 @@ class SecurityHeaders
             $response->headers->set('Content-Security-Policy',
                 "default-src 'self'; ".
                 "script-src 'self' 'nonce-{$nonce}' 'strict-dynamic'; ".
-                "style-src 'self' 'unsafe-inline'; ". // Many UI libraries (Tiptap, etc) require inline styles
+                "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com; ". // allow external fonts and UI libraries
                 "img-src 'self' data: blob: https:; ". // allow external images
-                "font-src 'self' data:; ".
+                "font-src 'self' data: https://fonts.bunny.net https://fonts.gstatic.com; ".
                 "connect-src 'self'; ".
                 "frame-ancestors 'none';"
             );
