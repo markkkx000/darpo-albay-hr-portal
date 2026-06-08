@@ -9,34 +9,35 @@ interface LinkItem {
 }
 
 interface PaginationProps {
-    links: LinkItem[];
-    meta?: {
-        from: number | null;
-        to: number | null;
-        total: number;
-        current_page: number;
-        last_page: number;
-    };
+    links: LinkItem[] | any;
+    meta?: any;
 }
 
 export function Pagination({ links, meta }: PaginationProps) {
-    const showNavigation = links.length > 3;
+    // If it's an API Resource, the pagination meta might be nested under meta.meta
+    const normalizedMeta = meta?.meta ? meta.meta : meta;
 
-    if (!showNavigation && !meta) {
+    // The links array is normally links. If links is an object (API Resource root links),
+    // the actual array of links is inside normalizedMeta.links
+    const normalizedLinks = Array.isArray(links) ? links : (normalizedMeta?.links || []);
+
+    const showNavigation = normalizedLinks.length > 3;
+
+    if (!showNavigation && !normalizedMeta) {
         return null;
     }
 
     return (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-2">
-            {meta && meta.from !== null && meta.to !== null && (
+            {normalizedMeta && normalizedMeta.from !== undefined && normalizedMeta.from !== null && normalizedMeta.to !== null && (
                 <div className="text-sm text-muted-foreground whitespace-nowrap">
-                    Showing <span className="font-semibold text-foreground">{meta.from}</span> to <span className="font-semibold text-foreground">{meta.to}</span> of <span className="font-semibold text-foreground">{meta.total}</span> results
+                    Showing <span className="font-semibold text-foreground">{normalizedMeta.from}</span> to <span className="font-semibold text-foreground">{normalizedMeta.to}</span> of <span className="font-semibold text-foreground">{normalizedMeta.total}</span> results
                 </div>
             )}
             
             {showNavigation && (
                 <nav className="flex items-center gap-1 select-none flex-wrap justify-center" aria-label="Pagination Navigation">
-                    {links.map((link, index) => {
+                    {normalizedLinks.map((link: any, index: number) => {
                         const isPrev = link.label.includes('Previous');
                         const isNext = link.label.includes('Next');
                         const label = isPrev ? <ChevronLeft className="h-4 w-4" /> : isNext ? <ChevronRight className="h-4 w-4" /> : link.label;
