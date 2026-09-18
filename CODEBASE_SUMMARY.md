@@ -3,7 +3,7 @@
 ## Overview
 This application is a **Laravel 13** backend with an **Inertia.js React** frontend. It strictly requires **PHP 8.4**. Authentication is custom and uses Laravel `Auth::attempt()` instead of Fortify, with role-based redirects to a single dashboard page. The application uses a modular architecture for navigation and feature development.
 
-Currently implemented modules: **Announcements, Attendance, Audit (System Logs), Document Requests, DTR Export, Leave Tracking, Notifications (infra), Personnel Directory, Roles & Permissions, Travel Orders (stub)**.
+Currently implemented modules: **Announcements, Attendance, Audit (System Logs), Document Requests, DTR Export, Leave Tracking, Notifications (infra), Personnel Directory, Roles & Permissions, Support Tickets, Travel Orders (stub), Yearly Report**.
 
 ---
 
@@ -100,9 +100,17 @@ app/
       Controllers/RoleController.php, UserRoleController.php
       Requests/RoleCreateRequest.php, RoleUpdateRequest.php, UserRoleSyncRequest.php
       Services/RoleService.php
-    Travel/                      # Travel Orders (stub — under construction)
+    SupportTickets/
+      Controllers/SupportTicketController.php
+      Models/SupportTicket.php
+      Requests/SupportTicketRequest.php
+      Services/GitHubSupportService.php
+    Travel/                      # Travel Orders (stub — Coming Soon)
       Controllers/TravelOrderController.php
       navigation.php             # Sidebar: 'Travel Orders', permission: travel_order.create|travel_order.manage
+    YearlyReport/
+      Controllers/YearlyReportController.php
+      Exports/YearlyReportExport.php
   Notifications/                 # Laravel notification class
     GenericDatabaseNotification.php
   Observers/
@@ -135,8 +143,10 @@ resources/js/
         Organization/Index.tsx   # Division, Unit, Position management
       Roles/
         RolesIndex.tsx, UserRolesIndex.tsx
+      SupportTickets/
+        Index.tsx, Show.tsx
       Travel/
-        Index.tsx                # Placeholder (under construction)
+        Index.tsx                # Coming Soon placeholder
   components/
     dashboard/                   # AdminOverview, HROverview, EmployeeOverview, StatCard
     notifications/NotificationBell.tsx  # Global header bell icon + dropdown
@@ -171,8 +181,10 @@ tests/
     Modules/                     # Module-specific test subdirectories
       Audit/AuditTest.php
       DTR/DTRExportTest.php
-      LeaveCreditTest.php, LeaveDigitizationTest.php, LeaveTest.php
-      Roles/
+      LeaveCreditTest.php, LeaveDigitizationTest.php, LeaveTest.php, LeaveArchivingTest.php
+      Roles/RolesManagementTest.php
+      SupportTickets/SupportTicketTest.php
+      YearlyReport/YearlyReportTest.php
   Pest.php                       # Global Pest config (RefreshDatabase for Feature tests)
 
 .github/workflows/
@@ -281,7 +293,7 @@ tests/
 - **Permissions**: Uses `attendance.view` for access (all roles), `dtr.manage` (hr_admin, super_admin) to export on behalf of others.
 
 ### Travel Orders Module (`app/Modules/Travel/`)
-- **Status**: **Stub / Under Construction** — the index page renders a placeholder card. No meaningful backend logic yet.
+- **Status**: **Stub / Coming Soon** — the index page renders a styled placeholder card. No meaningful backend logic yet.
 - **Controller**: `TravelOrderController` (minimal).
 - **Sidebar**: Registered with `travel_order.create|travel_order.manage` permission, ordered before DTR Export (weight 50).
 - **Permissions**: `travel_order.create` (employee, division_head, super_admin), `travel_order.manage` (hr_staff, hr_admin, super_admin).
