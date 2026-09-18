@@ -49,42 +49,34 @@ The application uses a custom modular architecture (`app/Modules/`) with 12 doma
 
 ## Screenshots
 
-> **TODO:** Replace the placeholders below with actual screenshots of the running application.
-
 ### Dashboard & Navigation
+*Admin View*
 ![Admin Dashboard](docs/screenshots/dashboard-admin.png)
-*Super Admin dashboard showing full organizational stats, pending approvals across all divisions, and complete sidebar access.*
 
+*Employee View*
 ![Employee Dashboard](docs/screenshots/dashboard-employee.png)
-*Employee dashboard showing only personal stats, team announcements, and a restricted sidebar (demonstrating RBAC data isolation).*
 
 ### Attendance Module
+*HR View*
 ![Admin Attendance](docs/screenshots/attendance-admin.png)
-*HR view of the daily attendance sheet for all employees, showing IP address logs and manual adjustment controls.*
 
+*Employee View*
 ![Employee Attendance](docs/screenshots/attendance-employee.png)
-*The employee's personal AM/PM 4-slot clock-in/out interface and their own daily status indicators.*
 
 ### Leave Management (CSC Form 6)
 ![Leave Management](docs/screenshots/leave-management.png)
-*HR encoding interface for CSC Form 6, featuring a working-day calculation engine, leave credit tracking, and digital archiving.*
 
 ### DTR Export (CSC Form 48)
 ![DTR Export](docs/screenshots/dtr-export.png)
-*The Daily Time Record page showing the monthly attendance grid with clock-in/out timestamps, and a preview of the generated CSC Form 48 PDF layout.*
 
 ### Personnel Management
 ![Personnel](docs/screenshots/personnel.png)
-*The employee directory with the organizational hierarchy (divisions → units → positions) and search/filter interface.*
 
 ### Audit Logs (Compliance)
 ![Audit Logs](docs/screenshots/audit-logs.png)
-*The audit log explorer showing activity entries with automatic `[REDACTED]` markers on encrypted PII fields (RA 10173 compliance).*
 
 ### Mobile Responsive
 https://github.com/user-attachments/assets/f578e060-14e1-40d4-8a72-c2c0215376e7
-
-*The application on a mobile viewport showing the collapsible sidebar and touch-friendly interface.*
 
 ---
 
