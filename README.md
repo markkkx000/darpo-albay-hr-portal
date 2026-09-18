@@ -1,8 +1,8 @@
 # DARPO Albay HR Portal
 
-A modern, high-performance Human Resource Information System (HRIS) built for the Department of Agrarian Reform Provincial Office (DARPO) Albay. This project digitizes core HR operations — attendance tracking, leave management, document requests, and personnel administration — with strict compliance to Philippine civil service regulations.
+A modern, high-performance Human Resource Information System (HRIS) originally built for the Department of Agrarian Reform Provincial Office (DARPO) Albay. This project digitizes core HR operations — attendance tracking, leave management, document requests, and personnel administration — with strict compliance to Philippine civil service regulations.
 
-> **Context:** This system was developed during our internship at DARPO Albay. It is a production-grade application that handles real government HR workflows, Philippine legal compliance (RA 10173, CSC Forms 6 & 48), and role-based access control for 5 distinct user roles.
+> **Context:** This system was developed during our internship at DARPO Albay and was designed as a production-grade application for real government HR workflows. The project is no longer under active engagement with the client and now serves as a **portfolio project** showcasing full-stack development with Laravel 13, React 19, and Inertia.js v3 — including Philippine legal compliance (RA 10173, CSC Forms 6 & 48), field-level AES-256 encryption, and role-based access control for 5 distinct user roles.
 
 ---
 
