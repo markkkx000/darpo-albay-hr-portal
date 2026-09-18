@@ -71,6 +71,22 @@ This will tail the log in real-time. Trigger the MFA setup in the browser, and t
 tail -50 storage/logs/laravel.log
 ```
 
+### 6. Environment Variables
+
+The `setup.sh` script auto-generates `APP_KEY` and configures the database connection for Sail. However, some keys must be set manually depending on which features you need:
+
+| Key | Required For | Where To Get It |
+|:----|:-------------|:----------------|
+| `AWS_ACCESS_KEY_ID` | File uploads (avatars, leave attachments, document requests) | Supabase → Project Settings → Storage → S3 Connection |
+| `AWS_SECRET_ACCESS_KEY` | Same as above | Same as above |
+| `AWS_BUCKET` | Same as above | Your Supabase storage bucket name |
+| `AWS_ENDPOINT` | Same as above | `https://<project-id>.supabase.co/storage/v1/s3` |
+| `AWS_URL` | Same as above | `https://<project-id>.supabase.co/storage/v1/object/public/<bucket>` |
+| `GITHUB_TOKEN` | Support Tickets module | GitHub → Settings → Developer Settings → Personal Access Tokens |
+| `GITHUB_REPO` | Support Tickets module | Format: `owner/repo` |
+
+> **Note:** The app runs without the S3 and GitHub keys — only the file upload and support ticket features will be unavailable.
+
 ---
 
 ## Working with AI Agents
