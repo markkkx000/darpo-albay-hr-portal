@@ -19,10 +19,13 @@ export function AppShell({ children, variant = 'sidebar' }: Props) {
 
     return (
         <div className="relative min-h-svh w-full overflow-x-hidden">
-            <div className="mesh-container pointer-events-none fixed inset-0 z-0" aria-hidden="true">
-                <div className="mesh-blob w-[800px] h-[600px] bg-green-glow -top-[20%] -left-[10%]" />
-                <div className="mesh-blob w-[600px] h-[600px] bg-yellow-glow top-[40%] left-[30%] delay-75" />
-                <div className="mesh-blob w-[700px] h-[500px] bg-green-glow -bottom-[10%] -right-[15%] delay-150" />
+            <div
+                className="mesh-container pointer-events-none fixed inset-0 z-0"
+                aria-hidden="true"
+            >
+                <div className="mesh-blob bg-green-glow -top-[20%] -left-[10%] h-[600px] w-[800px]" />
+                <div className="mesh-blob bg-yellow-glow top-[40%] left-[30%] h-[600px] w-[600px] delay-75" />
+                <div className="mesh-blob bg-green-glow -right-[15%] -bottom-[10%] h-[500px] w-[700px] delay-150" />
                 <div className="grain-overlay opacity-[0.03] dark:opacity-[0.05]" />
             </div>
             <div className="relative z-10 flex min-h-svh w-full flex-col">

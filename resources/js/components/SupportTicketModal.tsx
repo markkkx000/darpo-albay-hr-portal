@@ -34,12 +34,22 @@ export function SupportTicketModal({ children }: Props) {
     const [dragActive, setDragActive] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const { data, setData, post, processing, errors, reset, clearErrors, transform } = useForm({
+    const {
+        data,
+        setData,
+        post,
+        processing,
+        errors,
+        reset,
+        clearErrors,
+        transform,
+    } = useForm({
         type: 'Bug',
         title: '',
         description: '',
         urlContext: typeof window !== 'undefined' ? window.location.href : '',
-        browserContext: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+        browserContext:
+            typeof navigator !== 'undefined' ? navigator.userAgent : '',
         attachments: [] as File[],
     });
 
@@ -56,13 +66,16 @@ export function SupportTicketModal({ children }: Props) {
 
     const handleFiles = (files: File[]) => {
         // Filter and limit to max 10 images, 5MB max
-        const validFiles = files.filter(file => {
+        const validFiles = files.filter((file) => {
             const isValidType = file.type.startsWith('image/');
             const isValidSize = file.size <= 5 * 1024 * 1024;
 
             return isValidType && isValidSize;
         });
-        setData('attachments', [...data.attachments, ...validFiles].slice(0, 10));
+        setData(
+            'attachments',
+            [...data.attachments, ...validFiles].slice(0, 10),
+        );
     };
 
     const handlePaste = (e: React.ClipboardEvent) => {
@@ -89,13 +102,13 @@ export function SupportTicketModal({ children }: Props) {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        
+
         // Update contextual data right before submit
         transform((data) => ({
             ...data,
             urlContext: window.location.href,
         }));
-        
+
         post(supportTicketsStore.url(), {
             forceFormData: true,
             onSuccess: () => {
@@ -107,42 +120,58 @@ export function SupportTicketModal({ children }: Props) {
     };
 
     return (
-        <Dialog open={open} onOpenChange={(newOpen) => {
-            setOpen(newOpen);
+        <Dialog
+            open={open}
+            onOpenChange={(newOpen) => {
+                setOpen(newOpen);
 
-            if (!newOpen) {
-                reset();
-                clearErrors();
-            }
-        }}>
-            <DialogTrigger asChild>
-                {children}
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[550px] p-0 overflow-hidden border-border/50">
-                <form onSubmit={handleSubmit} onPaste={handlePaste} className="flex flex-col max-h-[90vh]">
-                    <div className="p-6 pb-4 border-b border-border/40 bg-muted/20">
+                if (!newOpen) {
+                    reset();
+                    clearErrors();
+                }
+            }}
+        >
+            <DialogTrigger asChild>{children}</DialogTrigger>
+            <DialogContent className="overflow-hidden border-border/50 p-0 sm:max-w-[550px]">
+                <form
+                    onSubmit={handleSubmit}
+                    onPaste={handlePaste}
+                    className="flex max-h-[90vh] flex-col"
+                >
+                    <div className="border-b border-border/40 bg-muted/20 p-6 pb-4">
                         <DialogHeader>
-                            <DialogTitle className="text-xl">Help & Support</DialogTitle>
+                            <DialogTitle className="text-xl">
+                                Help & Support
+                            </DialogTitle>
                             <DialogDescription className="text-sm">
-                                Submit a ticket directly to our development and support team.
+                                Submit a ticket directly to our development and
+                                support team.
                             </DialogDescription>
                         </DialogHeader>
                     </div>
 
-                    <div className="p-6 space-y-6 overflow-y-auto">
+                    <div className="space-y-6 overflow-y-auto p-6">
                         <div className="space-y-3">
                             <Label htmlFor="type">Type</Label>
-                            <Select 
-                                value={data.type} 
-                                onValueChange={(value) => setData('type', value)}
+                            <Select
+                                value={data.type}
+                                onValueChange={(value) =>
+                                    setData('type', value)
+                                }
                             >
                                 <SelectTrigger className="bg-background/50 focus:bg-background">
                                     <SelectValue placeholder="Select type" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="Bug">Bug Report</SelectItem>
-                                    <SelectItem value="Feature Request">Feature Request</SelectItem>
-                                    <SelectItem value="Question">General Question</SelectItem>
+                                    <SelectItem value="Bug">
+                                        Bug Report
+                                    </SelectItem>
+                                    <SelectItem value="Feature Request">
+                                        Feature Request
+                                    </SelectItem>
+                                    <SelectItem value="Question">
+                                        General Question
+                                    </SelectItem>
                                 </SelectContent>
                             </Select>
                             <InputError message={errors.type} />
@@ -153,7 +182,9 @@ export function SupportTicketModal({ children }: Props) {
                             <Input
                                 id="title"
                                 value={data.title}
-                                onChange={(e) => setData('title', e.target.value)}
+                                onChange={(e) =>
+                                    setData('title', e.target.value)
+                                }
                                 placeholder="Brief summary of the issue"
                                 className="bg-background/50 focus-visible:bg-background"
                             />
@@ -179,13 +210,17 @@ export function SupportTicketModal({ children }: Props) {
                         <div className="space-y-3">
                             <div className="flex items-center justify-between">
                                 <Label>Attachments (Optional)</Label>
-                                <span className="text-xs text-muted-foreground">Max 10 images. 5MB each.</span>
+                                <span className="text-xs text-muted-foreground">
+                                    Max 10 images. 5MB each.
+                                </span>
                             </div>
-                            
-                            <div 
+
+                            <div
                                 className={cn(
-                                    "border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer",
-                                    dragActive ? "border-primary bg-primary/5" : "border-border/60 hover:border-border hover:bg-muted/30"
+                                    'flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 transition-colors',
+                                    dragActive
+                                        ? 'border-primary bg-primary/5'
+                                        : 'border-border/60 hover:border-border hover:bg-muted/30',
                                 )}
                                 onDragEnter={handleDrag}
                                 onDragLeave={handleDrag}
@@ -193,8 +228,18 @@ export function SupportTicketModal({ children }: Props) {
                                 onDrop={handleDrop}
                                 onClick={() => fileInputRef.current?.click()}
                             >
-                                <UploadCloud className={cn("w-8 h-8 mb-1 transition-colors", dragActive ? "text-primary" : "text-muted-foreground")} />
-                                <p className="text-sm font-medium">Click to upload, drag and drop, or paste images</p>
+                                <UploadCloud
+                                    className={cn(
+                                        'mb-1 h-8 w-8 transition-colors',
+                                        dragActive
+                                            ? 'text-primary'
+                                            : 'text-muted-foreground',
+                                    )}
+                                />
+                                <p className="text-sm font-medium">
+                                    Click to upload, drag and drop, or paste
+                                    images
+                                </p>
                             </div>
                             <input
                                 ref={fileInputRef}
@@ -204,32 +249,54 @@ export function SupportTicketModal({ children }: Props) {
                                 className="hidden"
                                 onChange={(e) => {
                                     if (e.target.files) {
-handleFiles(Array.from(e.target.files));
-}
+                                        handleFiles(Array.from(e.target.files));
+                                    }
 
                                     e.target.value = ''; // Reset
                                 }}
                             />
 
                             {data.attachments.length > 0 && (
-                                <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-3">
+                                <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
                                     {data.attachments.map((file, i) => (
-                                        <div key={i} className="group relative flex items-center gap-3 p-2 rounded-md border border-border/60 bg-muted/30 pr-8">
-                                            <div className="w-10 h-10 rounded overflow-hidden flex-shrink-0 bg-background flex items-center justify-center border border-border/40">
-                                                <img src={URL.createObjectURL(file)} alt="preview" className="w-full h-full object-cover" />
+                                        <div
+                                            key={i}
+                                            className="group relative flex items-center gap-3 rounded-md border border-border/60 bg-muted/30 p-2 pr-8"
+                                        >
+                                            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded border border-border/40 bg-background">
+                                                <img
+                                                    src={URL.createObjectURL(
+                                                        file,
+                                                    )}
+                                                    alt="preview"
+                                                    className="h-full w-full object-cover"
+                                                />
                                             </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-xs font-medium truncate" title={file.name}>{file.name}</p>
-                                                <p className="text-[10px] text-muted-foreground">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                                            <div className="min-w-0 flex-1">
+                                                <p
+                                                    className="truncate text-xs font-medium"
+                                                    title={file.name}
+                                                >
+                                                    {file.name}
+                                                </p>
+                                                <p className="text-[10px] text-muted-foreground">
+                                                    {(
+                                                        file.size /
+                                                        1024 /
+                                                        1024
+                                                    ).toFixed(2)}{' '}
+                                                    MB
+                                                </p>
                                             </div>
                                             <button
                                                 type="button"
                                                 onClick={(e) => {
- e.stopPropagation(); removeFile(i); 
-}}
-                                                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full bg-background/80 hover:bg-destructive hover:text-destructive-foreground opacity-0 group-hover:opacity-100 transition-all border border-border/50"
+                                                    e.stopPropagation();
+                                                    removeFile(i);
+                                                }}
+                                                className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full border border-border/50 bg-background/80 p-1 opacity-0 transition-all group-hover:opacity-100 hover:bg-destructive hover:text-destructive-foreground"
                                             >
-                                                <X className="w-3.5 h-3.5" />
+                                                <X className="h-3.5 w-3.5" />
                                             </button>
                                         </div>
                                     ))}
@@ -239,7 +306,7 @@ handleFiles(Array.from(e.target.files));
                         </div>
                     </div>
 
-                    <div className="p-4 border-t border-border/40 bg-muted/20 flex justify-end gap-3">
+                    <div className="flex justify-end gap-3 border-t border-border/40 bg-muted/20 p-4">
                         <Button
                             type="button"
                             variant="outline"

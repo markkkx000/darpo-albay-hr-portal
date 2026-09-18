@@ -25,13 +25,17 @@ export default function MfaVerify() {
 
     const resendCode = () => {
         if (countdown > 0) {
-return;
-}
-        
-        router.post('/mfa/resend', {}, {
-            onSuccess: () => setCountdown(60),
-            preserveScroll: true,
-        });
+            return;
+        }
+
+        router.post(
+            '/mfa/resend',
+            {},
+            {
+                onSuccess: () => setCountdown(60),
+                preserveScroll: true,
+            },
+        );
     };
 
     const submit = (e: React.SyntheticEvent) => {
@@ -45,7 +49,7 @@ return;
 
             <form onSubmit={submit} className="flex flex-col gap-6">
                 <div className="grid gap-6">
-                    <div className="grid animate-fade-up gap-2">
+                    <div className="animate-fade-up grid gap-2">
                         <Label htmlFor="code">Authentication Code</Label>
                         <div className="focus-glow rounded-md transition">
                             <Input
@@ -53,18 +57,20 @@ return;
                                 type="text"
                                 name="code"
                                 value={data.code}
-                                onChange={(e) => setData('code', e.target.value)}
+                                onChange={(e) =>
+                                    setData('code', e.target.value)
+                                }
                                 required
                                 autoFocus
                                 maxLength={6}
                                 placeholder="123456"
-                                className="text-center tracking-widest text-lg"
+                                className="text-center text-lg tracking-widest"
                             />
                         </div>
                         <InputError message={errors.code} />
                     </div>
 
-                    <div className="flex animate-fade-up-delay-1 items-center space-x-3">
+                    <div className="animate-fade-up-delay-1 flex items-center space-x-3">
                         <Checkbox
                             id="trust_device"
                             name="trust_device"
@@ -73,7 +79,10 @@ return;
                                 setData('trust_device', checked === true)
                             }
                         />
-                        <Label htmlFor="trust_device" className="font-normal text-muted-foreground">
+                        <Label
+                            htmlFor="trust_device"
+                            className="font-normal text-muted-foreground"
+                        >
                             Don't ask again on this device for 90 days
                         </Label>
                     </div>
@@ -94,7 +103,9 @@ return;
                             disabled={countdown > 0}
                             onClick={resendCode}
                         >
-                            {countdown > 0 ? `Resend code in ${countdown}s` : 'Resend code'}
+                            {countdown > 0
+                                ? `Resend code in ${countdown}s`
+                                : 'Resend code'}
                         </Button>
                     </div>
                 </div>

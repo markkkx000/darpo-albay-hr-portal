@@ -1,4 +1,10 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
 interface Props {
@@ -25,17 +31,23 @@ export function TargetSelector({
     targetIdError,
 }: Props) {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="space-y-2">
                 <label className="text-sm font-medium">Target Audience</label>
                 <Select value={targetType} onValueChange={onTargetTypeChange}>
-                    <SelectTrigger className={cn(error && "border-destructive")}>
+                    <SelectTrigger
+                        className={cn(error && 'border-destructive')}
+                    >
                         <SelectValue placeholder="Select audience type" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">Everyone</SelectItem>
-                        <SelectItem value="division">Specific Division</SelectItem>
-                        <SelectItem value="position">Specific Position</SelectItem>
+                        <SelectItem value="division">
+                            Specific Division
+                        </SelectItem>
+                        <SelectItem value="position">
+                            Specific Position
+                        </SelectItem>
                         <SelectItem value="user">Specific Employee</SelectItem>
                     </SelectContent>
                 </Select>
@@ -49,32 +61,52 @@ export function TargetSelector({
                         {targetType === 'position' && 'Select Position'}
                         {targetType === 'user' && 'Select Employee'}
                     </label>
-                    <Select 
-                        value={targetId ? targetId.toString() : undefined} 
+                    <Select
+                        value={targetId ? targetId.toString() : undefined}
                         onValueChange={onTargetIdChange}
                     >
-                        <SelectTrigger className={cn(targetIdError && "border-destructive")}>
+                        <SelectTrigger
+                            className={cn(
+                                targetIdError && 'border-destructive',
+                            )}
+                        >
                             <SelectValue placeholder={`Select ${targetType}`} />
                         </SelectTrigger>
                         <SelectContent>
-                            {targetType === 'division' && divisions.map((div) => (
-                                <SelectItem key={div.id} value={div.id.toString()}>
-                                    {div.name}
-                                </SelectItem>
-                            ))}
-                            {targetType === 'position' && positions.map((pos) => (
-                                <SelectItem key={pos.id} value={pos.id.toString()}>
-                                    {pos.name}
-                                </SelectItem>
-                            ))}
-                            {targetType === 'user' && users.map((user) => (
-                                <SelectItem key={user.id} value={user.id.toString()}>
-                                    {user.name}
-                                </SelectItem>
-                            ))}
+                            {targetType === 'division' &&
+                                divisions.map((div) => (
+                                    <SelectItem
+                                        key={div.id}
+                                        value={div.id.toString()}
+                                    >
+                                        {div.name}
+                                    </SelectItem>
+                                ))}
+                            {targetType === 'position' &&
+                                positions.map((pos) => (
+                                    <SelectItem
+                                        key={pos.id}
+                                        value={pos.id.toString()}
+                                    >
+                                        {pos.name}
+                                    </SelectItem>
+                                ))}
+                            {targetType === 'user' &&
+                                users.map((user) => (
+                                    <SelectItem
+                                        key={user.id}
+                                        value={user.id.toString()}
+                                    >
+                                        {user.name}
+                                    </SelectItem>
+                                ))}
                         </SelectContent>
                     </Select>
-                    {targetIdError && <p className="text-xs text-destructive">{targetIdError}</p>}
+                    {targetIdError && (
+                        <p className="text-xs text-destructive">
+                            {targetIdError}
+                        </p>
+                    )}
                 </div>
             )}
         </div>

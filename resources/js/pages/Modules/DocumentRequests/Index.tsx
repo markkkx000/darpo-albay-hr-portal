@@ -18,9 +18,22 @@ import { EmployeeSearch } from '@/components/EmployeeSearch';
 import PageHeader from '@/components/page-header';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import DocumentRequestsRoutes from '@/routes/documentrequests';
@@ -117,12 +130,18 @@ export default function DocumentRequestsIndex({
     usePoll(15000, { only: ['documentRequests'] });
 
     const [isReleaseModalOpen, setIsReleaseModalOpen] = useState(false);
-    const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null);
+    const [selectedRequestId, setSelectedRequestId] = useState<number | null>(
+        null,
+    );
     const [isPickupModalOpen, setIsPickupModalOpen] = useState(false);
     const [pickupName, setPickupName] = useState('');
     const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
-    const [rejectAction, setRejectAction] = useState<'Reject' | 'Cancel'>('Reject');
-    const [requestToConfirm, setRequestToConfirm] = useState<number | null>(null);
+    const [rejectAction, setRejectAction] = useState<'Reject' | 'Cancel'>(
+        'Reject',
+    );
+    const [requestToConfirm, setRequestToConfirm] = useState<number | null>(
+        null,
+    );
     const [statusReason, setStatusReason] = useState('');
 
     const openRejectConfirm = (id: number, action: 'Reject' | 'Cancel') => {
@@ -137,20 +156,21 @@ export default function DocumentRequestsIndex({
         if (!requestToConfirm) {
             return;
         }
-        
+
         router.post(
-            DocumentRequestsRoutes.status({ documentRequest: requestToConfirm }).url,
-            { 
+            DocumentRequestsRoutes.status({ documentRequest: requestToConfirm })
+                .url,
+            {
                 status: rejectAction === 'Reject' ? 'Rejected' : 'Cancelled',
-                status_reason: statusReason
+                status_reason: statusReason,
             },
-            { 
+            {
                 preserveScroll: true,
                 onSuccess: () => {
                     setIsRejectModalOpen(false);
                     setStatusReason('');
-                }
-            }
+                },
+            },
         );
     };
 
@@ -159,7 +179,9 @@ export default function DocumentRequestsIndex({
 
         if (pickupName && selectedRequestId) {
             router.post(
-                DocumentRequestsRoutes.pickedUp({ documentRequest: selectedRequestId }).url,
+                DocumentRequestsRoutes.pickedUp({
+                    documentRequest: selectedRequestId,
+                }).url,
                 { released_to: pickupName },
                 {
                     preserveScroll: true,
@@ -167,8 +189,8 @@ export default function DocumentRequestsIndex({
                         setIsPickupModalOpen(false);
                         setPickupName('');
                         setSelectedRequestId(null);
-                    }
-                }
+                    },
+                },
             );
         }
     };
@@ -183,26 +205,31 @@ export default function DocumentRequestsIndex({
 
     const toggleSort = () => {
         const newSort = filterState.sort_date === 'desc' ? 'asc' : 'desc';
-        setFilterState(prev => ({ ...prev, sort_date: newSort }));
+        setFilterState((prev) => ({ ...prev, sort_date: newSort }));
         router.get(
             DocumentRequestsRoutes.index().url,
             { ...filterState, sort_date: newSort } as any,
-            { preserveState: true, preserveScroll: true, replace: true }
+            { preserveState: true, preserveScroll: true, replace: true },
         );
     };
 
     const updateFilter = (key: keyof typeof filterState, value: any) => {
         const newState = { ...filterState, [key]: value };
         setFilterState(newState);
-        router.get(
-            DocumentRequestsRoutes.index().url,
-            newState as any,
-            { preserveState: true, replace: true }
-        );
+        router.get(DocumentRequestsRoutes.index().url, newState as any, {
+            preserveState: true,
+            replace: true,
+        });
     };
 
     const clearFilters = () => {
-        setFilterState({ status: 'all', date_from: '', date_to: '', document: 'all', sort_date: 'desc' });
+        setFilterState({
+            status: 'all',
+            date_from: '',
+            date_to: '',
+            document: 'all',
+            sort_date: 'desc',
+        });
         router.get(DocumentRequestsRoutes.index().url);
     };
 
@@ -238,74 +265,132 @@ export default function DocumentRequestsIndex({
                 />
 
                 <div className="matte-card elev-2 mb-6">
-                    <div className="border-b bg-muted/20 p-4 space-y-4">
+                    <div className="space-y-4 border-b bg-muted/20 p-4">
                         <div className="flex items-center justify-between">
                             <div className="text-lg font-semibold">
                                 {isHr ? 'Request Queue' : 'My Requests'}
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end xl:w-[85%]">
+                        <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-2 lg:grid-cols-5 xl:w-[85%]">
                             <div className="space-y-1">
-                                <Label className="text-xs text-muted-foreground">Status</Label>
+                                <Label className="text-xs text-muted-foreground">
+                                    Status
+                                </Label>
                                 <Select
                                     value={filterState.status}
-                                    onValueChange={(val) => updateFilter('status', val)}
+                                    onValueChange={(val) =>
+                                        updateFilter('status', val)
+                                    }
                                 >
-                                    <SelectTrigger className="w-full h-9 text-xs">
+                                    <SelectTrigger className="h-9 w-full text-xs">
                                         <SelectValue placeholder="All Status" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="all">All Status</SelectItem>
-                                        <SelectItem value="Pending">Pending</SelectItem>
-                                        <SelectItem value="Received">Received</SelectItem>
-                                        <SelectItem value="Ready for Pickup">Ready for Pickup</SelectItem>
-                                        <SelectItem value="Released">Released</SelectItem>
-                                        <SelectItem value="Completed">Completed</SelectItem>
-                                        <SelectItem value="Rejected">Rejected</SelectItem>
-                                        <SelectItem value="Cancelled">Cancelled</SelectItem>
+                                        <SelectItem value="all">
+                                            All Status
+                                        </SelectItem>
+                                        <SelectItem value="Pending">
+                                            Pending
+                                        </SelectItem>
+                                        <SelectItem value="Received">
+                                            Received
+                                        </SelectItem>
+                                        <SelectItem value="Ready for Pickup">
+                                            Ready for Pickup
+                                        </SelectItem>
+                                        <SelectItem value="Released">
+                                            Released
+                                        </SelectItem>
+                                        <SelectItem value="Completed">
+                                            Completed
+                                        </SelectItem>
+                                        <SelectItem value="Rejected">
+                                            Rejected
+                                        </SelectItem>
+                                        <SelectItem value="Cancelled">
+                                            Cancelled
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                             <div className="space-y-1">
-                                <Label className="text-xs text-muted-foreground">Document Type</Label>
+                                <Label className="text-xs text-muted-foreground">
+                                    Document Type
+                                </Label>
                                 <Select
                                     value={filterState.document}
-                                    onValueChange={(val) => updateFilter('document', val)}
+                                    onValueChange={(val) =>
+                                        updateFilter('document', val)
+                                    }
                                 >
-                                    <SelectTrigger className="w-full h-9 text-xs">
+                                    <SelectTrigger className="h-9 w-full text-xs">
                                         <SelectValue placeholder="All Documents" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="all">All Documents</SelectItem>
-                                        <SelectItem value="Service Record">Service Record</SelectItem>
-                                        <SelectItem value="Certificate of Employment (CE)">CE</SelectItem>
-                                        <SelectItem value="Certificate of Employment with Compensation (CEC)">CEC</SelectItem>
-                                        <SelectItem value="Pay Slip">Pay Slip</SelectItem>
-                                        <SelectItem value="Certificate of Remittance">Remittance</SelectItem>
-                                        <SelectItem value="Certified True Copy of Documents">CTC</SelectItem>
-                                        <SelectItem value="Other">Other</SelectItem>
+                                        <SelectItem value="all">
+                                            All Documents
+                                        </SelectItem>
+                                        <SelectItem value="Service Record">
+                                            Service Record
+                                        </SelectItem>
+                                        <SelectItem value="Certificate of Employment (CE)">
+                                            CE
+                                        </SelectItem>
+                                        <SelectItem value="Certificate of Employment with Compensation (CEC)">
+                                            CEC
+                                        </SelectItem>
+                                        <SelectItem value="Pay Slip">
+                                            Pay Slip
+                                        </SelectItem>
+                                        <SelectItem value="Certificate of Remittance">
+                                            Remittance
+                                        </SelectItem>
+                                        <SelectItem value="Certified True Copy of Documents">
+                                            CTC
+                                        </SelectItem>
+                                        <SelectItem value="Other">
+                                            Other
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                             <div className="space-y-1">
-                                <Label className="text-xs text-muted-foreground">From</Label>
+                                <Label className="text-xs text-muted-foreground">
+                                    From
+                                </Label>
                                 <DatePicker
                                     className="w-full"
                                     value={filterState.date_from}
-                                    onChange={(date) => updateFilter('date_from', date || '')}
+                                    onChange={(date) =>
+                                        updateFilter('date_from', date || '')
+                                    }
                                 />
                             </div>
                             <div className="space-y-1">
-                                <Label className="text-xs text-muted-foreground">To</Label>
+                                <Label className="text-xs text-muted-foreground">
+                                    To
+                                </Label>
                                 <DatePicker
                                     className="w-full"
                                     value={filterState.date_to}
-                                    onChange={(date) => updateFilter('date_to', date || '')}
+                                    onChange={(date) =>
+                                        updateFilter('date_to', date || '')
+                                    }
                                 />
                             </div>
                             <div className="flex items-center gap-2 pb-0.5">
-                                {(filterState.status !== 'all' || filterState.document !== 'all' || filterState.date_from || filterState.date_to) && (
-                                    <Button onClick={clearFilters} variant="ghost" size="sm" className="h-9 text-xs px-3 text-muted-foreground flex-1 md:flex-none">Clear Filters</Button>
+                                {(filterState.status !== 'all' ||
+                                    filterState.document !== 'all' ||
+                                    filterState.date_from ||
+                                    filterState.date_to) && (
+                                    <Button
+                                        onClick={clearFilters}
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-9 flex-1 px-3 text-xs text-muted-foreground md:flex-none"
+                                    >
+                                        Clear Filters
+                                    </Button>
                                 )}
                             </div>
                         </div>
@@ -332,13 +417,14 @@ export default function DocumentRequestsIndex({
                                         </th>
                                         <th
                                             scope="col"
-                                            className="px-4 py-4 text-left cursor-pointer hover:bg-muted/60 transition-colors group"
+                                            className="group cursor-pointer px-4 py-4 text-left transition-colors hover:bg-muted/60"
                                             onClick={toggleSort}
                                         >
                                             <div className="flex items-center gap-1 select-none">
                                                 Date Requested
-                                                <span className="text-muted-foreground/50 group-hover:text-foreground transition-colors">
-                                                    {filterState.sort_date === 'desc' ? (
+                                                <span className="text-muted-foreground/50 transition-colors group-hover:text-foreground">
+                                                    {filterState.sort_date ===
+                                                    'desc' ? (
                                                         <ArrowDown className="h-3.5 w-3.5" />
                                                     ) : (
                                                         <ArrowUp className="h-3.5 w-3.5" />
@@ -369,10 +455,13 @@ export default function DocumentRequestsIndex({
                                             {isHr && (
                                                 <td className="p-4 align-middle">
                                                     <div className="font-medium">
-                                                        {req.user?.first_name} {req.user?.last_name}
+                                                        {req.user?.first_name}{' '}
+                                                        {req.user?.last_name}
                                                     </div>
-                                                    <div className="text-[11px] text-muted-foreground mt-0.5 font-medium">
-                                                        {req.user?.employee_number || 'N/A'}
+                                                    <div className="mt-0.5 text-[11px] font-medium text-muted-foreground">
+                                                        {req.user
+                                                            ?.employee_number ||
+                                                            'N/A'}
                                                     </div>
                                                 </td>
                                             )}
@@ -408,44 +497,65 @@ export default function DocumentRequestsIndex({
                                             </td>
                                             <td className="flex justify-end gap-2 p-4 text-right align-middle">
                                                 {/* Main Action Buttons */}
-                                                {isHr && req.status === 'Pending' && (
-                                                    <Button
-                                                        variant="outline"
-                                                        className="shadow-sm"
-                                                        onClick={() =>
-                                                            router.post(DocumentRequestsRoutes.receive({ documentRequest: req.id }).url)
-                                                        }
-                                                    >
-                                                        <Clock className="h-4 w-4" />
-                                                        Mark Received
-                                                    </Button>
-                                                )}
-                                                {isHr && req.status === 'Received' && (
-                                                    <Button
-                                                        variant="default"
-                                                        className="btn-premium shadow-sm"
-                                                        onClick={() => {
-                                                            setSelectedRequestId(req.id);
-                                                            setIsReleaseModalOpen(true);
-                                                        }}
-                                                    >
-                                                        <Send className="h-4 w-4" />
-                                                        Release
-                                                    </Button>
-                                                )}
-                                                {isHr && req.status === 'Ready for Pickup' && (
-                                                    <Button
-                                                        variant="outline"
-                                                        className="shadow-sm"
-                                                        onClick={() => {
-                                                            setSelectedRequestId(req.id);
-                                                            setIsPickupModalOpen(true);
-                                                        }}
-                                                    >
-                                                        <Box className="h-4 w-4" />
-                                                        Log Pickup
-                                                    </Button>
-                                                )}
+                                                {isHr &&
+                                                    req.status ===
+                                                        'Pending' && (
+                                                        <Button
+                                                            variant="outline"
+                                                            className="shadow-sm"
+                                                            onClick={() =>
+                                                                router.post(
+                                                                    DocumentRequestsRoutes.receive(
+                                                                        {
+                                                                            documentRequest:
+                                                                                req.id,
+                                                                        },
+                                                                    ).url,
+                                                                )
+                                                            }
+                                                        >
+                                                            <Clock className="h-4 w-4" />
+                                                            Mark Received
+                                                        </Button>
+                                                    )}
+                                                {isHr &&
+                                                    req.status ===
+                                                        'Received' && (
+                                                        <Button
+                                                            variant="default"
+                                                            className="btn-premium shadow-sm"
+                                                            onClick={() => {
+                                                                setSelectedRequestId(
+                                                                    req.id,
+                                                                );
+                                                                setIsReleaseModalOpen(
+                                                                    true,
+                                                                );
+                                                            }}
+                                                        >
+                                                            <Send className="h-4 w-4" />
+                                                            Release
+                                                        </Button>
+                                                    )}
+                                                {isHr &&
+                                                    req.status ===
+                                                        'Ready for Pickup' && (
+                                                        <Button
+                                                            variant="outline"
+                                                            className="shadow-sm"
+                                                            onClick={() => {
+                                                                setSelectedRequestId(
+                                                                    req.id,
+                                                                );
+                                                                setIsPickupModalOpen(
+                                                                    true,
+                                                                );
+                                                            }}
+                                                        >
+                                                            <Box className="h-4 w-4" />
+                                                            Log Pickup
+                                                        </Button>
+                                                    )}
 
                                                 {/* View Details Button (Eye icon only) */}
                                                 <Button
@@ -455,34 +565,58 @@ export default function DocumentRequestsIndex({
                                                     asChild
                                                     title="View Details"
                                                 >
-                                                    <Link href={DocumentRequestsRoutes.show({ documentRequest: req.id }).url}>
+                                                    <Link
+                                                        href={
+                                                            DocumentRequestsRoutes.show(
+                                                                {
+                                                                    documentRequest:
+                                                                        req.id,
+                                                                },
+                                                            ).url
+                                                        }
+                                                    >
                                                         <Eye className="h-4 w-4" />
                                                     </Link>
                                                 </Button>
 
                                                 {/* Reject/Cancel Button (X icon only) */}
-                                                {isHr && (req.status === 'Pending' || req.status === 'Received') && (
-                                                    <Button
-                                                        variant="destructive"
-                                                        size="icon"
-                                                        className="shadow-sm bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground border-transparent"
-                                                        onClick={() => openRejectConfirm(req.id, 'Reject')}
-                                                        title="Reject"
-                                                    >
-                                                        <XCircle className="h-4 w-4" />
-                                                    </Button>
-                                                )}
-                                                {!isHr && req.status === 'Pending' && (
-                                                    <Button
-                                                        variant="destructive"
-                                                        size="icon"
-                                                        className="shadow-sm bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground border-transparent"
-                                                        onClick={() => openRejectConfirm(req.id, 'Cancel')}
-                                                        title="Cancel"
-                                                    >
-                                                        <XCircle className="h-4 w-4" />
-                                                    </Button>
-                                                )}
+                                                {isHr &&
+                                                    (req.status === 'Pending' ||
+                                                        req.status ===
+                                                            'Received') && (
+                                                        <Button
+                                                            variant="destructive"
+                                                            size="icon"
+                                                            className="border-transparent bg-destructive/10 text-destructive shadow-sm hover:bg-destructive hover:text-destructive-foreground"
+                                                            onClick={() =>
+                                                                openRejectConfirm(
+                                                                    req.id,
+                                                                    'Reject',
+                                                                )
+                                                            }
+                                                            title="Reject"
+                                                        >
+                                                            <XCircle className="h-4 w-4" />
+                                                        </Button>
+                                                    )}
+                                                {!isHr &&
+                                                    req.status ===
+                                                        'Pending' && (
+                                                        <Button
+                                                            variant="destructive"
+                                                            size="icon"
+                                                            className="border-transparent bg-destructive/10 text-destructive shadow-sm hover:bg-destructive hover:text-destructive-foreground"
+                                                            onClick={() =>
+                                                                openRejectConfirm(
+                                                                    req.id,
+                                                                    'Cancel',
+                                                                )
+                                                            }
+                                                            title="Cancel"
+                                                        >
+                                                            <XCircle className="h-4 w-4" />
+                                                        </Button>
+                                                    )}
                                             </td>
                                         </tr>
                                     ))}
@@ -545,7 +679,10 @@ export default function DocumentRequestsIndex({
                 documentRequestId={selectedRequestId}
             />
 
-            <Dialog open={isPickupModalOpen} onOpenChange={setIsPickupModalOpen}>
+            <Dialog
+                open={isPickupModalOpen}
+                onOpenChange={setIsPickupModalOpen}
+            >
                 <DialogContent
                     onOpenAutoFocus={(e) => e.preventDefault()}
                     onInteractOutside={(e) => {
@@ -564,9 +701,17 @@ export default function DocumentRequestsIndex({
                         <DialogHeader>
                             <DialogTitle>Log Document Pickup</DialogTitle>
                             <DialogDescription>
-                                Enter the name of the person picking up the documents.
-                                <br /><br />
-                                <strong className="text-primary font-semibold">Note:</strong> Please remind the receiver to log into their portal and click "Acknowledge Receipt" as soon as possible to complete the two-way verification process.
+                                Enter the name of the person picking up the
+                                documents.
+                                <br />
+                                <br />
+                                <strong className="font-semibold text-primary">
+                                    Note:
+                                </strong>{' '}
+                                Please remind the receiver to log into their
+                                portal and click "Acknowledge Receipt" as soon
+                                as possible to complete the two-way verification
+                                process.
                             </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
@@ -575,47 +720,70 @@ export default function DocumentRequestsIndex({
                                 <EmployeeSearch
                                     users={users || []}
                                     selectedId={pickupName}
-                                    onSelect={(val) => setPickupName(val === 'all' ? '' : val)}
+                                    onSelect={(val) =>
+                                        setPickupName(val === 'all' ? '' : val)
+                                    }
                                     returnValue="name"
                                     placeholder="e.g. John Doe"
                                 />
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button type="button" variant="outline" onClick={() => setIsPickupModalOpen(false)}>Cancel</Button>
-                            <Button type="submit" className="btn-premium">Confirm Pickup</Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setIsPickupModalOpen(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" className="btn-premium">
+                                Confirm Pickup
+                            </Button>
                         </DialogFooter>
                     </form>
                 </DialogContent>
             </Dialog>
 
             {/* Custom Confirm Reject/Cancel Dialog */}
-            <Dialog open={isRejectModalOpen} onOpenChange={setIsRejectModalOpen}>
+            <Dialog
+                open={isRejectModalOpen}
+                onOpenChange={setIsRejectModalOpen}
+            >
                 <DialogContent>
                     <form onSubmit={handleConfirmReject}>
                         <DialogHeader>
                             <DialogTitle>Confirm {rejectAction}</DialogTitle>
                             <DialogDescription>
-                                Are you sure you want to {rejectAction.toLowerCase()} this document request? This action cannot be undone.
+                                Are you sure you want to{' '}
+                                {rejectAction.toLowerCase()} this document
+                                request? This action cannot be undone.
                             </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="indexReason">Reason (Optional)</Label>
+                                <Label htmlFor="indexReason">
+                                    Reason (Optional)
+                                </Label>
                                 <Textarea
                                     id="indexReason"
                                     value={statusReason}
-                                    onChange={(e) => setStatusReason(e.target.value)}
+                                    onChange={(e) =>
+                                        setStatusReason(e.target.value)
+                                    }
                                     placeholder="Enter the reason here..."
                                     className="min-h-[100px]"
                                 />
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button type="button" variant="outline" onClick={() => {
-                                setIsRejectModalOpen(false);
-                                setStatusReason('');
-                            }}>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => {
+                                    setIsRejectModalOpen(false);
+                                    setStatusReason('');
+                                }}
+                            >
                                 Keep Request
                             </Button>
                             <Button type="submit" variant="destructive">

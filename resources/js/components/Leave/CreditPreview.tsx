@@ -10,13 +10,19 @@ interface CreditPreviewProps {
     accentColor: string;
 }
 
-export function CreditPreview({ available, requested, remaining, leaveTypeName, accentColor }: CreditPreviewProps) {
+export function CreditPreview({
+    available,
+    requested,
+    remaining,
+    leaveTypeName,
+    accentColor,
+}: CreditPreviewProps) {
     const isMonetization = leaveTypeName.toLowerCase().includes('monetization');
     const showMonetizationWarning = isMonetization && remaining < 15;
 
     return (
         <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <StatCard
                     title="Available"
                     value={available.toFixed(3)}
@@ -35,12 +41,18 @@ export function CreditPreview({ available, requested, remaining, leaveTypeName, 
             </div>
 
             {showMonetizationWarning && (
-                <Alert variant="destructive" className="border-red-500/50 bg-red-500/10">
+                <Alert
+                    variant="destructive"
+                    className="border-red-500/50 bg-red-500/10"
+                >
                     <TriangleAlert className="h-4 w-4" />
                     <AlertTitle>Monetization Rule Violation</AlertTitle>
                     <AlertDescription>
-                        CSC Rule: A minimum of 15 days vacation leave balance must remain after monetization. 
-                        Current remaining: <span className="font-bold">{remaining.toFixed(3)}</span>
+                        CSC Rule: A minimum of 15 days vacation leave balance
+                        must remain after monetization. Current remaining:{' '}
+                        <span className="font-bold">
+                            {remaining.toFixed(3)}
+                        </span>
                     </AlertDescription>
                 </Alert>
             )}

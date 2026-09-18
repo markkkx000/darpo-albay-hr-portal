@@ -92,7 +92,6 @@ const Counter = ({
 
             pendingValueRef.current = null;
         } else if (value === localValue) {
-             
             setIsDirty(false);
         }
     }, [value, localValue]);
@@ -100,8 +99,8 @@ const Counter = ({
     // Debounce update
     useEffect(() => {
         if (
-            isDirty && 
-            debouncedValue === localValue && 
+            isDirty &&
+            debouncedValue === localValue &&
             pendingValueRef.current !== debouncedValue
         ) {
             pendingValueRef.current = debouncedValue;
@@ -178,23 +177,24 @@ export default function LeaveTardiness({
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-                'Accept': 'application/json',
+                'X-CSRF-TOKEN':
+                    document
+                        .querySelector('meta[name="csrf-token"]')
+                        ?.getAttribute('content') || '',
+                Accept: 'application/json',
             },
             body: JSON.stringify(payload),
         }).then((res) => {
             if (res.ok) {
                 toast.success('Record updated successfully');
-                router.reload({ 
-                    only: ['users']
+                router.reload({
+                    only: ['users'],
                 });
             } else {
                 toast.error('Failed to update record');
             }
         });
     };
-
-
 
     return (
         <>

@@ -4,7 +4,13 @@ import { DatePicker } from '@/components/date-picker';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { RichTextEditor } from './RichTextEditor';
 import { TargetSelector } from './TargetSelector';
 
@@ -37,10 +43,14 @@ export function AnnouncementForm({
 
     const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
-        
+
         const options = {
             onSuccess: () => {
-                toast.success(announcement ? 'Announcement updated' : 'Announcement draft saved');
+                toast.success(
+                    announcement
+                        ? 'Announcement updated'
+                        : 'Announcement draft saved',
+                );
                 router.clearHistory();
             },
         };
@@ -56,21 +66,23 @@ export function AnnouncementForm({
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
                 <label className="text-sm font-medium">Title</label>
-                <Input 
-                    value={data.title} 
-                    onChange={e => setData('title', e.target.value)}
+                <Input
+                    value={data.title}
+                    onChange={(e) => setData('title', e.target.value)}
                     placeholder="Announcement title"
-                    className={errors.title ? "border-destructive" : ""}
+                    className={errors.title ? 'border-destructive' : ''}
                 />
-                {errors.title && <p className="text-xs text-destructive">{errors.title}</p>}
+                {errors.title && (
+                    <p className="text-xs text-destructive">{errors.title}</p>
+                )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                     <label className="text-sm font-medium">Priority</label>
-                    <Select 
-                        value={data.priority} 
-                        onValueChange={v => setData('priority', v)}
+                    <Select
+                        value={data.priority}
+                        onValueChange={(v) => setData('priority', v)}
                     >
                         <SelectTrigger>
                             <SelectValue placeholder="Select priority" />
@@ -80,44 +92,60 @@ export function AnnouncementForm({
                             <SelectItem value="high">High</SelectItem>
                         </SelectContent>
                     </Select>
-                    {errors.priority && <p className="text-xs text-destructive">{errors.priority}</p>}
+                    {errors.priority && (
+                        <p className="text-xs text-destructive">
+                            {errors.priority}
+                        </p>
+                    )}
                 </div>
 
                 <div className="space-y-4">
-                    <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-border/40 p-4 shadow-sm bg-surface-2 mt-1">
-                        <Checkbox 
+                    <div className="mt-1 flex flex-row items-start space-y-0 space-x-3 rounded-md border border-border/40 bg-surface-2 p-4 shadow-sm">
+                        <Checkbox
                             id="is_event"
                             checked={data.is_event}
-                            onCheckedChange={(checked) => setData('is_event', checked === true)}
+                            onCheckedChange={(checked) =>
+                                setData('is_event', checked === true)
+                            }
                         />
                         <div className="space-y-1 leading-none">
-                            <label htmlFor="is_event" className="text-sm font-medium cursor-pointer">
+                            <label
+                                htmlFor="is_event"
+                                className="cursor-pointer text-sm font-medium"
+                            >
                                 Mark as Event
                             </label>
                         </div>
                     </div>
 
                     {data.is_event && (
-                        <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                            <label className="text-sm font-medium">Event Date <span className="text-destructive">*</span></label>
-                            <DatePicker 
+                        <div className="animate-in space-y-2 duration-300 fade-in slide-in-from-top-2">
+                            <label className="text-sm font-medium">
+                                Event Date{' '}
+                                <span className="text-destructive">*</span>
+                            </label>
+                            <DatePicker
                                 value={data.event_date || ''}
-                                onChange={v => setData('event_date', v || '')}
+                                onChange={(v) => setData('event_date', v || '')}
                                 aria-invalid={!!errors.event_date}
                             />
-                            {errors.event_date && <p className="text-xs text-destructive">{errors.event_date}</p>}
+                            {errors.event_date && (
+                                <p className="text-xs text-destructive">
+                                    {errors.event_date}
+                                </p>
+                            )}
                         </div>
                     )}
                 </div>
             </div>
 
-            <TargetSelector 
+            <TargetSelector
                 targetType={data.target_type}
                 targetId={data.target_id}
-                onTargetTypeChange={v => {
-                    setData(d => ({ ...d, target_type: v, target_id: null }));
+                onTargetTypeChange={(v) => {
+                    setData((d) => ({ ...d, target_type: v, target_id: null }));
                 }}
-                onTargetIdChange={v => setData('target_id', v)}
+                onTargetIdChange={(v) => setData('target_id', v)}
                 divisions={divisions}
                 positions={positions}
                 users={users}
@@ -127,16 +155,24 @@ export function AnnouncementForm({
 
             <div className="space-y-2">
                 <label className="text-sm font-medium">Content</label>
-                <RichTextEditor 
+                <RichTextEditor
                     content={data.content}
-                    onChange={v => setData('content', v)}
+                    onChange={(v) => setData('content', v)}
                     error={errors.content}
                 />
             </div>
 
-            <div className="flex justify-end gap-2 pt-4 border-t border-muted/20">
-                <Button type="submit" disabled={processing} className="btn-specular gap-2 px-8 py-6 rounded-xl shadow-lg border-none">
-                    {processing ? 'Saving...' : announcement ? 'Update Draft' : 'Save Draft'}
+            <div className="flex justify-end gap-2 border-t border-muted/20 pt-4">
+                <Button
+                    type="submit"
+                    disabled={processing}
+                    className="btn-specular gap-2 rounded-xl border-none px-8 py-6 shadow-lg"
+                >
+                    {processing
+                        ? 'Saving...'
+                        : announcement
+                          ? 'Update Draft'
+                          : 'Save Draft'}
                 </Button>
             </div>
         </form>

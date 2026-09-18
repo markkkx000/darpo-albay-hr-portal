@@ -16,7 +16,10 @@ export default function AppSidebarLayout({
             <AppSidebar />
             <AppContent variant="sidebar">
                 <AppSidebarHeader breadcrumbs={breadcrumbs} />
-                <div key={component} className="flex flex-1 flex-col w-full h-full">
+                <div
+                    key={component}
+                    className="flex h-full w-full flex-1 flex-col"
+                >
                     {children}
                 </div>
             </AppContent>

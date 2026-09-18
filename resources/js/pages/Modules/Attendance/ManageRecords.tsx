@@ -159,7 +159,10 @@ export default function ManageRecords({ records, employees, filters }: Props) {
             return { label: 'Completed', variant: 'secondary' as const };
         }
 
-        if ((hasAmIn && hasAmOut && !hasPmIn && !hasPmOut) || (!hasAmIn && !hasAmOut && hasPmIn && hasPmOut)) {
+        if (
+            (hasAmIn && hasAmOut && !hasPmIn && !hasPmOut) ||
+            (!hasAmIn && !hasAmOut && hasPmIn && hasPmOut)
+        ) {
             return { label: 'Half Day', variant: 'default' as const };
         }
 
@@ -167,12 +170,19 @@ export default function ManageRecords({ records, employees, filters }: Props) {
         const today = new Date().setHours(0, 0, 0, 0);
 
         // Any missing IN logs when OUT logs exist (manually added), or jumped sessions
-        if ((hasAmOut && !hasAmIn) || (hasPmOut && !hasPmIn) || (hasAmIn && !hasAmOut && hasPmIn)) {
+        if (
+            (hasAmOut && !hasAmIn) ||
+            (hasPmOut && !hasPmIn) ||
+            (hasAmIn && !hasAmOut && hasPmIn)
+        ) {
             return { label: 'Incomplete', variant: 'destructive' as const };
         }
 
         // Missing OUT logs on past days
-        if (recordDate < today && ((hasAmIn && !hasAmOut) || (hasPmIn && !hasPmOut))) {
+        if (
+            recordDate < today &&
+            ((hasAmIn && !hasAmOut) || (hasPmIn && !hasPmOut))
+        ) {
             return { label: 'Incomplete', variant: 'destructive' as const };
         }
 
@@ -279,9 +289,14 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                     >
                                                         <td className="px-6 py-4 font-medium">
                                                             <div className="flex items-center gap-3">
-                                                                <div className="sqicon h-8 w-8 !rounded-[8px] shrink-0 border border-border/30">
+                                                                <div className="sqicon h-8 w-8 shrink-0 !rounded-[8px] border border-border/30">
                                                                     <img
-                                                                        src={record.user?.avatar || '/img/pfp_placeholder.png'}
+                                                                        src={
+                                                                            record
+                                                                                .user
+                                                                                ?.avatar ||
+                                                                            '/img/pfp_placeholder.png'
+                                                                        }
                                                                         alt={`${record.user?.first_name} ${record.user?.last_name}`}
                                                                         className="h-full w-full object-cover"
                                                                         loading="lazy"
@@ -325,10 +340,14 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                                     variant="outline"
                                                                     className="border-transparent bg-surface-2 font-mono text-foreground"
                                                                 >
-                                                                    {formatTime(record.am_clock_in)}
+                                                                    {formatTime(
+                                                                        record.am_clock_in,
+                                                                    )}
                                                                 </Badge>
                                                             ) : (
-                                                                <span className="text-xs text-muted-foreground italic">-</span>
+                                                                <span className="text-xs text-muted-foreground italic">
+                                                                    -
+                                                                </span>
                                                             )}
                                                         </td>
                                                         <td className="px-6 py-4">
@@ -337,10 +356,14 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                                     variant="outline"
                                                                     className="border-transparent bg-surface-2 font-mono text-foreground"
                                                                 >
-                                                                    {formatTime(record.am_clock_out)}
+                                                                    {formatTime(
+                                                                        record.am_clock_out,
+                                                                    )}
                                                                 </Badge>
                                                             ) : (
-                                                                <span className="text-xs text-muted-foreground italic">-</span>
+                                                                <span className="text-xs text-muted-foreground italic">
+                                                                    -
+                                                                </span>
                                                             )}
                                                         </td>
                                                         <td className="px-6 py-4">
@@ -349,10 +372,14 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                                     variant="outline"
                                                                     className="border-transparent bg-surface-2 font-mono text-foreground"
                                                                 >
-                                                                    {formatTime(record.pm_clock_in)}
+                                                                    {formatTime(
+                                                                        record.pm_clock_in,
+                                                                    )}
                                                                 </Badge>
                                                             ) : (
-                                                                <span className="text-xs text-muted-foreground italic">-</span>
+                                                                <span className="text-xs text-muted-foreground italic">
+                                                                    -
+                                                                </span>
                                                             )}
                                                         </td>
                                                         <td className="px-6 py-4">
@@ -361,10 +388,14 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                                     variant="outline"
                                                                     className="border-transparent bg-surface-2 font-mono text-foreground"
                                                                 >
-                                                                    {formatTime(record.pm_clock_out)}
+                                                                    {formatTime(
+                                                                        record.pm_clock_out,
+                                                                    )}
                                                                 </Badge>
                                                             ) : (
-                                                                <span className="text-xs text-muted-foreground italic">-</span>
+                                                                <span className="text-xs text-muted-foreground italic">
+                                                                    -
+                                                                </span>
                                                             )}
                                                         </td>
                                                         <td className="px-6 py-4">
@@ -375,20 +406,20 @@ export default function ManageRecords({ records, employees, filters }: Props) {
                                                                 className={cn(
                                                                     'px-2 py-0.5 text-[9px] font-bold tracking-tight uppercase shadow-sm',
                                                                     status.label ===
-                                                                    'Completed' &&
-                                                                    'border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400',
+                                                                        'Completed' &&
+                                                                        'border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400',
                                                                     status.label ===
-                                                                    'Incomplete' &&
-                                                                    'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400',
+                                                                        'Incomplete' &&
+                                                                        'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400',
                                                                     status.label ===
-                                                                    'Working' &&
-                                                                    'animate-pulse border-primary/20 bg-primary/10 text-primary',
+                                                                        'Working' &&
+                                                                        'animate-pulse border-primary/20 bg-primary/10 text-primary',
                                                                     status.label ===
-                                                                    'Half Day' &&
-                                                                    'border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400',
+                                                                        'Half Day' &&
+                                                                        'border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400',
                                                                     status.label ===
-                                                                    'Archived' &&
-                                                                    'border-zinc-500/20 bg-zinc-500/10 text-zinc-600 dark:text-zinc-400',
+                                                                        'Archived' &&
+                                                                        'border-zinc-500/20 bg-zinc-500/10 text-zinc-600 dark:text-zinc-400',
                                                                 )}
                                                             >
                                                                 {status.label}

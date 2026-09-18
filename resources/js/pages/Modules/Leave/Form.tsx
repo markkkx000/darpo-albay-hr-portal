@@ -57,7 +57,11 @@ export default function LeaveForm({
             attachment_urls: leaveRequest?.attachment_urls || [''],
             specific_dates: leaveRequest?.specific_dates || [],
             salary: leaveRequest?.salary || '',
-            date_filed: leaveRequest?.date_filed || new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' }),
+            date_filed:
+                leaveRequest?.date_filed ||
+                new Date().toLocaleDateString('en-CA', {
+                    timeZone: 'Asia/Manila',
+                }),
             days_with_pay: leaveRequest?.days_with_pay || '',
             days_without_pay: leaveRequest?.days_without_pay || '',
             others_pay_remarks: leaveRequest?.others_pay_remarks || '',
@@ -83,7 +87,7 @@ export default function LeaveForm({
     const http = useHttp();
 
     const mounted = useSyncExternalStore(
-        () => () => { },
+        () => () => {},
         () => true,
         () => false,
     );
@@ -96,7 +100,9 @@ export default function LeaveForm({
             const urlsToDelete = sessionUploadedUrls.current;
 
             if (urlsToDelete.length > 0) {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                const csrfToken = document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute('content');
                 urlsToDelete.forEach((url) => {
                     fetch('/leave/delete-attachment', {
                         method: 'DELETE',
@@ -120,7 +126,9 @@ export default function LeaveForm({
             const urlsToDelete = sessionUploadedUrls.current;
 
             if (urlsToDelete.length > 0) {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                const csrfToken = document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute('content');
                 urlsToDelete.forEach((url) => {
                     fetch('/leave/delete-attachment', {
                         method: 'DELETE',
@@ -141,12 +149,12 @@ export default function LeaveForm({
             const route = LeaveRoutes.salary({ user: data.user_id });
             fetch(route.url, {
                 headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+                    Accept: 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
             })
-                .then(res => res.json())
-                .then(json => {
+                .then((res) => res.json())
+                .then((json) => {
                     if (json.salary !== undefined) {
                         setData('salary', json.salary || '');
                     }
@@ -159,11 +167,21 @@ export default function LeaveForm({
 
     const previousLeaveTypeId = useRef(data.leave_type_id);
     useEffect(() => {
-        if (data.leave_type_id && data.leave_type_id !== previousLeaveTypeId.current) {
-            const selectedLeaveType = leaveTypes?.find((lt: any) => lt.id.toString() === data.leave_type_id);
+        if (
+            data.leave_type_id &&
+            data.leave_type_id !== previousLeaveTypeId.current
+        ) {
+            const selectedLeaveType = leaveTypes?.find(
+                (lt: any) => lt.id.toString() === data.leave_type_id,
+            );
 
-            if (selectedLeaveType && selectedLeaveType.name.startsWith('Disapproved')) {
-                const disapprovedStatus = leaveStatuses?.find((ls: any) => ls.name === 'Disapproved');
+            if (
+                selectedLeaveType &&
+                selectedLeaveType.name.startsWith('Disapproved')
+            ) {
+                const disapprovedStatus = leaveStatuses?.find(
+                    (ls: any) => ls.name === 'Disapproved',
+                );
 
                 if (disapprovedStatus) {
                     setData('leave_status_id', disapprovedStatus.id.toString());
@@ -185,8 +203,8 @@ export default function LeaveForm({
         const year = data.start_date
             ? new Date(data.start_date).getFullYear()
             : data.date_filed
-                ? new Date(data.date_filed).getFullYear()
-                : new Date().getFullYear();
+              ? new Date(data.date_filed).getFullYear()
+              : new Date().getFullYear();
 
         const fetchKey = `${data.user_id}-${year}`;
 
@@ -223,10 +241,10 @@ export default function LeaveForm({
 
     const currentCredit = Array.isArray(userCredits)
         ? userCredits.find(
-            (c) =>
-                c.user_id?.toString() === data.user_id &&
-                c.leave_type_id?.toString() === data.leave_type_id,
-        )
+              (c) =>
+                  c.user_id?.toString() === data.user_id &&
+                  c.leave_type_id?.toString() === data.leave_type_id,
+          )
         : null;
 
     const available = useMemo(() => {
@@ -245,15 +263,26 @@ export default function LeaveForm({
             leaveStatuses &&
             leaveRequest.leave_type_id?.toString() === data.leave_type_id
         ) {
-            const approvedStatus = leaveStatuses.find((s: any) => s.name === 'Approved');
+            const approvedStatus = leaveStatuses.find(
+                (s: any) => s.name === 'Approved',
+            );
 
-            if (approvedStatus && leaveRequest.leave_status_id === approvedStatus.id) {
+            if (
+                approvedStatus &&
+                leaveRequest.leave_status_id === approvedStatus.id
+            ) {
                 bal += parseFloat(leaveRequest.days_with_pay) || 0;
             }
         }
 
         return bal;
-    }, [currentCredit, isEdit, leaveRequest, leaveStatuses, data.leave_type_id]);
+    }, [
+        currentCredit,
+        isEdit,
+        leaveRequest,
+        leaveStatuses,
+        data.leave_type_id,
+    ]);
     const requested = parseFloat(data.days_requested) || 0;
     const remaining = available - requested;
 
@@ -395,8 +424,8 @@ export default function LeaveForm({
         typeName.includes('sick') || typeName.includes('women')
             ? 'Specify Illness...'
             : typeName.includes('vacation')
-                ? 'Specify Location...'
-                : 'Specify details...';
+              ? 'Specify Location...'
+              : 'Specify details...';
 
     const hideSpecify = [
         'Monetization of Leave Credits',

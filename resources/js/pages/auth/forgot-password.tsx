@@ -22,17 +22,17 @@ export default function ForgotPassword() {
 
             <form onSubmit={submit} className="flex flex-col gap-6">
                 <div className="grid gap-6">
-                    <div className="grid animate-fade-up gap-2">
-                        <Label htmlFor="email">
-                            Registered Email Address
-                        </Label>
+                    <div className="animate-fade-up grid gap-2">
+                        <Label htmlFor="email">Registered Email Address</Label>
                         <div className="focus-glow rounded-md transition">
                             <Input
                                 id="email"
                                 type="email"
                                 name="email"
                                 value={data.email}
-                                onChange={(e) => setData('email', e.target.value)}
+                                onChange={(e) =>
+                                    setData('email', e.target.value)
+                                }
                                 required
                                 autoFocus
                                 tabIndex={1}
@@ -43,7 +43,12 @@ export default function ForgotPassword() {
                         <InputError message={errors.email} />
                     </div>
 
-                    <Button type="submit" disabled={processing} tabIndex={2} className="animate-fade-up-delay-2 mt-4">
+                    <Button
+                        type="submit"
+                        disabled={processing}
+                        tabIndex={2}
+                        className="animate-fade-up-delay-2 mt-4"
+                    >
                         {processing && <Spinner className="mr-2 h-4 w-4" />}
                         Confirm
                     </Button>
@@ -54,7 +59,10 @@ export default function ForgotPassword() {
 }
 
 ForgotPassword.layout = (page: React.ReactNode) => (
-    <AuthLayout title="Reset password" description="Enter your registered email address to receive a password reset link.">
+    <AuthLayout
+        title="Reset password"
+        description="Enter your registered email address to receive a password reset link."
+    >
         {page}
     </AuthLayout>
 );

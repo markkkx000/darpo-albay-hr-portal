@@ -1,9 +1,23 @@
-import { UploadCloud, FileText, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle, X } from 'lucide-react';
+import {
+    UploadCloud,
+    FileText,
+    Image as ImageIcon,
+    Loader2,
+    CheckCircle2,
+    AlertCircle,
+    X,
+} from 'lucide-react';
 import React, { useState, useRef } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Required } from './utils';
 
 interface LeaveStatus {
@@ -47,18 +61,18 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
 
     // Initialize local uploader state from existing attachment_urls (for edit mode)
     const [localFiles, setLocalFiles] = useState<LocalFile[]>(() => {
-        return (data.attachment_urls || [])
-            .filter(Boolean)
-            .map((url, idx) => {
-                const name = url.substring(url.lastIndexOf('/') + 1) || `attachment_${idx + 1}`;
+        return (data.attachment_urls || []).filter(Boolean).map((url, idx) => {
+            const name =
+                url.substring(url.lastIndexOf('/') + 1) ||
+                `attachment_${idx + 1}`;
 
-                return {
-                    id: `existing-${idx}-${Math.random().toString(36).substr(2, 4)}`,
-                    name: decodeURIComponent(name),
-                    status: 'success',
-                    url,
-                };
-            });
+            return {
+                id: `existing-${idx}-${Math.random().toString(36).substr(2, 4)}`,
+                name: decodeURIComponent(name),
+                status: 'success',
+                url,
+            };
+        });
     });
 
     const triggerFileSelect = () => {
@@ -91,7 +105,9 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
     };
 
     const uploadFiles = async (files: File[]) => {
-        const currentCount = localFiles.filter(f => f.status !== 'error').length;
+        const currentCount = localFiles.filter(
+            (f) => f.status !== 'error',
+        ).length;
 
         if (currentCount + files.length > 5) {
             toast.error('You can only upload a maximum of 5 attachment files.');
@@ -99,7 +115,9 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
             return;
         }
 
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        const csrfToken = document
+            .querySelector('meta[name="csrf-token"]')
+            ?.getAttribute('content');
 
         for (const file of files) {
             // Validate file size limit: 10MB
@@ -113,7 +131,9 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
             const fileExt = file.name.split('.').pop()?.toLowerCase();
 
             if (!fileExt || !allowedExtensions.includes(fileExt)) {
-                toast.error(`Unsupported format for "${file.name}". Please upload PDF, JPEG, PNG, or WebP.`);
+                toast.error(
+                    `Unsupported format for "${file.name}". Please upload PDF, JPEG, PNG, or WebP.`,
+                );
                 continue;
             }
 
@@ -125,7 +145,7 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
                 url: '',
             };
 
-            setLocalFiles(prev => [...prev, newLocalFile]);
+            setLocalFiles((prev) => [...prev, newLocalFile]);
 
             const formData = new FormData();
             formData.append('file', file);
@@ -135,7 +155,7 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken || '',
-                        'Accept': 'application/json',
+                        Accept: 'application/json',
                     },
                     body: formData,
                 });
@@ -151,8 +171,12 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
                 // Save in session tracking ref for rollback if form cancelled
                 sessionUploadedUrls.current.push(uploadedUrl);
 
-                setLocalFiles(prev =>
-                    prev.map(f => (f.id === tempId ? { ...f, status: 'success', url: uploadedUrl } : f))
+                setLocalFiles((prev) =>
+                    prev.map((f) =>
+                        f.id === tempId
+                            ? { ...f, status: 'success', url: uploadedUrl }
+                            : f,
+                    ),
                 );
 
                 // Update form state
@@ -161,13 +185,20 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
 
                     return {
                         ...prev,
-                        attachment_urls: [...currentUrls.filter(Boolean), uploadedUrl],
+                        attachment_urls: [
+                            ...currentUrls.filter(Boolean),
+                            uploadedUrl,
+                        ],
                     };
                 });
             } catch (err: any) {
                 const errorMsg = err.message || 'Upload failed';
-                setLocalFiles(prev =>
-                    prev.map(f => (f.id === tempId ? { ...f, status: 'error', error: errorMsg } : f))
+                setLocalFiles((prev) =>
+                    prev.map((f) =>
+                        f.id === tempId
+                            ? { ...f, status: 'error', error: errorMsg }
+                            : f,
+                    ),
                 );
                 toast.error(`Failed to upload "${file.name}": ${errorMsg}`);
             }
@@ -178,7 +209,9 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
         if (url) {
             // Check if it's a file uploaded in this session (needs immediate S3 deletion)
             if (sessionUploadedUrls.current.includes(url)) {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                const csrfToken = document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute('content');
 
                 try {
                     await fetch('/leave/delete-attachment', {
@@ -190,7 +223,8 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
                         body: JSON.stringify({ url }),
                     });
                     // Remove from session tracking ref
-                    sessionUploadedUrls.current = sessionUploadedUrls.current.filter(u => u !== url);
+                    sessionUploadedUrls.current =
+                        sessionUploadedUrls.current.filter((u) => u !== url);
                 } catch {
                     // Silently handle S3 deletion failures
                 }
@@ -202,22 +236,29 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
 
                 return {
                     ...prev,
-                    attachment_urls: currentUrls.filter((u: string) => u !== url),
+                    attachment_urls: currentUrls.filter(
+                        (u: string) => u !== url,
+                    ),
                 };
             });
         }
 
         // Remove from localFiles
-        setLocalFiles(prev => prev.filter(f => f.id !== id));
+        setLocalFiles((prev) => prev.filter((f) => f.id !== id));
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="space-y-2">
-                <Label>Status <Required /></Label>
-                <Select value={data.leave_status_id} onValueChange={(v) => setData('leave_status_id', v)}>
+                <Label>
+                    Status <Required />
+                </Label>
+                <Select
+                    value={data.leave_status_id}
+                    onValueChange={(v) => setData('leave_status_id', v)}
+                >
                     <SelectTrigger aria-invalid={!!errors.leave_status_id}>
-                        <div className="truncate text-left flex-1">
+                        <div className="flex-1 truncate text-left">
                             <SelectValue placeholder="Select Status" />
                         </div>
                     </SelectTrigger>
@@ -229,21 +270,27 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
                         ))}
                     </SelectContent>
                 </Select>
-                {errors.leave_status_id && <p className="text-sm text-destructive">{errors.leave_status_id}</p>}
+                {errors.leave_status_id && (
+                    <p className="text-sm text-destructive">
+                        {errors.leave_status_id}
+                    </p>
+                )}
             </div>
 
             <div className="space-y-3">
-                <Label className="text-sm font-semibold text-foreground/90">Attachments (Max 5 files)</Label>
-                
+                <Label className="text-sm font-semibold text-foreground/90">
+                    Attachments (Max 5 files)
+                </Label>
+
                 {/* Drag and Drop Zone */}
                 <div
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     onClick={triggerFileSelect}
-                    className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition duration-300 relative select-none ${
+                    className={`relative cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition duration-300 select-none ${
                         isDragging
-                            ? 'border-primary bg-primary/5 scale-[1.01] shadow-md'
+                            ? 'scale-[1.01] border-primary bg-primary/5 shadow-md'
                             : 'border-border/60 hover:border-primary/50 hover:bg-muted/10'
                     }`}
                 >
@@ -256,11 +303,14 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
                         className="hidden"
                     />
                     <div className="flex flex-col items-center justify-center gap-2">
-                        <div className="p-3 bg-primary/5 text-primary rounded-full animate-pulse">
+                        <div className="animate-pulse rounded-full bg-primary/5 p-3 text-primary">
                             <UploadCloud className="h-6 w-6" />
                         </div>
                         <p className="text-sm font-medium text-foreground">
-                            Drag & drop files here, or <span className="text-primary hover:underline">browse</span>
+                            Drag & drop files here, or{' '}
+                            <span className="text-primary hover:underline">
+                                browse
+                            </span>
                         </p>
                         <p className="text-xs text-muted-foreground/80">
                             Supports PDF, JPEG, PNG, WebP (Max 10MB each)
@@ -270,17 +320,21 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
 
                 {/* Uploads List */}
                 {localFiles.length > 0 && (
-                    <div className="mt-4 space-y-2 max-h-[220px] overflow-y-auto pr-1">
+                    <div className="mt-4 max-h-[220px] space-y-2 overflow-y-auto pr-1">
                         {localFiles.map((file) => {
-                            const isPdf = file.name.toLowerCase().endsWith('.pdf');
+                            const isPdf = file.name
+                                .toLowerCase()
+                                .endsWith('.pdf');
 
                             return (
                                 <div
                                     key={file.id}
-                                    className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-card/98 shadow-xs animate-in fade-in slide-in-from-top-1 duration-200"
+                                    className="flex animate-in items-center justify-between rounded-lg border border-border/50 bg-card/98 p-3 shadow-xs duration-200 fade-in slide-in-from-top-1"
                                 >
                                     <div className="flex items-center gap-3 overflow-hidden">
-                                        <div className={`p-2 rounded-md ${isPdf ? 'bg-red-500/10 text-red-500' : 'bg-blue-500/10 text-blue-500'}`}>
+                                        <div
+                                            className={`rounded-md p-2 ${isPdf ? 'bg-red-500/10 text-red-500' : 'bg-blue-500/10 text-blue-500'}`}
+                                        >
                                             {isPdf ? (
                                                 <FileText className="h-4 w-4" />
                                             ) : (
@@ -288,12 +342,16 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
                                             )}
                                         </div>
                                         <div className="overflow-hidden">
-                                            <p className="text-sm font-medium truncate max-w-[200px] text-foreground" title={file.name}>
+                                            <p
+                                                className="max-w-[200px] truncate text-sm font-medium text-foreground"
+                                                title={file.name}
+                                            >
                                                 {file.name}
                                             </p>
-                                            <div className="flex items-center gap-1.5 mt-0.5">
-                                                {file.status === 'uploading' && (
-                                                    <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+                                            <div className="mt-0.5 flex items-center gap-1.5">
+                                                {file.status ===
+                                                    'uploading' && (
+                                                    <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
                                                         <Loader2 className="h-3 w-3 animate-spin text-primary" />
                                                         Uploading...
                                                     </span>
@@ -303,14 +361,14 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
                                                         href={file.url}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="text-[11px] text-primary hover:underline flex items-center gap-0.5"
+                                                        className="flex items-center gap-0.5 text-[11px] text-primary hover:underline"
                                                     >
                                                         <CheckCircle2 className="h-3 w-3 text-emerald-500" />
                                                         View file
                                                     </a>
                                                 )}
                                                 {file.status === 'error' && (
-                                                    <span className="text-[11px] text-destructive flex items-center gap-0.5">
+                                                    <span className="flex items-center gap-0.5 text-[11px] text-destructive">
                                                         <AlertCircle className="h-3 w-3" />
                                                         {file.error || 'Failed'}
                                                     </span>
@@ -323,8 +381,10 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
                                         type="button"
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() => handleRemoveFile(file.id, file.url)}
-                                        className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/5 rounded-full"
+                                        onClick={() =>
+                                            handleRemoveFile(file.id, file.url)
+                                        }
+                                        className="h-8 w-8 rounded-full text-muted-foreground hover:bg-destructive/5 hover:text-destructive"
                                     >
                                         <X className="h-4 w-4" />
                                     </Button>
@@ -334,7 +394,7 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
                     </div>
                 )}
                 {errors.attachment_urls && (
-                    <p className="text-sm text-destructive animate-in fade-in duration-200">
+                    <p className="animate-in text-sm text-destructive duration-200 fade-in">
                         {errors.attachment_urls}
                     </p>
                 )}

@@ -11,6 +11,5 @@ declare module '@inertiajs/core' {
             };
             [key: string]: unknown;
         };
-
     }
 }

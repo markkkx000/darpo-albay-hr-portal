@@ -9,12 +9,19 @@ export function cn(...inputs: ClassValue[]) {
 
 export function toUrl(url: InertiaLinkProps['href']): string {
     if (!url) {
-return '';
-}
+        return '';
+    }
 
     return typeof url === 'string' ? url : url.url;
 }
-export function formatDate(date: string | Date, options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' }) {
+export function formatDate(
+    date: string | Date,
+    options: Intl.DateTimeFormatOptions = {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    },
+) {
     const d = typeof date === 'string' ? new Date(date) : date;
 
     return new Intl.DateTimeFormat('en-US', options).format(d);

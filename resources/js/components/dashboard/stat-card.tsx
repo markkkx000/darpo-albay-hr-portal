@@ -26,21 +26,32 @@ export function StatCard({
     const isLoading = value === '--';
 
     return (
-        <div className="matte-card elev-2 p-5 flex flex-col gap-2 relative overflow-hidden">
+        <div className="matte-card elev-2 relative flex flex-col gap-2 overflow-hidden p-5">
             {/* Subtle accent line on the left edge */}
-            <div 
-                className="absolute left-0 top-0 bottom-0 w-1 opacity-80" 
-                style={{ backgroundColor: accentColor }} 
+            <div
+                className="absolute top-0 bottom-0 left-0 w-1 opacity-80"
+                style={{ backgroundColor: accentColor }}
             />
-            
-            <div className={cn("t-caption pl-1 flex items-center gap-2", titleClasses)}>
-                <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: accentColor }} />
+
+            <div
+                className={cn(
+                    't-caption flex items-center gap-2 pl-1',
+                    titleClasses,
+                )}
+            >
+                <div
+                    className="h-1.5 w-1.5 rounded-full"
+                    style={{ backgroundColor: accentColor }}
+                />
                 {title}
             </div>
-            
-            <div className={cn("pl-1 mt-1", valueClasses)}>
+
+            <div className={cn('mt-1 pl-1', valueClasses)}>
                 {isLoading ? (
-                    <div className="h-8 w-16 animate-pulse rounded bg-muted/20" aria-hidden="true" />
+                    <div
+                        className="h-8 w-16 animate-pulse rounded bg-muted/20"
+                        aria-hidden="true"
+                    />
                 ) : (
                     <div className="text-3xl font-bold tracking-tight text-foreground">
                         {value}
@@ -49,14 +60,22 @@ export function StatCard({
             </div>
 
             {(subtitle || children) && (
-                <div className="pl-1 mt-2 flex items-center justify-between">
+                <div className="mt-2 flex items-center justify-between pl-1">
                     {subtitle && (
-                        <div className={cn("text-xs text-muted-foreground", subtitleClasses)}>
+                        <div
+                            className={cn(
+                                'text-xs text-muted-foreground',
+                                subtitleClasses,
+                            )}
+                        >
                             {subtitle}
                         </div>
                     )}
                     {children && (
-                        <div className="text-xs font-semibold" style={{ color: accentColor }}>
+                        <div
+                            className="text-xs font-semibold"
+                            style={{ color: accentColor }}
+                        >
                             {children}
                         </div>
                     )}

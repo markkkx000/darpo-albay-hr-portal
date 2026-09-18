@@ -129,7 +129,9 @@ export default function LeaveShow({ leaveRequest }: Props) {
             confirmText: 'Archive',
             isDestructive: true,
             onConfirm: () => {
-                router.delete(LeaveRoutes.destroy({ leaveRequest: leaveRequest.id }).url);
+                router.delete(
+                    LeaveRoutes.destroy({ leaveRequest: leaveRequest.id }).url,
+                );
             },
         });
         setConfirmOpen(true);
@@ -142,7 +144,9 @@ export default function LeaveShow({ leaveRequest }: Props) {
             confirmText: 'Restore',
             isDestructive: false,
             onConfirm: () => {
-                router.post(LeaveRoutes.restore({ leaveRequest: leaveRequest.id }).url);
+                router.post(
+                    LeaveRoutes.restore({ leaveRequest: leaveRequest.id }).url,
+                );
             },
         });
         setConfirmOpen(true);
@@ -161,18 +165,30 @@ export default function LeaveShow({ leaveRequest }: Props) {
                     actions={
                         <div className="flex gap-2">
                             {canEncode && !leaveRequest.deleted_at && (
-                                <Button variant="destructive" className="bg-destructive/10 text-destructive hover:bg-destructive/20 shadow-none" onClick={handleArchive}>
-                                    <Archive className="h-4 w-4 mr-2" />
+                                <Button
+                                    variant="destructive"
+                                    className="bg-destructive/10 text-destructive shadow-none hover:bg-destructive/20"
+                                    onClick={handleArchive}
+                                >
+                                    <Archive className="mr-2 h-4 w-4" />
                                     Archive
                                 </Button>
                             )}
                             {canEncode && leaveRequest.deleted_at && (
-                                <Button variant="secondary" className="bg-green-500/10 text-green-600 hover:bg-green-500/20 shadow-none" onClick={handleRestore}>
-                                    <RotateCcw className="h-4 w-4 mr-2" />
+                                <Button
+                                    variant="secondary"
+                                    className="bg-green-500/10 text-green-600 shadow-none hover:bg-green-500/20"
+                                    onClick={handleRestore}
+                                >
+                                    <RotateCcw className="mr-2 h-4 w-4" />
                                     Restore
                                 </Button>
                             )}
-                            <Button variant="ghost" className="btn-ghost-specular" asChild>
+                            <Button
+                                variant="ghost"
+                                className="btn-ghost-specular"
+                                asChild
+                            >
                                 <Link href={LeaveRoutes.index().url}>
                                     <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
                                     Back to Dashboard
@@ -183,11 +199,14 @@ export default function LeaveShow({ leaveRequest }: Props) {
                 />
 
                 {leaveRequest.deleted_at && (
-                    <div className="relative z-10 mb-6 rounded-xl border border-destructive/20 bg-destructive/5 p-4 flex items-center gap-3 text-destructive">
+                    <div className="relative z-10 mb-6 flex items-center gap-3 rounded-xl border border-destructive/20 bg-destructive/5 p-4 text-destructive">
                         <Archive className="h-5 w-5" />
                         <div>
                             <h3 className="font-bold">Archived Record</h3>
-                            <p className="text-sm opacity-80">This leave request has been archived and is no longer active.</p>
+                            <p className="text-sm opacity-80">
+                                This leave request has been archived and is no
+                                longer active.
+                            </p>
                         </div>
                     </div>
                 )}
@@ -202,9 +221,7 @@ export default function LeaveShow({ leaveRequest }: Props) {
                             </h2>
                             <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
                                 <div className="col-span-2 space-y-1">
-                                    <p className="t-caption">
-                                        Type of Leave
-                                    </p>
+                                    <p className="t-caption">Type of Leave</p>
                                     <div className="flex items-center space-x-2">
                                         <div
                                             className="h-3 w-3 rounded-full"
@@ -220,9 +237,7 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                     </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="t-caption">
-                                        Status
-                                    </p>
+                                    <p className="t-caption">Status</p>
                                     <div className="flex">
                                         <span
                                             className={cn(
@@ -233,12 +248,14 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                                     ? 'status-badge-permanent'
                                                     : leaveRequest.leave_status?.name
                                                             ?.toLowerCase()
-                                                            .includes('disapprove') ||
-                                                      leaveRequest.leave_status?.name
+                                                            .includes(
+                                                                'disapprove',
+                                                            ) ||
+                                                        leaveRequest.leave_status?.name
                                                             ?.toLowerCase()
                                                             .includes('cancel')
-                                                    ? 'status-badge-danger'
-                                                    : 'status-badge-warning',
+                                                      ? 'status-badge-danger'
+                                                      : 'status-badge-warning',
                                             )}
                                         >
                                             {leaveRequest.leave_status?.name}
@@ -246,23 +263,25 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                     </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="t-caption">
-                                        Pay Status
-                                    </p>
+                                    <p className="t-caption">Pay Status</p>
                                     <div className="flex flex-col gap-1.5">
-                                         <span
+                                        <span
                                             className={cn(
                                                 'inline-flex w-fit items-center rounded-full px-3 py-1 text-xs font-bold tracking-tight shadow-sm',
-                                                leaveRequest.pay_status === 'with_pay'
+                                                leaveRequest.pay_status ===
+                                                    'with_pay'
                                                     ? 'status-badge-permanent'
-                                                    : leaveRequest.pay_status === 'partial'
+                                                    : leaveRequest.pay_status ===
+                                                        'partial'
                                                       ? 'status-badge-contractual'
                                                       : 'status-badge-danger',
                                             )}
                                         >
-                                            {leaveRequest.pay_status === 'with_pay'
+                                            {leaveRequest.pay_status ===
+                                            'with_pay'
                                                 ? 'Full Pay'
-                                                : leaveRequest.pay_status === 'partial'
+                                                : leaveRequest.pay_status ===
+                                                    'partial'
                                                   ? 'Partial Pay'
                                                   : 'Without Pay'}
                                         </span>
@@ -272,7 +291,7 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                             parseFloat(
                                                 leaveRequest.days_without_pay,
                                             ) > 0) && (
-                                            <div className="flex gap-2 text-[10px] font-bold tabular-nums text-muted-foreground uppercase tracking-wider">
+                                            <div className="flex gap-2 text-[10px] font-bold tracking-wider text-muted-foreground uppercase tabular-nums">
                                                 {parseFloat(
                                                     leaveRequest.days_with_pay,
                                                 ) > 0 && (
@@ -299,9 +318,7 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                 </div>
 
                                 <div className="space-y-1">
-                                    <p className="t-caption">
-                                        Properly Filed
-                                    </p>
+                                    <p className="t-caption">Properly Filed</p>
                                     <span
                                         className={cn(
                                             'inline-flex items-center rounded-full px-3 py-1 text-xs shadow-sm',
@@ -317,34 +334,27 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                 </div>
 
                                 <div className="space-y-1">
-                                    <p className="t-caption">
-                                        Salary
-                                    </p>
-                                    <p className="font-semibold tabular-nums text-foreground">
+                                    <p className="t-caption">Salary</p>
+                                    <p className="font-semibold text-foreground tabular-nums">
                                         {formatCurrency(leaveRequest.salary)}
                                     </p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="t-caption">
-                                        Date Filed
-                                    </p>
-                                    <p className="font-semibold tabular-nums text-foreground">
+                                    <p className="t-caption">Date Filed</p>
+                                    <p className="font-semibold text-foreground tabular-nums">
                                         {formatDate(leaveRequest.date_filed)}
                                     </p>
                                 </div>
                                 <div className="col-span-2 space-y-1">
-                                    <p className="t-caption">
-                                        Details Type
-                                    </p>
+                                    <p className="t-caption">Details Type</p>
                                     <p className="font-bold text-foreground">
-                                        {leaveRequest.leave_detail_type || 'N/A'}
+                                        {leaveRequest.leave_detail_type ||
+                                            'N/A'}
                                     </p>
                                 </div>
 
                                 <div className="space-y-1">
-                                    <p className="t-caption">
-                                        Commutation
-                                    </p>
+                                    <p className="t-caption">Commutation</p>
                                     <p className="font-bold text-foreground">
                                         {leaveRequest.commutation_requested
                                             ? 'Requested'
@@ -356,7 +366,7 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                     <p className="t-caption">
                                         Remarks / Specifics
                                     </p>
-                                    <p className="rounded-xl bg-muted/30 p-4 text-sm italic leading-relaxed text-foreground/80">
+                                    <p className="rounded-xl bg-muted/30 p-4 text-sm leading-relaxed text-foreground/80 italic">
                                         {leaveRequest.leave_detail_remarks ||
                                             leaveRequest.leave_details ||
                                             'No additional remarks provided.'}
@@ -372,25 +382,22 @@ export default function LeaveShow({ leaveRequest }: Props) {
                             </h2>
                             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                                 <div className="space-y-1">
-                                    <p className="t-caption">
-                                        Duration
-                                    </p>
+                                    <p className="t-caption">Duration</p>
                                     <p className="t-title tabular-nums">
                                         {leaveRequest.days_requested}{' '}
-                                        {Number(leaveRequest.days_requested) === 1
+                                        {Number(leaveRequest.days_requested) ===
+                                        1
                                             ? 'Day'
                                             : 'Days'}
                                         {isHalfDay && (
-                                            <span className="ml-2 t-headline font-normal text-muted-foreground">
+                                            <span className="t-headline ml-2 font-normal text-muted-foreground">
                                                 (Half Day)
                                             </span>
                                         )}
                                     </p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="t-caption">
-                                        Dates Requested
-                                    </p>
+                                    <p className="t-caption">Dates Requested</p>
                                     <div className="font-semibold text-foreground">
                                         {leaveRequest.specific_dates &&
                                         leaveRequest.specific_dates.length >
@@ -409,7 +416,9 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                                 {formatDate(
                                                     leaveRequest.start_date,
                                                 )}{' '}
-                                                <span className="mx-1 text-muted-foreground">to</span>{' '}
+                                                <span className="mx-1 text-muted-foreground">
+                                                    to
+                                                </span>{' '}
                                                 {formatDate(
                                                     leaveRequest.end_date,
                                                 )}
@@ -427,10 +436,10 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                                 <CheckCircle className="h-4 w-4" />
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="t-headline tabular-nums leading-none">
+                                                <span className="t-headline leading-none tabular-nums">
                                                     {leaveRequest.days_with_pay}
                                                 </span>
-                                                <span className="t-caption lowercase tracking-normal">
+                                                <span className="t-caption tracking-normal lowercase">
                                                     Days with pay
                                                 </span>
                                             </div>
@@ -440,10 +449,12 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                                 <Clock className="h-4 w-4" />
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="t-headline tabular-nums leading-none">
-                                                    {leaveRequest.days_without_pay}
+                                                <span className="t-headline leading-none tabular-nums">
+                                                    {
+                                                        leaveRequest.days_without_pay
+                                                    }
                                                 </span>
-                                                <span className="t-caption lowercase tracking-normal">
+                                                <span className="t-caption tracking-normal lowercase">
                                                     Days without pay
                                                 </span>
                                             </div>
@@ -452,9 +463,11 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                             <div className="flex items-center gap-3 border-l pl-8">
                                                 <div className="flex flex-col">
                                                     <span className="text-sm font-semibold text-foreground">
-                                                        {leaveRequest.others_pay_remarks}
+                                                        {
+                                                            leaveRequest.others_pay_remarks
+                                                        }
                                                     </span>
-                                                    <span className="t-caption lowercase tracking-normal">
+                                                    <span className="t-caption tracking-normal lowercase">
                                                         Other Remarks
                                                     </span>
                                                 </div>
@@ -483,7 +496,7 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                     <CheckCircle className="mr-2 h-5 w-5 text-pink-500" />
                                     Maternity Allocation (CS Form 6a)
                                 </h2>
-                                <div className="rounded-xl bg-pink-500/5 p-4 italic text-sm leading-relaxed text-muted-foreground border border-pink-500/10">
+                                <div className="rounded-xl border border-pink-500/10 bg-pink-500/5 p-4 text-sm leading-relaxed text-muted-foreground italic">
                                     {leaveRequest.maternity_allocation_details}
                                 </div>
                             </div>
@@ -492,8 +505,8 @@ export default function LeaveShow({ leaveRequest }: Props) {
 
                     {/* Sidebar */}
                     <div className="space-y-6">
-                        <div className="matte-card elev-2 p-0 overflow-hidden">
-                            <div className="bg-primary/5 p-4 border-b border-primary/10">
+                        <div className="matte-card elev-2 overflow-hidden p-0">
+                            <div className="border-b border-primary/10 bg-primary/5 p-4">
                                 <h2 className="t-caption flex items-center text-primary">
                                     <User className="mr-2 h-4 w-4" />
                                     Employee Profile
@@ -501,19 +514,22 @@ export default function LeaveShow({ leaveRequest }: Props) {
                             </div>
                             <div className="p-6">
                                 <div className="flex items-center space-x-4">
-                                    <div className="flex h-14 w-14 overflow-hidden items-center justify-center rounded-full shrink-0">
-                                        <img 
-                                            src={leaveRequest.user?.avatar || '/img/pfp_placeholder.png'} 
+                                    <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full">
+                                        <img
+                                            src={
+                                                leaveRequest.user?.avatar ||
+                                                '/img/pfp_placeholder.png'
+                                            }
                                             alt={`${leaveRequest.user?.first_name} ${leaveRequest.user?.last_name}`}
                                             className="h-full w-full object-cover"
                                         />
                                     </div>
                                     <div className="flex flex-col">
-                                        <p className="text-lg font-bold text-foreground leading-tight">
+                                        <p className="text-lg leading-tight font-bold text-foreground">
                                             {leaveRequest.user?.first_name}{' '}
                                             {leaveRequest.user?.last_name}
                                         </p>
-                                        <p className="t-caption lowercase tracking-normal text-muted-foreground mt-1">
+                                        <p className="t-caption mt-1 tracking-normal text-muted-foreground lowercase">
                                             {leaveRequest.user?.employee_number}
                                         </p>
                                     </div>
@@ -528,28 +544,22 @@ export default function LeaveShow({ leaveRequest }: Props) {
                             </h2>
                             <div className="space-y-4">
                                 <div className="space-y-1">
-                                    <p className="t-caption">
-                                        Filed On
-                                    </p>
-                                    <p className="text-sm font-semibold tabular-nums text-foreground">
+                                    <p className="t-caption">Filed On</p>
+                                    <p className="text-sm font-semibold text-foreground tabular-nums">
                                         {formatDate(leaveRequest.created_at)}
                                     </p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="t-caption">
-                                        Received On
-                                    </p>
-                                    <p className="text-sm font-semibold tabular-nums text-foreground">
+                                    <p className="t-caption">Received On</p>
+                                    <p className="text-sm font-semibold text-foreground tabular-nums">
                                         {formatDate(
                                             leaveRequest.date_received,
                                         ) || 'Not yet received'}
                                     </p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="t-caption">
-                                        Approved On
-                                    </p>
-                                    <p className="text-sm font-semibold tabular-nums text-foreground">
+                                    <p className="t-caption">Approved On</p>
+                                    <p className="text-sm font-semibold text-foreground tabular-nums">
                                         {formatDate(
                                             leaveRequest.date_approved,
                                         ) || 'Pending approval'}
@@ -565,18 +575,14 @@ export default function LeaveShow({ leaveRequest }: Props) {
                             </h2>
                             <div className="space-y-4">
                                 <div className="space-y-1">
-                                    <p className="t-caption">
-                                        Encoded By
-                                    </p>
+                                    <p className="t-caption">Encoded By</p>
                                     <p className="text-sm font-semibold text-foreground">
                                         {leaveRequest.created_by?.first_name}{' '}
                                         {leaveRequest.created_by?.last_name}
                                     </p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="t-caption">
-                                        Approved By
-                                    </p>
+                                    <p className="t-caption">Approved By</p>
                                     <p className="text-sm font-semibold text-foreground">
                                         {leaveRequest.approved_by
                                             ? `${leaveRequest.approved_by.first_name} ${leaveRequest.approved_by.last_name}`
@@ -592,44 +598,44 @@ export default function LeaveShow({ leaveRequest }: Props) {
                             leaveRequest.attachment_urls.some(
                                 (url: string) => !!url,
                             ) && (
-                                    <div className="matte-card elev-2 p-0 overflow-hidden">
-                                        <div className="bg-muted/30 p-4 border-b border-border/50">
-                                            <h2 className="t-caption flex items-center">
-                                                <FileText className="mr-2 h-4 w-4 text-primary" />
-                                                Attachment/s
-                                            </h2>
-                                        </div>
-                                        <div className="p-4 space-y-2">
-                                            {leaveRequest.attachment_urls.map(
-                                                (url: string, i: number) =>
-                                                    url && (
-                                                        <Button
-                                                            key={i}
-                                                            variant="secondary"
-                                                            className="w-full justify-start overflow-hidden text-ellipsis whitespace-nowrap btn-ghost-specular rounded-xl h-11"
-                                                            asChild
-                                                            title={url}
-                                                        >
-                                                            <a
-                                                                href={url}
-                                                                target="_blank"
-                                                                rel="noreferrer"
-                                                            >
-                                                                <FileText className="mr-2 h-4 w-4 shrink-0 text-primary" />
-                                                                <span className="truncate font-semibold">
-                                                                    View Document{' '}
-                                                                    {leaveRequest
-                                                                        .attachment_urls
-                                                                        .length > 1
-                                                                        ? i + 1
-                                                                        : ''}
-                                                                </span>
-                                                            </a>
-                                                        </Button>
-                                                    ),
-                                            )}
-                                        </div>
+                                <div className="matte-card elev-2 overflow-hidden p-0">
+                                    <div className="border-b border-border/50 bg-muted/30 p-4">
+                                        <h2 className="t-caption flex items-center">
+                                            <FileText className="mr-2 h-4 w-4 text-primary" />
+                                            Attachment/s
+                                        </h2>
                                     </div>
+                                    <div className="space-y-2 p-4">
+                                        {leaveRequest.attachment_urls.map(
+                                            (url: string, i: number) =>
+                                                url && (
+                                                    <Button
+                                                        key={i}
+                                                        variant="secondary"
+                                                        className="btn-ghost-specular h-11 w-full justify-start overflow-hidden rounded-xl text-ellipsis whitespace-nowrap"
+                                                        asChild
+                                                        title={url}
+                                                    >
+                                                        <a
+                                                            href={url}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                        >
+                                                            <FileText className="mr-2 h-4 w-4 shrink-0 text-primary" />
+                                                            <span className="truncate font-semibold">
+                                                                View Document{' '}
+                                                                {leaveRequest
+                                                                    .attachment_urls
+                                                                    .length > 1
+                                                                    ? i + 1
+                                                                    : ''}
+                                                            </span>
+                                                        </a>
+                                                    </Button>
+                                                ),
+                                        )}
+                                    </div>
+                                </div>
                             )}
 
                         {leaveRequest.has_attachments &&
@@ -639,7 +645,7 @@ export default function LeaveShow({ leaveRequest }: Props) {
                                         <CheckCircle className="mr-2 h-4 w-4" />
                                         Supporting Docs
                                     </h2>
-                                    <ul className="space-y-3 mt-4">
+                                    <ul className="mt-4 space-y-3">
                                         {leaveRequest.supporting_documents.map(
                                             (doc: string) => (
                                                 <li
@@ -659,7 +665,7 @@ export default function LeaveShow({ leaveRequest }: Props) {
                     </div>
                 </div>
             </div>
-            
+
             <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
                 <DialogContent className="matte-card !fixed max-w-md rounded-2xl border border-border-2 p-6">
                     <DialogHeader>

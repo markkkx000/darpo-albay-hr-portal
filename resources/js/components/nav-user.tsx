@@ -31,7 +31,7 @@ export function NavUser() {
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton
                             size="lg"
-                            className="group text-sidebar-accent-foreground hover:item-hover-gradient data-[state=open]:item-hover-gradient data-[state=open]:text-black transition spring-press"
+                            className="group spring-press text-sidebar-accent-foreground transition hover:item-hover-gradient data-[state=open]:item-hover-gradient data-[state=open]:text-black"
                             data-test="sidebar-menu-button"
                         >
                             <UserInfo user={auth.user} />

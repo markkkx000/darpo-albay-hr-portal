@@ -49,8 +49,7 @@ const mainNavItems: NavItem[] = [
 
 const rightNavItems: NavItem[] = [];
 
-const activeItemStyles =
-    'bg-surface-2 text-foreground font-semibold';
+const activeItemStyles = 'bg-surface-2 text-foreground font-semibold';
 
 export function AppHeader({ breadcrumbs = [] }: Props) {
     const page = usePage();
@@ -59,7 +58,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
     const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
 
     return (
-        <header className="sticky top-0 z-40 w-full bg-background/98 border-b border-border-1">
+        <header className="sticky top-0 z-40 w-full border-b border-border-1 bg-background/98">
             <div className="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
                 {/* Mobile Menu */}
                 <div className="lg:hidden">
@@ -75,7 +74,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                         </SheetTrigger>
                         <SheetContent
                             side="left"
-                            className="flex h-full w-64 flex-col items-stretch justify-between bg-sidebar matte-card"
+                            className="matte-card flex h-full w-64 flex-col items-stretch justify-between bg-sidebar"
                         >
                             <SheetTitle className="sr-only">
                                 Navigation menu
@@ -83,7 +82,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                             <SheetHeader className="flex justify-start text-left">
                                 <AppLogoIcon className="h-6 w-6 fill-current text-foreground" />
                             </SheetHeader>
-                            <div className="flex h-full flex-1 flex-col space-y-4 p-4 overflow-y-auto">
+                            <div className="flex h-full flex-1 flex-col space-y-4 overflow-y-auto p-4">
                                 <div className="flex h-full flex-col justify-between text-sm">
                                     <div className="flex flex-col space-y-4">
                                         {mainNavItems.map((item) => (
@@ -147,7 +146,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                                 item.href,
                                                 activeItemStyles,
                                             ),
-                                            'h-9 cursor-pointer px-3 rounded-full hover:item-hover-gradient hover:text-black',
+                                            'h-9 cursor-pointer rounded-full px-3 hover:item-hover-gradient hover:text-black',
                                         )}
                                     >
                                         {item.icon && (
@@ -200,24 +199,33 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                 <Avatar className="size-8 overflow-hidden rounded-full border border-primary/10">
                                     <AvatarImage
                                         src={auth.user?.avatar}
-                                        alt={auth.user ? `${auth.user.first_name} ${auth.user.last_name}` : ''}
+                                        alt={
+                                            auth.user
+                                                ? `${auth.user.first_name} ${auth.user.last_name}`
+                                                : ''
+                                        }
                                     />
-                                    <AvatarFallback className="rounded-full bg-primary/10 text-primary font-bold">
-                                        {getInitials(auth.user ? `${auth.user.first_name} ${auth.user.last_name}` : '')}
+                                    <AvatarFallback className="rounded-full bg-primary/10 font-bold text-primary">
+                                        {getInitials(
+                                            auth.user
+                                                ? `${auth.user.first_name} ${auth.user.last_name}`
+                                                : '',
+                                        )}
                                     </AvatarFallback>
                                 </Avatar>
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56 matte-card elev-3" align="end">
-                            {auth.user && (
-                                <UserMenuContent user={auth.user} />
-                            )}
+                        <DropdownMenuContent
+                            className="matte-card elev-3 w-56"
+                            align="end"
+                        >
+                            {auth.user && <UserMenuContent user={auth.user} />}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
             </div>
             {breadcrumbs.length > 1 && (
-                <div className="flex w-full matte-card h-11 border-t border-border/10">
+                <div className="matte-card flex h-11 w-full border-t border-border/10">
                     <div className="mx-auto flex h-full w-full items-center justify-start px-4 text-muted-foreground md:max-w-7xl">
                         <Breadcrumbs breadcrumbs={breadcrumbs} />
                     </div>

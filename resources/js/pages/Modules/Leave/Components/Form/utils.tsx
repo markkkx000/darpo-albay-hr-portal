@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Required = () => <span className="text-destructive ml-1">*</span>;
+export const Required = () => <span className="ml-1 text-destructive">*</span>;
 
 export const parseLocalDate = (dateString: string): Date | null => {
     if (!dateString) {

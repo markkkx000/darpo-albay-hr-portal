@@ -114,23 +114,30 @@ export default function LeaveSettings({
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    setActiveSection(entry.target.id);
-                }
-            });
-        }, {
-            root: scrollContainerRef.current,
-            rootMargin: '-10px 0px -80% 0px'
-        });
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setActiveSection(entry.target.id);
+                    }
+                });
+            },
+            {
+                root: scrollContainerRef.current,
+                rootMargin: '-10px 0px -80% 0px',
+            },
+        );
 
         const container = scrollContainerRef.current;
 
         if (container) {
-            container.querySelectorAll('section[id]').forEach(section => observer.observe(section));
+            container
+                .querySelectorAll('section[id]')
+                .forEach((section) => observer.observe(section));
         } else {
-            document.querySelectorAll('section[id]').forEach(section => observer.observe(section));
+            document
+                .querySelectorAll('section[id]')
+                .forEach((section) => observer.observe(section));
         }
 
         return () => observer.disconnect();
@@ -198,8 +205,8 @@ export default function LeaveSettings({
                     typeIsCumulative === 'true'
                         ? true
                         : typeIsCumulative === 'false'
-                            ? false
-                            : null,
+                          ? false
+                          : null,
                 description: typeDescription,
                 color_code: typeColor,
                 is_active: true,
@@ -226,8 +233,8 @@ export default function LeaveSettings({
         e.preventDefault();
 
         if (!editingType) {
-return;
-}
+            return;
+        }
 
         router.put(
             types_update(editingType.id).url,
@@ -357,31 +364,27 @@ return;
         setConfirmOpen(true);
     };
 
-    const activeLeaveTypes = leaveTypes.filter(t => t.is_active);
-    const disabledLeaveTypes = leaveTypes.filter(t => !t.is_active);
+    const activeLeaveTypes = leaveTypes.filter((t) => t.is_active);
+    const disabledLeaveTypes = leaveTypes.filter((t) => !t.is_active);
 
     const renderLeaveTypeCard = (t: LeaveType) => (
         <div
             key={t.id}
             className={cn(
-                'matte-card elev-1 flex items-center justify-between py-2 px-3',
-                !t.is_active &&
-                'bg-muted opacity-50 grayscale',
+                'matte-card elev-1 flex items-center justify-between px-3 py-2',
+                !t.is_active && 'bg-muted opacity-50 grayscale',
             )}
         >
             <div className="flex items-center space-x-3">
                 <div
                     className="h-4 w-4 shrink-0 rounded-full"
                     style={{
-                        backgroundColor:
-                            t.color_code,
+                        backgroundColor: t.color_code,
                     }}
                 ></div>
                 <div>
                     <div className="flex items-center gap-2">
-                        <span className="block font-normal">
-                            {t.name}
-                        </span>
+                        <span className="block font-normal">{t.name}</span>
                         {t.abbreviation && (
                             <Badge
                                 variant="outline"
@@ -390,33 +393,30 @@ return;
                                 {t.abbreviation}
                             </Badge>
                         )}
-                        {t.is_cumulative ===
-                            true && (
-                                <Badge
-                                    variant="secondary"
-                                    className="h-4 border-none bg-primary/10 px-1 py-0 text-[9px] tracking-tighter text-primary uppercase"
-                                >
-                                    Cumulative
-                                </Badge>
-                            )}
-                        {t.is_cumulative ===
-                            false && (
-                                <Badge
-                                    variant="outline"
-                                    className="h-4 border-muted-foreground/30 px-1 py-0 text-[9px] tracking-tighter text-muted-foreground uppercase"
-                                >
-                                    Non-Cumulative
-                                </Badge>
-                            )}
-                        {t.is_cumulative ===
-                            null && (
-                                <Badge
-                                    variant="outline"
-                                    className="h-4 border-dashed border-muted-foreground/20 px-1 py-0 text-[9px] tracking-tighter text-muted-foreground/50 uppercase italic"
-                                >
-                                    N/A
-                                </Badge>
-                            )}
+                        {t.is_cumulative === true && (
+                            <Badge
+                                variant="secondary"
+                                className="h-4 border-none bg-primary/10 px-1 py-0 text-[9px] tracking-tighter text-primary uppercase"
+                            >
+                                Cumulative
+                            </Badge>
+                        )}
+                        {t.is_cumulative === false && (
+                            <Badge
+                                variant="outline"
+                                className="h-4 border-muted-foreground/30 px-1 py-0 text-[9px] tracking-tighter text-muted-foreground uppercase"
+                            >
+                                Non-Cumulative
+                            </Badge>
+                        )}
+                        {t.is_cumulative === null && (
+                            <Badge
+                                variant="outline"
+                                className="h-4 border-dashed border-muted-foreground/20 px-1 py-0 text-[9px] tracking-tighter text-muted-foreground/50 uppercase italic"
+                            >
+                                N/A
+                            </Badge>
+                        )}
                     </div>
                     {t.description && (
                         <span className="text-xs text-muted-foreground">
@@ -429,29 +429,35 @@ return;
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="btn-ghost-specular border-none h-7 px-2 text-xs"
+                    className="btn-ghost-specular h-7 border-none px-2 text-xs"
                     onClick={() => {
                         setEditingType(t);
                         setEditTypeOpen(true);
                     }}
                     disabled={processing}
                 >
-                    <Pencil className="h-3.5 w-3.5 mr-1" /> Edit
+                    <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
                 </Button>
                 <Button
-                    variant={t.is_active ? "ghost-destructive" : "ghost"}
+                    variant={t.is_active ? 'ghost-destructive' : 'ghost'}
                     size="sm"
                     onClick={() => handleToggleType(t)}
                     className={cn(
-                        'border-none h-7 px-2 text-xs',
-                        t.is_active ? 'btn-ghost-danger-specular' : 'btn-ghost-specular'
+                        'h-7 border-none px-2 text-xs',
+                        t.is_active
+                            ? 'btn-ghost-danger-specular'
+                            : 'btn-ghost-specular',
                     )}
                     disabled={processing}
                 >
                     {t.is_active ? (
-                        <><PowerOff className="h-3.5 w-3.5 mr-1" /> Disable</>
+                        <>
+                            <PowerOff className="mr-1 h-3.5 w-3.5" /> Disable
+                        </>
                     ) : (
-                        <><Power className="h-3.5 w-3.5 mr-1" /> Enable</>
+                        <>
+                            <Power className="mr-1 h-3.5 w-3.5" /> Enable
+                        </>
                     )}
                 </Button>
             </div>
@@ -469,9 +475,9 @@ return;
 
                 <LeaveNavigation />
 
-                <div className="flex flex-col md:flex-row gap-6 items-start mt-6 h-[calc(100vh-16rem)] min-h-[500px]">
+                <div className="mt-6 flex h-[calc(100vh-16rem)] min-h-[500px] flex-col items-start gap-6 md:flex-row">
                     {/* Sidebar Table of Contents */}
-                    <nav className="w-full md:w-64 shrink-0 space-y-1 overflow-y-auto overflow-x-hidden max-h-[200px] md:h-full flex flex-col">
+                    <nav className="flex max-h-[200px] w-full shrink-0 flex-col space-y-1 overflow-x-hidden overflow-y-auto md:h-full md:w-64">
                         {[
                             { id: 'holidays', label: 'Holidays' },
                             { id: 'leave-types', label: 'Leave Types' },
@@ -480,22 +486,28 @@ return;
                             const active = activeSection === section.id;
 
                             return (
-                                <div key={section.id} className={cn('relative', active && 'z-20')}>
+                                <div
+                                    key={section.id}
+                                    className={cn('relative', active && 'z-20')}
+                                >
                                     {active && (
                                         <motion.div
                                             layoutId="settings-active-pill"
                                             className="sidebar-active-gradient pointer-events-none absolute inset-0 rounded-xl"
-                                            transition={{ duration: 0.2, ease: 'easeOut' }}
+                                            transition={{
+                                                duration: 0.2,
+                                                ease: 'easeOut',
+                                            }}
                                         />
                                     )}
                                     <button
                                         type="button"
                                         onClick={() => scrollTo(section.id)}
                                         className={cn(
-                                            'relative z-10 flex w-full items-center rounded-xl px-2.5 py-2 text-sm transition-none focus-visible:outline-none focus-visible:ring-0',
+                                            'relative z-10 flex w-full items-center rounded-xl px-2.5 py-2 text-sm transition-none focus-visible:ring-0 focus-visible:outline-none',
                                             active
                                                 ? 'sidebar-active-text font-bold sidebar-transparent-hover'
-                                                : 'text-sidebar-foreground/80 hover:bg-sidebar-accent'
+                                                : 'text-sidebar-foreground/80 hover:bg-sidebar-accent',
                                         )}
                                     >
                                         <span className="flex w-full items-center px-2">
@@ -510,7 +522,7 @@ return;
                     {/* Main Content Areas */}
                     <div
                         ref={scrollContainerRef}
-                        className="flex-1 space-y-12 overflow-y-auto pr-4 pb-[50vh] h-full"
+                        className="h-full flex-1 space-y-12 overflow-y-auto pr-4 pb-[50vh]"
                     >
                         {/* Holidays */}
                         <section id="holidays" className="">
@@ -532,8 +544,9 @@ return;
                                                 rel="noreferrer"
                                                 className="ml-1 text-primary hover:underline"
                                             >
-                                                Official List of Regular Holidays and
-                                                Special Non-Working Days
+                                                Official List of Regular
+                                                Holidays and Special Non-Working
+                                                Days
                                             </a>
                                             .
                                         </p>
@@ -552,7 +565,9 @@ return;
                                             variant="ghost"
                                             className="btn-ghost-specular border-none"
                                             onClick={() =>
-                                                router.get(settings().url, { year })
+                                                router.get(settings().url, {
+                                                    year,
+                                                })
                                             }
                                         >
                                             Filter Year
@@ -578,7 +593,9 @@ return;
                                                 type="text"
                                                 value={holidayName}
                                                 onChange={(e) =>
-                                                    setHolidayName(e.target.value)
+                                                    setHolidayName(
+                                                        e.target.value,
+                                                    )
                                                 }
                                                 required
                                             />
@@ -605,16 +622,16 @@ return;
                                                     <span className="text-sm text-muted-foreground">
                                                         {h.date
                                                             ? format(
-                                                                new Date(
-                                                                    h.date.includes(
-                                                                        'T',
-                                                                    )
-                                                                        ? h.date
-                                                                        : h.date +
-                                                                        'T00:00:00',
-                                                                ),
-                                                                'MMMM d, yyyy',
-                                                            )
+                                                                  new Date(
+                                                                      h.date.includes(
+                                                                          'T',
+                                                                      )
+                                                                          ? h.date
+                                                                          : h.date +
+                                                                                'T00:00:00',
+                                                                  ),
+                                                                  'MMMM d, yyyy',
+                                                              )
                                                             : ''}
                                                     </span>
                                                 </div>
@@ -623,7 +640,9 @@ return;
                                                     className="btn-ghost-danger-specular border-none px-4"
                                                     size="sm"
                                                     onClick={() =>
-                                                        handleDeleteHoliday(h.id)
+                                                        handleDeleteHoliday(
+                                                            h.id,
+                                                        )
                                                     }
                                                     disabled={processing}
                                                 >
@@ -645,27 +664,36 @@ return;
                         <section id="leave-types" className="">
                             <div className="matte-card elev-2">
                                 <div className="p-6">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h2 className="t-headline">Leave Types</h2>
+                                    <div className="mb-4 flex items-center justify-between">
+                                        <h2 className="t-headline">
+                                            Leave Types
+                                        </h2>
                                     </div>
 
                                     <div className="space-y-2">
-                                        {activeLeaveTypes.map(renderLeaveTypeCard)}
+                                        {activeLeaveTypes.map(
+                                            renderLeaveTypeCard,
+                                        )}
 
                                         <Button
                                             variant="ghost"
-                                            className="w-full btn-ghost-specular border-none py-2 h-auto text-muted-foreground hover:text-foreground"
+                                            className="btn-ghost-specular h-auto w-full border-none py-2 text-muted-foreground hover:text-foreground"
                                             onClick={() => setAddTypeOpen(true)}
                                         >
-                                            <Plus className="h-4 w-4 mr-2" /> Add Leave Type
+                                            <Plus className="mr-2 h-4 w-4" />{' '}
+                                            Add Leave Type
                                         </Button>
                                     </div>
 
                                     {disabledLeaveTypes.length > 0 && (
                                         <div className="mt-8">
-                                            <h3 className="t-title mb-3 text-muted-foreground">Disabled</h3>
+                                            <h3 className="t-title mb-3 text-muted-foreground">
+                                                Disabled
+                                            </h3>
                                             <div className="space-y-2">
-                                                {disabledLeaveTypes.map(renderLeaveTypeCard)}
+                                                {disabledLeaveTypes.map(
+                                                    renderLeaveTypeCard,
+                                                )}
                                             </div>
                                         </div>
                                     )}
@@ -690,7 +718,9 @@ return;
                                             <Input
                                                 value={statusName}
                                                 onChange={(e) =>
-                                                    setStatusName(e.target.value)
+                                                    setStatusName(
+                                                        e.target.value,
+                                                    )
                                                 }
                                                 placeholder="e.g. Approved"
                                                 required
@@ -712,14 +742,18 @@ return;
                                                 className={cn(
                                                     'matte-card elev-1 flex items-center justify-between p-3',
                                                     !s.is_active &&
-                                                    'bg-muted opacity-50 grayscale',
+                                                        'bg-muted opacity-50 grayscale',
                                                 )}
                                             >
                                                 <span className="font-medium">
                                                     {s.name}
                                                 </span>
                                                 <Button
-                                                    variant={s.is_active ? "ghost-destructive" : "ghost"}
+                                                    variant={
+                                                        s.is_active
+                                                            ? 'ghost-destructive'
+                                                            : 'ghost'
+                                                    }
                                                     size="sm"
                                                     onClick={() =>
                                                         handleToggleStatus(s)
@@ -795,14 +829,21 @@ return;
                         </DialogDescription>
                     </DialogHeader>
                     {editingType && (
-                        <form id="edit-type-form" onSubmit={handleEditType} className="space-y-4 mt-4">
+                        <form
+                            id="edit-type-form"
+                            onSubmit={handleEditType}
+                            className="mt-4 space-y-4"
+                        >
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div className="space-y-1">
                                     <Label>Name</Label>
                                     <Input
                                         value={editingType.name}
                                         onChange={(e) =>
-                                            setEditingType({ ...editingType, name: e.target.value })
+                                            setEditingType({
+                                                ...editingType,
+                                                name: e.target.value,
+                                            })
                                         }
                                         required
                                     />
@@ -812,7 +853,10 @@ return;
                                     <Input
                                         value={editingType.abbreviation || ''}
                                         onChange={(e) =>
-                                            setEditingType({ ...editingType, abbreviation: e.target.value })
+                                            setEditingType({
+                                                ...editingType,
+                                                abbreviation: e.target.value,
+                                            })
                                         }
                                     />
                                 </div>
@@ -821,18 +865,37 @@ return;
                                 <div>
                                     <Label>Color</Label>
                                     <ColorPicker
-                                        value={editingType.color_code || '#000000'}
-                                        onChange={(color) => setEditingType({ ...editingType, color_code: color })}
+                                        value={
+                                            editingType.color_code || '#000000'
+                                        }
+                                        onChange={(color) =>
+                                            setEditingType({
+                                                ...editingType,
+                                                color_code: color,
+                                            })
+                                        }
                                     />
                                 </div>
                                 <div>
                                     <Label>Credit Behavior</Label>
                                     <Select
-                                        value={editingType.is_cumulative === true ? 'true' : editingType.is_cumulative === false ? 'false' : 'null'}
+                                        value={
+                                            editingType.is_cumulative === true
+                                                ? 'true'
+                                                : editingType.is_cumulative ===
+                                                    false
+                                                  ? 'false'
+                                                  : 'null'
+                                        }
                                         onValueChange={(val) =>
                                             setEditingType({
                                                 ...editingType,
-                                                is_cumulative: val === 'true' ? true : val === 'false' ? false : null
+                                                is_cumulative:
+                                                    val === 'true'
+                                                        ? true
+                                                        : val === 'false'
+                                                          ? false
+                                                          : null,
                                             })
                                         }
                                     >
@@ -840,9 +903,15 @@ return;
                                             <SelectValue placeholder="Select behavior" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="true">Cumulative</SelectItem>
-                                            <SelectItem value="false">Non-Cumulative</SelectItem>
-                                            <SelectItem value="null">N/A</SelectItem>
+                                            <SelectItem value="true">
+                                                Cumulative
+                                            </SelectItem>
+                                            <SelectItem value="false">
+                                                Non-Cumulative
+                                            </SelectItem>
+                                            <SelectItem value="null">
+                                                N/A
+                                            </SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -852,7 +921,10 @@ return;
                                 <Input
                                     value={editingType.description || ''}
                                     onChange={(e) =>
-                                        setEditingType({ ...editingType, description: e.target.value })
+                                        setEditingType({
+                                            ...editingType,
+                                            description: e.target.value,
+                                        })
                                     }
                                 />
                             </div>
@@ -888,13 +960,19 @@ return;
                             Create a new leave type here.
                         </DialogDescription>
                     </DialogHeader>
-                    <form id="add-type-form" onSubmit={handleAddType} className="space-y-4 mt-4">
+                    <form
+                        id="add-type-form"
+                        onSubmit={handleAddType}
+                        className="mt-4 space-y-4"
+                    >
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div className="space-y-1">
                                 <Label>Name</Label>
                                 <Input
                                     value={typeName}
-                                    onChange={(e) => setTypeName(e.target.value)}
+                                    onChange={(e) =>
+                                        setTypeName(e.target.value)
+                                    }
                                     placeholder="e.g. Vacation Leave"
                                     required
                                 />
@@ -903,7 +981,9 @@ return;
                                 <Label>Abbreviation</Label>
                                 <Input
                                     value={typeAbbreviation}
-                                    onChange={(e) => setTypeAbbreviation(e.target.value)}
+                                    onChange={(e) =>
+                                        setTypeAbbreviation(e.target.value)
+                                    }
                                     placeholder="e.g. VL"
                                 />
                             </div>
@@ -918,18 +998,29 @@ return;
                                 />
                             </div>
                             <div>
-                                <Label htmlFor="cumulative">Credit Behavior</Label>
+                                <Label htmlFor="cumulative">
+                                    Credit Behavior
+                                </Label>
                                 <Select
                                     value={typeIsCumulative}
                                     onValueChange={setTypeIsCumulative}
                                 >
-                                    <SelectTrigger id="cumulative" className="bg-background">
+                                    <SelectTrigger
+                                        id="cumulative"
+                                        className="bg-background"
+                                    >
                                         <SelectValue placeholder="Select behavior" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="true">Cumulative</SelectItem>
-                                        <SelectItem value="false">Non-Cumulative</SelectItem>
-                                        <SelectItem value="null">N/A</SelectItem>
+                                        <SelectItem value="true">
+                                            Cumulative
+                                        </SelectItem>
+                                        <SelectItem value="false">
+                                            Non-Cumulative
+                                        </SelectItem>
+                                        <SelectItem value="null">
+                                            N/A
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -939,14 +1030,19 @@ return;
                             <Label>Description (Optional)</Label>
                             <Input
                                 value={typeDescription}
-                                onChange={(e) => setTypeDescription(e.target.value)}
+                                onChange={(e) =>
+                                    setTypeDescription(e.target.value)
+                                }
                                 placeholder="Short description..."
                             />
                         </div>
                     </form>
                     <DialogFooter className="mt-4 flex justify-end gap-2">
                         <DialogClose asChild>
-                            <Button variant="ghost" className="btn-ghost-specular border-none">
+                            <Button
+                                variant="ghost"
+                                className="btn-ghost-specular border-none"
+                            >
                                 Cancel
                             </Button>
                         </DialogClose>

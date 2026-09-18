@@ -37,24 +37,34 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
     return (
         <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-                <Label>Employee <Required /></Label>
+                <Label>
+                    Employee <Required />
+                </Label>
                 <EmployeeSearch
                     users={users}
                     selectedId={data.user_id}
-                    onSelect={(val) => setData('user_id', val === 'all' ? '' : val)}
+                    onSelect={(val) =>
+                        setData('user_id', val === 'all' ? '' : val)
+                    }
                     placeholder="Search Employee..."
                     returnValue="id"
                     aria-invalid={!!errors.user_id}
                 />
-                {errors.user_id && <p className="text-sm text-destructive">{errors.user_id}</p>}
+                {errors.user_id && (
+                    <p className="text-sm text-destructive">{errors.user_id}</p>
+                )}
             </div>
             <div className="space-y-2">
                 <Label>Date Filed</Label>
                 <DatePicker
                     value={data.date_filed}
-                    onChange={val => setData('date_filed', val || '')}
+                    onChange={(val) => setData('date_filed', val || '')}
                 />
-                {errors.date_filed && <p className="text-sm text-destructive">{errors.date_filed}</p>}
+                {errors.date_filed && (
+                    <p className="text-sm text-destructive">
+                        {errors.date_filed}
+                    </p>
+                )}
             </div>
             <div className="space-y-2">
                 <Label>Monthly Salary</Label>
@@ -62,7 +72,7 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
                     type="text"
                     placeholder="0.00"
                     value={data.salary}
-                    onChange={e => {
+                    onChange={(e) => {
                         const val = e.target.value.replace(/,/g, '');
 
                         if (val === '' || /^\d*\.?\d*$/.test(val)) {
@@ -70,7 +80,9 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
                         }
                     }}
                 />
-                {errors.salary && <p className="text-sm text-destructive">{errors.salary}</p>}
+                {errors.salary && (
+                    <p className="text-sm text-destructive">{errors.salary}</p>
+                )}
             </div>
         </div>
     );

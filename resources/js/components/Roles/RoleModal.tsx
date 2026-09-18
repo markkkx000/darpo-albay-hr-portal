@@ -6,7 +6,14 @@ import InputError from '@/components/input-error';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import RolesRoutes from '@/routes/roles';
@@ -29,7 +36,13 @@ interface Props {
     permissions: Permission[];
 }
 
-const PROTECTED_ROLES = ['super_admin', 'hr_admin', 'hr_staff', 'division_head', 'employee'];
+const PROTECTED_ROLES = [
+    'super_admin',
+    'hr_admin',
+    'hr_staff',
+    'division_head',
+    'employee',
+];
 
 interface RoleFormData {
     name: string;
@@ -40,10 +53,11 @@ interface RoleFormData {
 export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
     const isEdit = !!role;
 
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm<RoleFormData>({
-        name: role?.name || '',
-        permissions: role?.permissions?.map((p) => p.name) || [],
-    });
+    const { data, setData, post, put, processing, errors, reset, clearErrors } =
+        useForm<RoleFormData>({
+            name: role?.name || '',
+            permissions: role?.permissions?.map((p) => p.name) || [],
+        });
 
     useEffect(() => {
         if (open) {
@@ -94,12 +108,16 @@ export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col matte-card !fixed elev-3">
-                <form onSubmit={handleSubmit} className="flex flex-col h-full">
+            <DialogContent className="matte-card elev-3 !fixed flex max-h-[90vh] flex-col sm:max-w-[600px]">
+                <form onSubmit={handleSubmit} className="flex h-full flex-col">
                     <DialogHeader>
-                        <DialogTitle>{isEdit ? 'Edit Role' : 'Create New Role'}</DialogTitle>
+                        <DialogTitle>
+                            {isEdit ? 'Edit Role' : 'Create New Role'}
+                        </DialogTitle>
                         <DialogDescription>
-                            {isEdit ? 'Update role name and permissions.' : 'Define a new role and its associated permissions.'}
+                            {isEdit
+                                ? 'Update role name and permissions.'
+                                : 'Define a new role and its associated permissions.'}
                         </DialogDescription>
                     </DialogHeader>
 
@@ -110,55 +128,72 @@ export function RoleModal({ open, onOpenChange, role, permissions }: Props) {
                         </Alert>
                     )}
 
-                    <div className="space-y-6 py-4 overflow-y-auto px-1 -mx-1 pr-3">
+                    <div className="-mx-1 space-y-6 overflow-y-auto px-1 py-4 pr-3">
                         <div className="space-y-2">
                             <Label htmlFor="role-name">Role Name</Label>
                             <Input
                                 id="role-name"
                                 value={data.name}
-                                onChange={e => setData('name', e.target.value)}
+                                onChange={(e) =>
+                                    setData('name', e.target.value)
+                                }
                                 disabled={isProtected}
                                 placeholder="e.g. content_moderator"
                                 className="input-etched font-mono"
                             />
                             <InputError message={errors.name} />
                             <p className="text-xs text-muted-foreground">
-                                Use snake_case format (all lowercase, underscores instead of spaces).
-                                {isProtected && ' Core role names are immutable.'}
+                                Use snake_case format (all lowercase,
+                                underscores instead of spaces).
+                                {isProtected &&
+                                    ' Core role names are immutable.'}
                             </p>
                         </div>
 
                         <div className="space-y-3">
                             <Label>Permissions</Label>
-                            <div className="h-[300px] overflow-y-auto border rounded-md p-4 bg-muted/5 space-y-6">
+                            <div className="h-[300px] space-y-6 overflow-y-auto rounded-md border bg-muted/5 p-4">
                                 {Object.entries(
-                                    permissions.reduce((acc, permission) => {
-                                        const [module] = permission.name.split('.');
+                                    permissions.reduce(
+                                        (acc, permission) => {
+                                            const [module] =
+                                                permission.name.split('.');
 
-                                        if (!acc[module]) {
-acc[module] = [];
-}
+                                            if (!acc[module]) {
+                                                acc[module] = [];
+                                            }
 
-                                        acc[module].push(permission);
+                                            acc[module].push(permission);
 
-                                        return acc;
-                                    }, {} as Record<string, Permission[]>)
+                                            return acc;
+                                        },
+                                        {} as Record<string, Permission[]>,
+                                    ),
                                 ).map(([module, perms]) => (
                                     <div key={module} className="space-y-3">
-                                        <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground border-b pb-1">
+                                        <h4 className="border-b pb-1 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                                             {module.replace('_', ' ')}
                                         </h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                                             {perms.map((permission) => (
-                                                <div key={permission.id} className="flex items-center space-x-2">
+                                                <div
+                                                    key={permission.id}
+                                                    className="flex items-center space-x-2"
+                                                >
                                                     <Checkbox
                                                         id={`perm-${permission.id}`}
-                                                        checked={data.permissions.includes(permission.name)}
-                                                        onCheckedChange={() => togglePermission(permission.name)}
+                                                        checked={data.permissions.includes(
+                                                            permission.name,
+                                                        )}
+                                                        onCheckedChange={() =>
+                                                            togglePermission(
+                                                                permission.name,
+                                                            )
+                                                        }
                                                     />
                                                     <label
                                                         htmlFor={`perm-${permission.id}`}
-                                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                                        className="cursor-pointer text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                                                     >
                                                         {permission.name}
                                                     </label>
@@ -172,9 +207,20 @@ acc[module] = [];
                         </div>
                     </div>
 
-                    <DialogFooter className="pt-4 pb-4 border-t mt-auto">
-                        <Button type="button" variant="ghost" className="btn-ghost-specular px-6" onClick={() => onOpenChange(false)}>Cancel</Button>
-                        <Button type="submit" disabled={processing} className="btn-specular border-none px-6">
+                    <DialogFooter className="mt-auto border-t pt-4 pb-4">
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            className="btn-ghost-specular px-6"
+                            onClick={() => onOpenChange(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            disabled={processing}
+                            className="btn-specular border-none px-6"
+                        >
                             {isEdit ? 'Update Role' : 'Create Role'}
                         </Button>
                     </DialogFooter>

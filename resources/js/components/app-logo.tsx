@@ -7,8 +7,13 @@ type Props = {
 
 export default function AppLogo({ auth }: Props) {
     const isSuperAdmin = auth?.roles?.includes('super_admin');
-    const isHR = auth?.roles?.includes('hr_admin') || auth?.roles?.includes('hr_staff');
-    const title = isSuperAdmin ? 'Admin Dashboard' : isHR ? 'HR Dashboard' : 'Employee Dashboard';
+    const isHR =
+        auth?.roles?.includes('hr_admin') || auth?.roles?.includes('hr_staff');
+    const title = isSuperAdmin
+        ? 'Admin Dashboard'
+        : isHR
+          ? 'HR Dashboard'
+          : 'Employee Dashboard';
 
     return (
         <>

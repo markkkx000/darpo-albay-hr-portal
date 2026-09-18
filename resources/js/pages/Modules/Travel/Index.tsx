@@ -10,10 +10,13 @@ export default function Index() {
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
                         <Construction className="h-6 w-6 text-primary" />
                     </div>
-                    <h2 className="text-2xl font-bold text-foreground">Travel Orders</h2>
+                    <h2 className="text-2xl font-bold text-foreground">
+                        Travel Orders
+                    </h2>
                     <p className="text-muted-foreground">
-                        This module is on the roadmap. It will support travel order creation, approval workflows, and
-                        itinerary tracking.
+                        This module is on the roadmap. It will support travel
+                        order creation, approval workflows, and itinerary
+                        tracking.
                     </p>
                     <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
                         Coming Soon

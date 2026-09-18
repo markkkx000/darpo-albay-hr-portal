@@ -49,7 +49,10 @@ export default function AdjustBalanceForm({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded-xl bg-muted/20 border-border/50 animate-in fade-in slide-in-from-top-2 duration-300">
+        <form
+            onSubmit={handleSubmit}
+            className="animate-in space-y-4 rounded-xl border border-border/50 bg-muted/20 p-4 duration-300 fade-in slide-in-from-top-2"
+        >
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                     <Label htmlFor="available">Available (Balance)</Label>
@@ -58,10 +61,16 @@ export default function AdjustBalanceForm({
                         type="number"
                         step="0.001"
                         value={data.balance}
-                        onChange={(e) => setData('balance', parseFloat(e.target.value) || 0)}
+                        onChange={(e) =>
+                            setData('balance', parseFloat(e.target.value) || 0)
+                        }
                         required
                     />
-                    {errors.balance && <p className="text-xs text-destructive">{errors.balance}</p>}
+                    {errors.balance && (
+                        <p className="text-xs text-destructive">
+                            {errors.balance}
+                        </p>
+                    )}
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="used">Used</Label>
@@ -70,18 +79,32 @@ export default function AdjustBalanceForm({
                         type="number"
                         step="0.001"
                         value={data.used}
-                        onChange={(e) => setData('used', parseFloat(e.target.value) || 0)}
+                        onChange={(e) =>
+                            setData('used', parseFloat(e.target.value) || 0)
+                        }
                         required
                     />
-                    {errors.used && <p className="text-xs text-destructive">{errors.used}</p>}
+                    {errors.used && (
+                        <p className="text-xs text-destructive">
+                            {errors.used}
+                        </p>
+                    )}
                 </div>
             </div>
 
             <div className="flex items-center justify-between pt-2">
                 <div className="text-sm font-medium">
-                    New Total: <span className="text-primary font-bold">{total.toFixed(3)}</span>
+                    New Total:{' '}
+                    <span className="font-bold text-primary">
+                        {total.toFixed(3)}
+                    </span>
                 </div>
-                <Button type="submit" disabled={processing} size="sm" className="btn-specular">
+                <Button
+                    type="submit"
+                    disabled={processing}
+                    size="sm"
+                    className="btn-specular"
+                >
                     {processing ? (
                         <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

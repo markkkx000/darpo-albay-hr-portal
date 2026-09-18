@@ -16,8 +16,10 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { store as storeRecord, update as updateRecord } from '@/routes/attendance/manage/records';
-
+import {
+    store as storeRecord,
+    update as updateRecord,
+} from '@/routes/attendance/manage/records';
 
 interface User {
     id: number;
@@ -66,18 +68,38 @@ function extractTime(dateTimeString: string | null) {
     }
 }
 
-export function AttendanceRecordModal({ isOpen, onClose, record, employees }: AttendanceRecordModalProps) {
+export function AttendanceRecordModal({
+    isOpen,
+    onClose,
+    record,
+    employees,
+}: AttendanceRecordModalProps) {
     const isEditing = !!record;
 
-    const { data, setData, post, put, processing, errors, reset, clearErrors, transform } = useForm({
+    const {
+        data,
+        setData,
+        post,
+        put,
+        processing,
+        errors,
+        reset,
+        clearErrors,
+        transform,
+    } = useForm({
         user_id: record?.user_id?.toString() || '',
-        date: record?.date || new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' }),
+        date:
+            record?.date ||
+            new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' }),
         am_clock_in: record?.am_clock_in ? extractTime(record.am_clock_in) : '',
-        am_clock_out: record?.am_clock_out ? extractTime(record.am_clock_out) : '',
+        am_clock_out: record?.am_clock_out
+            ? extractTime(record.am_clock_out)
+            : '',
         pm_clock_in: record?.pm_clock_in ? extractTime(record.pm_clock_in) : '',
-        pm_clock_out: record?.pm_clock_out ? extractTime(record.pm_clock_out) : '',
+        pm_clock_out: record?.pm_clock_out
+            ? extractTime(record.pm_clock_out)
+            : '',
     });
-
 
     const selectedEmployee = useMemo(() => {
         return employees.find((e) => e.id.toString() === data.user_id);
@@ -89,15 +111,25 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
                 setData({
                     user_id: record.user_id.toString(),
                     date: record.date,
-                    am_clock_in: record.am_clock_in ? extractTime(record.am_clock_in) : '',
-                    am_clock_out: record.am_clock_out ? extractTime(record.am_clock_out) : '',
-                    pm_clock_in: record.pm_clock_in ? extractTime(record.pm_clock_in) : '',
-                    pm_clock_out: record.pm_clock_out ? extractTime(record.pm_clock_out) : '',
+                    am_clock_in: record.am_clock_in
+                        ? extractTime(record.am_clock_in)
+                        : '',
+                    am_clock_out: record.am_clock_out
+                        ? extractTime(record.am_clock_out)
+                        : '',
+                    pm_clock_in: record.pm_clock_in
+                        ? extractTime(record.pm_clock_in)
+                        : '',
+                    pm_clock_out: record.pm_clock_out
+                        ? extractTime(record.pm_clock_out)
+                        : '',
                 });
             } else {
                 setData({
                     user_id: '',
-                    date: new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' }),
+                    date: new Date().toLocaleDateString('en-CA', {
+                        timeZone: 'Asia/Manila',
+                    }),
                     am_clock_in: '',
                     am_clock_out: '',
                     pm_clock_in: '',
@@ -113,22 +145,30 @@ export function AttendanceRecordModal({ isOpen, onClose, record, employees }: At
     transform((data) => {
         const appendSeconds = (timeStr: string | null) => {
             if (!timeStr) {
-return null;
-}
+                return null;
+            }
 
             if (timeStr.split(':').length === 2) {
-return `${timeStr}:00`;
-}
+                return `${timeStr}:00`;
+            }
 
             return timeStr;
         };
-        
+
         return {
             ...data,
-            am_clock_in: data.am_clock_in ? `${data.date} ${appendSeconds(data.am_clock_in)}` : null,
-            am_clock_out: data.am_clock_out ? `${data.date} ${appendSeconds(data.am_clock_out)}` : null,
-            pm_clock_in: data.pm_clock_in ? `${data.date} ${appendSeconds(data.pm_clock_in)}` : null,
-            pm_clock_out: data.pm_clock_out ? `${data.date} ${appendSeconds(data.pm_clock_out)}` : null,
+            am_clock_in: data.am_clock_in
+                ? `${data.date} ${appendSeconds(data.am_clock_in)}`
+                : null,
+            am_clock_out: data.am_clock_out
+                ? `${data.date} ${appendSeconds(data.am_clock_out)}`
+                : null,
+            pm_clock_in: data.pm_clock_in
+                ? `${data.date} ${appendSeconds(data.pm_clock_in)}`
+                : null,
+            pm_clock_out: data.pm_clock_out
+                ? `${data.date} ${appendSeconds(data.pm_clock_out)}`
+                : null,
         };
     });
 
@@ -155,23 +195,29 @@ return `${timeStr}:00`;
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="sm:max-w-[425px] bg-surface-1 border-border-1 rounded-2xl shadow-2xl !fixed">
+            <DialogContent className="!fixed rounded-2xl border-border-1 bg-surface-1 shadow-2xl sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>{isEditing ? 'Edit Attendance Record' : 'Add Missing Record'}</DialogTitle>
+                    <DialogTitle>
+                        {isEditing
+                            ? 'Edit Attendance Record'
+                            : 'Add Missing Record'}
+                    </DialogTitle>
                     <DialogDescription>
-                        {isEditing 
-                            ? "Correct the timestamps for this attendance record." 
-                            : "Manually create an attendance record for an employee."}
+                        {isEditing
+                            ? 'Correct the timestamps for this attendance record.'
+                            : 'Manually create an attendance record for an employee.'}
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4 py-4">
                     <div className="grid gap-2">
                         <Label>Employee</Label>
                         {isEditing ? (
-                            <div className="flex items-center gap-2 p-2 rounded-xl border bg-muted/50 text-muted-foreground cursor-not-allowed">
+                            <div className="flex cursor-not-allowed items-center gap-2 rounded-xl border bg-muted/50 p-2 text-muted-foreground">
                                 <UserIcon className="h-4 w-4" />
                                 <span className="text-sm font-medium">
-                                    {selectedEmployee ? `${selectedEmployee.first_name} ${selectedEmployee.last_name}` : 'Unknown'}
+                                    {selectedEmployee
+                                        ? `${selectedEmployee.first_name} ${selectedEmployee.last_name}`
+                                        : 'Unknown'}
                                 </span>
                             </div>
                         ) : (
@@ -179,13 +225,22 @@ return `${timeStr}:00`;
                                 <EmployeeSearch
                                     users={employees}
                                     selectedId={data.user_id}
-                                    onSelect={(val) => setData('user_id', val === 'all' ? '' : val)}
+                                    onSelect={(val) =>
+                                        setData(
+                                            'user_id',
+                                            val === 'all' ? '' : val,
+                                        )
+                                    }
                                     returnValue="id"
                                     error={!!errors.user_id}
                                 />
                             </div>
                         )}
-                        {errors.user_id && <p className="text-xs text-red-500">{errors.user_id}</p>}
+                        {errors.user_id && (
+                            <p className="text-xs text-red-500">
+                                {errors.user_id}
+                            </p>
+                        )}
                     </div>
 
                     <div className="grid gap-2">
@@ -196,7 +251,11 @@ return `${timeStr}:00`;
                             onChange={(val) => setData('date', val || '')}
                             aria-invalid={!!errors.date}
                         />
-                        {errors.date && <p className="text-xs text-red-500">{errors.date}</p>}
+                        {errors.date && (
+                            <p className="text-xs text-red-500">
+                                {errors.date}
+                            </p>
+                        )}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -207,9 +266,15 @@ return `${timeStr}:00`;
                                 type="time"
                                 step="1"
                                 value={data.am_clock_in}
-                                onChange={(e) => setData('am_clock_in', e.target.value)}
+                                onChange={(e) =>
+                                    setData('am_clock_in', e.target.value)
+                                }
                             />
-                            {errors.am_clock_in && <p className="text-xs text-red-500">{errors.am_clock_in}</p>}
+                            {errors.am_clock_in && (
+                                <p className="text-xs text-red-500">
+                                    {errors.am_clock_in}
+                                </p>
+                            )}
                         </div>
 
                         <div className="grid gap-2">
@@ -219,9 +284,15 @@ return `${timeStr}:00`;
                                 type="time"
                                 step="1"
                                 value={data.am_clock_out}
-                                onChange={(e) => setData('am_clock_out', e.target.value)}
+                                onChange={(e) =>
+                                    setData('am_clock_out', e.target.value)
+                                }
                             />
-                            {errors.am_clock_out && <p className="text-xs text-red-500">{errors.am_clock_out}</p>}
+                            {errors.am_clock_out && (
+                                <p className="text-xs text-red-500">
+                                    {errors.am_clock_out}
+                                </p>
+                            )}
                         </div>
                     </div>
 
@@ -233,9 +304,15 @@ return `${timeStr}:00`;
                                 type="time"
                                 step="1"
                                 value={data.pm_clock_in}
-                                onChange={(e) => setData('pm_clock_in', e.target.value)}
+                                onChange={(e) =>
+                                    setData('pm_clock_in', e.target.value)
+                                }
                             />
-                            {errors.pm_clock_in && <p className="text-xs text-red-500">{errors.pm_clock_in}</p>}
+                            {errors.pm_clock_in && (
+                                <p className="text-xs text-red-500">
+                                    {errors.pm_clock_in}
+                                </p>
+                            )}
                         </div>
 
                         <div className="grid gap-2">
@@ -245,17 +322,31 @@ return `${timeStr}:00`;
                                 type="time"
                                 step="1"
                                 value={data.pm_clock_out}
-                                onChange={(e) => setData('pm_clock_out', e.target.value)}
+                                onChange={(e) =>
+                                    setData('pm_clock_out', e.target.value)
+                                }
                             />
-                            {errors.pm_clock_out && <p className="text-xs text-red-500">{errors.pm_clock_out}</p>}
+                            {errors.pm_clock_out && (
+                                <p className="text-xs text-red-500">
+                                    {errors.pm_clock_out}
+                                </p>
+                            )}
                         </div>
                     </div>
 
                     <DialogFooter>
-                        <Button type="button" variant="outline" onClick={onClose}>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={onClose}
+                        >
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={processing} className="btn-specular px-6 border-none">
+                        <Button
+                            type="submit"
+                            disabled={processing}
+                            className="btn-specular border-none px-6"
+                        >
                             {isEditing ? 'Save Changes' : 'Create Record'}
                         </Button>
                     </DialogFooter>

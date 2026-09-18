@@ -1,5 +1,11 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Calendar, CalendarClock, Clock, Settings, UserMinus } from 'lucide-react';
+import {
+    Calendar,
+    CalendarClock,
+    Clock,
+    Settings,
+    UserMinus,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { index as credits_index } from '@/routes/leave/credits/index';
 import { index, calendar, settings } from '@/routes/leave/index';
@@ -9,10 +15,14 @@ export default function LeaveNavigation() {
     const { url } = usePage();
     const { auth } = usePage().props;
 
-    const permissions = (auth.permissions || auth.user?.permissions || []) as string[];
+    const permissions = (auth.permissions ||
+        auth.user?.permissions ||
+        []) as string[];
     const canManageSettings = permissions.includes('leave.settings.manage');
     const canEncode = permissions.includes('leave.manage');
-    const canViewCredits = permissions.includes('leave.credits.view') || permissions.includes('leave.credits.manage');
+    const canViewCredits =
+        permissions.includes('leave.credits.view') ||
+        permissions.includes('leave.credits.manage');
     const canManageTardiness = permissions.includes('leave.tardiness.manage');
 
     const tabs = [
@@ -24,11 +34,19 @@ export default function LeaveNavigation() {
     }
 
     if (canViewCredits) {
-        tabs.push({ name: 'Leave Credits', href: credits_index().url, icon: UserMinus });
+        tabs.push({
+            name: 'Leave Credits',
+            href: credits_index().url,
+            icon: UserMinus,
+        });
     }
 
     if (canManageTardiness) {
-        tabs.push({ name: 'Tardiness', href: tardiness_index().url, icon: Clock });
+        tabs.push({
+            name: 'Tardiness',
+            href: tardiness_index().url,
+            icon: Clock,
+        });
     }
 
     if (canManageSettings) {
@@ -36,34 +54,40 @@ export default function LeaveNavigation() {
     }
 
     return (
-        <div className="mb-6 flex space-x-4 border-b border-border-1 overflow-x-auto whitespace-nowrap pb-1">
+        <div className="mb-6 flex space-x-4 overflow-x-auto border-b border-border-1 pb-1 whitespace-nowrap">
             {tabs.map((tab) => {
                 const Icon = tab.icon;
                 const pathname = url.split('?')[0];
-                const isActive = tab.href === index().url 
-                    ? pathname === index().url || pathname.startsWith(index().url + '/create') || pathname.includes('/edit')
-                    : pathname.startsWith(tab.href);
+                const isActive =
+                    tab.href === index().url
+                        ? pathname === index().url ||
+                          pathname.startsWith(index().url + '/create') ||
+                          pathname.includes('/edit')
+                        : pathname.startsWith(tab.href);
 
                 return (
                     <Link
                         key={tab.name}
                         href={tab.href}
                         className={cn(
-                            'relative flex items-center space-x-2 border-b-2 px-4 py-3 text-sm font-medium rounded-xl',
+                            'relative flex items-center space-x-2 rounded-xl border-b-2 px-4 py-3 text-sm font-medium',
                             isActive
                                 ? 'border-transparent font-semibold'
-                                : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/30'
+                                : 'border-transparent text-muted-foreground hover:bg-muted/30 hover:text-foreground',
                         )}
                     >
                         {isActive && (
-                            <span
-                                className="pointer-events-none absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-primary shadow-[0_0_8px_var(--green-glow)]"
-                            />
+                            <span className="pointer-events-none absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-primary shadow-[0_0_8px_var(--green-glow)]" />
                         )}
                         <Icon
-                            className={cn("h-4 w-4", isActive && "text-primary")}
+                            className={cn(
+                                'h-4 w-4',
+                                isActive && 'text-primary',
+                            )}
                         />
-                        <span className={cn(isActive && "text-primary font-bold")}>
+                        <span
+                            className={cn(isActive && 'font-bold text-primary')}
+                        >
                             {tab.name}
                         </span>
                     </Link>

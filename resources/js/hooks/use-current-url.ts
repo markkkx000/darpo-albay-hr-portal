@@ -41,8 +41,8 @@ export function useCurrentUrl(): UseCurrentUrlReturn {
         startsWith: boolean = false,
     ) => {
         if (!urlToCheck) {
-return false;
-}
+            return false;
+        }
 
         const urlToCompare = currentUrl ?? currentUrlPath;
         const urlString = toUrl(urlToCheck);

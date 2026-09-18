@@ -4,19 +4,37 @@ import { useState } from 'react';
 import { SlidingTabs } from '@/components/ui/sliding-tabs';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 
-export function HrPriorityBoard({ data, layoutId = "hr-priority-tabs" }: { data: any, layoutId?: string }) {
+export function HrPriorityBoard({
+    data,
+    layoutId = 'hr-priority-tabs',
+}: {
+    data: any;
+    layoutId?: string;
+}) {
     const [activeTab, setActiveTab] = useState('action-items');
 
     return (
         <div className="matte-card elev-2 min-h-[400px]">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="relative z-10 p-6 h-full flex flex-col">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
+            <Tabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="relative z-10 flex h-full flex-col p-6"
+            >
+                <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <h3 className="t-headline">Priority Board</h3>
                     <div className="w-full sm:w-auto">
-                        <SlidingTabs 
+                        <SlidingTabs
                             tabs={[
-                                { value: 'action-items', label: 'Action Items', active: activeTab === 'action-items' },
-                                { value: 'activity-logs', label: 'Activity Logs', active: activeTab === 'activity-logs' }
+                                {
+                                    value: 'action-items',
+                                    label: 'Action Items',
+                                    active: activeTab === 'action-items',
+                                },
+                                {
+                                    value: 'activity-logs',
+                                    label: 'Activity Logs',
+                                    active: activeTab === 'activity-logs',
+                                },
                             ]}
                             layoutId={layoutId}
                             onChange={setActiveTab}
@@ -24,27 +42,40 @@ export function HrPriorityBoard({ data, layoutId = "hr-priority-tabs" }: { data:
                     </div>
                 </div>
 
-                <TabsContent value="action-items" className="flex-1 mt-0">
+                <TabsContent value="action-items" className="mt-0 flex-1">
                     {!data.action_items || data.action_items.length === 0 ? (
-                        <div className="flex-1 flex flex-col items-center justify-center gap-3 py-8 text-center min-h-[250px]">
+                        <div className="flex min-h-[250px] flex-1 flex-col items-center justify-center gap-3 py-8 text-center">
                             <CheckCircle2 className="h-10 w-10 text-muted-foreground opacity-20" />
-                            <p className="text-sm font-medium text-muted-foreground">Inbox Zero!</p>
-                            <p className="text-xs text-muted-foreground/60 max-w-[220px]">All pending leaves and document requests have been cleared.</p>
+                            <p className="text-sm font-medium text-muted-foreground">
+                                Inbox Zero!
+                            </p>
+                            <p className="max-w-[220px] text-xs text-muted-foreground/60">
+                                All pending leaves and document requests have
+                                been cleared.
+                            </p>
                         </div>
                     ) : (
-                        <div className="space-y-4 overflow-y-auto max-h-[350px] pr-2">
+                        <div className="max-h-[350px] space-y-4 overflow-y-auto pr-2">
                             {data.action_items.map((item: any) => (
                                 <div key={item.id} className="flex gap-3">
                                     <div className="mt-0.5">
-                                        <div className="w-2 h-2 rounded-full bg-primary mt-1.5" />
+                                        <div className="mt-1.5 h-2 w-2 rounded-full bg-primary" />
                                     </div>
                                     <div className="flex-1">
-                                        <div className="text-sm font-semibold">{item.title}</div>
-                                        <div className="text-xs text-muted-foreground mt-0.5 leading-snug">{item.description}</div>
+                                        <div className="text-sm font-semibold">
+                                            {item.title}
+                                        </div>
+                                        <div className="mt-0.5 text-xs leading-snug text-muted-foreground">
+                                            {item.description}
+                                        </div>
                                         {item.url && (
                                             <div className="mt-2">
-                                                <Link href={item.url} className="inline-flex items-center justify-center rounded-md text-[11px] font-medium border border-border-2 bg-surface hover:bg-surface-2 text-foreground h-6 px-3">
-                                                    {item.action_text || 'View Details'}
+                                                <Link
+                                                    href={item.url}
+                                                    className="bg-surface inline-flex h-6 items-center justify-center rounded-md border border-border-2 px-3 text-[11px] font-medium text-foreground hover:bg-surface-2"
+                                                >
+                                                    {item.action_text ||
+                                                        'View Details'}
                                                 </Link>
                                             </div>
                                         )}
@@ -55,29 +86,43 @@ export function HrPriorityBoard({ data, layoutId = "hr-priority-tabs" }: { data:
                     )}
                 </TabsContent>
 
-                <TabsContent value="activity-logs" className="flex-1 mt-0">
-                    {!data.recentActivity || data.recentActivity.length === 0 ? (
-                        <div className="flex-1 flex flex-col items-center justify-center gap-3 py-8 text-center min-h-[250px]">
+                <TabsContent value="activity-logs" className="mt-0 flex-1">
+                    {!data.recentActivity ||
+                    data.recentActivity.length === 0 ? (
+                        <div className="flex min-h-[250px] flex-1 flex-col items-center justify-center gap-3 py-8 text-center">
                             <Activity className="h-10 w-10 text-muted-foreground opacity-20" />
-                            <p className="text-sm font-medium text-muted-foreground">No recent activity</p>
-                            <p className="text-xs text-muted-foreground/60 max-w-[200px]">HR actions like leave approvals and onboarding will appear here.</p>
+                            <p className="text-sm font-medium text-muted-foreground">
+                                No recent activity
+                            </p>
+                            <p className="max-w-[200px] text-xs text-muted-foreground/60">
+                                HR actions like leave approvals and onboarding
+                                will appear here.
+                            </p>
                         </div>
                     ) : (
-                        <div className="space-y-4 overflow-y-auto max-h-[350px] pr-2">
+                        <div className="max-h-[350px] space-y-4 overflow-y-auto pr-2">
                             {data.recentActivity.map((activity: any) => (
-                                <div key={activity.id} className="flex items-start gap-4 p-3 rounded-lg">
-                                    <div className="p-2 rounded-full bg-primary/10 text-primary">
-                                        {activity.type === 'attendance_clock' ? (
+                                <div
+                                    key={activity.id}
+                                    className="flex items-start gap-4 rounded-lg p-3"
+                                >
+                                    <div className="rounded-full bg-primary/10 p-2 text-primary">
+                                        {activity.type ===
+                                        'attendance_clock' ? (
                                             <Clock className="h-4 w-4" />
                                         ) : (
                                             <FileText className="h-4 w-4" />
                                         )}
                                     </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-semibold text-foreground truncate">{activity.title}</p>
-                                        <p className="text-xs text-muted-foreground mt-0.5">{activity.description}</p>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="truncate text-sm font-semibold text-foreground">
+                                            {activity.title}
+                                        </p>
+                                        <p className="mt-0.5 text-xs text-muted-foreground">
+                                            {activity.description}
+                                        </p>
                                     </div>
-                                    <span className="text-[10px] font-medium text-muted-foreground/75 whitespace-nowrap self-start mt-1">
+                                    <span className="mt-1 self-start text-[10px] font-medium whitespace-nowrap text-muted-foreground/75">
                                         {activity.time}
                                     </span>
                                 </div>

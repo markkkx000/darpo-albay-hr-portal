@@ -29,36 +29,47 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
     const [fromDate, setFromDate] = useState(filters.from_date || '');
     const [toDate, setToDate] = useState(filters.to_date || '');
 
-    const updateFilters = useCallback((overrides: any = {}) => {
-        const query: any = {
-            search: overrides.search !== undefined ? overrides.search : search,
-            status: overrides.status !== undefined ? overrides.status : status,
-            from_date: overrides.from_date !== undefined ? overrides.from_date : fromDate,
-            to_date: overrides.to_date !== undefined ? overrides.to_date : toDate,
-        };
+    const updateFilters = useCallback(
+        (overrides: any = {}) => {
+            const query: any = {
+                search:
+                    overrides.search !== undefined ? overrides.search : search,
+                status:
+                    overrides.status !== undefined ? overrides.status : status,
+                from_date:
+                    overrides.from_date !== undefined
+                        ? overrides.from_date
+                        : fromDate,
+                to_date:
+                    overrides.to_date !== undefined
+                        ? overrides.to_date
+                        : toDate,
+            };
 
-        // Remove defaults/empty values from query
-        if (!query.search) {
-            delete query.search;
-        }
+            // Remove defaults/empty values from query
+            if (!query.search) {
+                delete query.search;
+            }
 
-        if (query.status === 'all') {
-            delete query.status;
-        }
+            if (query.status === 'all') {
+                delete query.status;
+            }
 
-        if (!query.from_date) {
-            delete query.from_date;
-        }
+            if (!query.from_date) {
+                delete query.from_date;
+            }
 
-        if (!query.to_date) {
-            delete query.to_date;
-        }
+            if (!query.to_date) {
+                delete query.to_date;
+            }
 
-        router.get(routeName, query, {
-            preserveState: true,
-            replace: true,
-        });
-    }, [search, status, fromDate, toDate, routeName]);
+            router.get(routeName, query, {
+                preserveState: true,
+                replace: true,
+            });
+        },
+        [search, status, fromDate, toDate, routeName],
+    );
 
     // Debounce search
     useEffect(() => {
@@ -76,25 +87,36 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
         setStatus('all');
         setFromDate('');
         setToDate('');
-        router.get(routeName, {}, {
-            preserveState: false,
-            replace: true,
-        });
+        router.get(
+            routeName,
+            {},
+            {
+                preserveState: false,
+                replace: true,
+            },
+        );
     };
 
     return (
-        <div className="matte-card elev-2 p-6 space-y-6">
-            <div className="flex items-center gap-2 text-foreground font-bold bg-muted/20 w-fit px-3 py-1 rounded-xl border border-white/5">
+        <div className="matte-card elev-2 space-y-6 p-6">
+            <div className="flex w-fit items-center gap-2 rounded-xl border border-white/5 bg-muted/20 px-3 py-1 font-bold text-foreground">
                 <Filter className="h-4 w-4 text-primary" />
-                <span className="text-xs uppercase tracking-widest">Filters</span>
+                <span className="text-xs tracking-widest uppercase">
+                    Filters
+                </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
+            <div className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2 lg:grid-cols-4">
                 {/* Search */}
-                <div className="space-y-2.5 group">
-                    <Label htmlFor="search" className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80 ml-0.5">Search Employee</Label>
-                    <div className="relative focus-glow rounded-2xl">
-                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60 transition-colors group-focus-within:text-primary" />
+                <div className="group space-y-2.5">
+                    <Label
+                        htmlFor="search"
+                        className="ml-0.5 text-[10px] font-bold tracking-[0.15em] text-muted-foreground/80 uppercase"
+                    >
+                        Search Employee
+                    </Label>
+                    <div className="focus-glow relative rounded-2xl">
+                        <Search className="absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-muted-foreground/60 transition-colors group-focus-within:text-primary" />
                         <Input
                             id="search"
                             value={search}
@@ -113,7 +135,7 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                                     setSearch('');
                                     updateFilters({ search: '' });
                                 }}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/40 hover:text-destructive transition-colors"
+                                className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground/40 transition-colors hover:text-destructive"
                             >
                                 <X className="h-3.5 w-3.5" />
                             </button>
@@ -122,8 +144,10 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                 </div>
 
                 {/* Status Dropdown */}
-                <div className="space-y-2.5 group">
-                    <Label className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80 ml-0.5">Status</Label>
+                <div className="group space-y-2.5">
+                    <Label className="ml-0.5 text-[10px] font-bold tracking-[0.15em] text-muted-foreground/80 uppercase">
+                        Status
+                    </Label>
                     <div className="focus-glow rounded-2xl">
                         <Select
                             value={status}
@@ -138,18 +162,29 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                             <SelectContent className="matte-card elev-3 border-white/10">
                                 <SelectItem value="all">All Status</SelectItem>
                                 <SelectItem value="working">Working</SelectItem>
-                                <SelectItem value="incomplete">Incomplete / Missing Logs</SelectItem>
-                                <SelectItem value="half_day">Half Day</SelectItem>
-                                <SelectItem value="archived">Archived</SelectItem>
+                                <SelectItem value="incomplete">
+                                    Incomplete / Missing Logs
+                                </SelectItem>
+                                <SelectItem value="half_day">
+                                    Half Day
+                                </SelectItem>
+                                <SelectItem value="archived">
+                                    Archived
+                                </SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
                 </div>
 
                 {/* Date Range From */}
-                <div className="space-y-2.5 group">
-                    <Label htmlFor="from_date" className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80 ml-0.5">From Date</Label>
-                    <div className="relative focus-glow rounded-2xl">
+                <div className="group space-y-2.5">
+                    <Label
+                        htmlFor="from_date"
+                        className="ml-0.5 text-[10px] font-bold tracking-[0.15em] text-muted-foreground/80 uppercase"
+                    >
+                        From Date
+                    </Label>
+                    <div className="focus-glow relative rounded-2xl">
                         <DatePicker
                             id="from_date"
                             value={fromDate}
@@ -162,9 +197,14 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                 </div>
 
                 {/* Date Range To */}
-                <div className="space-y-2.5 group">
-                    <Label htmlFor="to_date" className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80 ml-0.5">To Date</Label>
-                    <div className="relative focus-glow rounded-2xl">
+                <div className="group space-y-2.5">
+                    <Label
+                        htmlFor="to_date"
+                        className="ml-0.5 text-[10px] font-bold tracking-[0.15em] text-muted-foreground/80 uppercase"
+                    >
+                        To Date
+                    </Label>
+                    <div className="focus-glow relative rounded-2xl">
                         <DatePicker
                             id="to_date"
                             value={toDate}
@@ -177,14 +217,14 @@ export function AttendanceFilters({ filters, routeName }: FilterProps) {
                 </div>
             </div>
 
-            <div className="pt-2 flex justify-end gap-3 border-t border-white/5">
+            <div className="flex justify-end gap-3 border-t border-white/5 pt-2">
                 <Button
                     variant="ghost"
                     size="sm"
                     onClick={handleReset}
-                    className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition hover:bg-primary/5"
+                    className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase transition hover:bg-primary/5 hover:text-primary"
                 >
-                    <RefreshCw className="h-3 w-3 mr-1" />
+                    <RefreshCw className="mr-1 h-3 w-3" />
                     Reset All Filters
                 </Button>
             </div>

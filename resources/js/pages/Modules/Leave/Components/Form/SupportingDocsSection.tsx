@@ -34,20 +34,34 @@ export const SupportingDocsSection: React.FC<SupportingDocsSectionProps> = ({
                         <Checkbox
                             id="has_attachments"
                             checked={data.has_attachments}
-                            onCheckedChange={(c) => setData('has_attachments', c === true)}
+                            onCheckedChange={(c) =>
+                                setData('has_attachments', c === true)
+                            }
                         />
-                        <Label htmlFor="has_attachments" className="font-semibold">Has Supporting Documents / Attachments</Label>
+                        <Label
+                            htmlFor="has_attachments"
+                            className="font-semibold"
+                        >
+                            Has Supporting Documents / Attachments
+                        </Label>
                     </div>
 
                     {data.has_attachments && (
-                        <div className="pl-6 grid grid-cols-2 gap-y-2 gap-x-4 animate-in fade-in slide-in-from-left-2 duration-200">
-                            {supportingDocsOptions.map(doc => (
-                                <div key={doc} className="flex items-center space-x-2">
+                        <div className="grid animate-in grid-cols-2 gap-x-4 gap-y-2 pl-6 duration-200 fade-in slide-in-from-left-2">
+                            {supportingDocsOptions.map((doc) => (
+                                <div
+                                    key={doc}
+                                    className="flex items-center space-x-2"
+                                >
                                     <Checkbox
                                         id={`doc-${doc}`}
-                                        checked={data.supporting_documents.includes(doc)}
+                                        checked={data.supporting_documents.includes(
+                                            doc,
+                                        )}
                                         onCheckedChange={(c) => {
-                                            const docs = [...data.supporting_documents];
+                                            const docs = [
+                                                ...data.supporting_documents,
+                                            ];
 
                                             if (c) {
                                                 docs.push(doc);
@@ -59,15 +73,27 @@ export const SupportingDocsSection: React.FC<SupportingDocsSectionProps> = ({
                                                 }
                                             }
 
-                                            setData('supporting_documents', docs);
+                                            setData(
+                                                'supporting_documents',
+                                                docs,
+                                            );
                                         }}
                                     />
-                                    <Label htmlFor={`doc-${doc}`} className="text-sm">{doc}</Label>
+                                    <Label
+                                        htmlFor={`doc-${doc}`}
+                                        className="text-sm"
+                                    >
+                                        {doc}
+                                    </Label>
                                 </div>
                             ))}
                         </div>
                     )}
-                    {errors.supporting_documents && <p className="text-sm text-destructive">{errors.supporting_documents}</p>}
+                    {errors.supporting_documents && (
+                        <p className="text-sm text-destructive">
+                            {errors.supporting_documents}
+                        </p>
+                    )}
                 </div>
             )}
 
@@ -77,7 +103,12 @@ export const SupportingDocsSection: React.FC<SupportingDocsSectionProps> = ({
                     <Input
                         placeholder="e.g. Allocated 7 days to John Doe (Husband)"
                         value={data.maternity_allocation_details}
-                        onChange={e => setData('maternity_allocation_details', e.target.value)}
+                        onChange={(e) =>
+                            setData(
+                                'maternity_allocation_details',
+                                e.target.value,
+                            )
+                        }
                     />
                 </div>
             )}
@@ -87,9 +118,16 @@ export const SupportingDocsSection: React.FC<SupportingDocsSectionProps> = ({
                     <Checkbox
                         id="commutation"
                         checked={data.commutation_requested}
-                        onCheckedChange={(c) => setData('commutation_requested', c === true)}
+                        onCheckedChange={(c) =>
+                            setData('commutation_requested', c === true)
+                        }
                     />
-                    <Label htmlFor="commutation" className="text-sm font-medium leading-none">Commutation Requested</Label>
+                    <Label
+                        htmlFor="commutation"
+                        className="text-sm leading-none font-medium"
+                    >
+                        Commutation Requested
+                    </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                     <Checkbox
@@ -97,7 +135,12 @@ export const SupportingDocsSection: React.FC<SupportingDocsSectionProps> = ({
                         checked={data.is_filed}
                         onCheckedChange={(c) => setData('is_filed', c === true)}
                     />
-                    <Label htmlFor="is_filed" className="text-sm font-medium leading-none">Form is properly filed</Label>
+                    <Label
+                        htmlFor="is_filed"
+                        className="text-sm leading-none font-medium"
+                    >
+                        Form is properly filed
+                    </Label>
                 </div>
             </div>
         </>

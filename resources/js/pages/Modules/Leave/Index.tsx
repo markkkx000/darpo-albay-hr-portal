@@ -1,7 +1,12 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Plus, CalendarX } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { ViewActionButton, EditActionButton, ArchiveActionButton, RestoreActionButton } from '@/components/ActionButtons';
+import {
+    ViewActionButton,
+    EditActionButton,
+    ArchiveActionButton,
+    RestoreActionButton,
+} from '@/components/ActionButtons';
 import { EmployeeSearch } from '@/components/EmployeeSearch';
 import PageHeader from '@/components/page-header';
 import { Pagination } from '@/components/Pagination';
@@ -96,11 +101,20 @@ function getLeaveStatusClass(statusName: string): string {
         return 'status-badge-permanent';
     }
 
-    if (name.includes('pend') || name.includes('review') || name.includes('process')) {
+    if (
+        name.includes('pend') ||
+        name.includes('review') ||
+        name.includes('process')
+    ) {
         return 'status-badge-contractual';
     }
 
-    if (name.includes('reject') || name.includes('disapprov') || name.includes('cancel') || name.includes('denied')) {
+    if (
+        name.includes('reject') ||
+        name.includes('disapprov') ||
+        name.includes('cancel') ||
+        name.includes('denied')
+    ) {
         return 'bg-destructive text-destructive-foreground';
     }
 
@@ -118,7 +132,9 @@ export default function LeaveDashboard({
     const canEncode = auth.permissions.includes('leave.manage');
 
     const [search, setSearch] = useState(filters?.search || '');
-    const [viewMode, setViewMode] = useState(filters?.view || (canEncode ? 'all' : 'mine'));
+    const [viewMode, setViewMode] = useState(
+        filters?.view || (canEncode ? 'all' : 'mine'),
+    );
     const [sort, setSort] = useState(filters?.sort || 'desc');
     const [leaveType, setLeaveType] = useState(filters?.leave_type_id || 'all');
     const [status, setStatus] = useState(filters?.status_id || 'all');
@@ -271,13 +287,23 @@ export default function LeaveDashboard({
                         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
                             {/* View Toggle (Only for Encoders) */}
                             {canEncode ? (
-                                <SlidingTabs 
+                                <SlidingTabs
                                     tabs={[
-                                        { value: 'all', label: 'All Leaves', active: viewMode === 'all' },
-                                        { value: 'mine', label: 'My Leave History', active: viewMode === 'mine' }
+                                        {
+                                            value: 'all',
+                                            label: 'All Leaves',
+                                            active: viewMode === 'all',
+                                        },
+                                        {
+                                            value: 'mine',
+                                            label: 'My Leave History',
+                                            active: viewMode === 'mine',
+                                        },
                                     ]}
                                     layoutId="leave-view-tabs"
-                                    onChange={(val) => setViewMode(val as 'all' | 'mine')}
+                                    onChange={(val) =>
+                                        setViewMode(val as 'all' | 'mine')
+                                    }
                                 />
                             ) : (
                                 <div className="text-lg font-semibold">
@@ -295,7 +321,9 @@ export default function LeaveDashboard({
                                             : 'text-muted-foreground hover:text-foreground',
                                     )}
                                 >
-                                    {archived ? 'Hide Archived' : 'Show Archived'}
+                                    {archived
+                                        ? 'Hide Archived'
+                                        : 'Show Archived'}
                                 </button>
                             </div>
 
@@ -420,28 +448,52 @@ export default function LeaveDashboard({
                             <table className="w-full caption-bottom text-sm">
                                 <thead className="border-b border-border/50 bg-muted/40 text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
                                     <tr>
-                                        <th scope="col" className="px-4 py-4 text-left">
+                                        <th
+                                            scope="col"
+                                            className="px-4 py-4 text-left"
+                                        >
                                             Employee
                                         </th>
-                                        <th scope="col" className="px-4 py-4 text-left">
+                                        <th
+                                            scope="col"
+                                            className="px-4 py-4 text-left"
+                                        >
                                             Leave Type
                                         </th>
-                                        <th scope="col" className="px-4 py-4 text-left">
+                                        <th
+                                            scope="col"
+                                            className="px-4 py-4 text-left"
+                                        >
                                             Dates (mm/dd/yyyy)
                                         </th>
-                                        <th scope="col" className="px-4 py-4 text-left">
+                                        <th
+                                            scope="col"
+                                            className="px-4 py-4 text-left"
+                                        >
                                             Days
                                         </th>
-                                        <th scope="col" className="px-4 py-4 text-left">
+                                        <th
+                                            scope="col"
+                                            className="px-4 py-4 text-left"
+                                        >
                                             Status
                                         </th>
-                                        <th scope="col" className="px-4 py-4 text-left">
+                                        <th
+                                            scope="col"
+                                            className="px-4 py-4 text-left"
+                                        >
                                             Date Approved
                                         </th>
-                                        <th scope="col" className="px-4 py-4 text-left">
+                                        <th
+                                            scope="col"
+                                            className="px-4 py-4 text-left"
+                                        >
                                             Approver / Encoder
                                         </th>
-                                        <th scope="col" className="px-4 py-4 text-right">
+                                        <th
+                                            scope="col"
+                                            className="px-4 py-4 text-right"
+                                        >
                                             Actions
                                         </th>
                                     </tr>
@@ -528,7 +580,10 @@ export default function LeaveDashboard({
                                                 <span
                                                     className={cn(
                                                         'inline-flex items-center rounded-full px-3 py-1 text-[10px] font-bold tracking-wide uppercase shadow-sm',
-                                                        getLeaveStatusClass(leave.leave_status?.name || ''),
+                                                        getLeaveStatusClass(
+                                                            leave.leave_status
+                                                                ?.name || '',
+                                                        ),
                                                     )}
                                                 >
                                                     {leave.leave_status?.name}
@@ -592,18 +647,28 @@ export default function LeaveDashboard({
                                                             title="Edit Request"
                                                         />
                                                     )}
-                                                    {canEncode && !leave.deleted_at && (
-                                                        <ArchiveActionButton
-                                                            onClick={() => handleArchive(leave.id)}
-                                                            title="Archive Request"
-                                                        />
-                                                    )}
-                                                    {canEncode && leave.deleted_at && (
-                                                        <RestoreActionButton
-                                                            onClick={() => handleRestore(leave.id)}
-                                                            title="Restore Request"
-                                                        />
-                                                    )}
+                                                    {canEncode &&
+                                                        !leave.deleted_at && (
+                                                            <ArchiveActionButton
+                                                                onClick={() =>
+                                                                    handleArchive(
+                                                                        leave.id,
+                                                                    )
+                                                                }
+                                                                title="Archive Request"
+                                                            />
+                                                        )}
+                                                    {canEncode &&
+                                                        leave.deleted_at && (
+                                                            <RestoreActionButton
+                                                                onClick={() =>
+                                                                    handleRestore(
+                                                                        leave.id,
+                                                                    )
+                                                                }
+                                                                title="Restore Request"
+                                                            />
+                                                        )}
                                                 </div>
                                             </td>
                                         </tr>

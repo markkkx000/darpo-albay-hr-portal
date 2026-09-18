@@ -31,7 +31,11 @@ export function AppSidebar() {
     const dynamicNav = (auth.navigation || []) as NavItem[];
 
     return (
-        <Sidebar collapsible="icon" variant="inset" className="border-r border-border-1">
+        <Sidebar
+            collapsible="icon"
+            variant="inset"
+            className="border-r border-border-1"
+        >
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
@@ -48,13 +52,15 @@ export function AppSidebar() {
 
             <SidebarFooter>
                 <NavFooter items={footerNavItems} className="mt-auto" />
-                
+
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SupportTicketModal>
-                            <button className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:text-foreground cursor-pointer rounded-lg text-muted-foreground group-data-[collapsible=icon]:justify-center transition-colors">
+                            <button className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-muted-foreground transition-colors group-data-[collapsible=icon]:justify-center hover:text-foreground">
                                 <CircleHelp className="size-4 shrink-0" />
-                                <span className="group-data-[collapsible=icon]:hidden font-medium">Help & Support</span>
+                                <span className="font-medium group-data-[collapsible=icon]:hidden">
+                                    Help & Support
+                                </span>
                             </button>
                         </SupportTicketModal>
                     </SidebarMenuItem>

@@ -3,7 +3,11 @@ export const getDetailsOptions = (name: string): string[] => {
         return [];
     }
 
-    if (name.includes('vacation') || name.includes('mandatory') || name.includes('special privilege')) {
+    if (
+        name.includes('vacation') ||
+        name.includes('mandatory') ||
+        name.includes('special privilege')
+    ) {
         return ['Within the Philippines', 'Abroad'];
     }
 
@@ -16,17 +20,29 @@ export const getDetailsOptions = (name: string): string[] => {
     }
 
     if (name.includes('study')) {
-        return ['Completion of Master\'s Degree', 'BAR/Board Examination Review', 'Others'];
+        return [
+            "Completion of Master's Degree",
+            'BAR/Board Examination Review',
+            'Others',
+        ];
     }
 
-    if (name.includes('maternity') || name.includes('paternity') || name.includes('vawc') || name.includes('parent')) {
+    if (
+        name.includes('maternity') ||
+        name.includes('paternity') ||
+        name.includes('vawc') ||
+        name.includes('parent')
+    ) {
         return ['N/A'];
     }
 
     return ['Monetization of Leave Credits', 'Terminal Leave', 'Others'];
 };
 
-export const getSupportingDocsOptions = (name: string, daysRequested: string | number): string[] => {
+export const getSupportingDocsOptions = (
+    name: string,
+    daysRequested: string | number,
+): string[] => {
     const docs: string[] = [];
 
     if (name.includes('sick')) {
@@ -34,7 +50,11 @@ export const getSupportingDocsOptions = (name: string, daysRequested: string | n
     }
 
     if (name.includes('maternity') || name.includes('paternity')) {
-        docs.push('Proof of Pregnancy/Delivery', 'Marriage Contract', 'Notice of Allocation (CS Form 6a)');
+        docs.push(
+            'Proof of Pregnancy/Delivery',
+            'Marriage Contract',
+            'Notice of Allocation (CS Form 6a)',
+        );
     }
 
     if (name.includes('solo parent')) {
@@ -53,7 +73,10 @@ export const getSupportingDocsOptions = (name: string, daysRequested: string | n
         docs.push('Contract', 'Incident/Police Report', 'Written Concurrence');
     }
 
-    const days = typeof daysRequested === 'string' ? parseFloat(daysRequested) : daysRequested;
+    const days =
+        typeof daysRequested === 'string'
+            ? parseFloat(daysRequested)
+            : daysRequested;
 
     if (!isNaN(days) && days >= 30) {
         docs.push('Clearance Form (CS Form 7)');

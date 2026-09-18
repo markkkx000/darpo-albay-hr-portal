@@ -17,14 +17,25 @@ interface GenericActionButtonProps extends ActionButtonProps {
     disabled?: boolean;
 }
 
-export const ActionButton = ({ href, onClick, title, icon: Icon, variant = "ghost", className, disabled }: GenericActionButtonProps) => (
+export const ActionButton = ({
+    href,
+    onClick,
+    title,
+    icon: Icon,
+    variant = 'ghost',
+    className,
+    disabled,
+}: GenericActionButtonProps) => (
     <Button
         size="icon"
         variant={variant}
         asChild={!!href}
         onClick={onClick}
         disabled={disabled}
-        className={cn("border-none rounded-full hover:scale-110 transition-transform dark:hover:text-black group", className)}
+        className={cn(
+            'group rounded-full border-none transition-transform hover:scale-110 dark:hover:text-black',
+            className,
+        )}
     >
         {href ? (
             <Link href={href} title={title} aria-label={title}>
@@ -37,21 +48,43 @@ export const ActionButton = ({ href, onClick, title, icon: Icon, variant = "ghos
 );
 
 export const ViewActionButton = (props: ActionButtonProps) => (
-    <ActionButton {...props} icon={Eye} className="btn-ghost-specular border-none rounded-full hover:scale-110 transition-transform" />
+    <ActionButton
+        {...props}
+        icon={Eye}
+        className="btn-ghost-specular rounded-full border-none transition-transform hover:scale-110"
+    />
 );
 
 export const EditActionButton = (props: ActionButtonProps) => (
-    <ActionButton {...props} icon={Edit} className="btn-ghost-specular border-none rounded-full hover:scale-110 transition-transform" />
+    <ActionButton
+        {...props}
+        icon={Edit}
+        className="btn-ghost-specular rounded-full border-none transition-transform hover:scale-110"
+    />
 );
 
 export const DeleteActionButton = (props: ActionButtonProps) => (
-    <ActionButton {...props} icon={Trash2} variant="ghost-destructive" className="btn-ghost-danger-specular border-none rounded-full hover:scale-110 transition-transform" />
+    <ActionButton
+        {...props}
+        icon={Trash2}
+        variant="ghost-destructive"
+        className="btn-ghost-danger-specular rounded-full border-none transition-transform hover:scale-110"
+    />
 );
 
 export const RestoreActionButton = (props: ActionButtonProps) => (
-    <ActionButton {...props} icon={RotateCcw} className="btn-ghost-specular border-none rounded-full hover:scale-110 transition-transform" />
+    <ActionButton
+        {...props}
+        icon={RotateCcw}
+        className="btn-ghost-specular rounded-full border-none transition-transform hover:scale-110"
+    />
 );
 
 export const ArchiveActionButton = (props: ActionButtonProps) => (
-    <ActionButton {...props} icon={Archive} variant="ghost-destructive" className="btn-ghost-danger-specular border-none rounded-full hover:scale-110 transition-transform" />
+    <ActionButton
+        {...props}
+        icon={Archive}
+        variant="ghost-destructive"
+        className="btn-ghost-danger-specular rounded-full border-none transition-transform hover:scale-110"
+    />
 );

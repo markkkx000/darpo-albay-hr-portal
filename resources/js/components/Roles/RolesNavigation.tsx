@@ -5,7 +5,7 @@ import RolesRoutes from '@/routes/roles';
 
 export function RolesNavigation() {
     const { url } = usePage();
-    
+
     const tabs = [
         {
             value: 'roles',

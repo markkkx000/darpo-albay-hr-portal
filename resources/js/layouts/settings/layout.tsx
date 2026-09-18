@@ -48,26 +48,34 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                             const active = isCurrentOrParentUrl(item.href);
 
                             return (
-                                <Link 
+                                <Link
                                     key={`${toUrl(item.href)}-${index}`}
                                     href={item.href}
                                     className={cn(
                                         'relative flex items-center rounded-2xl px-4 py-2.5 transition duration-300',
                                         active
-                                            ? 'text-black font-bold'
-                                            : 'text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5',
+                                            ? 'font-bold text-black'
+                                            : 'text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/5',
                                     )}
                                 >
                                     {active && (
-                                        <motion.div 
+                                        <motion.div
                                             layoutId="settings-active"
                                             className="sidebar-active-gradient absolute inset-0 rounded-2xl"
-                                            transition={{ duration: 0.2, ease: 'easeOut' }}
+                                            transition={{
+                                                duration: 0.2,
+                                                ease: 'easeOut',
+                                            }}
                                         />
                                     )}
                                     <span className="relative z-10 flex items-center">
                                         {item.icon && (
-                                            <item.icon className={cn("mr-2 h-4 w-4 transition-transform", active && "scale-110")} />
+                                            <item.icon
+                                                className={cn(
+                                                    'mr-2 h-4 w-4 transition-transform',
+                                                    active && 'scale-110',
+                                                )}
+                                            />
                                         )}
                                         {item.title}
                                     </span>

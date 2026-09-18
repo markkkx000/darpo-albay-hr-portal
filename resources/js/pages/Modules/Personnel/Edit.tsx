@@ -14,7 +14,13 @@ interface Props {
     appointmentStatuses: any[];
 }
 
-export default function Edit({ employee, divisions, units, positions, appointmentStatuses }: Props) {
+export default function Edit({
+    employee,
+    divisions,
+    units,
+    positions,
+    appointmentStatuses,
+}: Props) {
     const { data, setData, post, processing, errors, transform } = useForm({
         _method: 'PUT',
         employee_number: employee?.employee_number || '',
@@ -26,17 +32,19 @@ export default function Edit({ employee, divisions, units, positions, appointmen
         date_of_birth: employee?.date_of_birth || '',
         civil_status: employee?.civil_status || '',
         eligibility: employee?.eligibility || '',
-        
-        positions: employee?.positions?.length > 0
-            ? employee.positions.map((p: any) => ({
-                id: p.id,
-                name: p.name,
-                is_primary: p.pivot?.is_primary || false
-            }))
-            : [{ id: '', name: '', is_primary: true }],
+
+        positions:
+            employee?.positions?.length > 0
+                ? employee.positions.map((p: any) => ({
+                      id: p.id,
+                      name: p.name,
+                      is_primary: p.pivot?.is_primary || false,
+                  }))
+                : [{ id: '', name: '', is_primary: true }],
         division_id: employee?.division_id?.toString() || '',
         unit_id: employee?.unit_id?.toString() || '',
-        appointment_status_id: employee?.appointment_status_id?.toString() || '',
+        appointment_status_id:
+            employee?.appointment_status_id?.toString() || '',
         hire_date: employee?.hire_date || '',
         date_hired_government: employee?.date_hired_government || '',
         years_in_service: employee?.years_in_service || '',
@@ -48,11 +56,11 @@ export default function Edit({ employee, divisions, units, positions, appointmen
         date_of_latest_appointment: employee?.date_of_latest_appointment || '',
         date_of_assumption: employee?.date_of_assumption || '',
         date_of_separation: employee?.date_of_separation || '',
-        
+
         contact_number: employee?.contact_number || '',
         present_address: employee?.present_address || '',
         address: employee?.address || '',
-        
+
         gsis_bp_number: employee?.gsis_bp_number || '',
         philhealth: employee?.philhealth || '',
         hdmf_pagibig_no: employee?.hdmf_pagibig_no || '',
@@ -60,37 +68,64 @@ export default function Edit({ employee, divisions, units, positions, appointmen
         lbp_account_number: employee?.lbp_account_number || '',
         prc_id_no: employee?.prc_id_no || '',
         prc_expiration: employee?.prc_expiration || '',
-        
+
         fund_code: employee?.fund_code || '',
         func_activity_code: employee?.func_activity_code || '',
         profile_picture: employee?.profile_picture || null,
-        salary_grade: employee?.salary_grade !== undefined && employee?.salary_grade !== null ? employee.salary_grade : '',
-        salary_step: employee?.salary_step !== undefined && employee?.salary_step !== null ? employee.salary_step : (() => {
-            let stepDate = employee?.hire_date || employee?.date_hired_government || employee?.orig_date_of_appointment || employee?.date_of_latest_appointment;
+        salary_grade:
+            employee?.salary_grade !== undefined &&
+            employee?.salary_grade !== null
+                ? employee.salary_grade
+                : '',
+        salary_step:
+            employee?.salary_step !== undefined &&
+            employee?.salary_step !== null
+                ? employee.salary_step
+                : (() => {
+                      let stepDate =
+                          employee?.hire_date ||
+                          employee?.date_hired_government ||
+                          employee?.orig_date_of_appointment ||
+                          employee?.date_of_latest_appointment;
 
-            if (employee?.promotion_histories && employee.promotion_histories.length > 0) {
-                const latestPromo = [...employee.promotion_histories].sort((a, b) => new Date(b.promotion_date).getTime() - new Date(a.promotion_date).getTime())[0];
+                      if (
+                          employee?.promotion_histories &&
+                          employee.promotion_histories.length > 0
+                      ) {
+                          const latestPromo = [
+                              ...employee.promotion_histories,
+                          ].sort(
+                              (a, b) =>
+                                  new Date(b.promotion_date).getTime() -
+                                  new Date(a.promotion_date).getTime(),
+                          )[0];
 
-                if (latestPromo && latestPromo.promotion_date) {
-                    stepDate = latestPromo.promotion_date;
-                }
-            }
+                          if (latestPromo && latestPromo.promotion_date) {
+                              stepDate = latestPromo.promotion_date;
+                          }
+                      }
 
-            if (!stepDate) {
-return '';
-}
+                      if (!stepDate) {
+                          return '';
+                      }
 
-            const msInDay = 1000 * 60 * 60 * 24;
-            const yearsWorked = (CURRENT_TIME - new Date(stepDate).getTime()) / (msInDay * 365.25);
+                      const msInDay = 1000 * 60 * 60 * 24;
+                      const yearsWorked =
+                          (CURRENT_TIME - new Date(stepDate).getTime()) /
+                          (msInDay * 365.25);
 
-            return Math.floor(yearsWorked / 3) + 1;
-        })(),
-        monthly_salary: employee?.monthly_salary !== undefined && employee?.monthly_salary !== null ? employee.monthly_salary : '',
+                      return Math.floor(yearsWorked / 3) + 1;
+                  })(),
+        monthly_salary:
+            employee?.monthly_salary !== undefined &&
+            employee?.monthly_salary !== null
+                ? employee.monthly_salary
+                : '',
     });
 
     const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
-        
+
         transform((data) => {
             const result = {
                 ...data,
@@ -116,20 +151,21 @@ return '';
     return (
         <>
             <Head title={`Edit ${employee.first_name} ${employee.last_name}`} />
-            
-            <div className="p-4 w-full max-w-4xl mx-auto space-y-6">
-                <div className="matte-card elev-1 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 rounded-2xl">
+
+            <div className="mx-auto w-full max-w-4xl space-y-6 p-4">
+                <div className="matte-card elev-1 flex flex-col justify-between gap-4 rounded-2xl px-6 py-5 md:flex-row md:items-center">
                     <div className="flex items-center gap-3">
                         <h1 className="t-headline">Edit Employee Record</h1>
-                        <p className="text-muted-foreground text-sm mt-2">
-                            Update the information for {employee.first_name} {employee.last_name}.
+                        <p className="mt-2 text-sm text-muted-foreground">
+                            Update the information for {employee.first_name}{' '}
+                            {employee.last_name}.
                         </p>
                     </div>
                 </div>
 
                 <Card className="matte-card elev-2 border-none">
                     <CardContent className="pt-6">
-                        <EmployeeForm 
+                        <EmployeeForm
                             data={data}
                             setData={setData}
                             errors={errors}
@@ -152,6 +188,6 @@ return '';
 Edit.layout = {
     breadcrumbs: [
         { title: 'Personnel Directory', href: indexRoute().url },
-        { title: 'Edit Record', href: '#' }
+        { title: 'Edit Record', href: '#' },
     ],
 };

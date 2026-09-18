@@ -15,19 +15,21 @@ export default function Create({ divisions, positions, users }: Props) {
         <>
             <Head title="Create Announcement" />
 
-            <div className="p-6 lg:p-10 w-full flex flex-col items-center">
+            <div className="flex w-full flex-col items-center p-6 lg:p-10">
                 <div className="w-full max-w-4xl space-y-8">
-                    <Heading 
-                        title="Create Announcement" 
+                    <Heading
+                        title="Create Announcement"
                         description="Draft a new announcement. You can publish it once you are done."
                     />
 
-                    <Card className="matte-card elev-2 border-none overflow-hidden">
-                        <CardHeader className="border-b border-white/5 pb-6 px-8 pt-8">
-                            <CardTitle className="text-xl font-bold tracking-tight">Announcement Details</CardTitle>
+                    <Card className="matte-card elev-2 overflow-hidden border-none">
+                        <CardHeader className="border-b border-white/5 px-8 pt-8 pb-6">
+                            <CardTitle className="text-xl font-bold tracking-tight">
+                                Announcement Details
+                            </CardTitle>
                         </CardHeader>
                         <CardContent className="p-8">
-                            <AnnouncementForm 
+                            <AnnouncementForm
                                 submitUrl={store().url}
                                 method="post"
                                 divisions={divisions}

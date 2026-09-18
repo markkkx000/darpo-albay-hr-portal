@@ -29,11 +29,15 @@ export default function AuthCardLayout({
                     <AppLogoIcon className="size-24" />
                 </Link>
 
-                <div className="flex animate-fade-up flex-col gap-6">
-                    <Card className="rounded-xl shadow-lg border-white/10">
+                <div className="animate-fade-up flex flex-col gap-6">
+                    <Card className="rounded-xl border-white/10 shadow-lg">
                         <CardHeader className="px-10 pt-8 pb-0 text-center">
-                            <CardTitle className="text-xl font-bold tracking-tight">{title}</CardTitle>
-                            <CardDescription className="text-sm text-balance">{description}</CardDescription>
+                            <CardTitle className="text-xl font-bold tracking-tight">
+                                {title}
+                            </CardTitle>
+                            <CardDescription className="text-sm text-balance">
+                                {description}
+                            </CardDescription>
                         </CardHeader>
                         <CardContent className="px-10 py-8">
                             {children}

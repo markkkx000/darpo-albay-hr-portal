@@ -31,17 +31,17 @@ export default function Login({ status }: Props) {
 
             <form onSubmit={submit} className="flex flex-col gap-6">
                 <div className="grid gap-6">
-                    <div className="grid animate-fade-up gap-2">
-                        <Label htmlFor="login">
-                            Email or Employee Number
-                        </Label>
+                    <div className="animate-fade-up grid gap-2">
+                        <Label htmlFor="login">Email or Employee Number</Label>
                         <div className="focus-glow rounded-md transition">
                             <Input
                                 id="login"
                                 type="text"
                                 name="login"
                                 value={data.login}
-                                onChange={(e) => setData('login', e.target.value)}
+                                onChange={(e) =>
+                                    setData('login', e.target.value)
+                                }
                                 required
                                 autoFocus
                                 tabIndex={1}
@@ -52,10 +52,14 @@ export default function Login({ status }: Props) {
                         <InputError message={errors.login} />
                     </div>
 
-                    <div className="grid animate-fade-up-delay-1 gap-2">
+                    <div className="animate-fade-up-delay-1 grid gap-2">
                         <div className="flex items-center justify-between">
                             <Label htmlFor="password">Password</Label>
-                            <Link href="/forgot-password" className="text-sm font-medium text-primary hover:underline" tabIndex={-1}>
+                            <Link
+                                href="/forgot-password"
+                                className="text-sm font-medium text-primary hover:underline"
+                                tabIndex={-1}
+                            >
                                 Forgot password?
                             </Link>
                         </div>
@@ -64,7 +68,9 @@ export default function Login({ status }: Props) {
                                 id="password"
                                 name="password"
                                 value={data.password}
-                                onChange={(e) => setData('password', e.target.value)}
+                                onChange={(e) =>
+                                    setData('password', e.target.value)
+                                }
                                 required
                                 tabIndex={2}
                                 autoComplete="current-password"
@@ -74,7 +80,7 @@ export default function Login({ status }: Props) {
                         <InputError message={errors.password} />
                     </div>
 
-                    <div className="flex animate-fade-up-delay-2 items-center space-x-3">
+                    <div className="animate-fade-up-delay-2 flex items-center space-x-3">
                         <Checkbox
                             id="remember"
                             name="remember"
@@ -101,7 +107,7 @@ export default function Login({ status }: Props) {
                     </div>
                 </div>
             </form>
- 
+
             {status && (
                 <div className="mb-4 text-center text-sm font-medium text-primary">
                     {status}
@@ -113,6 +119,5 @@ export default function Login({ status }: Props) {
 
 Login.layout = {
     title: 'Log in to your account',
-    description:
-        'Enter your email or employee number and password to log in',
+    description: 'Enter your email or employee number and password to log in',
 };

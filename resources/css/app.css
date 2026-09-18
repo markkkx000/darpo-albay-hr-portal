@@ -111,7 +111,6 @@
     font-variant-numeric: tabular-nums;
 }
 
-
 @utility tab-active-gradient-text {
     @apply font-bold;
     background: var(--grad-primary);
@@ -332,8 +331,6 @@ table {
         border: 1px solid var(--border-1);
         border-radius: var(--r-xl);
     }
-
-
 
     /* Technique 02: Specular Highlights
        ─── Shared base ──────────────────────────────────────────── */
@@ -658,7 +655,6 @@ table {
         @apply pointer-events-none absolute rounded-full opacity-10 dark:opacity-20;
     }
 
-
     .mesh-blob-1 {
         width: 400px;
         height: 400px;
@@ -735,8 +731,6 @@ table {
         font-size: 11px;
         color: var(--muted-foreground);
     }
-
-
 
     /* Technique 07: Inset Surfaces */
     .input-etched {
@@ -942,7 +936,8 @@ table {
 
     /* Stacked toast depth — .toast-brand IS the [data-sonner-toast] li element,
        so we target it directly (not as a descendant). */
-    [data-sonner-toaster] [data-sonner-toast].toast-brand:not([data-front='true']) {
+    [data-sonner-toaster]
+        [data-sonner-toast].toast-brand:not([data-front='true']) {
         box-shadow:
             0 4px 16px rgba(0, 0, 0, 0.18),
             0 1px 4px rgba(0, 0, 0, 0.12) !important;
@@ -957,14 +952,18 @@ table {
         filter: brightness(1);
     }
 
-    .dark [data-sonner-toaster] [data-sonner-toast].toast-brand:not([data-front='true']) {
+    .dark
+        [data-sonner-toaster]
+        [data-sonner-toast].toast-brand:not([data-front='true']) {
         box-shadow:
             0 4px 20px rgba(0, 0, 0, 0.5),
             0 1px 6px rgba(0, 0, 0, 0.4) !important;
         filter: brightness(0.85);
     }
 
-    .dark [data-sonner-toaster] [data-sonner-toast].toast-brand[data-front='true'] {
+    .dark
+        [data-sonner-toaster]
+        [data-sonner-toast].toast-brand[data-front='true'] {
         box-shadow:
             0 12px 32px rgba(34, 197, 94, 0.4),
             0 6px 16px rgba(250, 204, 21, 0.3),

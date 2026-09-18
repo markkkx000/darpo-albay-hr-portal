@@ -20,7 +20,7 @@ export default function Heading({
                     variant === 'small'
                         ? 't-headline mb-0.5'
                         : 't-display !text-4xl lg:!text-5xl',
-                    className
+                    className,
                 )}
             >
                 {title}

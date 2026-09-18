@@ -13,7 +13,14 @@ import {
     CardTitle,
     CardFooter,
 } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
@@ -65,7 +72,9 @@ export default function DocumentRequestsShow({
     users?: any[];
 }) {
     const { auth } = usePage<any>().props;
-    const isOwner = auth.user.id === documentRequest.user_id || auth.user.id === documentRequest.requested_by;
+    const isOwner =
+        auth.user.id === documentRequest.user_id ||
+        auth.user.id === documentRequest.requested_by;
 
     const [isAcknowledgeModalOpen, setIsAcknowledgeModalOpen] = useState(false);
     const [isReleaseModalOpen, setIsReleaseModalOpen] = useState(false);
@@ -74,14 +83,18 @@ export default function DocumentRequestsShow({
 
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [statusReason, setStatusReason] = useState('');
-    const [statusAction, setStatusAction] = useState<'Rejected' | 'Cancelled' | null>(null);
+    const [statusAction, setStatusAction] = useState<
+        'Rejected' | 'Cancelled' | null
+    >(null);
 
     const handleStatusUpdate = (e: React.SyntheticEvent) => {
         e.preventDefault();
 
         if (statusAction) {
             router.post(
-                DocumentRequestsRoutes.status({ documentRequest: documentRequest.id }).url,
+                DocumentRequestsRoutes.status({
+                    documentRequest: documentRequest.id,
+                }).url,
                 { status: statusAction, status_reason: statusReason },
                 {
                     preserveScroll: true,
@@ -89,8 +102,8 @@ export default function DocumentRequestsShow({
                         setIsStatusModalOpen(false);
                         setStatusReason('');
                         setStatusAction(null);
-                    }
-                }
+                    },
+                },
             );
         }
     };
@@ -104,8 +117,8 @@ export default function DocumentRequestsShow({
             {
                 onSuccess: () => {
                     setIsAcknowledgeModalOpen(false);
-                }
-            }
+                },
+            },
         );
     };
 
@@ -114,15 +127,17 @@ export default function DocumentRequestsShow({
 
         if (pickupName) {
             router.post(
-                DocumentRequestsRoutes.pickedUp({ documentRequest: documentRequest.id }).url,
+                DocumentRequestsRoutes.pickedUp({
+                    documentRequest: documentRequest.id,
+                }).url,
                 { released_to: pickupName },
                 {
                     preserveScroll: true,
                     onSuccess: () => {
                         setIsPickupModalOpen(false);
                         setPickupName('');
-                    }
-                }
+                    },
+                },
             );
         }
     };
@@ -135,7 +150,7 @@ export default function DocumentRequestsShow({
                     title="Request Details"
                     description="View the status and details of this document request."
                     actions={
-                        <div className="flex flex-col sm:flex-row gap-2">
+                        <div className="flex flex-col gap-2 sm:flex-row">
                             {isHr && documentRequest.status === 'Pending' && (
                                 <Button
                                     variant="outline"
@@ -143,8 +158,9 @@ export default function DocumentRequestsShow({
                                     onClick={() =>
                                         router.post(
                                             DocumentRequestsRoutes.receive({
-                                                documentRequest: documentRequest.id,
-                                            }).url
+                                                documentRequest:
+                                                    documentRequest.id,
+                                            }).url,
                                         )
                                     }
                                 >
@@ -152,19 +168,21 @@ export default function DocumentRequestsShow({
                                     Mark Received
                                 </Button>
                             )}
-                            {isHr && (documentRequest.status === 'Pending' || documentRequest.status === 'Received') && (
-                                <Button
-                                    variant="destructive"
-                                    className="shadow-sm"
-                                    onClick={() => {
-                                        setStatusAction('Rejected');
-                                        setIsStatusModalOpen(true);
-                                    }}
-                                >
-                                    <XCircle className="h-4 w-4" />
-                                    Reject
-                                </Button>
-                            )}
+                            {isHr &&
+                                (documentRequest.status === 'Pending' ||
+                                    documentRequest.status === 'Received') && (
+                                    <Button
+                                        variant="destructive"
+                                        className="shadow-sm"
+                                        onClick={() => {
+                                            setStatusAction('Rejected');
+                                            setIsStatusModalOpen(true);
+                                        }}
+                                    >
+                                        <XCircle className="h-4 w-4" />
+                                        Reject
+                                    </Button>
+                                )}
                             {isHr && documentRequest.status === 'Received' && (
                                 <Button
                                     variant="default"
@@ -175,16 +193,20 @@ export default function DocumentRequestsShow({
                                     Process / Release
                                 </Button>
                             )}
-                            {isHr && documentRequest.status === 'Ready for Pickup' && (
-                                <Button
-                                    variant="outline"
-                                    className="shadow-sm"
-                                    onClick={() => setIsPickupModalOpen(true)}
-                                >
-                                    <Box className="h-4 w-4" />
-                                    Log Pickup
-                                </Button>
-                            )}
+                            {isHr &&
+                                documentRequest.status ===
+                                    'Ready for Pickup' && (
+                                    <Button
+                                        variant="outline"
+                                        className="shadow-sm"
+                                        onClick={() =>
+                                            setIsPickupModalOpen(true)
+                                        }
+                                    >
+                                        <Box className="h-4 w-4" />
+                                        Log Pickup
+                                    </Button>
+                                )}
                             {!isHr && documentRequest.status === 'Pending' && (
                                 <Button
                                     variant="destructive"
@@ -419,7 +441,9 @@ export default function DocumentRequestsShow({
                                         </div>
                                     )}
 
-                                    {(documentRequest.status === 'Rejected' || documentRequest.status === 'Cancelled') && (
+                                    {(documentRequest.status === 'Rejected' ||
+                                        documentRequest.status ===
+                                            'Cancelled') && (
                                         <div className="relative">
                                             <div className="absolute -left-[1.35rem] mt-1 h-3 w-3 rounded-full bg-destructive/20 ring-4 ring-background">
                                                 <div className="h-full w-full rounded-full bg-destructive" />
@@ -433,9 +457,13 @@ export default function DocumentRequestsShow({
                                                 )}
                                             </p>
                                             {documentRequest.status_reason && (
-                                                <div className="mt-2 rounded-md bg-destructive/10 p-2 text-xs text-destructive border border-destructive/20">
-                                                    <span className="font-semibold block mb-0.5">Reason:</span>
-                                                    {documentRequest.status_reason}
+                                                <div className="mt-2 rounded-md border border-destructive/20 bg-destructive/10 p-2 text-xs text-destructive">
+                                                    <span className="mb-0.5 block font-semibold">
+                                                        Reason:
+                                                    </span>
+                                                    {
+                                                        documentRequest.status_reason
+                                                    }
                                                 </div>
                                             )}
                                         </div>
@@ -450,7 +478,9 @@ export default function DocumentRequestsShow({
                                         <Button
                                             size="lg"
                                             className="btn-premium w-full bg-emerald-600 text-white hover:bg-emerald-700"
-                                            onClick={() => setIsAcknowledgeModalOpen(true)}
+                                            onClick={() =>
+                                                setIsAcknowledgeModalOpen(true)
+                                            }
                                         >
                                             <CheckCircle className="mr-2 h-5 w-5" />
                                             Acknowledge Receipt
@@ -461,12 +491,18 @@ export default function DocumentRequestsShow({
                     </div>
                 </div>
             </div>
-            <Dialog open={isAcknowledgeModalOpen} onOpenChange={setIsAcknowledgeModalOpen}>
+            <Dialog
+                open={isAcknowledgeModalOpen}
+                onOpenChange={setIsAcknowledgeModalOpen}
+            >
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Acknowledge Receipt</DialogTitle>
                         <DialogDescription>
-                            Are you sure you want to acknowledge receipt of these documents? This will finalize the request and confirm you have received all the files or physical copies.
+                            Are you sure you want to acknowledge receipt of
+                            these documents? This will finalize the request and
+                            confirm you have received all the files or physical
+                            copies.
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
@@ -477,7 +513,7 @@ export default function DocumentRequestsShow({
                             Cancel
                         </Button>
                         <Button
-                            className="btn-premium bg-emerald-600 hover:bg-emerald-700 text-white"
+                            className="btn-premium bg-emerald-600 text-white hover:bg-emerald-700"
                             onClick={handleAcknowledge}
                         >
                             Confirm Acknowledgment
@@ -492,7 +528,10 @@ export default function DocumentRequestsShow({
                 documentRequestId={documentRequest.id}
             />
 
-            <Dialog open={isPickupModalOpen} onOpenChange={setIsPickupModalOpen}>
+            <Dialog
+                open={isPickupModalOpen}
+                onOpenChange={setIsPickupModalOpen}
+            >
                 <DialogContent
                     onOpenAutoFocus={(e) => e.preventDefault()}
                     onInteractOutside={(e) => {
@@ -515,12 +554,12 @@ export default function DocumentRequestsShow({
                                 documents.
                                 <br />
                                 <br />
-                                <strong className="text-primary font-semibold">
+                                <strong className="font-semibold text-primary">
                                     Note:
                                 </strong>{' '}
                                 Please remind the receiver to log into their
-                                portal and click "Acknowledge Receipt" as soon as
-                                possible to complete the two-way verification
+                                portal and click "Acknowledge Receipt" as soon
+                                as possible to complete the two-way verification
                                 process.
                             </DialogDescription>
                         </DialogHeader>
@@ -553,22 +592,37 @@ export default function DocumentRequestsShow({
                     </form>
                 </DialogContent>
             </Dialog>
-            <Dialog open={isStatusModalOpen} onOpenChange={setIsStatusModalOpen}>
+            <Dialog
+                open={isStatusModalOpen}
+                onOpenChange={setIsStatusModalOpen}
+            >
                 <DialogContent>
                     <form onSubmit={handleStatusUpdate}>
                         <DialogHeader>
-                            <DialogTitle>{statusAction === 'Rejected' ? 'Reject Request' : 'Cancel Request'}</DialogTitle>
+                            <DialogTitle>
+                                {statusAction === 'Rejected'
+                                    ? 'Reject Request'
+                                    : 'Cancel Request'}
+                            </DialogTitle>
                             <DialogDescription>
-                                Are you sure you want to {statusAction === 'Rejected' ? 'reject' : 'cancel'} this request?
+                                Are you sure you want to{' '}
+                                {statusAction === 'Rejected'
+                                    ? 'reject'
+                                    : 'cancel'}{' '}
+                                this request?
                             </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="reason">Reason (Optional)</Label>
+                                <Label htmlFor="reason">
+                                    Reason (Optional)
+                                </Label>
                                 <Textarea
                                     id="reason"
                                     value={statusReason}
-                                    onChange={(e) => setStatusReason(e.target.value)}
+                                    onChange={(e) =>
+                                        setStatusReason(e.target.value)
+                                    }
                                     placeholder="Enter the reason here..."
                                     className="min-h-[100px]"
                                 />
@@ -586,7 +640,10 @@ export default function DocumentRequestsShow({
                                 Back
                             </Button>
                             <Button type="submit" variant="destructive">
-                                Confirm {statusAction === 'Rejected' ? 'Rejection' : 'Cancellation'}
+                                Confirm{' '}
+                                {statusAction === 'Rejected'
+                                    ? 'Rejection'
+                                    : 'Cancellation'}
                             </Button>
                         </DialogFooter>
                     </form>

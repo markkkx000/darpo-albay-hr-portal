@@ -166,7 +166,9 @@ export default function LeaveCredits({
                                 <div className="w-28">
                                     <Select
                                         value={year.toString()}
-                                        onValueChange={(v) => handleYearChange(parseInt(v))}
+                                        onValueChange={(v) =>
+                                            handleYearChange(parseInt(v))
+                                        }
                                     >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Year" />
@@ -286,7 +288,7 @@ export default function LeaveCredits({
                                                             const balance =
                                                                 parseFloat(
                                                                     credit?.balance ||
-                                                                    '0',
+                                                                        '0',
                                                                 );
 
                                                             return (
@@ -363,7 +365,9 @@ export default function LeaveCredits({
                             <div className="w-28">
                                 <Select
                                     value={year.toString()}
-                                    onValueChange={(v) => handleYearChange(parseInt(v))}
+                                    onValueChange={(v) =>
+                                        handleYearChange(parseInt(v))
+                                    }
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Year" />

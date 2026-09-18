@@ -1,4 +1,10 @@
-import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, ComboboxButton } from '@headlessui/react';
+import {
+    Combobox,
+    ComboboxInput,
+    ComboboxOption,
+    ComboboxOptions,
+    ComboboxButton,
+} from '@headlessui/react';
 import { router } from '@inertiajs/react';
 import { Check, ChevronsUpDown, Search, X } from 'lucide-react';
 import { useState, useMemo } from 'react';
@@ -24,10 +30,10 @@ interface EmployeeSearchProps {
     disabled?: boolean;
 }
 
-export function EmployeeSearch({ 
-    users, 
-    selectedId, 
-    placeholder = "Search employee...", 
+export function EmployeeSearch({
+    users,
+    selectedId,
+    placeholder = 'Search employee...',
     onSelect,
     route,
     params = {},
@@ -46,7 +52,9 @@ export function EmployeeSearch({
 
         if (selectedId) {
             if (returnValue === 'id' || !isNaN(Number(selectedId))) {
-                const found = usersArray.find((u) => u.id.toString() === selectedId.toString());
+                const found = usersArray.find(
+                    (u) => u.id.toString() === selectedId.toString(),
+                );
 
                 if (found) {
                     selectedName = `${found.first_name} ${found.last_name}`;
@@ -57,14 +65,21 @@ export function EmployeeSearch({
         }
 
         // If the query is empty or matches the selected name exactly, show all employees so the list is not cut
-        if (query === '' || query.toLowerCase() === selectedName.toLowerCase()) {
+        if (
+            query === '' ||
+            query.toLowerCase() === selectedName.toLowerCase()
+        ) {
             return usersArray;
         }
 
-        const keywords = query.toLowerCase().split(/[\s,]+/).filter(Boolean);
+        const keywords = query
+            .toLowerCase()
+            .split(/[\s,]+/)
+            .filter(Boolean);
 
         return usersArray.filter((user) => {
-            const searchable = `${user.first_name} ${user.last_name} ${user.employee_number ?? ''}`.toLowerCase();
+            const searchable =
+                `${user.first_name} ${user.last_name} ${user.employee_number ?? ''}`.toLowerCase();
 
             return keywords.every((keyword) => searchable.includes(keyword));
         });
@@ -74,13 +89,17 @@ export function EmployeeSearch({
         if (onSelect) {
             onSelect(val === 'all' || !val ? 'all' : val);
         } else if (route) {
-            router.get(route, {
-                ...params,
-                search: val === 'all' || !val ? undefined : val,
-            }, {
-                preserveState: true,
-                replace: true,
-            });
+            router.get(
+                route,
+                {
+                    ...params,
+                    search: val === 'all' || !val ? undefined : val,
+                },
+                {
+                    preserveState: true,
+                    replace: true,
+                },
+            );
         }
     };
 
@@ -93,33 +112,44 @@ export function EmployeeSearch({
 
     return (
         <div className="w-full max-w-sm">
-            <Combobox 
-                value={selectedId ? selectedId.toString() : null} 
+            <Combobox
+                value={selectedId ? selectedId.toString() : null}
                 onChange={handleChange}
                 onClose={() => setQuery('')}
                 nullable
                 disabled={disabled}
             >
-                <div className="relative w-full z-10">
-                    <div className={cn(
-                        "relative w-full cursor-default overflow-hidden rounded-2xl border border-input bg-background text-left shadow-sm focus-within:ring-1 focus-within:ring-ring",
-                        error && "border-destructive focus-within:ring-destructive ring-destructive",
-                        disabled && "opacity-50 cursor-not-allowed bg-muted"
-                    )}>
-                        <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
+                <div className="relative z-10 w-full">
+                    <div
+                        className={cn(
+                            'relative w-full cursor-default overflow-hidden rounded-2xl border border-input bg-background text-left shadow-sm focus-within:ring-1 focus-within:ring-ring',
+                            error &&
+                                'border-destructive ring-destructive focus-within:ring-destructive',
+                            disabled &&
+                                'cursor-not-allowed bg-muted opacity-50',
+                        )}
+                    >
+                        <div className="pointer-events-none absolute inset-y-0 left-3.5 flex items-center">
                             <Search className="h-4 w-4 text-muted-foreground/60" />
                         </div>
                         <ComboboxInput
-                            className="w-full border-none py-2.5 pl-11 pr-10 text-sm leading-5 text-foreground bg-transparent focus:ring-0 outline-none disabled:cursor-not-allowed"
+                            className="w-full border-none bg-transparent py-2.5 pr-10 pl-11 text-sm leading-5 text-foreground outline-none focus:ring-0 disabled:cursor-not-allowed"
                             displayValue={(val: string) => {
                                 if (val === 'all' || !val) {
                                     return '';
                                 }
 
-                                if (returnValue === 'id' || !isNaN(Number(val))) {
-                                    const found = users.find((u) => u.id.toString() === val);
+                                if (
+                                    returnValue === 'id' ||
+                                    !isNaN(Number(val))
+                                ) {
+                                    const found = users.find(
+                                        (u) => u.id.toString() === val,
+                                    );
 
-                                    return found ? `${found.first_name} ${found.last_name}` : val;
+                                    return found
+                                        ? `${found.first_name} ${found.last_name}`
+                                        : val;
                                 }
 
                                 return val;
@@ -128,86 +158,145 @@ export function EmployeeSearch({
                             onChange={(event) => setQuery(event.target.value)}
                             autoComplete="off"
                         />
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-2 space-x-0.5">
+                        <div className="absolute inset-y-0 right-0 flex items-center space-x-0.5 pr-2">
                             {selectedId && (
                                 <button
                                     type="button"
                                     onClick={handleClear}
-                                    className="p-1 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                                    className="rounded-full p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                                 >
                                     <X className="h-3 w-3" />
                                 </button>
                             )}
                             <ComboboxButton className="p-1">
-                                <ChevronsUpDown className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                                <ChevronsUpDown
+                                    className="h-4 w-4 text-muted-foreground"
+                                    aria-hidden="true"
+                                />
                             </ComboboxButton>
                         </div>
                     </div>
-                    <ComboboxOptions 
+                    <ComboboxOptions
                         transition
-                        className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-popover py-1 px-1.5 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm border z-[100] transition duration-100 ease-in data-[leave]:opacity-0"
+                        className="absolute z-[100] mt-1 max-h-60 w-full overflow-auto rounded-xl border bg-popover px-1.5 py-1 text-base shadow-lg ring-1 ring-black/5 transition duration-100 ease-in focus:outline-none data-[leave]:opacity-0 sm:text-sm"
                     >
-                            {filteredUsers.length === 0 && query !== '' ? (
-                                <div className="relative cursor-default select-none py-2 px-4 text-muted-foreground">
-                                    Nothing found.
-                                </div>
-                            ) : (
-                                <div className="contents">
-                                    {withAllEmployees && (
-                                        <ComboboxOption
-                                            className={({ focus }) =>
-                                                cn(
-                                                    "relative cursor-default select-none py-2 pl-10 pr-4",
-                                                    focus ? "item-hover-gradient mx-1.5 my-0.5 rounded-[16px]" : "text-popover-foreground mx-1.5 my-0.5"
-                                                )
-                                            }
-                                            value="all"
-                                        >
-                                            {({ selected, focus }) => (
-                                                <div className="contents">
-                                                    <span className={cn("block truncate", selected ? "font-medium" : "font-normal")}>
-                                                        All Employees
-                                                    </span>
-                                                    {selected ? (
-                                                        <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3", focus ? "text-black font-extrabold" : "text-primary")}>
-                                                            <Check className="h-4 w-4" aria-hidden="true" />
-                                                        </span>
-                                                    ) : null}
-                                                </div>
-                                            )}
-                                        </ComboboxOption>
-                                    )}
-                                    {filteredUsers.map((person) => (
-                                        <ComboboxOption
-                                            key={person.id}
-                                            className={({ focus }) =>
-                                                cn(
-                                                    "relative cursor-default select-none py-2 pl-10 pr-4",
-                                                    focus ? "item-hover-gradient mx-1.5 my-0.5 rounded-[16px]" : "text-popover-foreground mx-1.5 my-0.5"
-                                                )
-                                            }
-                                            value={returnValue === 'id' ? person.id.toString() : `${person.first_name} ${person.last_name}`}
-                                        >
-                                            {({ selected, focus }) => (
-                                                <div className="contents">
-                                                    <span className={cn("block truncate", selected ? "font-medium" : "font-normal")}>
-                                                        {person.first_name} {person.last_name}
-                                                        {person.employee_number && (
-                                                            <span className={cn("ml-2 text-xs", focus ? "text-black/65 font-semibold" : "text-muted-foreground")}>({person.employee_number})</span>
+                        {filteredUsers.length === 0 && query !== '' ? (
+                            <div className="relative cursor-default px-4 py-2 text-muted-foreground select-none">
+                                Nothing found.
+                            </div>
+                        ) : (
+                            <div className="contents">
+                                {withAllEmployees && (
+                                    <ComboboxOption
+                                        className={({ focus }) =>
+                                            cn(
+                                                'relative cursor-default py-2 pr-4 pl-10 select-none',
+                                                focus
+                                                    ? 'mx-1.5 my-0.5 rounded-[16px] item-hover-gradient'
+                                                    : 'mx-1.5 my-0.5 text-popover-foreground',
+                                            )
+                                        }
+                                        value="all"
+                                    >
+                                        {({ selected, focus }) => (
+                                            <div className="contents">
+                                                <span
+                                                    className={cn(
+                                                        'block truncate',
+                                                        selected
+                                                            ? 'font-medium'
+                                                            : 'font-normal',
+                                                    )}
+                                                >
+                                                    All Employees
+                                                </span>
+                                                {selected ? (
+                                                    <span
+                                                        className={cn(
+                                                            'absolute inset-y-0 left-0 flex items-center pl-3',
+                                                            focus
+                                                                ? 'font-extrabold text-black'
+                                                                : 'text-primary',
                                                         )}
+                                                    >
+                                                        <Check
+                                                            className="h-4 w-4"
+                                                            aria-hidden="true"
+                                                        />
                                                     </span>
-                                                    {selected ? (
-                                                        <span className={cn("absolute inset-y-0 left-0 flex items-center pl-3", focus ? "text-black font-extrabold" : "text-primary")}>
-                                                            <Check className="h-4 w-4" aria-hidden="true" />
+                                                ) : null}
+                                            </div>
+                                        )}
+                                    </ComboboxOption>
+                                )}
+                                {filteredUsers.map((person) => (
+                                    <ComboboxOption
+                                        key={person.id}
+                                        className={({ focus }) =>
+                                            cn(
+                                                'relative cursor-default py-2 pr-4 pl-10 select-none',
+                                                focus
+                                                    ? 'mx-1.5 my-0.5 rounded-[16px] item-hover-gradient'
+                                                    : 'mx-1.5 my-0.5 text-popover-foreground',
+                                            )
+                                        }
+                                        value={
+                                            returnValue === 'id'
+                                                ? person.id.toString()
+                                                : `${person.first_name} ${person.last_name}`
+                                        }
+                                    >
+                                        {({ selected, focus }) => (
+                                            <div className="contents">
+                                                <span
+                                                    className={cn(
+                                                        'block truncate',
+                                                        selected
+                                                            ? 'font-medium'
+                                                            : 'font-normal',
+                                                    )}
+                                                >
+                                                    {person.first_name}{' '}
+                                                    {person.last_name}
+                                                    {person.employee_number && (
+                                                        <span
+                                                            className={cn(
+                                                                'ml-2 text-xs',
+                                                                focus
+                                                                    ? 'font-semibold text-black/65'
+                                                                    : 'text-muted-foreground',
+                                                            )}
+                                                        >
+                                                            (
+                                                            {
+                                                                person.employee_number
+                                                            }
+                                                            )
                                                         </span>
-                                                    ) : null}
-                                                </div>
-                                            )}
-                                        </ComboboxOption>
-                                    ))}
-                                </div>
-                            )}
-                        </ComboboxOptions>
+                                                    )}
+                                                </span>
+                                                {selected ? (
+                                                    <span
+                                                        className={cn(
+                                                            'absolute inset-y-0 left-0 flex items-center pl-3',
+                                                            focus
+                                                                ? 'font-extrabold text-black'
+                                                                : 'text-primary',
+                                                        )}
+                                                    >
+                                                        <Check
+                                                            className="h-4 w-4"
+                                                            aria-hidden="true"
+                                                        />
+                                                    </span>
+                                                ) : null}
+                                            </div>
+                                        )}
+                                    </ComboboxOption>
+                                ))}
+                            </div>
+                        )}
+                    </ComboboxOptions>
                 </div>
             </Combobox>
         </div>

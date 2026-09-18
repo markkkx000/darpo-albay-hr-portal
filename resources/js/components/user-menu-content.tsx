@@ -37,7 +37,7 @@ export function UserMenuContent({ user }: Props) {
             <DropdownMenuLabel className="p-0 font-normal">
                 <Link
                     href={userinfo()}
-                    className="group flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:item-hover-gradient hover:text-black cursor-pointer rounded-lg"
+                    className="group flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:item-hover-gradient hover:text-black"
                     onClick={cleanup}
                 >
                     <UserInfo user={user} showEmail={true} />
@@ -47,7 +47,7 @@ export function UserMenuContent({ user }: Props) {
             <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
                     <Link
-                        className="group block w-full cursor-pointer hover:item-hover-gradient hover:text-black p-2 rounded-md"
+                        className="group block w-full cursor-pointer rounded-md p-2 hover:item-hover-gradient hover:text-black"
                         href={editPreferences()}
                         prefetch
                         onClick={cleanup}
@@ -60,7 +60,7 @@ export function UserMenuContent({ user }: Props) {
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                     <Link
-                        className="group block w-full cursor-pointer hover:item-hover-gradient hover:text-black p-2 rounded-md"
+                        className="group block w-full cursor-pointer rounded-md p-2 hover:item-hover-gradient hover:text-black"
                         href={supportTicketsIndex.url()}
                         prefetch
                         onClick={cleanup}
@@ -75,7 +75,7 @@ export function UserMenuContent({ user }: Props) {
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
                 <Link
-                    className="group block w-full cursor-pointer hover:item-hover-gradient hover:text-black p-2 rounded-md"
+                    className="group block w-full cursor-pointer rounded-md p-2 hover:item-hover-gradient hover:text-black"
                     href={logout()}
                     as="button"
                     onClick={handleLogout}

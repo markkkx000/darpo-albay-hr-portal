@@ -5,12 +5,25 @@ import { StatCard } from '@/components/dashboard/stat-card';
 import { UpcomingEvents } from '@/components/dashboard/upcoming-events';
 import { UpcomingMilestones } from '@/components/dashboard/upcoming-milestones';
 
-export function HROverview({ data, employeeData }: { data: any, employeeData?: any }) {
-    const stats = data || { total_employees: 0, pending_leaves: 0, pending_docs: 0, active_today: 0, recentActivity: [], action_items: [] };
+export function HROverview({
+    data,
+    employeeData,
+}: {
+    data: any;
+    employeeData?: any;
+}) {
+    const stats = data || {
+        total_employees: 0,
+        pending_leaves: 0,
+        pending_docs: 0,
+        active_today: 0,
+        recentActivity: [],
+        action_items: [],
+    };
 
     return (
         <>
-            <div className="grid animate-fade-up auto-rows-min gap-4 md:grid-cols-4">
+            <div className="animate-fade-up grid auto-rows-min gap-4 md:grid-cols-4">
                 <StatCard
                     title="Total Employees"
                     value={stats.total_employees ?? 0}
@@ -33,22 +46,29 @@ export function HROverview({ data, employeeData }: { data: any, employeeData?: a
                 />
             </div>
 
-            <div className="grid animate-fade-up-delay-1 gap-4 md:grid-cols-2 mt-4">
-                <HrPriorityBoard data={stats} layoutId="hr-overview-priority-tabs" />
+            <div className="animate-fade-up-delay-1 mt-4 grid gap-4 md:grid-cols-2">
+                <HrPriorityBoard
+                    data={stats}
+                    layoutId="hr-overview-priority-tabs"
+                />
 
                 {/* Quick Links */}
                 <HrQuickLinks />
             </div>
 
             {/* Row 3: Upcoming + Latest Announcements */}
-            <div className="grid gap-4 md:grid-cols-2 mt-4">
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
                 <UpcomingEvents events={employeeData?.calendar_events || []} />
-                <LatestAnnouncements announcements={employeeData?.latest_announcements || []} />
+                <LatestAnnouncements
+                    announcements={employeeData?.latest_announcements || []}
+                />
             </div>
 
             {/* Row 4: Upcoming Milestones */}
-            <div className="grid gap-4 md:grid-cols-2 mt-4">
-                <UpcomingMilestones milestones={stats.upcoming_milestones || []} />
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+                <UpcomingMilestones
+                    milestones={stats.upcoming_milestones || []}
+                />
             </div>
         </>
     );

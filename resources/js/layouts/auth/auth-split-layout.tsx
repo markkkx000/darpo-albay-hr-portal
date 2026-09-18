@@ -13,7 +13,7 @@ export default function AuthSplitLayout({
     return (
         <div className="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
             {/* ── Left panel: Glassmorphism animated background ── */}
-            <div className="relative hidden h-full flex-col p-10 text-white lg:flex dark:border-r overflow-hidden">
+            <div className="relative hidden h-full flex-col overflow-hidden p-10 text-white lg:flex dark:border-r">
                 <style>{`
                     .auth-left-bg {
                         position: absolute;
@@ -90,7 +90,9 @@ export default function AuthSplitLayout({
                 <div className="relative z-20 mt-auto">
                     <blockquote className="space-y-2">
                         <p className="text-sm leading-relaxed text-white/60">
-                            A unified platform for attendance tracking, leave management, and personnel administration — designed for DARPO Albay.
+                            A unified platform for attendance tracking, leave
+                            management, and personnel administration — designed
+                            for DARPO Albay.
                         </p>
                     </blockquote>
                 </div>
@@ -106,7 +108,9 @@ export default function AuthSplitLayout({
                         <AppLogoIcon className="h-10 sm:h-12" />
                     </Link>
                     <div className="flex flex-col items-start gap-2 text-left sm:items-center sm:text-center">
-                        <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+                        <h1 className="text-2xl font-bold tracking-tight">
+                            {title}
+                        </h1>
                         <p className="text-sm text-balance text-muted-foreground">
                             {description}
                         </p>

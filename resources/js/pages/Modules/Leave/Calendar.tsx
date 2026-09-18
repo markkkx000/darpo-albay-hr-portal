@@ -256,7 +256,9 @@ export default function LeaveCalendar({
                             <EmployeeSearch
                                 users={users}
                                 selectedId={userId ? userId.toString() : 'all'}
-                                onSelect={(val) => changeUser(val === 'all' ? null : val)}
+                                onSelect={(val) =>
+                                    changeUser(val === 'all' ? null : val)
+                                }
                                 withAllEmployees
                                 returnValue="id"
                             />
@@ -342,7 +344,7 @@ export default function LeaveCalendar({
                                     className={cn(
                                         'min-h-[120px] border-t bg-background p-2',
                                         holiday &&
-                                        'bg-yellow-500/10 dark:bg-yellow-500/5',
+                                            'bg-yellow-500/10 dark:bg-yellow-500/5',
                                     )}
                                 >
                                     <div className="mb-1 flex items-start justify-between">
@@ -371,7 +373,7 @@ export default function LeaveCalendar({
                                             const isHalfDay =
                                                 leave.days_requested < 1.0 &&
                                                 leave.start_date ===
-                                                leave.end_date;
+                                                    leave.end_date;
 
                                             return (
                                                 <div
