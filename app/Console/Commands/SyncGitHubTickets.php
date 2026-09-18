@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\SupportTicket;
+use App\Modules\SupportTickets\Models\SupportTicket;
 use App\Modules\SupportTickets\Services\GitHubSupportService;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;

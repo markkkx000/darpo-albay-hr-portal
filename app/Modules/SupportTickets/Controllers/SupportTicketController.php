@@ -2,12 +2,12 @@
 
 namespace App\Modules\SupportTickets\Controllers;
 
-use App\Models\SupportTicket;
+use App\Http\Controllers\Controller;
+use App\Modules\SupportTickets\Models\SupportTicket;
 use App\Modules\SupportTickets\Requests\SupportTicketRequest;
 use App\Modules\SupportTickets\Services\GitHubSupportService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -29,7 +29,7 @@ class SupportTicketController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return Inertia::render('Support/Index', [
+        return Inertia::render('Modules/SupportTickets/Index', [
             'tickets' => $tickets,
         ]);
     }
@@ -145,7 +145,7 @@ class SupportTicketController extends Controller
 
         array_unshift($filteredEvents, $issueComment);
 
-        return Inertia::render('Support/Show', [
+        return Inertia::render('Modules/SupportTickets/Show', [
             'ticket' => $ticket,
             'comments' => $filteredEvents,
         ]);

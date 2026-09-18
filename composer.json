@@ -1,11 +1,14 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/react-starter-kit",
+    "name": "markkkx000/darpo-albay-hr-portal",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "A modern HRIS for the Department of Agrarian Reform Provincial Office (DARPO) Albay, built with Laravel 13, React 19, and Inertia.js v3.",
     "keywords": [
         "laravel",
-        "framework"
+        "react",
+        "inertia",
+        "hris",
+        "hr-portal"
     ],
     "license": "MIT",
     "require": {

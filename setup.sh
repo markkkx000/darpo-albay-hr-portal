@@ -89,7 +89,7 @@ fi
 
 # Ensure storage directories exist and have proper permissions
 mkdir -p storage/framework/{sessions,views,cache}
-chmod -R 777 storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
 
 # ┌─────────────────────────────────────────────────────────────────────────────┐
 # │ 3. Dependency Installation                                                  │

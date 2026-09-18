@@ -129,7 +129,7 @@ export default function LeaveForm({
                             'X-CSRF-TOKEN': csrfToken || '',
                         },
                         body: JSON.stringify({ url }),
-                    }).catch(err => console.error('Failed to clean up attachment on unmount:', err));
+                    }).catch(() => {});
                 });
             }
         };
@@ -151,7 +151,7 @@ export default function LeaveForm({
                         setData('salary', json.salary || '');
                     }
                 })
-                .catch(err => console.error('Failed to fetch salary:', err));
+                .catch(() => {});
         }
 
         previousUserId.current = data.user_id;
@@ -216,8 +216,7 @@ export default function LeaveForm({
                     setUserCredits(credits.credits);
                 }
             })
-            .catch((err) => {
-                console.error('Failed to fetch credits:', err);
+            .catch(() => {
                 lastFetched.current = null;
             });
     }, [data.user_id, data.start_date, data.date_filed, http]);

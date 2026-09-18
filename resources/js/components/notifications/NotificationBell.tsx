@@ -34,8 +34,8 @@ export default function NotificationBell() {
             const response = await fetch(NotificationActions.recent.url());
             const json = await response.json();
             setNotifications(json.data);
-        } catch (error) {
-            console.error('Failed to fetch notifications:', error);
+        } catch {
+            // Silently handle fetch failures
         } finally {
             setLoading(false);
         }

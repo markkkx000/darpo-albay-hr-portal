@@ -1,5 +1,7 @@
 {
     "$schema": "https://www.schemastore.org/package.json",
+    "name": "darpo-albay-hr-portal",
+    "description": "A modern HRIS for DARPO Albay, built with React 19, Inertia.js v3, and Tailwind CSS v4.",
     "private": true,
     "type": "module",
     "scripts": {

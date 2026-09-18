@@ -205,7 +205,7 @@ class PersonnelSeeder extends Seeder
                 'first_name' => 'HR',
                 'middle_name' => 'Management',
                 'last_name' => 'Admin',
-                'email' => 'hr@darpo.gov.ph',
+                'email' => 'hradmin@example.com',
                 'password' => bcrypt('password'), // or use factory default
                 'is_active' => true,
             ]

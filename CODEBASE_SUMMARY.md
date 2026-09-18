@@ -164,7 +164,7 @@ database/
   factories/                     # UserFactory, AnnouncementFactory, AttendanceFactory, DivisionFactory, PositionFactory, EmploymentStatusFactory
                                    # Note: UserFactory does NOT include position_id — use user->positions()->sync() after factory creation
   seeders/                       # DatabaseSeeder, RoleAndPermissionSeeder, PersonnelSeeder, LeaveTypeSeeder, LeaveStatusSeeder, HolidaySeeder
-                                   # DTRSuperAdminAprilSeeder, OjtAttendanceSeeder (dev-only data seeders)
+                                   # DTRSuperAdminAprilSeeder (dev-only data seeder)
 
 tests/
   Feature/                       # Root-level feature tests

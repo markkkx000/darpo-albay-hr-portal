@@ -145,7 +145,7 @@ it('prevents directory traversal during deletion', function () {
     Storage::fake('s3');
 
     // Attempt to delete an unauthorized URL (e.g. not containing leaves/attachments/)
-    $traversalUrl = 'https://bhzcorfoprqsvxndqlqj.supabase.co/storage/v1/object/public/darpoalbayhr-bucket/avatars/avatar_123.webp';
+    $traversalUrl = 'https://example-project.supabase.co/storage/v1/object/public/test-bucket/avatars/avatar_123.webp';
 
     $response = $this->actingAs($this->superAdmin)
         ->deleteJson('/leave/delete-attachment', [

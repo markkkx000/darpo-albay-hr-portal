@@ -15,7 +15,7 @@ class DTRSuperAdminAprilSeeder extends Seeder
     public function run(): void
     {
         $superAdmin = User::where('employee_number', 'superadmin')
-            ->orWhere('email', 'admin@darpo-albay.gov.ph')
+            ->orWhere('email', 'superadmin@example.com')
             ->first();
 
         if (! $superAdmin) {

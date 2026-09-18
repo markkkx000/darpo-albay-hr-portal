@@ -1,15 +1,99 @@
 # DARPO Albay HR Portal
 
-A modern, high-performance Human Resource Information System (HRIS) tailored for the Department of Agrarian Reform Provincial Office (DARPO) Albay. This project aims to digitize and streamline all core HR operations, from attendance tracking and leave management to document requests and personnel organization.
+A modern, high-performance Human Resource Information System (HRIS) built for the Department of Agrarian Reform Provincial Office (DARPO) Albay. This project digitizes core HR operations — attendance tracking, leave management, document requests, and personnel administration — with strict compliance to Philippine civil service regulations.
+
+> **Context:** This system was developed during our internship at DARPO Albay. It is a production-grade application that handles real government HR workflows, Philippine legal compliance (RA 10173, CSC Forms 6 & 48), and role-based access control for 5 distinct user roles.
+
+---
+
+## Tech Stack
+
+| Layer | Technologies |
+|:------|:------------|
+| **Backend** | PHP 8.4, Laravel 13, Inertia.js v3 |
+| **Frontend** | React 19, TypeScript 5.7, Tailwind CSS v4 |
+| **Database** | PostgreSQL (Supabase) |
+| **Storage** | Supabase Storage (S3-compatible) |
+| **Testing** | Pest v4 (150+ tests), Larastan (PHPStan Level 5) |
+| **CI/CD** | GitHub Actions → Laravel Cloud |
+| **Code Quality** | Laravel Pint, ESLint 9, Prettier 3 |
+
+---
+
+## Key Features
+
+### Modular Architecture
+The application uses a custom modular architecture (`app/Modules/`) with 12 domain modules, each encapsulating its own controllers, models, services, form requests, and routes — registered via a central `ModuleRegistry`.
+
+### Core Modules
+- **Attendance** — Clock in/out (AM/PM 4-slot), IP tracking, manual adjustment, archiving
+- **Leave Management** — Full CSC Form 6 digitization, working-day deduction engine, holiday awareness, credit tracking
+- **DTR (Daily Time Record)** — CSC Form 48 PDF/Excel export, compressed workweek support
+- **Personnel** — Employee profiles, division/unit hierarchy, salary grade/step computation, promotion tracking
+- **Document Requests** — CSC record requests, multi-step approval workflow, digital acknowledgment
+- **Announcements** — Draft/publish workflows, division audience targeting, rich text editor
+- **Audit** — Spatie activity log explorer with automatic PII redaction
+- **Roles & Permissions** — 5-tier RBAC (Super Admin, HR Admin, HR Staff, Division Head, Employee)
+- **Support Tickets** — GitHub Issues integration with live thread syncing
+- **Yearly Report** — Service milestone anniversaries with Excel export
+
+### Security & Compliance
+- **AES-256 field encryption** for all sensitive PII (salary, TIN, GSIS, PhilHealth, HDMF, PRC, bank account numbers)
+- **Auto-redaction layer** — encrypted fields are automatically replaced with `[REDACTED]` before writing to audit logs
+- **MFA enforcement** for administrative roles with rate-limited login
+- **DSAR (Data Subject Access Request)** self-service export for RA 10173 compliance
+- **S3 directory traversal prevention** with tested security guards
+- **Content Security Policy** headers
+
+---
+
+## Screenshots
+
+> **TODO:** Replace the placeholders below with actual screenshots of the running application.
+
+### Dashboard & Navigation
+![Admin Dashboard](docs/screenshots/dashboard-admin.png)
+*Super Admin dashboard showing full organizational stats, pending approvals across all divisions, and complete sidebar access.*
+
+![Employee Dashboard](docs/screenshots/dashboard-employee.png)
+*Employee dashboard showing only personal stats, team announcements, and a restricted sidebar (demonstrating RBAC data isolation).*
+
+### Attendance Module
+![Admin Attendance](docs/screenshots/attendance-admin.png)
+*HR view of the daily attendance sheet for all employees, showing IP address logs and manual adjustment controls.*
+
+![Employee Attendance](docs/screenshots/attendance-employee.png)
+*The employee's personal AM/PM 4-slot clock-in/out interface and their own daily status indicators.*
+
+### Leave Management (CSC Form 6)
+![Leave Management](docs/screenshots/leave-management.png)
+*HR encoding interface for CSC Form 6, featuring a working-day calculation engine, leave credit tracking, and digital archiving.*
+
+### DTR Export (CSC Form 48)
+![DTR Export](docs/screenshots/dtr-export.png)
+*The Daily Time Record page showing the monthly attendance grid with clock-in/out timestamps, and a preview of the generated CSC Form 48 PDF layout.*
+
+### Personnel Management
+![Personnel](docs/screenshots/personnel.png)
+*The employee directory with the organizational hierarchy (divisions → units → positions) and search/filter interface.*
+
+### Audit Logs (Compliance)
+![Audit Logs](docs/screenshots/audit-logs.png)
+*The audit log explorer showing activity entries with automatic `[REDACTED]` markers on encrypted PII fields (RA 10173 compliance).*
+
+### Mobile Responsive
+https://github.com/user-attachments/assets/f578e060-14e1-40d4-8a72-c2c0215376e7
+
+*The application on a mobile viewport showing the collapsible sidebar and touch-friendly interface.*
 
 ---
 
 ## Project Goals
 
-1. **Digitize HR Operations**: Move away from paper-based forms (like CS Form 6 for Leaves and CS Form 48 for DTRs) to fully auditable digital records.
-2. **Role-Based Access Control**: Ensure strict data isolation. Super Admins, HR Staff, Division Heads, and Regular Employees each have tailored views and specific permissions.
-3. **High Performance & Modern UI**: Provide a lightning-fast Single Page Application (SPA) experience with a premium, aesthetic design.
-4. **Data Integrity & Auditability**: Maintain full system logs of all critical actions and track who performed what, down to the attribute level.
+1. **Digitize HR Operations** — Replace paper-based CS Form 6 (Leave) and CS Form 48 (DTR) with fully auditable digital records
+2. **Role-Based Access Control** — Strict data isolation across Super Admins, HR Staff, Division Heads, and Employees
+3. **High Performance & Modern UI** — Lightning-fast SPA experience with a premium design
+4. **Data Integrity & Auditability** — Full system logs of all critical actions, down to the attribute level
 
 ---
 
@@ -19,82 +103,35 @@ Detailed information regarding the system architecture, database schema, modular
 
 ---
 
-## Deployment Procedure
+## Getting Started
 
-Deployment is fully automated via GitHub Actions (`.github/workflows/tests.yml`).
+### Prerequisites
+- PHP 8.4+
+- Node.js 20+
+- PostgreSQL 15+
+- Composer 2+
 
-1. **Continuous Integration (CI):** Every push to `main` runs the Pest test suite against a PostgreSQL service container, runs PHPStan, and builds Vite assets.
-2. **Continuous Deployment (CD):** If the CI job succeeds on the `main` branch, the workflow triggers a deployment to **Laravel Cloud**.
-3. **Database & Migrations:** Laravel Cloud connects to a **Supabase PostgreSQL** pooler. The deployment hook automatically runs `php artisan migrate --force`.
-4. **Asset Storage:** Avatars and documents are uploaded to **Supabase Storage** (S3-compatible) via Laravel's S3 driver.
+### Quick Setup (with Laravel Sail)
 
-### External Services & Required API Keys
-
-To run the application fully (especially in production), you need to provision the following third-party credentials in your `.env` or Laravel Cloud environment variables:
-
-1. **Supabase PostgreSQL (Database)**
-   - Managed PostgreSQL database with connection pooling.
-   - Keys required: `DB_HOST`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`.
-
-2. **Supabase Storage (File Uploads)**
-   - S3-compatible object storage for avatars and document attachments.
-   - You must enable S3 compatibility in Supabase and generate access keys.
-   - Keys required: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` (along with `AWS_ENDPOINT` and `AWS_BUCKET`).
-
-3. **GitHub API (Support Tickets Module)**
-   - The Support Tickets module (`app/Modules/SupportTickets`) integrates directly with a GitHub repository to track issues.
-   - You must generate a GitHub Personal Access Token (Classic) with `repo` permissions.
-   - Keys required: 
-     - `GITHUB_TOKEN="ghp_your_personal_access_token"`
-     - `GITHUB_REPO="your-github-username/your-repo-name"`
-
-4. **Laravel Cloud**
-   - Application hosting and zero-downtime deployments. Tied to your GitHub repository.
-
-### Production Environment Variables Template
-
-A complete reference for all required production variables:
-
-```env
-APP_NAME="DARPO Albay HR Portal"
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://hrdarpoalbay.laravel.cloud
-APP_TIMEZONE=Asia/Manila
-
-# Database (Supabase Pooler)
-DB_CONNECTION=pgsql
-DB_HOST=aws-1-ap-southeast-1.pooler.supabase.com
-DB_PORT=5432
-DB_DATABASE=postgres
-DB_USERNAME=postgres.your_project_id
-DB_PASSWORD=your_secure_password
-
-# Session, Cache, & Queue (all on database to stay lean)
-SESSION_DRIVER=database
-SESSION_LIFETIME=120
-CACHE_STORE=database
-QUEUE_CONNECTION=database
-BCRYPT_ROUNDS=10
-
-# Cloud Storage (Supabase S3)
-FILESYSTEM_DISK=s3
-AWS_ACCESS_KEY_ID=your_supabase_s3_access_key
-AWS_SECRET_ACCESS_KEY=your_supabase_s3_secret_key
-AWS_DEFAULT_REGION=ap-southeast-1
-AWS_BUCKET=your_bucket_name
-AWS_ENDPOINT=https://your_project_id.supabase.co/storage/v1/s3
-AWS_USE_PATH_STYLE_ENDPOINT=true
-AWS_URL=https://your_project_id.supabase.co/storage/v1/object/public/your_bucket_name
-
-# GitHub Integration (Support Tickets)
-GITHUB_TOKEN=ghp_your_personal_access_token
-GITHUB_REPO=your-username/your-repo-name
+```bash
+git clone https://github.com/your-username/darpo-albay-hr-portal.git
+cd darpo-albay-hr-portal
+cp .env.example .env
+./setup.sh
 ```
 
----
+Or manually:
 
-## Default Test Accounts
+```bash
+composer install
+npm install
+php artisan key:generate
+php artisan migrate --seed
+npm run build
+php artisan serve
+```
+
+### Default Test Accounts
 
 Initial accounts created by the database seeders (`php artisan db:seed`):
 
@@ -107,43 +144,48 @@ Initial accounts created by the database seeders (`php artisan db:seed`):
 
 ---
 
-## Legal & Compliance (Philippines)
+## Deployment
 
-As a government HR information system, this application is strictly designed to comply with several Philippine laws and Civil Service Commission (CSC) mandates:
+Deployment is fully automated via GitHub Actions (`.github/workflows/tests.yml`).
 
-1. **Republic Act No. 10173 (Data Privacy Act of 2012)**
-   - **Compliance:** All highly sensitive Personally Identifiable Information (PII) — such as Monthly Salary, TIN, GSIS, PhilHealth, and HDMF/Pag-IBIG numbers — are permanently encrypted at rest in the database using Laravel's AES-256 encryption. Furthermore, the system implements an auto-redaction layer (`beforeActivityLogged`) to ensure these fields never leak in plain-text into the system's Audit Logs. A self-service "Export Personal Data" feature is also available to employees in compliance with the right to data portability.
+1. **CI:** Every push to `main` runs the Pest test suite against a PostgreSQL service container, runs PHPStan, and builds Vite assets.
+2. **CD:** If CI passes on `main`, the workflow triggers deployment to **Laravel Cloud**.
+3. **Database:** Laravel Cloud connects to a **Supabase PostgreSQL** pooler. The deployment hook runs `php artisan migrate --force`.
+4. **Storage:** Avatars and documents are uploaded to **Supabase Storage** (S3-compatible) via Laravel's S3 driver.
 
-2. **Civil Service Commission (CSC) Omnibus Rules on Leave (Rule XVI)**
-   - **Compliance:** The system completely digitizes **CS Form No. 6 (Application for Leave)**. It features an automated engine that calculates precise working days requested (accounting for weekends and Philippine holidays), tracks accrued Vacation Leave (VL) and Sick Leave (SL) credits, and manages cumulative vs. non-cumulative leave behaviors.
+### External Services & Required API Keys
 
-3. **CSC Memorandum Circular No. 21, s. 1991 (Daily Time Record)**
-   - **Compliance:** The application digitizes the generation of **CS Form No. 48 (Daily Time Record)**. The Attendance module tracks exact server-side clock-in and clock-out timestamps, and automatically handles Regular and Compressed workweek schedules, exporting directly to the official CSC-mandated PDF layout.
-
-4. **Republic Act No. 11032 (Ease of Doing Business and Efficient Government Service Delivery Act of 2018)**
-   - **Compliance:** The Document Requests module fully digitizes and streamlines the workflow for requesting official HR documents (Service Records, Certificates of Employment, etc.), providing full transparency, status tracking, and minimizing bureaucratic friction.
+| Service | Purpose | Environment Variables |
+|:--------|:--------|:---------------------|
+| **PostgreSQL** (Supabase) | Database | `DB_HOST`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE` |
+| **Supabase Storage** | S3-compatible file uploads | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT`, `AWS_BUCKET` |
+| **GitHub API** | Support Tickets integration | `GITHUB_TOKEN`, `GITHUB_REPO` |
+| **Laravel Cloud** | Hosting & deployment | Tied to GitHub repo |
 
 ---
 
-## Future Recommendations (Scaling)
+## Legal & Compliance (Philippines)
 
-As DARPO Albay's usage grows, consider the following infrastructural upgrades:
+As a government HR information system, this application complies with:
 
-1. **Biometric Integration**: Currently, attendance is web-based. Future phases should expose API endpoints for local biometric scanners (ZKTeco, etc.) to push clock-in/out data directly to the application.
-2. **Dedicated Queue Workers**: Currently, background jobs run on the default database queue driver. If email notifications and PDF generations scale up, transition to **Laravel Horizon** backed by a **Redis** cluster.
-3. **Database Read Replicas**: If DTR report generation and Audit Log filtering become slow due to data volume, configure Supabase Read Replicas to handle heavy `SELECT` queries off the primary write database.
-4. **Caching Layer**: Shift heavy, static computations (like the organizational chart structure) to Redis instead of recalculating them on the fly.
+1. **Republic Act No. 10173 (Data Privacy Act of 2012)** — AES-256 encryption of all sensitive PII, auto-redaction in audit logs, DSAR self-service export
+2. **CSC Omnibus Rules on Leave (Rule XVI)** — Full digitization of CS Form No. 6 with automated working-day calculation, holiday awareness, and credit tracking
+3. **CSC Memorandum Circular No. 21, s. 1991** — Digitization of CS Form No. 48 (Daily Time Record) with server-side timestamps and official PDF layout export
+4. **Republic Act No. 11032 (Ease of Doing Business Act)** — Streamlined document request workflows with status tracking and transparency
+
+---
+
+## Future Roadmap
+
+1. **Biometric Integration** — API endpoints for local biometric scanners (ZKTeco, etc.) to push clock-in/out data directly
+2. **Dedicated Queue Workers** — Transition to Laravel Horizon backed by Redis for email notifications and PDF generation at scale
+3. **Database Read Replicas** — Offload heavy DTR report generation and audit log queries
+4. **Caching Layer** — Redis-backed caching for static computations like organizational chart structure
 
 ---
 
 ## License
 
-**Proprietary Software.**
+MIT License — see [LICENSE](LICENSE) for details.
 
-Copyright &copy; 2026 Mark Kenneth S. Nudo, Allan Paul A. Sodsod II, Mauve C. Labalan.
-
-This software was developed by the authors during their internship, and they jointly own the intellectual property rights to the source code. A perpetual, non-exclusive license is hereby granted for the exclusive internal operational use of the **Department of Agrarian Reform Provincial Office (DARPO) Albay**. 
-
-It is strictly closed-source. No part of this codebase may be copied, reproduced, distributed, sold, or transmitted to third parties without the express written permission of the authors. 
-
-See the [LICENSE](LICENSE) file for the full legal text.
+Copyright © 2026 Mark Kenneth S. Nudo, Allan Paul A. Sodsod II, Mauve C. Labalan.

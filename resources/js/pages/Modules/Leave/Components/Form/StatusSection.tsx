@@ -165,7 +165,6 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
                     };
                 });
             } catch (err: any) {
-                console.error(err);
                 const errorMsg = err.message || 'Upload failed';
                 setLocalFiles(prev =>
                     prev.map(f => (f.id === tempId ? { ...f, status: 'error', error: errorMsg } : f))
@@ -192,8 +191,8 @@ export const StatusSection: React.FC<StatusSectionProps> = ({
                     });
                     // Remove from session tracking ref
                     sessionUploadedUrls.current = sessionUploadedUrls.current.filter(u => u !== url);
-                } catch (err) {
-                    console.error('Failed to delete file from S3:', err);
+                } catch {
+                    // Silently handle S3 deletion failures
                 }
             }
 
